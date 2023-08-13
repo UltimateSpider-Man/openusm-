@@ -1,0 +1,93 @@
+#include "ngl_dx_scene.h"
+
+#include "ngl.h"
+#include "nglrendernode.h"
+#include "nglshader.h"
+
+#include <func_wrapper.h>
+#include <utility.h>
+#include <vtbl.h>
+
+namespace nglRenderList {
+
+void sub_77DFB0(void *begin, void *end, int a3, int a4) {
+    CDECL_CALL(0x0077DFB0, begin, end, a3, a4);
+}
+
+template<>
+void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3) {
+    if constexpr (0) {
+        struct {
+            nglRenderNode *field_0;
+            int field_4;
+        } *list = static_cast<decltype(list)>(nglListAlloc(8 * count, 16));
+
+        auto sub_FE1420 = [](auto *a1, nglRenderNode *a2) -> void {
+            while (a2) {
+                a1->field_0 = a2;
+                a1->field_4 = a2->field_8;
+                ++a1;
+                a2 = a2->field_4;
+            }
+        };
+
+        sub_FE1420(list, (nglShaderNode *) node);
+
+        sub_77DFB0(list, list + 8 * count, (8 * count) >> 3, a3);
+
+        auto sub_FE1480 = [](void *a1, nglRenderNode **a2, int a3) -> void {
+            struct {
+                nglShaderNode *field_0;
+                int field_4;
+            } *v1 = static_cast<decltype(v1)>(a1);
+
+            auto *v4 = &v1[a3 - 1];
+            nglShaderNode *v3 = nullptr;
+            while (a3) {
+                v4->field_0->field_4 = v3;
+                v3 = v4->field_0;
+                --v4;
+                --a3;
+            }
+
+            *a2 = v3;
+        };
+
+        sub_FE1480(list, &node, count);
+
+        static Var<nglRenderNode *> nglPrevNode{0x00971F18};
+
+        auto *v9 = node;
+
+        for (; v9 != nullptr; v9 = v9->field_4) {
+            struct Vtbl {
+                void __thiscall (*Render)(void *);
+            };
+
+            void *vtbl = get_vtbl(v9);
+
+            static_cast<Vtbl *>(vtbl)->Render(v9);
+
+            nglPrevNode() = v9;
+        }
+    } else {
+        CDECL_CALL(0x0077E190, node, count, a3);
+    }
+}
+
+} // namespace nglRenderList
+
+void *nglListAlloc(int size, int align) {
+    auto *v3 = (uint8_t *) (~(align - 1) & ((int) nglListWorkPos() + align - 1));
+
+    nglListWorkPos() = &v3[size];
+    void *result = v3;
+
+    return result;
+}
+
+void nglRenderList_patch() {
+    auto *address = &nglRenderList::nglOpaqueCompare<nglRenderNode>;
+
+    REDIRECT(0x0077D162, address);
+}

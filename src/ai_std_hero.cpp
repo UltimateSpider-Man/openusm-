@@ -1,0 +1,434 @@
+#include "ai_std_hero.h"
+
+#include "variable.h"
+
+#include "actor.h"
+#include "ai_player_controller.h"
+#include "als_animation_logic_system.h"
+#include "als_inode.h"
+#include "base_ai_core.h"
+#include "colgeom_alter_sys.h"
+#include "collide.h"
+#include "common.h"
+#include "conglom.h"
+#include "custom_math.h"
+#include "entity.h"
+#include "entity_base_vhandle.h"
+#include "from_mash_in_place_constructor.h"
+#include "func_wrapper.h"
+#include "glass_house_manager.h"
+#include "hit_react_state.h"
+#include "line_info.h"
+#include "oldmath_po.h"
+#include "param_list.h"
+#include "physical_interface.h"
+#include "physics_inode.h"
+#include "plr_loco_crawl_state.h"
+#include "plr_loco_crawl_transition_state.h"
+#include "throw_state.h"
+#include "utility.h"
+#include "vtbl.h"
+
+namespace ai {
+
+VALIDATE_SIZE(hero_inode::internal, 0x124);
+VALIDATE_SIZE(hero_inode, 0x24C);
+VALIDATE_OFFSET(hero_inode, field_70, 0x70);
+
+hero_inode::hero_inode(from_mash_in_place_constructor *a2) {
+    THISCALL(0x006A1B10, this, a2);
+}
+
+bool hero_inode::jump_can_go_to(string_hash a2) {
+    return THISCALL(0x006A6E70, this, a2);
+}
+
+void hero_inode::frame_advance(Float a2) {
+    sp_log("hero_inode::frame_advance():");
+
+    if constexpr (0) {
+        auto *v3 = this->field_C->m_player_controller;
+
+        als::param v14;
+        v14.field_4 = 1;
+        v14.field_0 = physics_inode::default_id.source_hash_code;
+        auto *v4 = this->field_8;
+
+        auto *v5 = (physics_inode *) v4->get_info_node(physics_inode::default_id, true);
+        if (!this->field_1C) {
+            setup_hero_capsule(this->field_C);
+            this->field_1C = true;
+        }
+
+        auto *v6 = v5->field_C;
+
+        auto &v7 = v6->get_abs_po().get_position();
+
+        vector3d v18;
+        v18[0] = v7[0];
+        v18[1] = v7[1];
+        v18[2] = v7[2];
+
+        auto *v8 = (entity *) this->field_C;
+        v8->get_primary_region();
+
+        Var<vector3d> stru_937D94{0x00937D94};
+
+        Var<const float> max_ground_dist_35476{0x00937F6C};
+
+        vector3d v19 = v18 - stru_937D94() * max_ground_dist_35476();
+
+        vector3d v20, v21;
+        if (find_intersection(v18,
+                              v19,
+                              *local_collision::entfilter_entity_no_capsules(),
+                              *local_collision::obbfilter_lineseg_test(),
+                              &v20,
+                              &v21,
+                              nullptr,
+                              nullptr,
+                              nullptr,
+                              false)) {
+            this->field_244 = v18[1] - v20[1];
+        } else {
+            this->field_244 = max_ground_dist_35476();
+        }
+
+        float v17 = 0.0;
+        auto *v9 = v3->get_gb_swing_raw();
+        if ((v9->m_flags & 0x20) == 0) {
+            if (v9->m_flags & 1) {
+                float v11 = ((v9->m_flags & 0x20) != 0 ? 0.0f : v9->field_1C);
+
+                v17 = v11 + 0.050000001f;
+            }
+        }
+
+        this->field_238 += a2;
+
+        if (v3->get_motion_force() > EPSILON) {
+            this->field_238 = 0.0;
+        }
+
+        auto *v12 = (als_inode *) this->field_8->get_info_node(als_inode::default_id, true);
+        als::param_list v16;
+
+        v14.field_0 = 17;
+        v14.field_4 = v17;
+        v16.add_param(v14);
+
+        v14.field_0 = 19;
+        v14.field_4 = this->field_238;
+        v16.add_param(v14);
+
+        v14.field_0 = 70;
+        v14.field_4 = this->field_244;
+        v16.add_param(v14);
+
+        auto *v13 = v12->field_1C->get_als_layer(als::layer_types{0});
+
+        v13->set_desired_params(v16);
+
+        if (this->field_80) {
+            local_collision::destroy_primitive_list(&this->field_80);
+        }
+
+        if (this->field_84) {
+            local_collision::destroy_primitive_list(&this->field_84);
+        }
+
+    } else {
+        THISCALL(0x006A7950, this, a2);
+    }
+}
+
+bool hero_inode::is_a_crawl_state(string_hash a1, bool a2) {
+    auto result = (a1 == plr_loco_crawl_state::default_id);
+    if (a2 &&
+        (a1 == plr_loco_crawl_transition_state::default_id ||
+         a1 == plr_loco_crawl_state::default_id)) {
+        result = true;
+    }
+
+    return result;
+}
+
+bool hero_inode::ought_to_jump_off_wall(line_info &a2) {
+    return (bool) THISCALL(0x006A6280, this, &a2);
+}
+
+bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3) {
+    if constexpr (0) {
+        auto *v4 = this->field_C;
+        entity *v20 = 0;
+        subdivision_node_obb_base *v21 = 0;
+        if ((v4->field_8 & 0x10000000) != 0) {
+            v4->update_abs_po(true);
+        }
+
+        auto *v5 = (float *) v4->my_abs_po;
+
+        auto *vtbl = bit_cast<thiscall_call(*)[1]>(this->field_C);
+        auto func = (*vtbl)[117];
+
+        vector3d v27;
+        auto v6 = ((float *) func(this->field_C, &v27))[1] * 0.5f;
+
+        static Var<vector3d> stru_937D94{0x00937D94};
+
+        v27[1] = stru_937D94()[1] * v6;
+        v27[2] = stru_937D94()[2] * v6;
+        auto v22 = stru_937D94()[0] * v6 + v5[12];
+        auto v23 = v27[1] + v5[13];
+        auto v7 = v23;
+        auto v8 = v27[2] + v5[14];
+        a2.field_0[0] = v22;
+        a2.field_0[1] = v7;
+        auto v24 = v8;
+        a2.field_0[2] = v24;
+
+        vector3d a1;
+        vector3d a5;
+        if (!find_sphere_intersection(a2.field_0,
+                                      2.0,
+                                      *local_collision::entfilter_entity_no_capsules(),
+                                      *local_collision::obbfilter_sphere_test(),
+                                      &a1,
+                                      &a5,
+                                      &v20,
+                                      &v21) ||
+            !glass_house_manager::is_point_in_glass_house(a1) || a5[1] > 0.73242188f) {
+            return false;
+        }
+
+        auto v10 = a1[1];
+        auto v11 = a1[2];
+        auto v12 = a1[0];
+        a2.field_C[0] = a1[0];
+        a2.field_C[1] = v10;
+        a2.field_C[2] = v11;
+        auto a2a = (v20 ? v20->get_my_handle() : 0);
+        auto v13 = a5[0];
+        a2.field_48 = {a2a};
+        a2.hit_norm[0] = v13;
+        a2.hit_norm[1] = a5[1];
+        a2.hit_norm[2] = a5[2];
+        a2.hit_pos[0] = v12;
+        auto v14 = v21;
+        a2.hit_pos[1] = v10;
+        a2.hit_pos[2] = v11;
+        a2.field_4C = v14;
+        a2.field_58 = 1;
+
+        auto get_phys_ifc = (*vtbl)[74];
+
+        auto *v15 = (physical_interface *) get_phys_ifc(this->field_C);
+        auto *v16 = v15->field_84.get_volatile_ptr();
+        entity *v17 = v20;
+        entity *v18 = v16;
+
+        bool result = true;
+        if (is_noncrawlable_surface(a2) || have_relative_movement(v18, v17)) {
+            result = false;
+        }
+
+        return result;
+    } else {
+        return (bool) THISCALL(0x0069FAF0, this, &a2, a3);
+    }
+}
+
+bool hero_inode::accept_crawl_spot(vector3d a1, vector3d a4) {
+    return (bool) THISCALL(0x00693B00, this, a1, a4);
+}
+
+bool hero_inode::get_closest_corner(corner_info *a2, crawl_request_type a3) {
+    return (bool) THISCALL(0x006A5CF0, this, a2, a3);
+}
+
+bool hero_inode::run_is_eligible(string_hash a2) {
+    return THISCALL(0x006A7770, this, a2);
+}
+
+bool hero_inode::crawl_is_eligible(string_hash a2, bool a3) {
+    return (bool) THISCALL(0x006B0EB0, this, a2, a3);
+}
+
+bool hero_inode::oldcrawl_is_eligible(string_hash a2, bool a3) {
+    return (bool) THISCALL(0x006B0E60, this, a2, a3);
+}
+
+void hero_inode::update_wall_run_als_params() {
+    if constexpr (1) {
+        auto *v2 = this->field_8;
+
+        auto *v3 = (als_inode *) v2->get_info_node(als_inode::default_id, true);
+        auto *v4 = this->field_C;
+        auto *v5 = v3;
+        if ((v4->field_8 & 0x10000000) != 0) {
+            v4->update_abs_po(1);
+        }
+
+        auto *v6 = this->field_C;
+
+        float v8 = -calculate_xz_angle_relative_to_local_po(*v6->my_abs_po,
+                                                            YVEC,
+                                                            v4->get_abs_po().m.arr[2]);
+
+        constexpr float flt_882080 = PI / 4.0;
+        constexpr float flt_8A48CC = -flt_882080;
+
+        v8 = std::clamp(v8, flt_8A48CC, flt_882080);
+
+        float v12 = (v8 + flt_882080) / half_PI;
+
+        als::param_list list;
+        list.add_param({18, v12});
+
+        auto *v9 = v5->field_1C->get_als_layer(0);
+        v9->set_desired_params(list);
+
+    } else {
+        THISCALL(0x006A67E0, this);
+    }
+}
+
+bool hero_inode::run_can_go_to(string_hash arg0) {
+    if constexpr (1) {
+        auto *v3 = this->field_8;
+
+        v3->get_info_node(physics_inode::default_id, true);
+
+        auto *v4 = this->field_8;
+
+        auto *v5 = (als_inode *) v4->get_info_node(als_inode::default_id, true);
+        if (arg0 == hit_react_state::default_id) {
+            return true;
+        }
+
+        if (arg0 == throw_state::default_id &&
+            (arg0 = v5->get_category_id({0}), arg0 != ai::cat_id_idle_walk_run())) {
+            return false;
+        }
+
+        auto *v7 = v5->field_1C->get_als_layer(0);
+        return v7->is_interruptable();
+
+    } else {
+        return THISCALL(0x006A76D0, this, arg0);
+    }
+}
+
+int hero_inode::engage_water_exit() {
+    return THISCALL(0x006944D0, this);
+}
+
+bool hero_inode::jump_is_eligible(string_hash a2) {
+    return THISCALL(0x006A7110, this, a2);
+}
+
+bool hero_inode::crawl_can_go_to(string_hash a2, string_hash a3) {
+    return THISCALL(0x006A6340, this, a2, a3);
+}
+
+void hero_inode::sub_68A7F0(int a2, bool a3) {
+    if (a3) {
+        this->field_54 = 21;
+    } else {
+        this->field_54 = this->field_50;
+    }
+
+    this->field_50 = a2;
+}
+
+void hero_inode::cleanup_collision_lists() {
+    if (this->field_80) // ai::hero_inode::cleanup_crawl_collision_list()
+    {
+        local_collision::destroy_primitive_list(&this->field_80);
+    }
+
+    if (this->field_84) // ai::hero_inode::cleanup_swing_collision_list()
+    {
+        local_collision::destroy_primitive_list(&this->field_84);
+    }
+}
+
+int hero_inode::get_hero_type() {
+#if 0
+    return get_hero_type_helper();
+#else
+    return CDECL_CALL(0x0068A050);
+#endif
+}
+
+bool hero_inode::crawl_is_eligible_internals(string_hash a2, bool a3) {
+    return (bool) THISCALL(0x006A6900, this, a2, a3);
+}
+
+Var<string_hash> bip01_pelvis{0x0095AAFC};
+
+void shrink_capsule_for_slanted_surfaces(actor *act) {
+    if constexpr (1) {
+        assert(act->is_a_conglomerate());
+
+        auto *v1 = act->get_ai_core();
+        v1->create_capsule_alter();
+        auto *capsule_alter = act->get_ai_core()->field_70;
+        assert(capsule_alter != nullptr);
+
+        capsule_alter->set_mode(capsule_alter_sys::eAlterMode{3});
+
+        conglomerate *conglm_ptr = CAST(conglm_ptr, act);
+        auto *v3 = conglm_ptr->get_bone(bip01_pelvis(), true);
+        capsule_alter->set_base_avg_node(1, v3, 1.0);
+        capsule_alter->set_base_avg_node(2, nullptr, 0.0);
+
+        auto *ctrl = act->m_player_controller;
+        assert(ctrl != nullptr);
+
+        if (ctrl->field_420 == 2) {
+            capsule_alter->set_avg_radius(0.5);
+        } else {
+            capsule_alter->set_avg_radius(0.30000001);
+        }
+
+    } else {
+        CDECL_CALL(0x0068A5F0, act);
+    }
+}
+
+void extend_capsule_for_jump(actor *act) {
+    assert(act->is_a_conglomerate());
+
+    ai_core *v1 = act->get_ai_core();
+    v1->create_capsule_alter();
+    auto *capsule_alter = act->get_ai_core()->field_70;
+    capsule_alter->set_mode(capsule_alter_sys::eAlterMode{3});
+
+    Var<string_hash> bip01_l_foot{0x0095A860};
+    Var<string_hash> bip01_r_foot{0x0095B970};
+
+    conglomerate *conglom_ptr = CAST(conglom_ptr, act);
+    auto *v3 = conglom_ptr->get_bone(bip01_l_foot(), true);
+    capsule_alter->set_base_avg_node(0, v3, 1.75);
+
+    auto *v4 = conglom_ptr->get_bone(bip01_r_foot(), true);
+    capsule_alter->set_base_avg_node(1, v4, 1.75);
+
+    auto *v5 = conglom_ptr->get_bone(bip01_pelvis(), true);
+    capsule_alter->set_base_avg_node(2, v5, 1.0);
+    capsule_alter->set_base_avg_node(3, nullptr, 0.0);
+}
+
+} // namespace ai
+
+bool have_relative_movement(entity *a1, entity *a2) {
+    return (bool) CDECL_CALL(0x0069F9A0, a1, a2);
+}
+
+void hero_inode_patch() {
+    {
+        FUNC_ADDRESS(address, &ai::hero_inode::frame_advance);
+        //set_vfunc(0x0087DAC0, address);
+    }
+}

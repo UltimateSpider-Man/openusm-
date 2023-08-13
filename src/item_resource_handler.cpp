@@ -1,0 +1,85 @@
+#include "item_resource_handler.h"
+
+#include "common.h"
+#include "func_wrapper.h"
+#include "item.h"
+#include "trace.h"
+#include "utility.h"
+#include "wds.h"
+#include "worldly_pack_slot.h"
+
+#include <cassert>
+
+VALIDATE_SIZE(item_resource_handler, 0x10);
+
+item_resource_handler::item_resource_handler(worldly_pack_slot *a2) {
+    this->my_slot = a2;
+}
+
+int item_resource_handler::get_num_resources() {
+    return this->my_slot->item_instances->size();
+}
+
+bool item_resource_handler::_handle(worldly_resource_handler::eBehavior behavior, int a4, limited_timer *a5)
+{
+    TRACE("item_resource_handler::handle");
+
+    return base_entity_resource_handler::_handle(behavior, a5);
+}
+
+bool item_resource_handler::_handle_resource([[maybe_unused]] eBehavior behavior)
+{
+    TRACE("item_resource_handler::handle_resource");
+    bool result;
+
+    assert(behavior == UNLOAD);
+
+    if constexpr (1) {
+        if (g_world_ptr()->ent_mgr.items.get_vector_index(this->my_slot->item_instances) > 0) {
+            auto *v4 = this->my_slot->item_instances->at(this->field_C);
+            if (v4) {
+                auto *v5 = this->my_slot->item_instances->at(this->field_C);
+                if ((v4->field_4 & 0x80u) == 0) {
+                    g_world_ptr()->ent_mgr.remove_entity_from_misc_lists(v4);
+                    if ((v5->field_8 & 0x80000000) == 0) {
+                        v5->release_mem();
+                    } else {
+                        v5->~item();
+                    }
+
+                    this->my_slot->item_instances->at(this->field_C) = nullptr;
+                }
+            }
+            ++this->field_C;
+            result = false;
+        } else {
+            this->field_C = this->get_num_resources();
+            result = true;
+        }
+
+    } else {
+        result = THISCALL(0x0056BF00, this, behavior);
+    }
+
+    return result;
+}
+
+void item_resource_handler::post_handle_resources(eBehavior) {
+    if (this->my_slot->item_instances != nullptr) {
+        g_world_ptr()->ent_mgr.items.sub_572FB0(this->my_slot->item_instances);
+        this->my_slot->item_instances = nullptr;
+    }
+}
+
+void item_resource_handler_patch()
+{
+    {
+        FUNC_ADDRESS(address, &item_resource_handler::_handle);
+        //set_vfunc(0x00888A60, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &item_resource_handler::_handle_resource);
+        set_vfunc(0x00888A68, address);
+    }
+}

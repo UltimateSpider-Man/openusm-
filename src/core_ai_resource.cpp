@@ -1,0 +1,109 @@
+#include "core_ai_resource.h"
+
+#include "combo_system.h"
+#include "common.h"
+#include "func_wrapper.h"
+#include "resource_key.h"
+#include "trace.h"
+
+#include <cassert>
+
+namespace ai {
+
+VALIDATE_SIZE(core_ai_resource, 0x48);
+VALIDATE_OFFSET(core_ai_resource, my_locomotion_graphs, 0x28);
+
+core_ai_resource::core_ai_resource(from_mash_in_place_constructor *a2) {
+    THISCALL(0x006D9A10, this, a2);
+}
+
+int core_ai_resource::destruct_mashed_class() {
+    return THISCALL(0x006D71A0, this);
+}
+
+void core_ai_resource::unmash(mash_info_struct *a1, void *a3)
+{
+    TRACE("ai::core_ai_resource::unmash");
+
+    if constexpr (1)
+    {
+        a1->unmash_class_in_place(this->field_0, this);
+        a1->unmash_class_in_place(this->field_14, this);
+        a1->unmash_class_in_place(this->my_locomotion_graphs, this);
+
+#ifdef TARGET_XBOX
+        {
+            uint8_t class_mashed = -1;
+            class_mashed = *a1->read_from_buffer(mash::SHARED_BUFFER, 1, 1);
+            assert(class_mashed == 0xAF || class_mashed == 0);
+        }
+#endif
+
+        if ( this->field_10 != nullptr )
+        {
+            a1->unmash_class(this->field_10, this
+#ifdef TARGET_XBOX
+                , mash::NORMAL_BUFFER
+#endif
+                    );
+        }
+
+        a1->align_buffer(
+#ifdef TARGET_XBOX
+            mash::NORMAL_BUFFER,
+#endif
+                4);
+        this->field_40 = *(int*) a1->read_from_buffer(
+#ifdef TARGET_XBOX
+            mash::NORMAL_BUFFER,
+#endif
+                4, 4);
+        a1->align_buffer(
+#ifdef TARGET_XBOX
+                mash::NORMAL_BUFFER,
+#endif
+                16);
+        auto v6 = this->field_40;
+        this->field_C = (int)&a1->mash_image_ptr[0][a1->buffer_size_used[0]];
+        a1->advance_buffer(
+#ifdef TARGET_XBOX
+            mash::NORMAL_BUFFER,
+#endif
+                v6);
+        a1->read_from_buffer(
+#ifdef TARGET_XBOX
+            mash::NORMAL_BUFFER,
+#endif
+                4, 4);
+    }
+    else
+    {
+        THISCALL(0x006D71F0, this, a1, a3);
+    }
+}
+
+bool core_ai_resource::does_locomotion_graph_exist(resource_key the_graph) {
+    assert(the_graph.get_type() == RESOURCE_KEY_TYPE_AI_STATE_GRAPH);
+
+    const auto size = this->my_locomotion_graphs.m_size;
+
+    if (size <= 0) {
+        return false;
+    }
+
+    uint16_t i = 0;
+    for (; i < size; ++i) {
+        const auto *curr = this->my_locomotion_graphs.at(i);
+
+        if (curr->get_type() != RESOURCE_KEY_TYPE_AI_STATE_GRAPH) {
+            assert(0);
+        }
+
+        if (*curr == the_graph) {
+            return true;
+        }
+    }
+
+    return false;
+}
+} // namespace ai

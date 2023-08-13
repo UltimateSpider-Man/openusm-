@@ -1,0 +1,80 @@
+#pragma once
+
+#include "float.hpp"
+#include "mash_virtual_base.h"
+#include "state_trans_action.h"
+
+#include <cstdint>
+
+struct actor;
+struct string_hash;
+
+namespace ai {
+
+struct ai_core;
+struct ai_state_machine;
+struct param_block;
+struct mashed_state;
+struct state_trans_action;
+struct info_node_desc_list;
+struct state_graph_list;
+
+struct base_state : mash_virtual_base {
+    struct activate_flag_e {
+        int value;
+
+        operator int() const {
+            return value;
+        }
+    };
+
+    activate_flag_e field_4;
+    const mashed_state *my_mashed_state;
+    ai_state_machine *field_C;
+    const param_block *field_10;
+    ai_core *field_14;
+    actor *field_18;
+
+    base_state();
+
+    //0x006BD900
+    base_state(int a2);
+
+    actor *get_actor();
+
+    ai_core *get_core();
+
+    //0x006BD4D0
+    string_hash get_name();
+
+    bool is_flag_set(int a2);
+
+    /* virtual */ ~base_state() = default;
+
+    //0x006C4BD0
+    /* virtual */ void activate(ai_state_machine *the_state_machine,
+                                const mashed_state *a3,
+                                const mashed_state *a4,
+                                const param_block *a5,
+                                activate_flag_e a6);
+
+    /* virtual */ void deactivate(const mashed_state *);
+
+    /* virtual */ int frame_advance(Float a2) /* = 0 */;
+
+    /* virtual */ void get_info_node_list(info_node_desc_list &);
+
+    /* virtual */ void get_state_graph_list(state_graph_list &);
+
+    state_trans_action check_transition(Float a3) /* = 0 */;
+
+    //0x0043C5E0
+    //virtual
+    bool is_subclass_of(mash::virtual_types_enum a1);
+
+    //0x006BD940
+    uint32_t get_virtual_type_enum();
+
+    int get_mash_sizeof();
+};
+} // namespace ai

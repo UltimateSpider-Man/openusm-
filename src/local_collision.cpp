@@ -1,0 +1,324 @@
+#include "local_collision.h"
+
+#include "actor.h"
+#include "collide.h"
+#include "collision_capsule.h"
+#include "common.h"
+#include "fixed_pool.h"
+#include "func_wrapper.h"
+#include "line_info.h"
+#include "line_segment.h"
+#include "loaded_regions_cache.h"
+#include "oldmath_po.h"
+#include "subdivision_node_obb_base.h"
+#include "vtbl.h"
+
+#include <cmath>
+
+bool find_intersection(const vector3d &a1,
+                       const vector3d &a2,
+                       const local_collision::entfilter_base &a3,
+                       const local_collision::obbfilter_base &a4,
+                       vector3d *point,
+                       vector3d *normal,
+                       region **a7,
+                       entity **a8,
+                       subdivision_node_obb_base **hit_obb,
+                       bool a10) {
+    if constexpr (1) {
+        local_collision::query_args_t v23{};
+
+        auto *v10 = local_collision::query_line_segment(a1, a2, a3, a4, v23);
+
+        local_collision::intersection_list_t intersection_record{};
+
+        line_segment_t a2a{a1, a2};
+
+        auto v16 = local_collision::get_closest_line_intersection(v10,
+                                                                  &a2a,
+                                                                  a10,
+                                                                  nullptr,
+                                                                  nullptr,
+                                                                  &intersection_record);
+
+        if (v16) {
+            assert(intersection_record.point.is_valid() && "get_closest_line_intersection failed");
+            assert(intersection_record.normal.is_valid() && "get_closest_line_intersection failed");
+
+            *point = intersection_record.point;
+            *normal = intersection_record.normal;
+            if (hit_obb == nullptr || intersection_record.is_ent) {
+                if (a8 != nullptr && intersection_record.is_ent) {
+                    auto *v17 = static_cast<entity *>(intersection_record.field_2C);
+                    if (v17 == nullptr) {
+                        v17 = static_cast<entity *>(intersection_record.intersection_node);
+                    }
+
+                    *a8 = v17;
+                }
+
+            } else {
+                *hit_obb = static_cast<subdivision_node_obb_base *>(
+                    intersection_record.intersection_node);
+
+                assert((*hit_obb)->is_obb_node());
+            }
+
+            if (a7 != nullptr) {
+                fixed_vector<region *, 15> regions;
+
+                loaded_regions_cache::get_regions_intersecting_sphere(*point, 0.0f, &regions);
+
+                *a7 = (regions.m_size != 0 ? regions.m_data[0] : nullptr);
+            }
+        }
+
+        for (auto *i = v10; i != nullptr; i = i->field_0) {
+            local_collision::primitive_list_t::pool().set(i);
+        }
+
+        return v16;
+
+    } else {
+        return (
+            bool) CDECL_CALL(0x005C4DD0, &a1, &a2, &a3, &a4, point, normal, a7, a8, hit_obb, a10);
+    }
+}
+
+void closest_point_line_segment_point(const vector3d &a1,
+                                      const vector3d &a2,
+                                      const vector3d &a3,
+                                      float *a4) {
+    vector3d v5 = a2 - a1;
+
+    auto v4 = sub_5B8DB0(a1, v5, a3);
+
+    *a4 = std::clamp(v4, 0.0f, 1.0f);
+}
+
+namespace local_collision {
+
+VALIDATE_SIZE(query_args_t, 0x34);
+
+VALIDATE_SIZE(intersection_list_t, 0x30);
+
+entity *primitive_list_t::get_entity() {
+    assert(is_ent);
+
+    return this->field_4.ent;
+}
+
+bool test_line_intersection_ex(local_collision::primitive_list_t **a1,
+                               const line_info &a2,
+                               local_collision::primitive_list_t ***occluder) {
+    assert(occluder != nullptr);
+    *occluder = nullptr;
+
+    local_collision::primitive_list_t **i = nullptr;
+    for (i = a1;; i = (local_collision::primitive_list_t **) *i) {
+        if (*i == nullptr) {
+            return false;
+        }
+
+        bool v7 = false;
+        vector3d a8{};
+        vector3d a9{};
+        if ((*i)->is_entity()) {
+            auto &a7 = (*i)->field_4.ent->get_abs_po();
+            v7 = collide_segment_entity(a2.field_0, a2.field_C, (*i)->field_4.ent, a7, &a8, &a9);
+        } else {
+            v7 = (*i)->field_4.obb->line_segment_intersection(a2.field_0, a2.field_C);
+        }
+
+        if (v7) {
+            break;
+        }
+    }
+
+    if (occluder != nullptr) {
+        *occluder = i;
+    }
+
+    return true;
+}
+
+bool get_closest_line_intersection(local_collision::primitive_list_t *a1,
+                                   line_segment_t *lif,
+                                   bool a3,
+                                   float *a4,
+                                   const float *a5,
+                                   local_collision::intersection_list_t *a6) {
+    return (bool) CDECL_CALL(0x0053EE60, a1, lif, a3, a4, a5, a6);
+}
+
+primitive_list_t *query_sphere(const vector3d &a1,
+                               Float a2,
+                               const entfilter_base &a3,
+                               const obbfilter_base &a4,
+                               query_args_t query_args) {
+    return (primitive_list_t *) CDECL_CALL(0x005333C0, &a1, a2, &a3, &a4, query_args);
+}
+
+bool get_closest_sphere_intersection(primitive_list_t *a1,
+                                     const vector3d &a2,
+                                     Float a3,
+                                     vector3d *a4,
+                                     vector3d *a5,
+                                     intersection_list_t *best_intersection_record) {
+    if constexpr (1) {
+        auto *v6 = a1;
+        local_collision::primitive_list_t *v7 = nullptr;
+        float v20 = 3.4028235e38;
+        local_collision::primitive_list_t *v19 = nullptr;
+        if (a1 == nullptr) {
+            return false;
+        }
+
+        vector3d point, normal;
+
+        while (v6 != nullptr) {
+            bool v9 = false;
+            float arg10 = 0.0f;
+            vector3d arg8, argC;
+
+            if (v6->is_entity()) {
+                auto *ent = v6->field_4.ent;
+
+                auto &v25 = ent->get_abs_po();
+
+                v9 = collide_sphere_entity(a2, a3, ent, &arg8, &argC, &v25);
+                v7 = v19;
+
+                arg10 = dot((a2 - arg8), argC) - a3;
+
+            } else {
+                auto *obb = v6->field_4.obb;
+
+                assert(obb->is_obb_node());
+
+                v9 = obb->sphere_intersection(a2, a3, &arg8, &argC, &arg10);
+            }
+
+            if (v9 && arg10 < v20) {
+                v20 = arg10;
+                point = arg8;
+                normal = argC;
+                v19 = v6;
+                v7 = v6;
+            }
+
+            v6 = v6->field_0;
+        }
+
+        if (v7 == nullptr) {
+            return false;
+        }
+
+        *a4 = point;
+
+        *a5 = normal;
+
+        if (best_intersection_record != nullptr) {
+            best_intersection_record->field_0 = 0;
+            best_intersection_record->field_20 = 0;
+            best_intersection_record->field_1C = (point - a2).length();
+            best_intersection_record->is_ent = v7->is_ent;
+            best_intersection_record->point = point;
+            best_intersection_record->normal = normal;
+
+            assert(best_intersection_record->point.is_valid() &&
+                   "get_closest_sphere_intersection failed internally");
+
+            assert(best_intersection_record->normal.is_valid() &&
+                   "get_closest_sphere_intersection failed internally");
+
+            if (v7->is_ent) {
+                best_intersection_record->is_ent = true;
+                best_intersection_record->intersection_node = v7->field_4.ent;
+                best_intersection_record->field_2C = v7->field_8;
+                return true;
+            }
+
+            best_intersection_record->is_ent = false;
+            best_intersection_record->intersection_node = v7->field_4.obb;
+        }
+
+        return true;
+
+    } else {
+        return (bool) CDECL_CALL(0x00533660, a1, &a2, a3, a4, a5, best_intersection_record);
+    }
+}
+
+//0x00569E10
+template<>
+bool obbfilter<obbfilter_OBB_SPHERE_TEST>::accept(subdivision_node_obb_base *a1,
+                                                  const query_args_t &a2) {
+    return a1->sphere_intersection(a2.field_10, a2.field_28);
+}
+
+//0x00563810
+template<>
+bool entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>>::accept(
+    actor *act,
+    [[maybe_unused]] dynamic_conglomerate_clone *a2,
+    [[maybe_unused]] const query_args_t &a3) {
+    return act->has_entity_collision() && act->colgeom->get_type() != collision_geometry::CAPSULE;
+}
+
+bool sub_56CD20(actor *a1, dynamic_conglomerate_clone *a2, const local_collision::query_args_t &a3) {
+    return a1->has_camera_collision() && a1->has_entity_collision() &&
+        local_collision::entity_line_segment_test(a1, a2, a3);
+}
+
+//0x0056CD00
+template<>
+bool entfilter<local_collision::entfilter_AND<
+    local_collision::entfilter_AND<local_collision::entfilter_COLLIDE_CAMERA,
+                                   local_collision::entfilter_ENTITY>,
+    local_collision::entfilter_LINESEG_TEST>>::accept(actor *a1,
+                                                      dynamic_conglomerate_clone *a2,
+                                                      const local_collision::query_args_t &a3) {
+    return sub_56CD20(a1, a2, a3);
+}
+
+bool entity_line_segment_test(actor *a1,
+                              dynamic_conglomerate_clone *a2,
+                              const local_collision::query_args_t &a3) {
+    return (bool) CDECL_CALL(0x0052F4E0, a1, a2, &a3);
+}
+
+void destroy_primitive_list(primitive_list_t **a1) {
+    CDECL_CALL(0x00510720, a1);
+}
+
+primitive_list_t *query_line_segment(const vector3d &a1,
+                                     const vector3d &a2,
+                                     const local_collision::entfilter_base &a3,
+                                     const local_collision::obbfilter_base &a4,
+                                     local_collision::query_args_t a5) {
+    return (primitive_list_t *) CDECL_CALL(0x00533260, &a1, &a2, &a3, &a4, a5);
+}
+
+} // namespace local_collision
+
+
+
+bool sub_50D220(const vector3d &a1, const vector3d &a2, entity *a3)
+{
+    entity *a8 = nullptr;
+    vector3d point, normal;
+    return !find_intersection(
+        a1,
+        a2,
+        *local_collision::entfilter_blocks_beams(),
+        *local_collision::obbfilter_lineseg_test(),
+        &point,
+        &normal,
+        nullptr,
+        &a8,
+        nullptr,
+        false)
+        || a3 && a3 == a8;
+}
+

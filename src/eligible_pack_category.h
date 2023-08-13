@@ -1,0 +1,38 @@
+#pragma once
+
+#include "float.hpp"
+
+#include "resource_pack_slot.h"
+
+#include <list.hpp>
+#include <vector.hpp>
+
+struct resource_pack_streamer;
+struct eligible_pack_streamer;
+struct eligible_pack;
+
+struct eligible_pack_category {
+    resource_pack_streamer *my_resource_pack_streamer;
+    eligible_pack_streamer *field_4;
+    bool (*field_8)(resource_pack_slot::callback_enum,
+                    resource_pack_streamer *,
+                    resource_pack_slot *,
+                    limited_timer *);
+
+    _std::vector<eligible_pack *> field_C;
+    _std::list<void *> field_1C;
+
+    //0x00543100
+    eligible_pack_category(eligible_pack_streamer *a2,
+                           resource_pack_streamer *a3,
+                           bool(__cdecl *a4)(resource_pack_slot::callback_enum,
+                                             resource_pack_streamer *,
+                                             resource_pack_slot *,
+                                             limited_timer *));
+
+    //0x0053E640
+    ~eligible_pack_category();
+
+    //0x005513B0
+    void frame_advance(Float a2);
+};

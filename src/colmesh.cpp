@@ -1,0 +1,91 @@
+#include "colmesh.h"
+
+#include "common.h"
+#include "func_wrapper.h"
+#include "parse_generic_mash.h"
+#include "resource_key.h"
+#include "resource_manager.h"
+#include "utility.h"
+
+#include <cassert>
+
+Var<std::intptr_t> collision_mesh_v_table{0x0095A668};
+
+VALIDATE_SIZE(cg_mesh, 0x18u);
+
+cg_mesh::cg_mesh() {
+    this->field_8 = false;
+    this->field_9 = true;
+    this->field_C = 2;
+    this->data = nullptr;
+    this->field_14 = 2;
+}
+
+collision_geometry *cg_mesh::make_instance(actor *a2) {
+    auto *result = new cg_mesh{};
+    result->owner = a2;
+    if (this->field_8 != result->field_8) {
+        result->field_8 = this->field_8;
+    }
+
+    result->data = this->data;
+    return result;
+}
+
+vector3d cg_mesh::get_local_space_bounding_sphere_center() {
+    return this->data->field_10[0].field_0;
+}
+
+float cg_mesh::get_bounding_sphere_radius() {
+    return this->data->field_10[0].field_C;
+}
+
+int cg_mesh::get_type() {
+    return collision_geometry::MESH;
+}
+
+void cg_mesh::un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4) {
+    if constexpr (1) {
+        collision_geometry::un_mash(a2, a3, a4);
+
+        this->field_9 = false;
+
+        static resource_key col_mesh_name{};
+
+        std::memcpy(&col_mesh_name, a4->field_4, sizeof(resource_key));
+        a4->field_4 += sizeof(resource_key);
+
+        int size = 0;
+        auto *resource = resource_manager::get_resource(col_mesh_name, &size, nullptr);
+
+        if (resource == nullptr) {
+            auto *str = col_mesh_name.m_hash.to_string();
+            error("Couldn't acquire memory image '%s' for collision geometry.", str);
+        }
+
+        this->data = CAST(this->data, resource);
+        if (this->data->field_0[3] != 'Z') {
+            if (memcmp(resource, "COLL", 4) != 0 && memcmp(resource, "COLB", 4) != 0) {
+                auto *str = col_mesh_name.m_hash.to_string();
+                error("corruption collision mesh file %s", str);
+            }
+
+            if (this->data->m_version != 0x10003F) {
+                auto *str = col_mesh_name.m_hash.to_string();
+                error("unsupported collision mesh version in file %s", str);
+            }
+
+            this->data->field_0[3] = 'Z';
+        }
+
+    } else {
+        THISCALL(0x0053B100, this, a2, a3, a4);
+    }
+}
+
+void cg_mesh_patch() {
+    {
+        FUNC_ADDRESS(address, &cg_mesh::un_mash);
+        SET_JUMP(0x0053B100, address);
+    }
+}
