@@ -2283,7 +2283,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                     Mesh->Sections[idx_Section].field_0 = 1;
 
                     nglMeshSection *MeshSection = CAST(MeshSection, Mesh->Sections[idx_Section].Section);
-                    tlHashString a1 {(uint32_t) MeshSection->field_0};
+                    tlHashString a1 {(uint32_t) MeshSection->Name};
 
                     MeshSection->Material = nglGetMaterialInFile(a1, MeshFile);
 
