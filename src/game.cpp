@@ -1962,7 +1962,9 @@ void game::render_ui() {
         if constexpr (1) {
             g_console->render();
 
-            //debug_menu::render_active();
+#ifdef ENABLE_DEBUG_MENU
+            debug_menu::render_active();
+#endif
         }
 
         nglListEndScene();

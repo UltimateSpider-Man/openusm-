@@ -1140,19 +1140,20 @@ int __stdcall myWinMain(HINSTANCE hInstance,
     static Var<CHAR[]> DirectoryName{0x0088FAF8};
     ULARGE_INTEGER TotalNumberOfFreeBytes;
     GetDiskFreeSpaceExA(DirectoryName(), nullptr, nullptr, &TotalNumberOfFreeBytes);
-    const char *v162, *v7;
     if (TotalNumberOfFreeBytes.QuadPart < 0xA00000) {
-        v162 = get_msg(g_fileUSM(), "MSGBOX_ERROR");
-        v7 = get_msg(g_fileUSM(), "MSGBOX_SPACE");
-    LABEL_14:
+        auto *v162 = get_msg(g_fileUSM(), "MSGBOX_ERROR");
+        auto *v7 = get_msg(g_fileUSM(), "MSGBOX_SPACE");
+
         MessageBoxA(nullptr, v7, v162, 0x10u);
         return 0;
     }
 
     if (!sub_81C2A0(9u, 0, 99u)) {
-        v162 = get_msg(g_fileUSM(), "MSGBOX_ERROR");
-        v7 = get_msg(g_fileUSM(), "MSGBOX_DX9");
-        goto LABEL_14;
+        auto *v162 = get_msg(g_fileUSM(), "MSGBOX_ERROR");
+        auto *v7 = get_msg(g_fileUSM(), "MSGBOX_DX9");
+
+        MessageBoxA(nullptr, v7, v162, 0x10u);
+        return 0;
     }
 
     static Var<char> byte_965C08 = {0x00965C08};
@@ -1583,11 +1584,8 @@ int __stdcall myWinMain(HINSTANCE hInstance,
         }
 
         if (!bExit()) {
-            DWORD v158, v159, v168;
-            double v160;
 
             while (1) {
-                app *v157 = app::instance();
                 MSG Msg;
 
                 auto res = PeekMessageA(&Msg, nullptr, 0, 0, 1u);
@@ -1615,14 +1613,14 @@ int __stdcall myWinMain(HINSTANCE hInstance,
                         timeBeginPeriod(1u);
                     }
 
-                    v158 = timeGetTime();
-                    v159 = timeGetTime();
-                    v160 = (double) (v159 - v163);
+                    DWORD v158 = timeGetTime();
+                    DWORD v159 = timeGetTime();
+                    auto v160 = (double) (v159 - v163);
                     v163 = v159;
                     v165 = v165 - v160 * 0.001;
-                    v157->tick();
-                    v168 = timeGetTime() - v158;
-                    v157->m_game->field_278 = v168 * 0.001f;
+                    app::instance()->tick();
+                    DWORD v168 = timeGetTime() - v158;
+                    app::instance()->m_game->field_278 = v168 * 0.001f;
 
                     if (g_inputSettingsInGame()->field_18.sub_821E90(InputAction::ScreenShot) <=
                         0.0) {
@@ -2362,6 +2360,8 @@ BOOL install_redirects() {
 
     sound_bank_slot_patch();
 
+    settings_patch();
+
     game_patch();
 
     swing_inode_patch();
@@ -2807,10 +2807,6 @@ BOOL install_redirects() {
         swing_anchor_obbfilter_patch();
 
         quick_anchor_info_patch();
-
-        settings_patch();
-
-
 
         glass_house_manager_patch();
 

@@ -75,7 +75,10 @@ void sub_592E40() {
 
 //0x00592E80
 void init_shadow_targets() {
+#ifdef ENABLE_DEBUG_MENU
     debug_menu::init();
+#endif
+
     sub_592E40();
 
     nglTexture **v0 = &g_shadow_target_blurred();
@@ -136,7 +139,9 @@ app::app() : m_vtbl(0x00891634), field_4(), field_34() {
         mem_print_stats("after link_system::init()");
     }
 
+#ifdef ENABLE_DEBUG_MENU
     debug_menu::init();
+#endif
 
     init_shadow_targets();
     mem_print_stats("after init_shadow_targets()");

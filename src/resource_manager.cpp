@@ -37,7 +37,7 @@ Var<_std::vector<resource_pack_slot *>> resource_context_stack{0x0096015C};
 
 Var<mString> amalgapak_name{0x0095CAD4};
 
-#define RESOURCE_MANAGER_STANDALONE 0 
+#define RESOURCE_MANAGER_STANDALONE 1
 #if !RESOURCE_MANAGER_STANDALONE 
 
 Var<int> amalgapak_base_offset{0x00921CB4};
@@ -118,7 +118,6 @@ make_var(resource_key *, amalgapak_prerequisite_table);
     mString v1{a2[arg4]};
 #endif
     
-
     mString v2{"packs\\amalga"};
 
     mString res = v2 + v1;
@@ -523,10 +522,9 @@ void frame_advance(Float a2)
 
             assert(partitions() != nullptr);
 
-            for (int part_idx = 0; part_idx < resource_manager::partitions()->size(); ++part_idx) {
-                assert((*partitions())[part_idx] != nullptr);
+            for (auto *partition : (*partitions())) {
 
-                resource_partition *partition = (*partitions())[part_idx];
+                assert(partition != nullptr);
 
                 partition->frame_advance(a2, &timer);
             }
@@ -537,7 +535,9 @@ void frame_advance(Float a2)
         CDECL_CALL(0x00558D20, a2);
     }
 
+#ifdef ENABLE_DEBUG_MENU
     debug_menu::frame_advance(a2);
+#endif
 }
 
 bool get_pack_file_stats(const resource_key &a1, resource_pack_location *a2, mString *a3, int *a4)
@@ -599,6 +599,7 @@ resource_pack_slot *push_resource_context(resource_pack_slot *pack_slot) {
 
         resource_pack_slot *v2 = resource_manager::get_resource_context();
 
+        //push_back
         if (resource_context_stack().size() < resource_context_stack().capacity()) {
             *resource_context_stack().m_last = pack_slot;
             ++resource_context_stack().m_last;
@@ -696,7 +697,7 @@ void set_active_resource_context(resource_pack_slot *a1) {
 
 resource_pack_slot *pop_resource_context() {
     if constexpr (1) {
-        auto *old_context = resource_manager::get_resource_context();
+        auto *old_context = get_resource_context();
         assert(old_context != nullptr);
 
         if (!resource_context_stack().empty()) {
@@ -707,7 +708,7 @@ resource_pack_slot *pop_resource_context() {
 #endif
         }
 
-        auto *v0 = resource_manager::get_resource_context();
+        auto *v0 = get_resource_context();
         resource_manager::set_active_resource_context(v0);
 
         return old_context;
@@ -983,7 +984,7 @@ resource_pack_slot *get_resource_context() {
     resource_pack_slot *result = nullptr;
 
     if (!resource_context_stack().empty()) {
-        result = resource_manager::resource_context_stack().back();
+        result = resource_context_stack().back();
     }
 
     return result;
