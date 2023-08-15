@@ -24,6 +24,7 @@
 #include "worldly_pack_slot.h"
 
 #include <cassert>
+#include <numeric>
 
 namespace resource_manager {
 
@@ -166,7 +167,7 @@ void load_amalgapak()
         file.read(&pack_file_header, sizeof(resource_amalgapak_header));
 
         {
-            mString a1 {resource_manager::amalgapak_name().c_str()};
+            mString a1 {amalgapak_name().c_str()};
 
             pack_file_header.verify(a1);
         }
@@ -333,21 +334,21 @@ bool can_reload_amalgapak()
 
         bool result = false;
         os_file v11{};
-        auto *v1 = resource_manager::amalgapak_name().c_str();
+        auto *v1 = amalgapak_name().c_str();
         mString v4 {v1};
         v11.open(v4, os_file::FILE_READ);
         if ( v11.is_open() )
         {
             resource_amalgapak_header data{};
             v11.read(&data, sizeof(data));
-            auto *v2 = resource_manager::amalgapak_name().c_str();
+            auto *v2 = amalgapak_name().c_str();
             auto a2 = mString{v2};
             data.verify(a2);
             if ( data.field_18 != 0 )
             {
                 result = false;
             }
-            else if ( data.field_14 == resource_manager::amalgapak_signature() )
+            else if ( data.field_14 == amalgapak_signature() )
             {
                 result = false;
             }
@@ -385,7 +386,7 @@ void reload_amalgapak()
 
         mem_freealign(amalgapak_prerequisite_table());
         mem_freealign(amalgapak_pack_location_table());
-        delete[](resource_manager::memory_maps());
+        delete[](memory_maps());
         amalgapak_prerequisite_table() = nullptr;
         amalgapak_pack_location_table() = nullptr;
         memory_maps() = nullptr;
@@ -446,8 +447,8 @@ resource_pack_slot *get_best_context(resource_pack_slot *slot) {
 }
 
 void get_and_push_resource_context(resource_partition_enum a1) {
-    auto *v1 = resource_manager::get_best_context(a1);
-    resource_manager::push_resource_context(v1);
+    auto *v1 = get_best_context(a1);
+    push_resource_context(v1);
 }
 
 bool get_pack_location(int a1, resource_pack_location *a2)
@@ -597,7 +598,7 @@ resource_pack_slot *push_resource_context(resource_pack_slot *pack_slot) {
     if constexpr (1) {
         assert(pack_slot != nullptr);
 
-        resource_pack_slot *v2 = resource_manager::get_resource_context();
+        resource_pack_slot *v2 = get_resource_context();
 
         //push_back
         if (resource_context_stack().size() < resource_context_stack().capacity()) {
@@ -627,10 +628,10 @@ resource_pack_slot *push_resource_context(resource_pack_slot *pack_slot) {
 
 resource_directory *get_resource_directory(const resource_key &a1) {
     if constexpr (1) {
-        assert(resource_manager::partitions() != nullptr);
+        assert(partitions() != nullptr);
 
-        for (size_t i = 0; i < resource_manager::partitions()->size(); ++i) {
-            auto &partition = resource_manager::partitions()->at(i);
+        for (size_t i = 0; i < partitions()->size(); ++i) {
+            auto &partition = partitions()->at(i);
             assert(partition != nullptr);
 
             auto *streamer = partition->get_streamer();
@@ -639,8 +640,7 @@ resource_directory *get_resource_directory(const resource_key &a1) {
             auto *pack_slots = streamer->pack_slots;
             assert(pack_slots != nullptr);
 
-            for (uint32_t k = 0; k < pack_slots->size(); ++k) {
-                auto &pack_slot = pack_slots->at(k);
+            for (auto &pack_slot : (*pack_slots)) {
                 assert(pack_slot != nullptr);
 
                 auto v7 = pack_slot->m_slot_state;
@@ -735,16 +735,15 @@ void delete_inst() {
 
         resource_buffer() = nullptr;
 
-        if (resource_manager::partitions() != nullptr) {
-            for (size_t i = 0; i < partitions()->size(); ++i) {
-                auto *part = partitions()->at(i);
+        if (partitions() != nullptr) {
+            for (auto &part : (*partitions())) {
                 if (part != nullptr) {
                     operator delete(part);
                 }
             }
 
-            if (resource_manager::partitions() != nullptr) {
-                operator delete(resource_manager::partitions());
+            if (partitions() != nullptr) {
+                operator delete(partitions());
             }
         }
 
@@ -857,9 +856,12 @@ void configure_packs_by_memory_map(int a1)
         {
             auto *new_partition = new resource_partition{(resource_partition_enum) i};
 
-            new_partition->field_0 = memory_maps()[a1].field_10[i].field_4;
-            new_partition->partition_buffer_size = memory_maps()[a1].field_10[i].field_C *
-                memory_maps()[a1].field_10[i].field_8;
+            auto &memory_map = memory_maps()[a1];
+            auto &tmp = memory_map.field_10[i];
+
+            new_partition->field_0 = tmp.field_4;
+            new_partition->partition_buffer_size = tmp.field_C *
+                tmp.field_8;
 
             assert((new_partition->partition_buffer_size + resource_buffer_used() <=
                     resource_buffer_size()) &&
@@ -869,8 +871,8 @@ void configure_packs_by_memory_map(int a1)
             new_partition->field_A8 = &resource_buffer()[resource_buffer_used()];
             resource_buffer_used() += new_partition->partition_buffer_size;
             if (new_partition->field_0 >= 0 && new_partition->field_0 <= 1) {
-                for (int j = 0; j < memory_maps()[a1].field_10[i].field_C; ++j) {
-                    new_partition->push_pack_slot(memory_maps()[a1].field_10[i].field_8, nullptr);
+                for (int j = 0; j < tmp.field_C; ++j) {
+                    new_partition->push_pack_slot(tmp.field_8, nullptr);
                 }
             }
 
@@ -894,14 +896,17 @@ void configure_packs_by_memory_map(int a1)
         assert(partitions()->size() == RESOURCE_PARTITION_END &&
                "If this fails there's something wrong with the partition preserving code.");
 
-        int v7 = 0;
-        for (int i = 0; i < RESOURCE_PARTITION_END; ++i) {
-            v7 += memory_maps()[a1].field_10[i].field_C * memory_maps()[a1].field_10[i].field_8;
-        }
+        {
+            auto begin = std::begin(memory_maps()[a1].field_10);
+            auto end = begin + RESOURCE_PARTITION_END;
+            auto v7 = std::accumulate(begin, end, 0, [](auto prev_result, auto &v) {
+                return v.field_C * v.field_8 + prev_result;
+            });
 
-        sp_log("Resource manager now using a memory map of size %d MB (%d KB)",
+            sp_log("Resource manager now using a memory map of size %d MB (%d KB)",
                v7 / 1024 / 1024,
                v7 / 1024);
+        }
 
         in_use_memory_map() = a1;
         set_active_resource_context(nullptr);
@@ -926,7 +931,7 @@ void configure_packs_by_memory_map(int a1)
 
 void set_active_district(bool a1)
 {
-    auto *district_partition = resource_manager::get_partition_pointer(6);
+    auto *district_partition = get_partition_pointer(6);
     assert(district_partition != nullptr);
 
     auto *district_streamer = district_partition->get_streamer();
