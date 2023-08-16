@@ -129,6 +129,8 @@ int wds_render_manager::add_far_away_entity(vhandle_type<entity> a2) {
 }
 
 void wds_render_manager::init_level(const char *a2) {
+
+    TRACE("wds_render_manager::init_level", a2);
     if (this->field_5C == nullptr) {
         tlFixedString a1{"obb_shadow000"};
         this->field_5C = nglGetMesh(a1, true);
@@ -236,6 +238,11 @@ void wds_render_manager_patch() {
     {
         FUNC_ADDRESS(address, &wds_render_manager::render);
         REDIRECT(0x0054E52D, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &wds_render_manager::init_level);
+        SET_JUMP(0x00550930, address);
     }
 
     {

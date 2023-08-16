@@ -62,10 +62,7 @@ struct world_dynamics_system {
     int field_274;
     int field_278;
     int field_27C;
-    int field_280;
-    int field_284;
-    int field_288;
-    int field_28C;
+    int field_280[4];
     int field_290;
     char field_294;
     char field_295;
