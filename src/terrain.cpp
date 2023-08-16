@@ -41,6 +41,7 @@
 #include "wds.h"
 
 VALIDATE_SIZE(terrain, 0x8C);
+VALIDATE_SIZE((*terrain::strips), 0x28);
 VALIDATE_OFFSET(terrain, field_18, 0x18);
 VALIDATE_OFFSET(terrain, field_24, 0x24);
 VALIDATE_OFFSET(terrain, field_5C, 0x5C);
@@ -300,14 +301,14 @@ int terrain::add_strip(const mString &a2) {
         return result;
     }
 
-    rstrcpy(&this->strips[40 * this->total_strips], a2.c_str(), 33);
+    rstrcpy(this->strips[this->total_strips].field_0, a2.c_str(), 33);
 
     return this->total_strips++;
 }
 
 int terrain::find_strip(const mString &a2) {
     for (int i = 0; i < this->total_strips; ++i) {
-        if (_strcmpi(&this->strips[i * 40], a2.c_str()) == 0) {
+        if (_strcmpi(this->strips[i].field_0, a2.c_str()) == 0) {
             return i;
         }
     }
@@ -512,9 +513,9 @@ void terrain::start_streaming(void (*callback)(void))
         this->field_24.field_0 = true;
 
         for (int i = 0; i < this->total_strips; ++i) {
-            auto *v23 = (char *) &this->strips[40 * i];
+            auto &strip = this->strips[i];
 
-            string_hash hash{v23};
+            string_hash hash{strip.field_0};
 
             resource_key v24;
             v24.set(hash, RESOURCE_KEY_TYPE_PACK);
@@ -522,7 +523,7 @@ void terrain::start_streaming(void (*callback)(void))
             if (resource_manager::get_pack_file_stats(v24, nullptr, nullptr, nullptr)) {
                 eligible_pack_token a4{1, i};
 
-                this->field_24.add_eligible_pack(v23, a4, strip_streamer);
+                this->field_24.add_eligible_pack(strip.field_0, a4, strip_streamer);
             }
         }
 

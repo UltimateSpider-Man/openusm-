@@ -15,7 +15,4 @@ struct level_descriptor_t
     int field_84;
     int field_88;
     int field_8C;
-
-    
-    
 };

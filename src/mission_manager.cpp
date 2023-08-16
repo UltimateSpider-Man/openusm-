@@ -200,7 +200,7 @@ void mission_manager::frame_advance(Float a2)
     if constexpr (0)
     {
         if ( (!g_game_ptr()->flag.physics_enabled || g_game_ptr()->flag.single_step)
-            && g_game_ptr()->level.field_39
+            && g_game_ptr()->level.load_completed
             && g_game_ptr()->flag.level_is_loaded )
         {
             auto v4 = this->field_FC;

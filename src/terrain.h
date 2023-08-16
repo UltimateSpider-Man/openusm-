@@ -25,7 +25,11 @@ struct terrain {
     proximity_map *region_map;
     stack_allocator *region_proximity_map_allocator;
     int total_regions;
-    char *strips;
+    struct {
+        char field_0[34];
+        short field_22;
+        int field_24;
+    } *strips;
     int total_strips;
     vector3d field_18;
     eligible_pack_streamer field_24;

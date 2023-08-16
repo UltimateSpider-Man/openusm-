@@ -36,13 +36,13 @@ enum class game_state {
 struct game {
     struct level_load_stuff {
         level_descriptor_t *descriptor;
-        mString field_4;
+        mString name_mission_table;
         mString field_14;
         vector3d field_24;
         int field_30;
         limited_timer_base field_34;
         bool load_widgets_created;
-        bool field_39;
+        bool load_completed;
         bool field_3A;
         bool field_3B;
 
@@ -119,7 +119,7 @@ struct game {
     flag_t flag;
     bool field_16D;
     bool field_16E;
-    bool field_16F;
+    bool m_hero_start_enabled;
     bool field_170;
     bool field_171;
     bool m_user_camera_enabled;

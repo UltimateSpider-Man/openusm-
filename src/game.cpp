@@ -146,7 +146,7 @@ game::level_load_stuff::level_load_stuff() {
     this->field_34.sub_599070();
     this->descriptor = nullptr;
     this->field_30 = 0;
-    this->field_39 = false;
+    this->load_completed = false;
     this->field_3A = false;
     this->field_38 = false;
 #else
@@ -238,7 +238,7 @@ game::game()
         this->flag.game_paused = false;
         this->field_16D = 0;
         this->field_16E = 0;
-        this->field_16F = 1;
+        this->m_hero_start_enabled = true;
         this->field_171 = 0;
         this->m_user_camera_enabled = false;
         this->field_2 = 0;
@@ -347,7 +347,7 @@ void game::soft_reset_process() {
 }
 
 void game::load_complete() {
-    g_game_ptr()->level.field_39 = true;
+    g_game_ptr()->level.load_completed = true;
 }
 
 static Var<game_process> lores_game_process{0x00922074};
@@ -1143,7 +1143,7 @@ void game::load_this_level()
             this->gamefile->init_script_buffer();
         }
 
-        resource_key v77 = create_resource_key_from_path(this->level.field_4.c_str(),
+        resource_key v77 = create_resource_key_from_path(this->level.name_mission_table.c_str(),
                                                          RESOURCE_KEY_TYPE_SIN);
 
         auto *the_sin_res = common_slot->get_resource(v77, nullptr, nullptr);
@@ -1195,11 +1195,9 @@ void game::load_this_level()
         geometry_manager::set_zoom(1.0);
 
         filespec v92{};
-        v92.extract(this->level.field_4);
+        v92.extract(this->level.name_mission_table);
 
-        string_hash v35{v92.m_name.c_str()};
-        resource_key v89;
-        v89.set(v35, RESOURCE_KEY_TYPE_SCN_ENTITY);
+        resource_key v89 {string_hash {v92.m_name.c_str()}, RESOURCE_KEY_TYPE_SCN_ENTITY};
 
         this->the_world->load_scene(v89,
                                     true,
@@ -1208,7 +1206,7 @@ void game::load_this_level()
                                     (worldly_pack_slot *) common_slot,
                                     nullptr);
 
-        resource_key v93 = create_resource_key_from_path(this->level.field_4.c_str(),
+        resource_key v93 = create_resource_key_from_path(this->level.name_mission_table.c_str(),
                                                          RESOURCE_KEY_TYPE_MISSION_TABLE);
 
         mission_manager::s_inst()->add_global_table(v93);
@@ -1216,16 +1214,16 @@ void game::load_this_level()
         g_world_ptr()->field_28.setup_cameras();
         script_manager::link();
         this->the_world->field_140.hook_up_global_script_object();
-        mString str(this->gamefile->field_340.field_114.to_string());
+        mString str {this->gamefile->field_340.field_114.to_string()};
 
         this->the_world->add_player(str);
 
         po v86;
 
-        if (g_game_ptr()->field_16F) {
-            auto *v37 = find_marker(string_hash{"HERO_START"});
+        if (g_game_ptr()->m_hero_start_enabled) {
+            auto *marker_hero_start = find_marker(string_hash{"HERO_START"});
 
-            v86 = v37->get_abs_po();
+            v86 = marker_hero_start->get_abs_po();
 
             auto v73 = os_developer_options::instance()->get_string(os_developer_options::HERO_START_DISTRICT);
             if (v73) {
@@ -1245,8 +1243,8 @@ void game::load_this_level()
             }
 
             auto hero_start_x = os_developer_options::instance()->get_int(mString{"HERO_START_X"}); 
-            auto hero_start_y = os_developer_options::instance()->get_int(47);
-            auto hero_start_z = os_developer_options::instance()->get_int(48);
+            auto hero_start_y = os_developer_options::instance()->get_int(mString{"HERO_START_Y"});
+            auto hero_start_z = os_developer_options::instance()->get_int(mString{"HERO_START_Z"});
 
             if (hero_start_x != 0 || hero_start_y != 0 || hero_start_z != 0) {
                 v86.set_position(
@@ -1385,36 +1383,35 @@ void game::level_load_stuff::look_up_level_descriptor()
 
         resource_key a1 {string_hash {"level"}, RESOURCE_KEY_TYPE_DESCRIPTOR};
 
-        filespec v28 {this->field_4};
+        filespec v28 {this->name_mission_table};
         v28.m_name.to_upper();
         fixedstring<8> v27 {v28.m_name.c_str()};
 
         int lookup_size = 0;
-        auto *v25 = (level_descriptor_t *) game_slot->get_resource(a1, &lookup_size, nullptr);
-        if ( v25 == nullptr )
+        auto *lvl_descriptors = (level_descriptor_t *) game_slot->get_resource(a1, &lookup_size, nullptr);
+        if ( lvl_descriptors == nullptr )
         {
             sp_log("Game common pack file missing. Please run the packer.");
             assert(0);
         }
 
-
-        auto sizeof_level_descriptor = sizeof(level_descriptor_t);
+        constexpr auto sizeof_level_descriptor = sizeof(level_descriptor_t);
         int v23 = lookup_size / sizeof_level_descriptor;
         assert((lookup_size % sizeof_level_descriptor) == 0);
 
-        if constexpr (0)
+        if constexpr (1)
         {
             sp_log("lookup_size = %d, num_levels_desc = %d", lookup_size, v23);
             for (auto i = 0; i < v23; ++i)
             {
-                sp_log("%s", v25[i].field_0.to_string());
+                sp_log("%s", lvl_descriptors[i].field_0.to_string());
             }
         }
 
         int i;
         for ( i = 0; i < v23; ++i )
         {
-            if ( v27 == v25[i].field_0 )
+            if ( v27 == lvl_descriptors[i].field_0 )
             {
                 break;
             }
@@ -1428,7 +1425,7 @@ void game::level_load_stuff::look_up_level_descriptor()
 
         auto *v6 = v27.to_string();
         debug_print_va("Found level descriptor for %s", v6);
-        this->descriptor = &v25[i];
+        this->descriptor = &lvl_descriptors[i];
 
         resource_key v16 {string_hash {this->descriptor->field_0.to_string()}, RESOURCE_KEY_TYPE_PACK};
         auto v19 = resource_manager::get_pack_file_stats(v16, nullptr, nullptr, nullptr);
@@ -1519,9 +1516,11 @@ camera *game::get_current_view_camera(int a2) {
         if (cam == nullptr) {
             auto v4 = this->the_world;
             cam = this->field_5C;
-            if (cam == (camera *) v4->field_234[0])
+            if (cam == (camera *) v4->field_234[0]) {
                 cam = (camera *) v4->field_234[a2];
+            }
         }
+
         return cam;
     } else {
         return (camera *) THISCALL(0x00514A50, this, a2);
@@ -1542,7 +1541,7 @@ void game::load_new_level(const mString &a2, const vector3d &a3) {
     if constexpr (1) {
         this->load_new_level_internal(a2);
         this->level.field_24 = a3;
-        this->field_16F = false;
+        this->m_hero_start_enabled = false;
 
     } else {
         THISCALL(0x00514C40, this, &a2, &a3);
@@ -1552,7 +1551,7 @@ void game::load_new_level(const mString &a2, const vector3d &a3) {
 void game::load_new_level(const mString &a1, int a2) {
     if constexpr (1) {
         this->load_new_level_internal(a1);
-        this->field_16F = true;
+        this->m_hero_start_enabled = true;
 
     } else {
         THISCALL(0x00514C70, this, &a1, a2);
@@ -1567,13 +1566,13 @@ void game::advance_state_load_level(Float a2)
     {
         static Var<bool> loading_a_level{0x00960CB5};
 
-        this->level.field_4 = g_scene_name();
+        this->level.name_mission_table = g_scene_name();
         input_mgr::instance()->field_26 = false;
         if (!loading_a_level()) {
             auto &v9 = this->level;
             v9.descriptor = nullptr;
             v9.field_30 = 0;
-            v9.field_39 = false;
+            v9.load_completed = false;
             v9.field_3A = false;
             v9.load_widgets_created = false;
             loading_a_level() = true;
@@ -1590,7 +1589,7 @@ void game::advance_state_load_level(Float a2)
         }
 
         this->the_world->the_terrain->frame_advance(a2);
-        if (this->level.field_39 && !this->level.wait_for_mem_check()) {
+        if (this->level.load_completed && !this->level.wait_for_mem_check()) {
             this->level.destroy_loading_widgets();
             sub_405CC0();
 
