@@ -11,7 +11,7 @@ struct wds_token_manager {
     char field_5;
     float field_8;
     int field_C;
-    int field_10;
+    int token_collected_array;
     char field_14;
     int field_18;
     int *field_1C;
@@ -22,3 +22,5 @@ struct wds_token_manager {
     //0x00555B50
     void frame_advance(Float a1);
 };
+
+extern void wds_token_manager_patch();

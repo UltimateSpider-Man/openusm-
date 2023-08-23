@@ -8,6 +8,7 @@
 #include "mstring.h"
 #include "patrol_manager.h"
 #include "slot_pool.h"
+#include "timed_progress.h"
 #include "wds_ai_manager.h"
 #include "wds_camera_manager.h"
 #include "wds_entity_manager.h"
@@ -19,19 +20,20 @@
 
 #include <vector.hpp>
 
+struct box_trigger;
 struct terrain;
 struct camera;
 struct entity;
 struct nal_anim_control;
 struct region;
-struct scene_entity_brew;
-struct scene_spline_path_brew;
 struct worldly_pack_slot;
 struct limited_timer;
 struct force_generator;
 struct item;
 
-struct timed_progress : progress {};
+struct scene_brew;
+struct scene_entity_brew;
+struct scene_spline_path_brew;
 
 struct world_dynamics_system {
     slot_pool<nal_anim_control *, uint32_t> *field_0;
@@ -62,7 +64,9 @@ struct world_dynamics_system {
     int field_274;
     int field_278;
     int field_27C;
-    int field_280[4];
+
+    _std::vector<scene_brew> scene_loads;
+
     int field_290;
     char field_294;
     char field_295;
@@ -95,6 +99,16 @@ struct world_dynamics_system {
 
     //0x0055A680
     bool un_mash_scene_entities(const resource_key &a2, region *a3, worldly_pack_slot *a4, bool a5, scene_entity_brew *a6);
+
+    //0x005507F0
+    bool un_mash_scene_box_triggers(const resource_key &a1, region *a2, worldly_pack_slot *a3, timed_progress *a4);
+
+    //0x0054A1C0
+    bool un_mash_box_triggers(
+        int parse_code,
+        char *a3,
+        _std::vector<box_trigger *> *box_trigger_vec_ptr,
+        int *a5);
 
     //0x0052FC90
     bool un_mash_scene_spline_paths(const resource_key &a2,

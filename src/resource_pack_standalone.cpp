@@ -37,7 +37,7 @@ resource_pack_standalone::resource_pack_standalone() : m_header() {
     this->res_dir = nullptr;
     this->res_dir_mash = nullptr;
     this->base_offset = 0;
-    this->m_filedID.field_0 = -1;
+    this->m_filedID = NFL_FILE_ID_INVALID;
     this->name.m_hash.source_hash_code = 0;
     this->name.m_type = RESOURCE_KEY_TYPE_NONE;
 }
@@ -80,7 +80,7 @@ bool resource_pack_standalone::load(const mString &str) {
     if constexpr (1) {
         //ssp_log("%s", str.c_str());
 
-        os_file file = os_file{mString{str.c_str()}, 1u};
+        os_file file {mString{str.c_str()}, 1u};
 
         if (file.opened) {
             file.read(&this->m_header, sizeof(this->m_header));

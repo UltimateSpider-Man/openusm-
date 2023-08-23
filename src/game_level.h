@@ -7,7 +7,7 @@ struct level_descriptor_t
     fixedstring<8> field_0;
     fixedstring<16> field_20;
     fixedstring<4> field_60;
-    int field_70;
+    int m_index_memory_map;
     int field_74;
     int field_78;
     int field_7C;

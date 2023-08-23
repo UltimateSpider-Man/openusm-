@@ -6,6 +6,8 @@
 #include "base_ai_core.h"
 #include "beam.h"
 #include "camera.h"
+#include "scene_brew.h"
+#include "scene_entity_brew.h"
 #include "collide_trajectories.h"
 #include "collision_trajectory_filter.h"
 #include "common.h"
@@ -36,6 +38,7 @@
 #include "nearby_hero_regions.h"
 #include "physical_interface.h"
 #include "polytube.h"
+#include "region.h"
 #include "resource_key.h"
 #include "resource_manager.h"
 #include "scene_spline_path_brew.h"
@@ -55,6 +58,7 @@
 #include "vtbl.h"
 #include "wds.h"
 #include "web_interface.h"
+#include "worldly_pack_slot.h"
 
 VALIDATE_SIZE(world_dynamics_system, 0x400u);
 VALIDATE_SIZE((*world_dynamics_system::field_0), 0x3C);
@@ -314,10 +318,64 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
     return (bool) THISCALL(0x0055A680, this, &a2, a3, a4, a5, a6);
 }
 
+bool world_dynamics_system::un_mash_scene_box_triggers(const resource_key &a1, region *reg, worldly_pack_slot *slot_ptr, timed_progress *a4) {
+    TRACE("world_dynamics_system::un_mash_scene_box_triggers");
+
+    if constexpr (1) {
+        if ( a4->is_done() ) {
+            return false;
+        }
+
+        int parse_code;
+        int mash_data_size = 0;
+        uint8_t *buffer_ptr = nullptr;
+        int buffer_index = 0;
+        if ( !resource_manager::get_resource_if_exists(a1, reg, &buffer_ptr, slot_ptr, &mash_data_size)
+            || (g_femanager().RenderLoadMeter(false),
+                parse_code = *(uint32_t *)&buffer_ptr[buffer_index],
+                parse_code == 18) )
+        {
+            a4->done();
+            return false;
+        }
+        else
+        {
+            assert(parse_code == BOX_TRIGGERS_TAG);
+            buffer_index += 4;
+            limited_timer v8{};
+            auto dword_15684C0 = 0.0;
+            v8.sub_58E230();
+            assert(( buffer_index % 4 ) == 0);
+
+            auto *box_trigger_instances = slot_ptr->get_box_trigger_instances();
+            int size;
+            this->un_mash_box_triggers(parse_code, (char *)&buffer_ptr[buffer_index], box_trigger_instances, &size);
+
+            assert(size + sizeof( parse_code ) == mash_data_size);
+
+            dword_15684C0 = v8.sub_58E270();
+            a4->done();
+            return false;
+        }
+    } else {
+        return (bool) THISCALL(0x005507F0, this, &a1, reg, slot_ptr, a4);
+    }
+}
+
+bool world_dynamics_system::un_mash_box_triggers(
+        int parse_code,
+        char *a3,
+        _std::vector<box_trigger *> *box_trigger_vec_ptr,
+        int *a5) {
+    return (bool) THISCALL(0x0054A1C0, this, parse_code, a3, box_trigger_vec_ptr, a5);
+}
+
 bool world_dynamics_system::un_mash_scene_audio_boxes(const resource_key &key_id,
                                                       region *reg,
                                                       worldly_pack_slot *slot_ptr,
                                                       timed_progress &a4) {
+    TRACE("world_dynamics_system::un_mash_scene_audio_boxes");
+
     if constexpr (1) {
         if (a4.is_done()) {
             return false;
@@ -348,7 +406,6 @@ bool world_dynamics_system::un_mash_scene_audio_boxes(const resource_key &key_id
                 auto *str = key_id.m_hash.to_string();
 
                 sp_log("Unknown region '%s'.  Make sure your sin file is correct.", str);
-
                 assert(0);
             }
 
@@ -362,7 +419,7 @@ bool world_dynamics_system::un_mash_scene_audio_boxes(const resource_key &key_id
         return false;
 
     } else {
-        return THISCALL(0x0053CB50, this, &key_id, reg, slot_ptr, &a4);
+        return (bool) THISCALL(0x0053CB50, this, &key_id, reg, slot_ptr, &a4);
     }
 }
 
@@ -370,6 +427,8 @@ bool world_dynamics_system::un_mash_scene_spline_paths(const resource_key &a2,
                                                        region *reg,
                                                        worldly_pack_slot *slot_ptr,
                                                        scene_spline_path_brew &brew) {
+    TRACE("world_dynamics_system::un_mash_scene_spline_paths");
+
     if constexpr (1) {
         if (brew.field_0.is_done()) {
             return false;
@@ -432,7 +491,11 @@ bool world_dynamics_system::un_mash_scene_spline_paths(const resource_key &a2,
         return false;
 
     } else {
-        return (bool) THISCALL(0x0052FC90, this, &a2, reg, slot_ptr, &brew);
+        bool (__fastcall *func)(void *, int, const resource_key *a2,
+                                region *reg,
+                                worldly_pack_slot *slot_ptr,
+                                scene_spline_path_brew *brew) = CAST(func, 0x0052FC90);
+        return func(this, 0, &a2, reg, slot_ptr, &brew);
     }
 }
 
@@ -440,6 +503,7 @@ bool world_dynamics_system::un_mash_scene_quad_paths(const resource_key &key_id,
                                                      region *reg,
                                                      worldly_pack_slot *slot_ptr,
                                                      timed_progress &a4) {
+    TRACE("world_dynamics_system::un_mash_scene_quad_paths");
     if constexpr (1) {
         if (a4.is_done()) {
             return false;
@@ -456,9 +520,12 @@ bool world_dynamics_system::un_mash_scene_quad_paths(const resource_key &key_id,
                                                       &buffer_ptr,
                                                       slot_ptr,
                                                       &mash_data_size) ||
-            (g_femanager().RenderLoadMeter(false),
+            (reg->flags |= 0x800,
+             g_femanager().RenderLoadMeter(false),
              parse_code = *(uint32_t *) &buffer_ptr[buffer_index],
              parse_code == 18)) {
+            a4.done();
+            return false;
         } else {
             static constexpr auto QUAD_PATHS_TAG = 10;
 
@@ -471,7 +538,8 @@ bool world_dynamics_system::un_mash_scene_quad_paths(const resource_key &key_id,
             if (reg == nullptr) {
                 auto *str = key_id.m_hash.to_string();
 
-                error("Unknown region '%s'.  Make sure your sin file is correct.", str);
+                sp_log("Unknown region '%s'.  Make sure your sin file is correct.", str);
+                assert(0);
             }
 
             int v9;
@@ -491,17 +559,93 @@ bool world_dynamics_system::un_mash_scene_quad_paths(const resource_key &key_id,
 bool world_dynamics_system::load_scene(resource_key &a2,
                                        bool a3,
                                        const char *a4,
-                                       region *a5,
-                                       worldly_pack_slot *a6,
-                                       limited_timer *a7)
-{
+                                       region *reg,
+                                       worldly_pack_slot *slot_ptr,
+                                       limited_timer *a7) {
     TRACE("world_dynamics_system::load_scene");
 
     if (a4 != nullptr) {
         sp_log("Load scene %s", a4);
     }
 
-    return static_cast<bool>(THISCALL(0x0055B160, this, &a2, a3, a4, a5, a6, a7));
+    if constexpr (1) {
+        scene_brew *iVar2 = nullptr;
+        int brew_idx = 0;
+        for (auto i = 0u; i < this->scene_loads.size(); ++i) {
+            auto &v = this->scene_loads[i]; 
+            if (v.field_8 == a2) {
+                iVar2 = &v;
+                brew_idx = i;
+                break;
+            }
+        }
+
+        if (iVar2 == nullptr) {
+            scene_brew pSVar2;
+            THISCALL(0x005678E0, &pSVar2, &a2, a7);
+            this->scene_loads.push_back(pSVar2);
+
+            iVar2 = &this->scene_loads.back();
+            brew_idx = this->scene_loads.size() - 1;
+        }
+
+        this->field_295 = true;
+        a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
+        auto res = this->un_mash_scene_entities(a2, reg, slot_ptr, a3, &iVar2->field_10);
+        if (res) {
+            return true;
+        }
+
+        a2.set_type(RESOURCE_KEY_TYPE_SCN_BOX_TRIGGER);
+        res = this->un_mash_scene_box_triggers(a2, reg, slot_ptr, &iVar2->field_CC);
+        if (res) {
+            return true;
+        }
+
+        if (a3) {
+            a2.set_type(RESOURCE_KEY_TYPE_SCN_AI_SPLINE_PATH);
+            auto res = this->un_mash_scene_spline_paths(a2, reg, slot_ptr, iVar2->field_50);
+            if (res) {
+                a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
+                return true;
+            }
+
+        }
+
+        if (!a3) {
+            a2.set_type(RESOURCE_KEY_TYPE_SCN_QUAD_PATH);
+            auto bVar1 = this->un_mash_scene_quad_paths(a2, reg, slot_ptr, iVar2->field_B4);
+            if (!bVar1) {
+                a2.set_type(RESOURCE_KEY_TYPE_SCN_AUDIO_BOX);
+                bVar1 = this->un_mash_scene_audio_boxes(a2, reg, slot_ptr, iVar2->field_C4);
+                if (bVar1) {
+                    a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
+                    return true;
+                }
+            }
+
+            a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
+        }
+
+        if (a3) {
+            this->field_A0.init_level(a4);
+            auto local_dc = a2;
+            local_dc.set_type(RESOURCE_KEY_TYPE_TOKEN_LIST);
+            this->field_188.initialize(local_dc);
+        }
+
+        assert(brew_idx >= 0 && brew_idx < scene_loads.size());
+
+        auto size = this->scene_loads.size();
+        auto &last_scene = this->scene_loads[size - 1];
+        auto &v11 = this->scene_loads[brew_idx];
+        THISCALL(0x0055F550, &v11, &last_scene);
+        this->scene_loads.pop_back();
+        return false;
+    } else {
+        auto result = static_cast<bool>(THISCALL(0x0055B160, this, &a2, a3, a4, reg, slot_ptr, a7));
+        return result;
+    }
 }
 
 camera *world_dynamics_system::get_chase_cam_ptr(int a2) {
@@ -731,6 +875,21 @@ void world_dynamics_system_patch() {
         REDIRECT(0x0055B268, address);
     }
 
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::un_mash_scene_quad_paths);
+        REDIRECT(0x0055B2FE, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::un_mash_scene_audio_boxes);
+        REDIRECT(0x0055B328, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::un_mash_scene_spline_paths);
+        REDIRECT(0x0055B2CC, address);
+    }
+
     if constexpr (0)
     {
         FUNC_ADDRESS(address, &world_dynamics_system::add_player);
@@ -742,6 +901,12 @@ void world_dynamics_system_patch() {
     }
 
     return;
+
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::un_mash_scene_box_triggers);
+        REDIRECT(0x0055B296, address);
+    }
+
     {
         FUNC_ADDRESS(address, &world_dynamics_system::create_water_kill_trigger);
         REDIRECT(0x0055BF7B, address);
@@ -756,10 +921,5 @@ void world_dynamics_system_patch() {
     {
         FUNC_ADDRESS(address, &world_dynamics_system::frame_advance);
         REDIRECT(0x0055A0F7, address);
-    }
-
-    {
-        FUNC_ADDRESS(address, &world_dynamics_system::un_mash_scene_audio_boxes);
-        REDIRECT(0x0055B328, address);
     }
 }

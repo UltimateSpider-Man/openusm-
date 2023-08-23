@@ -34,6 +34,7 @@
 #include "camera.h"
 #include "camera_target_info.h"
 #include "character_viewer.h"
+#include "city_lod.h"
 #include "console.h"
 #include "collide_aux.h"
 #include "colmesh.h"
@@ -2364,6 +2365,8 @@ BOOL install_redirects() {
 
     game_patch();
 
+    city_lod_patch();
+
     swing_inode_patch();
 
     comic_panels_patch();
@@ -2373,6 +2376,8 @@ BOOL install_redirects() {
     entity_patch();
 
     wds_render_manager_patch();
+
+    wds_token_manager_patch();
 
     beam_patch();
 

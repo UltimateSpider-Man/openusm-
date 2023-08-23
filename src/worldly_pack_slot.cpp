@@ -271,6 +271,18 @@ void worldly_pack_slot::clear_pack() {
     this->box_trigger_instances = nullptr;
 }
 
+_std::vector<box_trigger *> *worldly_pack_slot::get_box_trigger_instances()
+{
+    assert(g_world_ptr() != nullptr);
+    if ( this->box_trigger_instances == nullptr )
+    {
+        auto *mem = mem_alloc(16u);
+        this->box_trigger_instances = new (mem) _std::vector<box_trigger *> {};
+    }
+
+    return this->box_trigger_instances;
+}
+
 void worldly_pack_slot_patch() {
     {
         FUNC_ADDRESS(address, &worldly_pack_slot::_on_load);

@@ -10,7 +10,6 @@ enum resource_key_type {
     RESOURCE_KEY_TYPE_ANIMATION = 1,
     RESOURCE_KEY_TYPE_NAL_SKL = 2,
     RESOURCE_KEY_TYPE_ALS_FILE = 3,
-
     RESOURCE_KEY_TYPE_ENTITY = 4,
     RESOURCE_KEY_TYPE_EXTERNAL_ENT = 5,
     RESOURCE_KEY_TYPE_TEXTURE = 6,
@@ -18,7 +17,10 @@ enum resource_key_type {
     RESOURCE_KEY_TYPE_IFL = 8,
     RESOURCE_KEY_TYPE_DESCRIPTOR = 9,
     RESOURCE_KEY_TYPE_SCN_ENTITY = 10,
-
+    RESOURCE_KEY_TYPE_SCN_AI_SPLINE_PATH = 11,
+    RESOURCE_KEY_TYPE_SCN_AUDIO_BOX = 12,
+    RESOURCE_KEY_TYPE_SCN_QUAD_PATH = 13,
+    RESOURCE_KEY_TYPE_SCN_BOX_TRIGGER = 14,
     RESOURCE_KEY_TYPE_SCRIPT = 15,
     RESOURCE_KEY_TYPE_SCRIPT_INST = 16,
     RESOURCE_KEY_TYPE_NGL_FONT = 17,
@@ -85,6 +87,10 @@ struct resource_key {
 
     bool operator!=(const resource_key &key) const {
         return !(*this == key);
+    }
+
+    void set_type(resource_key_type type) {
+        m_type = type;
     }
 
     decltype(auto) get_type() const {

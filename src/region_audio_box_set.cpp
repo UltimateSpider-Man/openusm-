@@ -10,6 +10,6 @@ region_audio_box_set::region_audio_box_set()
 
 }
 
-int region_audio_box_set::un_mash(char *a2, int *a3, region *a4) {
-    return THISCALL(0x00520600, this, a2, a3, a4);
+void region_audio_box_set::un_mash(char *a2, int *a3, region *a4) {
+    THISCALL(0x00520600, this, a2, a3, a4);
 }

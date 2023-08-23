@@ -8,5 +8,5 @@ struct region_audio_box_set {
     region_audio_box_set();
 
     //0x00520600
-    int un_mash(char *a2, int *a3, region *a4);
+    void un_mash(char *a2, int *a3, region *a4);
 };

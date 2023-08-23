@@ -51,6 +51,9 @@ struct worldly_pack_slot : resource_pack_slot {
     void clear_pack() /*override*/;
 
     void sub_531C70();
+
+    //0x005382F0
+    _std::vector<box_trigger *> *get_box_trigger_instances();
 };
 
 extern void worldly_pack_slot_patch();

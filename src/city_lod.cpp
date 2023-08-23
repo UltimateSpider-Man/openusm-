@@ -8,6 +8,8 @@
 #include "parse_generic_mash.h"
 #include "resource_key.h"
 #include "resource_manager.h"
+#include "trace.h"
+#include "utility.h"
 
 VALIDATE_SIZE(city_lod, 8u);
 VALIDATE_SIZE(strip_lod, 0x18);
@@ -61,10 +63,25 @@ city_lod::city_lod(const char *a1) {
     }
 }
 
+void city_lod::render()
+{
+    TRACE("city_lod::render");
+
+    THISCALL(0x00540380, this);
+}
+
 void strip_lod::un_mash_start(generic_mash_header *a1,
         void *a2,
         generic_mash_data_ptrs *a3,
         void *a4)
 {
     THISCALL(0x0052F380, this, a1, a2, a3, a4);
+}
+
+void city_lod_patch()
+{
+    {
+        FUNC_ADDRESS(address, &city_lod::render);
+        REDIRECT(0x0054B2FB, address);
+    }
 }

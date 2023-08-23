@@ -142,6 +142,6 @@ extern Var<int> resource_buffer_used;
 
 extern Var<_std::vector<resource_pack_slot *>> resource_context_stack;
 
-    }; // namespace resource_manager
+}; // namespace resource_manager
 
 extern void resource_manager_patch();

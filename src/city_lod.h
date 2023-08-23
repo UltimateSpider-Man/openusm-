@@ -30,6 +30,9 @@ struct city_lod {
     //0x00550420
     city_lod(const char *a1);
 
+    //0x00540380
+    void render();
+
     static inline Var<nglMesh *>  map_mesh {0x0095C188};
     static inline Var<nglMesh *>  sides_mesh {0x0095C16C};
     static inline Var<nglMesh *>  top_mesh {0x0095C748};
@@ -37,3 +40,5 @@ struct city_lod {
     static inline Var<nglMesh *>  box_mesh {0x0095C1d8};
     static inline Var<nglTexture *>  top_texture {0x0095C710};
 };
+
+extern void city_lod_patch();

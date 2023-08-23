@@ -131,15 +131,19 @@ int wds_render_manager::add_far_away_entity(vhandle_type<entity> a2) {
 void wds_render_manager::init_level(const char *a2) {
 
     TRACE("wds_render_manager::init_level", a2);
-    if (this->field_5C == nullptr) {
-        tlFixedString a1{"obb_shadow000"};
-        this->field_5C = nglGetMesh(a1, true);
-    }
+    if constexpr (1) {
+        if (this->field_5C == nullptr) {
+            tlFixedString a1{"obb_shadow000"};
+            this->field_5C = nglGetMesh(a1, true);
+        }
 
-    if (this->field_94 == nullptr) {
-        filespec v7{mString{a2}};
+        if (this->field_94 == nullptr) {
+            filespec v7{mString{a2}};
 
-        this->field_94 = new city_lod{v7.m_name.c_str()};
+            this->field_94 = new city_lod{v7.m_name.c_str()};
+        }
+    } else {
+        THISCALL(0x00550930, this, a2);
     }
 }
 
@@ -183,6 +187,8 @@ void wds_render_manager::update_occluders(camera *a2) {
 void wds_render_manager::render(camera &a2, int a3)
 {
     TRACE("wds_render_manager::render");
+
+    assert(this->field_94 != nullptr);
 
     THISCALL(0x0054B250, this, &a2, a3);
 
@@ -242,7 +248,7 @@ void wds_render_manager_patch() {
 
     {
         FUNC_ADDRESS(address, &wds_render_manager::init_level);
-        SET_JUMP(0x00550930, address);
+        REDIRECT(0x0055B355, address);
     }
 
     {

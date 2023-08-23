@@ -476,7 +476,7 @@ resource_pack_slot *get_best_context(resource_partition_enum a1) {
 
         resource_partition *the_partition = partitions()->at(a1);
 
-        auto &pack_slots = the_partition->get_pack_slots();
+        const auto &pack_slots = the_partition->get_pack_slots();
         if (pack_slots.empty()) {
             the_partition = partitions()->front();
         }
@@ -789,7 +789,7 @@ void create_inst() {
     }
 }
 
-void configure_packs_by_memory_map(int a1)
+void configure_packs_by_memory_map(int idx)
 {
     TRACE("resource_manager::configure_packs_by_memory_map");
 
@@ -817,8 +817,8 @@ void configure_packs_by_memory_map(int a1)
                         && self->field_C == a2->field_C);
             };
 
-            if (memory_maps()[a1].field_10[i].field_4 == 1 &&
-                func(&memory_maps()[v14].field_10[i], &memory_maps()[a1].field_10[i])) {
+            if (memory_maps()[idx].field_10[i].field_4 == 1 &&
+                func(&memory_maps()[v14].field_10[i], &memory_maps()[idx].field_10[i])) {
                 ++pop_start_idx;
             }
         }
@@ -856,7 +856,7 @@ void configure_packs_by_memory_map(int a1)
         {
             auto *new_partition = new resource_partition{(resource_partition_enum) i};
 
-            auto &memory_map = memory_maps()[a1];
+            auto &memory_map = memory_maps()[idx];
             auto &tmp = memory_map.field_10[i];
 
             new_partition->field_0 = tmp.field_4;
@@ -897,7 +897,7 @@ void configure_packs_by_memory_map(int a1)
                "If this fails there's something wrong with the partition preserving code.");
 
         {
-            auto begin = std::begin(memory_maps()[a1].field_10);
+            auto begin = std::begin(memory_maps()[idx].field_10);
             auto end = begin + RESOURCE_PARTITION_END;
             auto v7 = std::accumulate(begin, end, 0, [](auto prev_result, auto &v) {
                 return v.field_C * v.field_8 + prev_result;
@@ -908,12 +908,12 @@ void configure_packs_by_memory_map(int a1)
                v7 / 1024);
         }
 
-        in_use_memory_map() = a1;
+        in_use_memory_map() = idx;
         set_active_resource_context(nullptr);
     }
     else
     {
-        CDECL_CALL(0x00558930, a1);
+        CDECL_CALL(0x00558930, idx);
     }
 
     {

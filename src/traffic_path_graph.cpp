@@ -2,6 +2,8 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "trace.h"
+#include "utility.h"
 
 traffic_path_graph::traffic_path_graph() {}
 
@@ -16,8 +18,11 @@ traffic_path_lane *traffic_path_graph::get_closest_or_farthest_lane(bool arg0,
 }
 
 bool traffic_path_graph::un_mash(char *a2, int *a3, region *a4, traffic_path_brew &a5) {
+    TRACE("traffic_path_graph::un_mash");
+
     if constexpr (0) {
     } else {
-        return (bool) THISCALL(0x005C7E20, this, a2, a3, a4, &a5);
+        bool (__fastcall *func)(void *, int, char *a2, int *a3, region *a4, traffic_path_brew *a5) = CAST(func, 0x005C7E20);
+        return func(this, 0, a2, a3, a4, &a5);
     }
 }

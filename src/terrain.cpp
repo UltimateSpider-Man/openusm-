@@ -347,7 +347,9 @@ bool terrain::district_destruct_callback(resource_pack_slot::callback_enum reaso
 }
 
 void terrain::register_region_change_callback(void (*a3)(bool, region *)) {
-    if constexpr (1) {
+    TRACE("terrain::register_region_change_callback");
+
+    if constexpr (0) {
         auto *v2 = region_change_callbacks();
         if (region_change_callbacks() == nullptr) {
             region_change_callbacks() = new _std::list<void (*)(bool, region *)>{};
@@ -628,31 +630,40 @@ void terrain::un_mash_audio_boxes(char *a1, int *a2, region *a3) {
     a3->field_E0.un_mash(a1, a2, a3);
 }
 
-void terrain::un_mash_region_paths(char *a1, int *a2, region *a3) {
-    a3->field_104->un_mash(a1, a2, a3);
+void terrain::un_mash_region_paths(char *a1, int *a2, region *reg) {
+    reg->field_104 = CAST(reg->field_104, a1);
+    reg->field_104->un_mash(a1, a2, reg);
 }
 
 bool terrain::un_mash_traffic_paths(char *a2, int *a3, region *reg, traffic_path_brew &a5) {
-    bool v6 = !((traffic_path_graph *) a2)->un_mash(a2, a3, reg, a5);
-    if (reg != nullptr) {
-        if (v6) {
-            assert(0 && "There is traffic data attached to a district");
+    TRACE("terrain::un_mash_traffic_paths");
 
-            reg->field_100 = (traffic_path_graph *) a2;
+    if constexpr (1) {
+        bool v6 = !(bit_cast<traffic_path_graph *>(a2)->un_mash(a2, a3, reg, a5));
+        if (reg != nullptr) {
+            if (v6) {
+                assert(0 && "There is traffic data attached to a district");
+
+                reg->field_100 = bit_cast<traffic_path_graph *>(a2);
+            } else {
+                reg->field_100 = nullptr;
+            }
+
         } else {
-            reg->field_100 = nullptr;
+            assert(traffic_ptr == nullptr);
+
+            if (v6) {
+                this->traffic_ptr = (traffic_path_graph *) a2;
+            } else {
+                this->traffic_ptr = nullptr;
+            }
         }
 
+        return !v6;
     } else {
-        assert(traffic_ptr == nullptr);
-
-        if (v6) {
-            this->traffic_ptr = (traffic_path_graph *) a2;
-        } else {
-            this->traffic_ptr = nullptr;
-        }
+        auto result = THISCALL(0x00514410, this, a2, a3, reg, &a5);
+        return result;
     }
-    return !v6;
 }
 
 void terrain::force_streamer_refresh() {
@@ -824,6 +835,7 @@ void terrain_patch()
         FUNC_ADDRESS(address, &terrain::start_streaming);
         REDIRECT(0x0055D1BF, address);
     }
+
     return;
 
     {

@@ -37,6 +37,8 @@ Var<script_var_container *> script_manager_shared_var_container = {0x00965EF0};
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
 
 void *script_manager::get_game_var_address(const mString &a1, bool *a2, script_library_class **a3) {
+    TRACE("script_manager::get_game_var_address", a1.c_str());
+
     assert(script_manager_game_var_container() != nullptr);
     assert(script_manager_shared_var_container() != nullptr);
 

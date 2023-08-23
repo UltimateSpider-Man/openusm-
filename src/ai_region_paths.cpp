@@ -3,6 +3,7 @@
 #include "ai_quad_path.h"
 #include "common.h"
 #include "func_wrapper.h"
+#include "trace.h"
 
 #include <cassert>
 
@@ -31,6 +32,8 @@ ai_quad_path *ai_region_paths::get_quad_path(int index) {
 }
 
 void ai_region_paths::un_mash(void *buffer_ptr, int *a3, region *reg) {
+    TRACE("ai_region_paths::un_mash");
+
     if constexpr (1) {
         assert(strcmp(id, "RGNPTHS") == 0);
 
@@ -49,7 +52,7 @@ void ai_region_paths::un_mash(void *buffer_ptr, int *a3, region *reg) {
 
         assert(quad_path_table == (ai_quad_path *) (((uintptr_t) this) + sizeof(ai_region_paths)));
 
-        this->field_3C = (char *) buffer_ptr + v8;
+        this->field_3C = static_cast<char *>(buffer_ptr) + v8;
         for (int i = 0; i < this->quad_path_table_count; ++i) {
             auto *path_ptr = this->get_quad_path(i);
             path_ptr->un_mash(buffer_ptr, reg, v7, v8, v9);

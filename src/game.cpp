@@ -1401,31 +1401,30 @@ void game::level_load_stuff::look_up_level_descriptor()
 
         if constexpr (1)
         {
-            sp_log("lookup_size = %d, num_levels_desc = %d", lookup_size, v23);
+            printf("lookup_size = %d, num_levels_desc = %d\n", lookup_size, v23);
             for (auto i = 0; i < v23; ++i)
             {
-                sp_log("%s", lvl_descriptors[i].field_0.to_string());
+                printf("\t%s\n", lvl_descriptors[i].field_0.to_string());
             }
         }
 
-        int i;
-        for ( i = 0; i < v23; ++i )
         {
-            if ( v27 == lvl_descriptors[i].field_0 )
+            auto *begin = lvl_descriptors;
+            auto *end = begin + v23;
+            auto *it_find = std::find_if(begin, end, [&v27](const auto &desc) {
+                return (v27 == desc.field_0);
+            });
+
+            if ( it_find == end )
             {
-                break;
+                auto *v5 = v27.to_string();
+                error("Couldn't find level descriptor for %s", v5);
             }
-        }
 
-        if ( i == v23 )
-        {
-            auto *v5 = v27.to_string();
-            error("Couldn't find level descriptor for %s", v5);
+            auto *v6 = v27.to_string();
+            debug_print_va("Found level descriptor for %s", v6);
+            this->descriptor = it_find;
         }
-
-        auto *v6 = v27.to_string();
-        debug_print_va("Found level descriptor for %s", v6);
-        this->descriptor = &lvl_descriptors[i];
 
         resource_key v16 {string_hash {this->descriptor->field_0.to_string()}, RESOURCE_KEY_TYPE_PACK};
         auto v19 = resource_manager::get_pack_file_stats(v16, nullptr, nullptr, nullptr);
@@ -1436,7 +1435,7 @@ void game::level_load_stuff::look_up_level_descriptor()
             assert(0);
         }
 
-        resource_manager::configure_packs_by_memory_map(this->descriptor->field_70);
+        resource_manager::configure_packs_by_memory_map(this->descriptor->m_index_memory_map);
     }
     else
     {

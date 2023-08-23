@@ -40,10 +40,15 @@ void mash_info_struct::construct_class(sound_alias_database *&a1)
 template<>
 void mash_info_struct::construct_class(token_def_list *&a1)
 {
+    TRACE("mash_info_struct::construct_class<token_def_list>");
     if ( a1 != nullptr )
     {
-        void (__fastcall *func)(void *, int edx, void *) = CAST(func, 0x005DEDA0);
-        func(a1, 0, nullptr);
+        if constexpr (0) {
+            void (__fastcall *func)(void *, int edx, void *) = CAST(func, 0x005DEDA0);
+            func(a1, 0, nullptr);
+        } else {
+            new (a1) token_def_list {nullptr};
+        }
     }
 }
 
