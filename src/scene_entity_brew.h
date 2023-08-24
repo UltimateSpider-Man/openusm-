@@ -2,15 +2,18 @@
 
 #include "progress.h"
 
+#include <cstdint>
+
+struct limited_timer;
 struct worldly_pack_slot;
 
 struct scene_entity_brew
 {
     progress field_0;
-    int field_4;
+    limited_timer *field_4;
     worldly_pack_slot *field_8;
     int field_C;
-    int field_10;
+    uint8_t *field_10;
     int buffer_index;
     int parse_code;
     int field_1C;

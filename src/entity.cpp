@@ -109,6 +109,8 @@ entity *entity::compute_sector(terrain *, bool, entity *) {
 }
 
 void entity::force_region_hack(region *a2) {
+    assert(regions[0] == nullptr);
+
     this->regions[0] = a2;
 }
 

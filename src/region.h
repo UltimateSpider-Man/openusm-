@@ -40,10 +40,10 @@ struct region
     void *meshes;
     region_mash_info *mash_info;
     void *region_entities;
-    int field_34;
+    int *field_34;
     int field_38;
     int field_3C;
-    int field_40;
+    int m_fade_groups_count;
     int field_44;
     int field_48;
     _std::vector<light_source *> *lights;
@@ -137,6 +137,12 @@ struct region
 
     bool is_interior();
 
+    //0x0054FF40
+    void add(entity *e);
+
+    //0x00545780
+    void add(light_source *l);
+
     traffic_path_graph *get_traffic_path_graph();
 
     void set_ambient(uint8_t a2, uint8_t a3, uint8_t a4);
@@ -150,6 +156,9 @@ struct region
 
     //0x00519BB0
     fixedstring<8> &get_name();
+
+    //0x0054FEC0
+    void un_mash_lego_map(char *a2, int *a3);
 
     static inline Var<int> visit_key2{0x0095C91C};
 

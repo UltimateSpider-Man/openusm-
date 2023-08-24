@@ -405,6 +405,8 @@ struct entity_base : entity_base_vtable {
     }
 };
 
+extern void check_po(entity_base *);
+
 extern int DEBUG_foster_conglom_warning;
 
 //0x004E1290

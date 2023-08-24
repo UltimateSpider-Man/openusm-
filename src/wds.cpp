@@ -14,9 +14,11 @@
 #include "cut_scene_player.h"
 #include "damage_interface.h"
 #include "daynight.h"
+#include "debugutil.h"
 #include "decal_data_interface.h"
 #include "decal_morphs.h"
 #include "dirty_sphere.h"
+#include "entity_mash.h"
 #include "facial_expression_interface.h"
 #include "femanager.h"
 #include "fixed_pool.h"
@@ -29,6 +31,7 @@
 #include "intersected_trajectory.h"
 #include "intraframe_trajectory.h"
 #include "item.h"
+#include "light_source.h"
 #include "line_info.h"
 #include "manip_obj.h"
 #include "mash_virtual_base.h"
@@ -59,6 +62,9 @@
 #include "wds.h"
 #include "web_interface.h"
 #include "worldly_pack_slot.h"
+
+#include <list>
+#include <vector>
 
 VALIDATE_SIZE(world_dynamics_system, 0x400u);
 VALIDATE_SIZE((*world_dynamics_system::field_0), 0x3C);
@@ -124,7 +130,7 @@ world_dynamics_system::world_dynamics_system()
 
     this->field_4.reserve(20u);
 
-    this->field_295 = 0;
+    this->m_loading_from_scn_file = 0;
     this->field_230[0] = nullptr;
     this->field_234[0] = nullptr;
     this->field_298 = -1;
@@ -312,10 +318,412 @@ void world_dynamics_system::sub_530460(const vector3d &a2, int visited_regions, 
     THISCALL(0x00530460, this, &a2, visited_regions, a4);
 }
 
-bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, region *a3, worldly_pack_slot *a4, bool a5, scene_entity_brew *a6)
+bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, region *reg, worldly_pack_slot *slot_ptr, bool a5, scene_entity_brew &brew)
 {
     TRACE("world_dynamics_system::un_mash_scene_entities");
-    return (bool) THISCALL(0x0055A680, this, &a2, a3, a4, a5, a6);
+
+    if constexpr (1) {
+        if (brew.field_0.is_done()) {
+            return false;
+        }
+
+        if (!brew.field_0.is_started()) {
+            brew.field_0.start();
+            brew.field_8 = slot_ptr;
+            brew.field_C = 0;
+            brew.field_10 = 0;
+            brew.buffer_index = 0;
+            brew.field_1C = 0;
+            if (!resource_manager::get_resource_if_exists(a2, reg, &brew.field_10, brew.field_8, &brew.field_C)) {
+                brew.field_0.done();
+                return false;
+            }
+
+            brew.parse_code = *(int *)&brew.field_10[brew.buffer_index];
+            assert(brew.parse_code == REGION_MESH_VOBBS_TAG);
+            brew.buffer_index += 4;
+            int v91 = *(int *)&brew.field_10[brew.buffer_index];
+            brew.buffer_index += 4;
+            brew.buffer_index = (brew.buffer_index + 15) & 0xFFFFFFF0;
+            if ( v91 ) {
+                reg->field_38 = v91;
+                reg->field_34 = (int *)&brew.field_10[brew.buffer_index];
+                brew.buffer_index += 0x30 * v91;
+            }
+
+            brew.parse_code = *(int *)&brew.field_10[brew.buffer_index];
+            assert(brew.parse_code == ENTITIES_TAG);
+
+            brew.buffer_index += 4;
+            brew.field_3C = *(int *)&brew.field_10[brew.buffer_index];
+            brew.buffer_index += 4;
+            brew.field_24 = *(int *)&brew.field_10[brew.buffer_index];
+            brew.buffer_index += 4;
+            assert((brew.buffer_index % 4) == 0);
+        }
+
+        auto v90 = brew.field_C;
+        auto *buffer_ptr = (char *)brew.field_10;
+        auto buffer_index = brew.buffer_index;
+        auto v87 = brew.field_1C;
+        auto parse_code = brew.parse_code;
+        auto v85 = brew.field_24;
+        g_femanager().RenderLoadMeter(false);
+        if ( reg != nullptr ) {
+            reg->field_60 = brew.field_3C;
+        }
+
+        auto sub_692686 = [](int &a1, int a2) -> void {
+            auto v2 = a1 % a2;
+            if ( a2 - v2 < a2 ) {
+                a1 += a2 - v2;
+            }
+        };
+
+        auto sub_6A3981 = [](auto &a1) -> bool {
+            auto sub_691AF1 = [](limited_timer *self) -> bool {
+                return self->sub_58E270() >= self->field_4;
+            };
+
+            return a1.field_4 != nullptr && sub_691AF1(a1.field_4);
+        };
+
+        auto *ent_vec_ptr = slot_ptr->get_entity_instances();
+        auto *item_vec_ptr = slot_ptr->get_item_instances();
+        auto *box_trigger_instances = slot_ptr->get_box_trigger_instances();
+        limited_timer_base v81, v80, v79, v78;
+        static auto dword_1568498 = 0.0;
+        static auto dword_156849C = 0.0;
+        static auto dword_15684A0 = 0.0;
+        static auto dword_15684A4 {0.0};
+        [[maybe_unused]] auto dword_15684A8 = 0;
+
+        auto sub_6A1898 = [](limited_timer_base &a1) -> void {
+            a1.sub_58E230();
+        };
+
+        auto sub_68D9F1 = [](limited_timer_base &a1) -> double {
+            auto result = a1.sub_58E270();
+            a1.sub_58E230();
+            return result;
+        };
+
+        auto sub_6A4BE7 = [](limited_timer_base &a1) -> double {
+            return a1.sub_58E270();
+        };
+
+        sub_6A1898(v81);
+        std::list<region *> list_regions {};
+        while ( v87 < v85 )
+        {
+            assert((buffer_index % 4) == 0);
+
+            if ( !brew.field_28.is_started() )
+            {
+                brew.field_28.start();
+                brew.field_2C = *(int *)&buffer_ptr[buffer_index];
+                buffer_index += 4;
+                brew.field_30 = 0;
+                brew.field_34 = 0;
+            }
+
+            auto v75 = brew.field_2C;
+            auto v74 = brew.field_30;
+            auto *a6 = (void *)brew.field_34;
+            while ( v74 < v75 )
+            {
+                list_regions.clear();
+                assert((buffer_index % 4) == 0);
+
+                int v72 = *(int *)&buffer_ptr[buffer_index];
+                buffer_index += 4;
+
+                sub_692686(buffer_index, 16);
+                sub_6A1898(v80);
+                auto *tmp_e = parse_entity_mash(ent_vec_ptr, item_vec_ptr, &buffer_ptr[buffer_index], nullptr, a6, true);
+                assert(tmp_e->is_an_entity());
+                auto *ent_ptr = bit_cast<entity *>(tmp_e);
+                if (reg != nullptr) {
+                    ent_ptr->field_8 |= 0x200u;
+                }
+
+                if (ent_ptr->is_renderable()) {
+                    tmp_e->set_timer(0u);
+                    tmp_e->on_fade_distance_changed(tmp_e->field_8 & 0xF);
+                    if ( a5 && ((tmp_e->field_8 & 0xF) == 15) )
+                    {
+                        ent_ptr->field_8 |= 0x200000u;
+                        auto id = ent_ptr->get_id();
+                        auto *v15 = id.to_string();
+                        sp_log("found far away entity %s", v15);
+                        this->field_23C.push_back(ent_ptr);
+                    }
+                    else
+                    {
+                        ent_ptr->field_8 &= 0x200000u;
+                    }
+                }
+
+                if (a6 == nullptr) {
+                    a6 = &buffer_ptr[buffer_index];
+                }
+
+                ent_ptr->field_8 |= 0x10u;
+                dword_156849C += sub_68D9F1(v80);
+                buffer_index += v72;
+                sub_692686(buffer_index, 4);
+                int v68 = *(int *)&buffer_ptr[buffer_index];
+                buffer_index += 4;
+                sub_692686(buffer_index, 8);
+
+                auto strings = [&buffer_index, &buffer_ptr](int num) {
+                    std::vector<fixedstring<8> *> result{};
+                    for ( auto i = 0; i < num; ++i ) {
+                        auto *v66 = (fixedstring<8> *) buffer_ptr + buffer_index;
+                        buffer_index += 32;
+
+                        result.push_back(v66);
+                    }
+
+                    return result;
+                }(v68);
+
+                std::for_each(strings.begin(), strings.end(), [this,
+                                                            ent_ptr,
+                                                            &list_regions](auto *v66) {
+
+                    auto *v18 = v66->to_string();
+                    auto *found_region = this->the_terrain->find_region(string_hash {v18});
+                    if ( found_region != nullptr)
+                    {
+                        list_regions.push_back(found_region);
+                    }
+                    else
+                    {
+                        const char *str = nullptr;
+                        if ( ent_ptr != nullptr )
+                        {
+                            auto id = ent_ptr->get_id();
+                            str = id.to_string();
+                        }
+                        else
+                        {
+                            str = "<NULL>";
+                        }
+
+                        mString v33 {"force_region: unknown region "};
+                        auto v32 = v33 + v66->to_string();
+                        auto v30 = v32 + " for entity ";
+                        auto v28 = v30 + str;
+                        auto v26 = v28 + "'";
+                        sp_log(v26.c_str());
+                        found_region = this->the_terrain->get_region(0);
+                    }
+                });
+
+                sub_6A1898(v79);
+                {
+                    assert(ent_ptr != nullptr);
+                    sub_6A1898(v78);
+                    g_world_ptr()->ent_mgr.add_ent_to_lists(ent_vec_ptr, item_vec_ptr, ent_ptr);
+                    dword_15684A4 += sub_68D9F1(v78);
+                    //sp_log("adding entities to lists = %f sec", dword_15684A4);
+
+                    check_po(ent_ptr);
+                    if ( reg != nullptr )
+                    {
+                        if ( ent_ptr->is_a_light_source() )
+                        {
+                            bit_cast<light_source *>(ent_ptr)->force_region_hack(reg);
+                            auto *v22 = bit_cast<light_source *>(ent_ptr);
+                            reg->add(v22);
+                        }
+                        else if (reg->collision_proximity_map != nullptr)
+                        {
+                            bit_cast<entity *>(ent_ptr)->force_region_hack(reg);
+                            auto *v22 = bit_cast<entity *>(ent_ptr);
+                            reg->add(v22);
+                        }
+                    }
+                }
+
+                dword_15684A0 += sub_68D9F1(v79);
+                if ( sub_6A3981(brew) )
+                {
+                    brew.field_8 = slot_ptr;
+                    brew.field_C = v90;
+                    brew.field_10 = CAST(brew.field_10, buffer_ptr);
+                    brew.buffer_index = buffer_index;
+                    brew.field_1C = v87;
+                    brew.parse_code = parse_code;
+                    brew.field_24 = v85;
+                    brew.field_2C = v75;
+                    brew.field_34 = (int) a6;
+                    brew.field_30 = v74 + 1;
+                    return true;
+                }
+
+                ++v74;
+            }
+
+            brew.field_28.clear();
+            ++v87;
+        }
+
+        dword_1568498 = sub_68D9F1(v81);
+        //sp_log("dword_1568498 = %f seconds", dword_1568498);
+
+        if ( !brew.field_0.is_done() && !brew.field_38.is_started() )
+        {
+            brew.field_38.start();
+            parse_code = *(int *)&buffer_ptr[buffer_index];
+            buffer_index += 4;
+        }
+
+        while ( !brew.field_38.is_done() && parse_code != 18 )
+        {
+            switch ( parse_code )
+            {
+            case 3u: {
+                limited_timer_base v58{};
+                auto dword_15684AC = 0.0;
+                sub_6A1898(v58);
+
+                assert(the_terrain != nullptr);
+                if ( reg == nullptr )
+                {
+                    auto &a3 = a2.m_hash;
+                    auto *v24 = a3.to_string();
+                    sp_log("Unknown region %s.  Make sure your sin file is correct.", v24);
+                    assert(0);
+                }
+
+                int v57;
+                this->the_terrain->un_mash_obb(&buffer_ptr[buffer_index], &v57, reg);
+                buffer_index += v57;
+                dword_15684AC = sub_6A4BE7(v58);
+                break;
+            }
+            case 6u: {
+                assert((buffer_index % 4) == 0);
+
+                int a4;
+                this->un_mash_box_triggers(
+                    parse_code,
+                    &buffer_ptr[buffer_index],
+                    box_trigger_instances,
+                    &a4);
+                buffer_index += a4;
+                break;
+            }
+            case 9u: {
+                limited_timer_base v60{};
+                auto dword_15684BC = 0.0;
+                sub_6A1898(v60);
+                assert(the_terrain != nullptr);
+
+                if ( reg == nullptr )
+                {
+                    auto &a3 = a2.m_hash;
+                    auto *v23 = a3.to_string();
+                    sp_log("Unknown region %s.  Make sure your sin file is correct.", v23);
+                    assert(0);
+                }
+
+                int v59;
+                this->the_terrain->un_mash_texture_to_frame(&buffer_ptr[buffer_index], &v59, reg);
+                buffer_index += v59;
+                dword_15684BC = sub_6A4BE7(v60);
+                break;
+            }
+            case 11u: {
+                assert(the_terrain != nullptr);
+                sub_692686(buffer_index, 8);
+
+                int v61;
+                reg->un_mash_lego_map(&buffer_ptr[buffer_index], &v61);
+                buffer_index += v61;
+                break;
+            }
+            case 14u: {
+                auto *v55 = &buffer_ptr[buffer_index];
+                auto v54 = *(int *)&buffer_ptr[buffer_index];
+                v55 = &buffer_ptr[buffer_index + 4];
+                buffer_index += 4;
+                if ( reg != nullptr ) {
+                    reg->field_3C = (int)v55;
+                }
+
+                buffer_index += v54;
+                buffer_index = (buffer_index + 3) & 0xFFFFFFFC;
+                break;
+            }
+            case 15u: {
+                int fade_groups_count = *(int *)&buffer_ptr[buffer_index];
+                assert(fade_groups_count >= 0 && fade_groups_count < 255);
+
+                if ( reg != nullptr ) {
+                    reg->m_fade_groups_count = fade_groups_count;
+                }
+                
+                buffer_index += 4;
+                if ( fade_groups_count > 0 )
+                {
+                    if ( reg != nullptr ) {
+                        reg->field_44 = (int)&buffer_ptr[buffer_index];
+                    }
+
+                    buffer_index += 4 * fade_groups_count;
+                    buffer_index = (buffer_index + 15) & 0xFFFFFFF0;
+                    if ( reg != nullptr ) {
+                        reg->field_48 = (int)&buffer_ptr[buffer_index];
+                    }
+
+                    buffer_index += 16 * fade_groups_count;
+                }
+                break;
+            }
+            case 17u: {
+                auto *v52 = &buffer_ptr[buffer_index];
+                auto v51 = *(int *)&buffer_ptr[buffer_index];
+                v52 = &buffer_ptr[buffer_index + 4];
+                buffer_index += 4;
+                if ( reg != nullptr ) {
+                    reg->field_3C = (int)v52;
+                }
+
+                buffer_index += v51;
+                buffer_index = (buffer_index + 3) & 0xFFFFFFFC;
+                break;
+            }
+            default:
+                debug_print_va("Unknown parse code 0x%x\n", parse_code);
+                assert(0);
+
+                return false;
+            }
+
+            parse_code = *(int *)&buffer_ptr[buffer_index];
+            buffer_index += 4;
+            if ( sub_6A3981(brew) )
+            {
+                brew.field_8 = slot_ptr;
+                brew.field_C = v90;
+                brew.field_10 = CAST(brew.field_10, buffer_ptr);
+                brew.buffer_index = buffer_index;
+                brew.field_1C = v87;
+                brew.parse_code = parse_code;
+                brew.field_24 = v85;
+                return true;
+            }
+        }
+
+        brew.field_38.done();
+        brew.field_0.done();
+        return false;
+    } else {
+        return (bool) THISCALL(0x0055A680, this, &a2, reg, slot_ptr, a5, brew);
+    }
 }
 
 bool world_dynamics_system::un_mash_scene_box_triggers(const resource_key &a1, region *reg, worldly_pack_slot *slot_ptr, timed_progress *a4) {
@@ -569,56 +977,50 @@ bool world_dynamics_system::load_scene(resource_key &a2,
     }
 
     if constexpr (1) {
-        scene_brew *iVar2 = nullptr;
+        scene_brew *found_brew = nullptr;
         int brew_idx = 0;
         for (auto i = 0u; i < this->scene_loads.size(); ++i) {
             auto &v = this->scene_loads[i]; 
             if (v.field_8 == a2) {
-                iVar2 = &v;
+                found_brew = &v;
                 brew_idx = i;
                 break;
             }
         }
 
-        if (iVar2 == nullptr) {
-            scene_brew pSVar2;
-            THISCALL(0x005678E0, &pSVar2, &a2, a7);
-            this->scene_loads.push_back(pSVar2);
+        if (found_brew == nullptr) {
+            scene_brew new_brew {a2, a7};
+            this->scene_loads.push_back(new_brew);
 
-            iVar2 = &this->scene_loads.back();
+            found_brew = &this->scene_loads.back();
             brew_idx = this->scene_loads.size() - 1;
         }
 
-        this->field_295 = true;
+        this->m_loading_from_scn_file = true;
         a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
-        auto res = this->un_mash_scene_entities(a2, reg, slot_ptr, a3, &iVar2->field_10);
-        if (res) {
+        if (this->un_mash_scene_entities(a2, reg, slot_ptr, a3, found_brew->field_10)) {
             return true;
         }
 
         a2.set_type(RESOURCE_KEY_TYPE_SCN_BOX_TRIGGER);
-        res = this->un_mash_scene_box_triggers(a2, reg, slot_ptr, &iVar2->field_CC);
-        if (res) {
+        if (this->un_mash_scene_box_triggers(a2, reg, slot_ptr, &found_brew->field_CC)) {
             return true;
         }
 
         if (a3) {
             a2.set_type(RESOURCE_KEY_TYPE_SCN_AI_SPLINE_PATH);
-            auto res = this->un_mash_scene_spline_paths(a2, reg, slot_ptr, iVar2->field_50);
+            auto res = this->un_mash_scene_spline_paths(a2, reg, slot_ptr, found_brew->field_50);
             if (res) {
                 a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
                 return true;
             }
-
         }
 
         if (!a3) {
             a2.set_type(RESOURCE_KEY_TYPE_SCN_QUAD_PATH);
-            auto bVar1 = this->un_mash_scene_quad_paths(a2, reg, slot_ptr, iVar2->field_B4);
-            if (!bVar1) {
+            if (!this->un_mash_scene_quad_paths(a2, reg, slot_ptr, found_brew->field_B4)) {
                 a2.set_type(RESOURCE_KEY_TYPE_SCN_AUDIO_BOX);
-                bVar1 = this->un_mash_scene_audio_boxes(a2, reg, slot_ptr, iVar2->field_C4);
-                if (bVar1) {
+                if (this->un_mash_scene_audio_boxes(a2, reg, slot_ptr, found_brew->field_C4)) {
                     a2.set_type(RESOURCE_KEY_TYPE_SCN_ENTITY);
                     return true;
                 }
@@ -792,7 +1194,7 @@ void world_dynamics_system::deactivate_web_splats() {
 }
 
 bool world_dynamics_system::is_loading_from_scn_file() {
-    return this->field_295;
+    return this->m_loading_from_scn_file;
 }
 
 int world_dynamics_system::remove_player(int player_num) {
@@ -867,7 +1269,7 @@ void world_dynamics_system_patch() {
 
     {
         FUNC_ADDRESS(address, &world_dynamics_system::load_scene);
-        REDIRECT(0x0055CC2F, address);
+        SET_JUMP(0x0055B160, address);
     }
 
     {

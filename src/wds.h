@@ -69,7 +69,7 @@ struct world_dynamics_system {
 
     int field_290;
     char field_294;
-    char field_295;
+    bool m_loading_from_scn_file;
     int field_298;
     mission_stack_manager field_29C;
     mission_manager field_2A8;
@@ -98,7 +98,7 @@ struct world_dynamics_system {
     void frame_advance(Float a2);
 
     //0x0055A680
-    bool un_mash_scene_entities(const resource_key &a2, region *a3, worldly_pack_slot *a4, bool a5, scene_entity_brew *a6);
+    bool un_mash_scene_entities(const resource_key &a2, region *, worldly_pack_slot *, bool a5, scene_entity_brew &);
 
     //0x005507F0
     bool un_mash_scene_box_triggers(const resource_key &a1, region *a2, worldly_pack_slot *a3, timed_progress *a4);

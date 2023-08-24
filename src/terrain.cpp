@@ -708,6 +708,12 @@ void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions) 
     }
 }
 
+region *terrain::find_region(string_hash a2) {
+    TRACE("terrain::find_region", a2.to_string());
+
+    return (region *) THISCALL(0x00534920, this, a2);
+}
+
 _std::vector<region *> *terrain::sub_6DC8A0(vector3d a2) {
     if (terrain::regions_for_point() != nullptr) {
         auto v3 = &terrain::regions_for_point()->m_first;
@@ -829,6 +835,16 @@ void find_ideal_terrain_packs_callback(_std::vector<ideal_pack_info> *a1) {
     ter->find_ideal_terrain_packs(a1);
 }
 
+void terrain::un_mash_obb(char *a2, int *a3, region *reg)
+{
+    THISCALL(0x00514310, this, a2, a3, reg);
+}
+
+void terrain::un_mash_texture_to_frame(char *a2, int *a3, region *reg)
+{
+    THISCALL(0x00514380, this, a2, a3, reg);
+}
+
 void terrain_patch()
 {
     {
@@ -849,7 +865,9 @@ void terrain_patch()
     }
 
     {
-        FUNC_ADDRESS(address, &terrain::find_region);
+
+        region * (terrain::*func)(const vector3d &a2, const region *a3) = &terrain::find_region;
+        FUNC_ADDRESS(address, func);
         REDIRECT(0x0055CF7F, address);
     }
 

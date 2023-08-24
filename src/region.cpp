@@ -26,7 +26,7 @@ void region::constructor_common() {
     this->field_34 = 0;
     this->field_38 = 0;
     this->field_3C = 0;
-    this->field_40 = 0;
+    this->m_fade_groups_count= 0;
     this->field_44 = 0;
     this->field_48 = 0;
     this->meshes = nullptr;
@@ -204,4 +204,19 @@ void region::set_district_variant(int a2) {
 
 fixedstring<8> &region::get_name() {
     return this->mash_info->field_0;
+}
+
+void region::un_mash_lego_map(char *a2, int *a3)
+{
+    THISCALL(0x0054FEC0, this, a2, a3);
+}
+
+void region::add(entity *e)
+{
+    THISCALL(0x0054FF40, this, e);
+}
+
+void region::add(light_source *l)
+{
+    THISCALL(0x00545780, this, l);
 }

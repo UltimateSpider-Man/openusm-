@@ -5,6 +5,8 @@
 #include "timed_progress.h"
 #include "resource_key.h"
 
+struct limited_timer;
+
 struct scene_brew {
     int field_0;
     int field_4;
@@ -19,4 +21,6 @@ struct scene_brew {
     int field_C8;
     timed_progress field_CC;
     int field_D0;
+
+    scene_brew(const resource_key &, limited_timer *);
 };

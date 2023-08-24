@@ -295,7 +295,12 @@ bool entity_base::is_a_signaller() {
 }
 
 bool entity_base::is_an_entity() {
-    return false;
+    if constexpr (1) {
+        auto &func = get_vfunc(m_vtbl, 0x60);
+        return (bool) func(this);
+    } else {
+        return false;
+    }
 }
 
 bool entity_base::is_an_actor() const {
@@ -1480,6 +1485,11 @@ void entity_set_abs_position(entity_base *ent, const vector3d &pos) {
     } else {
         CDECL_CALL(0x004E1230, ent, &pos);
     }
+}
+
+void check_po(entity_base *e)
+{
+    CDECL_CALL(0x0053CD00, e);
 }
 
 void entity_base_patch() {

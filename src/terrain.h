@@ -118,6 +118,9 @@ struct terrain {
     //0x0052DFF0
     region *find_region(const vector3d &a2, const region *a3);
 
+    //0x00534920
+    region *find_region(string_hash a2);
+
     //0x00534890
     int find_innermost_region(const vector3d &a1);
 
@@ -125,6 +128,12 @@ struct terrain {
     void register_region_change_callback(void (*a3)(bool, region *));
 
     void show_obbs();
+
+    //0x00514310
+    void un_mash_obb(char *a2, int *a3, region *reg);
+
+    //0x00514380
+    void un_mash_texture_to_frame(char *a2, int *a3, region *reg);
 
     //0x0055BFA0
     static bool district_construct_callback(resource_pack_slot::callback_enum reason,
