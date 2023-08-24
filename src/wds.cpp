@@ -64,7 +64,6 @@
 #include "worldly_pack_slot.h"
 
 #include <list>
-#include <vector>
 
 VALIDATE_SIZE(world_dynamics_system, 0x400u);
 VALIDATE_SIZE((*world_dynamics_system::field_0), 0x3C);
@@ -476,23 +475,13 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 buffer_index += 4;
                 sub_692686(buffer_index, 8);
 
-                auto strings = [&buffer_index, &buffer_ptr](int num) {
-                    std::vector<fixedstring<8> *> result{};
-                    for ( auto i = 0; i < num; ++i ) {
-                        auto *v66 = (fixedstring<8> *) buffer_ptr + buffer_index;
-                        buffer_index += 32;
+                auto *strings = bit_cast<fixedstring<8> *>(buffer_ptr + buffer_index);
 
-                        result.push_back(v66);
-                    }
-
-                    return result;
-                }(v68);
-
-                std::for_each(strings.begin(), strings.end(), [this,
+                std::for_each(strings, strings + v68, [this,
                                                             ent_ptr,
-                                                            &list_regions](auto *v66) {
+                                                            &list_regions](auto &v66) {
 
-                    auto *v18 = v66->to_string();
+                    auto *v18 = v66.to_string();
                     auto *found_region = this->the_terrain->find_region(string_hash {v18});
                     if ( found_region != nullptr)
                     {
@@ -512,7 +501,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                         }
 
                         mString v33 {"force_region: unknown region "};
-                        auto v32 = v33 + v66->to_string();
+                        auto v32 = v33 + v66.to_string();
                         auto v30 = v32 + " for entity ";
                         auto v28 = v30 + str;
                         auto v26 = v28 + "'";
@@ -520,6 +509,8 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                         found_region = this->the_terrain->get_region(0);
                     }
                 });
+
+                buffer_index += sizeof(fixedstring<8>) * v68;
 
                 sub_6A1898(v79);
                 {
