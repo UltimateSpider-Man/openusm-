@@ -1,11 +1,15 @@
 #include "region.h"
 
+#include "bitvector.h"
 #include "common.h"
+#include "fixed_pool.h"
 #include "func_wrapper.h"
+#include "lego_map.h"
 #include "memory.h"
 #include "region_mash_info.h"
 #include "subdivision_node_obb_base.h"
 #include "terrain.h"
+#include "trace.h"
 #include "wds.h"
 
 #include <cassert>
@@ -15,6 +19,8 @@ VALIDATE_SIZE(region, 0x134u);
 VALIDATE_OFFSET(region, field_C4, 0xC4);
 VALIDATE_OFFSET(region, field_108, 0x108);
 
+static Var<fixed_pool> lego_bitvector_pool {0x009222D4};
+
 region::region(const mString &a2) {
     THISCALL(0x0053B4B0, this, &a2);
 }
@@ -23,15 +29,15 @@ void region::constructor_common() {
     this->bitvector_of_legos_rendered_last_frame = nullptr;
     this->field_98 = nullptr;
     this->obb = nullptr;
-    this->field_34 = 0;
+    this->field_34 = nullptr;
     this->field_38 = 0;
     this->field_3C = 0;
     this->m_fade_groups_count= 0;
     this->field_44 = 0;
     this->field_48 = 0;
     this->meshes = nullptr;
-    this->field_D8 = nullptr;
-    this->field_DC = 0;
+    this->texture_to_frame_maps = nullptr;
+    this->m_total_frame_maps = 0;
     this->flags = 0;
     this->field_D4 = -1;
     this->multiblock_number = 1;
@@ -208,7 +214,26 @@ fixedstring<8> &region::get_name() {
 
 void region::un_mash_lego_map(char *a2, int *a3)
 {
-    THISCALL(0x0054FEC0, this, a2, a3);
+    TRACE("region::un_mash_lego_map");
+
+    if constexpr (1) {
+        this->field_9C = (lego_map_root_node *)a2;
+        this->field_9C->un_mash(a2, a3, this);
+        auto *mem = lego_bitvector_pool().allocate_new_block();
+        this->bitvector_of_legos_rendered_last_frame = new (mem) fixed_bitvector<uint, 2048>{};
+
+        assert(bitvector_of_legos_rendered_last_frame != nullptr);
+        auto sub_663403 = [](auto *self) -> void
+        {
+            for ( auto i = 0u; i < 65u; ++i ) {
+                self->field_4[i] = -1;
+            }
+        };
+
+        sub_663403(this->bitvector_of_legos_rendered_last_frame);
+    } else {
+        THISCALL(0x0054FEC0, this, a2, a3);
+    }
 }
 
 void region::add(entity *e)

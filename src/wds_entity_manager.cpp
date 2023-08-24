@@ -1,5 +1,6 @@
 #include "wds_entity_manager.h"
 
+#include "box_trigger.h"
 #include "camera.h"
 #include "common.h"
 #include "entity.h"
@@ -7,6 +8,8 @@
 #include "item.h"
 #include "mstring.h"
 #include "oldmath_po.h"
+#include "trace.h"
+#include "trigger_manager.h"
 #include "utility.h"
 #include "vtbl.h"
 #include "multi_vector.h"
@@ -51,7 +54,6 @@ bool wds_entity_manager::is_entity_valid(entity *a1)
     return v11 != v4;
 }
 
-
 bool wds_entity_manager::is_item_valid(item *a2)
 {
     auto end = this->items.end();
@@ -63,10 +65,14 @@ bool wds_entity_manager::is_item_valid(item *a2)
 }
 
 int wds_entity_manager::acquire_entity(string_hash a1, uint32_t a2) {
+    TRACE("wds_entity_manager::acquire_entity");
+
     return THISCALL(0x005E0D40, this, a1, a2);
 }
 
 void wds_entity_manager::add_dynamic_instanced_entity(entity *a2) {
+    TRACE("wds_entity_manager::add_dynamic_instanced_entity");
+
     THISCALL(0x005E0760, this, a2);
 }
 
@@ -120,6 +126,8 @@ void wds_entity_manager::make_time_limited(entity *a1, Float a2) {
 }
 
 item *wds_entity_manager::add_item(_std::vector<item *> *a2, item *a3) {
+    TRACE("wds_entity_manager::add_item");
+
     return (item *) THISCALL(0x005DF7D0, this, a2, a3);
 }
 
@@ -174,10 +182,30 @@ int wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                                                           const mString &a5,
                                                           uint32_t a6,
                                                           const _std::list<region *> *a7) {
+    TRACE("wds_entity_manager::create_and_add_entity_or_subclass");
+
     return THISCALL(0x005E0A10, this, a2, a3, &a4, &a5, a6, a7);
 }
 
+box_trigger *wds_entity_manager::create_and_add_box_trigger(
+        string_hash a1,
+        const vector3d &a3,
+        const convex_box &a4)
+{
+    TRACE("wds_entity_manager::create_and_add_box_trigger");
+
+    if constexpr (1) {
+        auto *new_trigger = (box_trigger *) trigger_manager::instance()->new_box_trigger(a1, a3);
+        new_trigger->set_box_info(a4);
+        return new_trigger;
+    } else {
+        return (box_trigger *) THISCALL(0x005C2D80, this, a1, &a3, &a4);
+    }
+}
+
 entity *wds_entity_manager::add_to_entities(_std::vector<entity *> *vec, entity *a3) {
+    TRACE("wds_entity_manager::add_to_entities");
+
     return (entity *) THISCALL(0x005DFAB0, this, vec, a3);
 }
 
@@ -217,10 +245,14 @@ int wds_entity_manager::add_entity_internal(_std::vector<entity *> *vec, entity 
 }
 
 void wds_entity_manager::add_camera(_std::vector<entity *> *vec, camera *a2) {
+    TRACE("wds_entity_manager::add_camera");
+
     THISCALL(0x005DFC80, this, vec, a2);
 }
 
 void wds_entity_manager::process_time_limited_entities(Float a2) {
+    TRACE("wds_entity_manager::process_time_limited_entities");
+
     THISCALL(0x005D92D0, this, a2);
 }
 

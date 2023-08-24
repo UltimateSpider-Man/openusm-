@@ -19,7 +19,15 @@ struct fixed_bitvector {
         assert(LOG_BASE_TYPE_BITS == bitmath::intlog2( sizeof( base_type ) * 8 ));
   
         this->field_0 = number_of_bits + sizeof(base_type) * 8;
-        sub_65E3AE(this);  
+
+        auto sub_A62040 = [](auto *self) -> void
+        {
+            for ( auto i = 0u; i < 65u; ++i ) {
+                self->field_4[i] = 0;
+            }
+        };
+
+        sub_A62040(this);  
     }
 
     int get_index(int a1)

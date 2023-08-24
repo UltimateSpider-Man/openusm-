@@ -23,6 +23,7 @@ struct ai_region_paths;
 struct eligible_pack;
 struct dynamic_rtree_root_t;
 struct lego_map_root_node;
+struct texture_to_frame_map;
 
 struct region
 {
@@ -71,8 +72,8 @@ struct region
     int strip_id;
     int multiblock_number;
     int field_D4;
-    int *field_D8;
-    int field_DC;
+    texture_to_frame_map **texture_to_frame_maps;
+    int m_total_frame_maps;
     region_audio_box_set field_E0;
     traffic_path_graph *field_100;
     ai_region_paths *field_104;

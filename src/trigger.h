@@ -14,4 +14,7 @@ struct trigger : signaller {
     trigger();
 
     trigger(string_hash a2);
+
+    //0x0053C390
+    void set_multiple_entrance(bool a2);
 };

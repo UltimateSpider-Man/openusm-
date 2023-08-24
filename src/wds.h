@@ -97,6 +97,9 @@ struct world_dynamics_system {
     //0x00558370
     void frame_advance(Float a2);
 
+    //0x0053CC90
+    void register_water_exclusion_trigger(box_trigger *trig);
+
     //0x0055A680
     bool un_mash_scene_entities(const resource_key &a2, region *, worldly_pack_slot *, bool a5, scene_entity_brew &);
 

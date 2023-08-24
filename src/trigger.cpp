@@ -1,6 +1,7 @@
 #include "trigger.h"
 
 #include "common.h"
+#include "func_wrapper.h"
 
 VALIDATE_SIZE(trigger, 0x58);
 
@@ -22,4 +23,8 @@ trigger::trigger(string_hash a2) : signaller(true) {
     this->field_54 = nullptr;
     this->trigger_current_entities = nullptr;
     this->field_4C = 0;
+}
+
+void trigger::set_multiple_entrance(bool a2) {
+    THISCALL(0x0053C390, this, a2);
 }

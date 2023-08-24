@@ -1,15 +1,20 @@
 #include "oriented_bounding_box_root_node.h"
 
+#include "common.h"
 #include "debug_render.h"
 #include "os_developer_options.h"
 #include "game.h"
+#include "subdivision.h"
 #include "subdivision_visitor.h"
 #include "subdivision_node_obb_base.h"
-#include "vtbl.h"
 #include "subdivision_node.h"
 #include "camera.h"
+#include "trace.h"
+#include "vtbl.h"
 
 #include <vector.hpp>
+
+VALIDATE_OFFSET(oriented_bounding_box_root_node, field_5C, 0x5C);
 
 oriented_bounding_box_root_node::oriented_bounding_box_root_node()
 {
@@ -168,4 +173,39 @@ void oriented_bounding_box_root_node::set_color(color32 a2)
 void oriented_bounding_box_root_node::traverse_sphere(const vector3d &a2, Float a3, subdivision_visitor *a4)
 {
     THISCALL(0x00522E50, this, &a2, a3, a4);
+}
+
+void oriented_bounding_box_root_node::un_mash(
+        char *a2,
+        int *image_size_used,
+        region *reg)
+{
+    TRACE("oriented_bounding_box_root_node::un_mash");
+
+    auto sub_68CB5A = [](int a1, int alignment) -> int
+    {
+        auto result = ~(alignment - 1) & (a1 + alignment - 1);
+        assert(( result & ( alignment - 1 ) ) == 0);
+
+        return result;
+    };
+
+    auto v4 = sub_68CB5A((int) a2, 0x40);
+    this->field_5C = CAST(this->field_5C, bit_cast<char *>(this->field_5C) + v4);
+    this->field_6C += v4;
+    this->field_20 += v4;
+
+    auto sub_68D0D2 = [&sub_68CB5A](oriented_bounding_box_root_node *self) -> int
+    {
+        assert(( uint32_t( self ) & ( SUBDIVISION_NODE_ALIGNMENT - 1 ) ) == 0);
+        return sub_68CB5A((int) &self[1], 4);
+    };
+
+    this->field_24 = sub_68D0D2(this);
+
+    assert(image_size_used != nullptr);
+
+    *image_size_used = this->field_60;
+    this->field_60 = 0;
+    this->field_64 = 0;
 }

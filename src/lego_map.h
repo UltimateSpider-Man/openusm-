@@ -6,6 +6,7 @@ struct nglMesh;
 struct nglMaterialBase;
 struct scene_entity;
 struct proximity_map;
+struct region;
 
 struct lego_map_root_node {
     nglMesh **field_0;
@@ -18,4 +19,7 @@ struct lego_map_root_node {
     uint16_t field_1C;
 
     lego_map_root_node();
+
+    //0x0054E5A0
+    void un_mash(char *image, int *a3, region *reg);
 };

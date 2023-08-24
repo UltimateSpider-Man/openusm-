@@ -5,12 +5,14 @@
 #include "ai_player_controller.h"
 #include "base_ai_core.h"
 #include "beam.h"
+#include "box_trigger.h"
 #include "camera.h"
 #include "scene_brew.h"
 #include "scene_entity_brew.h"
 #include "collide_trajectories.h"
 #include "collision_trajectory_filter.h"
 #include "common.h"
+#include "convex_box.h"
 #include "cut_scene_player.h"
 #include "damage_interface.h"
 #include "daynight.h"
@@ -340,9 +342,10 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
 
             brew.parse_code = *(int *)&brew.field_10[brew.buffer_index];
             assert(brew.parse_code == REGION_MESH_VOBBS_TAG);
-            brew.buffer_index += 4;
+            brew.buffer_index += sizeof(int);
             int v91 = *(int *)&brew.field_10[brew.buffer_index];
-            brew.buffer_index += 4;
+            brew.buffer_index += sizeof(int);
+
             brew.buffer_index = (brew.buffer_index + 15) & 0xFFFFFFF0;
             if ( v91 ) {
                 reg->field_38 = v91;
@@ -353,11 +356,11 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             brew.parse_code = *(int *)&brew.field_10[brew.buffer_index];
             assert(brew.parse_code == ENTITIES_TAG);
 
-            brew.buffer_index += 4;
+            brew.buffer_index += sizeof(int);
             brew.field_3C = *(int *)&brew.field_10[brew.buffer_index];
-            brew.buffer_index += 4;
+            brew.buffer_index += sizeof(int);
             brew.field_24 = *(int *)&brew.field_10[brew.buffer_index];
-            brew.buffer_index += 4;
+            brew.buffer_index += sizeof(int);
             assert((brew.buffer_index % 4) == 0);
         }
 
@@ -421,7 +424,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             {
                 brew.field_28.start();
                 brew.field_2C = *(int *)&buffer_ptr[buffer_index];
-                buffer_index += 4;
+                buffer_index += sizeof(int);
                 brew.field_30 = 0;
                 brew.field_34 = 0;
             }
@@ -435,7 +438,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 assert((buffer_index % 4) == 0);
 
                 int v72 = *(int *)&buffer_ptr[buffer_index];
-                buffer_index += 4;
+                buffer_index += sizeof(int);
 
                 sub_692686(buffer_index, 16);
                 sub_6A1898(v80);
@@ -447,9 +450,9 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 }
 
                 if (ent_ptr->is_renderable()) {
-                    tmp_e->set_timer(0u);
-                    tmp_e->on_fade_distance_changed(tmp_e->field_8 & 0xF);
-                    if ( a5 && ((tmp_e->field_8 & 0xF) == 15) )
+                    ent_ptr->set_timer(0u);
+                    ent_ptr->on_fade_distance_changed(ent_ptr->field_8 & 0xF);
+                    if ( a5 && ((ent_ptr->field_8 & 0xF) == 15) )
                     {
                         ent_ptr->field_8 |= 0x200000u;
                         auto id = ent_ptr->get_id();
@@ -471,8 +474,10 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 dword_156849C += sub_68D9F1(v80);
                 buffer_index += v72;
                 sub_692686(buffer_index, 4);
+
                 int v68 = *(int *)&buffer_ptr[buffer_index];
-                buffer_index += 4;
+                buffer_index += sizeof(int);
+
                 sub_692686(buffer_index, 8);
 
                 auto *strings = bit_cast<fixedstring<8> *>(buffer_ptr + buffer_index);
@@ -564,15 +569,16 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
         dword_1568498 = sub_68D9F1(v81);
         //sp_log("dword_1568498 = %f seconds", dword_1568498);
 
-        if ( !brew.field_0.is_done() && !brew.field_38.is_started() )
+        if (!brew.field_0.is_done() && !brew.field_38.is_started())
         {
             brew.field_38.start();
             parse_code = *(int *)&buffer_ptr[buffer_index];
-            buffer_index += 4;
+            buffer_index += sizeof(parse_code);
         }
 
         while ( !brew.field_38.is_done() && parse_code != 18 )
         {
+            sp_log("parse_code = %d", parse_code);
             switch ( parse_code )
             {
             case 3u: {
@@ -637,10 +643,10 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 break;
             }
             case 14u: {
-                auto *v55 = &buffer_ptr[buffer_index];
                 auto v54 = *(int *)&buffer_ptr[buffer_index];
-                v55 = &buffer_ptr[buffer_index + 4];
-                buffer_index += 4;
+                buffer_index += sizeof(int);
+
+                auto *v55 = &buffer_ptr[buffer_index];
                 if ( reg != nullptr ) {
                     reg->field_3C = (int)v55;
                 }
@@ -657,7 +663,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                     reg->m_fade_groups_count = fade_groups_count;
                 }
                 
-                buffer_index += 4;
+                buffer_index += sizeof(int);
                 if ( fade_groups_count > 0 )
                 {
                     if ( reg != nullptr ) {
@@ -675,10 +681,10 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 break;
             }
             case 17u: {
-                auto *v52 = &buffer_ptr[buffer_index];
                 auto v51 = *(int *)&buffer_ptr[buffer_index];
-                v52 = &buffer_ptr[buffer_index + 4];
-                buffer_index += 4;
+                buffer_index += sizeof(int);
+
+                auto *v52 = &buffer_ptr[buffer_index];
                 if ( reg != nullptr ) {
                     reg->field_3C = (int)v52;
                 }
@@ -695,7 +701,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             }
 
             parse_code = *(int *)&buffer_ptr[buffer_index];
-            buffer_index += 4;
+            buffer_index += sizeof(parse_code);
             if ( sub_6A3981(brew) )
             {
                 brew.field_8 = slot_ptr;
@@ -761,12 +767,77 @@ bool world_dynamics_system::un_mash_scene_box_triggers(const resource_key &a1, r
     }
 }
 
+void world_dynamics_system::register_water_exclusion_trigger(box_trigger *trig)
+{
+    TRACE("world_dynamics_system::register_water_exclusion_trigger");
+
+    assert(trig != nullptr);
+
+    if constexpr (1) {
+        trig->field_4 |= 0x10u;
+        trig->set_multiple_entrance(true);
+        trig->field_4 |= 0x20000u;
+
+        uint32_t v3 = trig->my_handle.field_0;
+        this->field_248.push_back(v3);
+    } else {
+        THISCALL(0x0053CC90, this, trig);
+    }
+}
+
 bool world_dynamics_system::un_mash_box_triggers(
         int parse_code,
         char *a3,
         _std::vector<box_trigger *> *box_trigger_vec_ptr,
         int *a5) {
-    return (bool) THISCALL(0x0054A1C0, this, parse_code, a3, box_trigger_vec_ptr, a5);
+    TRACE("world_dynamics_system::un_mash_box_triggers");
+
+    if constexpr (0) {
+        assert(parse_code == BOX_TRIGGERS_TAG);
+
+        int buffer_index = 0;
+        int v19 = *(int *)a3;
+        buffer_index = 4;
+        for ( auto i = 0u; i < v19; ++i )
+        {
+            assert((buffer_index % 4) == 0);
+
+            auto *v18 = (fixedstring<8> *)&a3[buffer_index];
+            buffer_index += sizeof(*v18);
+            assert((buffer_index % 4) == 0);
+
+            auto *v17 = (int *) &a3[buffer_index];
+            buffer_index += sizeof(*v17);
+            assert((buffer_index % 4 ) == 0);
+
+            auto *v16 = (convex_box *)&a3[buffer_index];
+            buffer_index += sizeof(*v16);
+            assert((buffer_index % 4) == 0);
+
+            auto *a2 = (vector3d *)&a3[buffer_index];
+            buffer_index += sizeof(*a2);
+            auto &v10 = *v16;
+            auto &v9 = *a2;
+            auto *v5 = v18->to_string();
+            string_hash v8 {v5};
+            auto *v11 = g_world_ptr()->ent_mgr.create_and_add_box_trigger(v8, v9, v10);
+            auto *v14 = v11;
+            if ( v11 != nullptr )
+            {
+                assert(box_trigger_vec_ptr != nullptr);
+
+                box_trigger_vec_ptr->push_back(v14);
+                if ( (*v17 & 1) != 0 ) {
+                    this->register_water_exclusion_trigger(v14);
+                }
+            }
+        }
+
+        *a5 = buffer_index;
+        return true;
+    } else {
+        return (bool) THISCALL(0x0054A1C0, this, parse_code, a3, box_trigger_vec_ptr, a5);
+    }
 }
 
 bool world_dynamics_system::un_mash_scene_audio_boxes(const resource_key &key_id,

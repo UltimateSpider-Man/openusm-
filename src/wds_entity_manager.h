@@ -7,12 +7,15 @@
 #include <list.hpp>
 #include <vector.hpp>
 
+struct box_trigger;
 struct camera;
+struct convex_box;
 struct entity;
 struct po;
 struct mString;
 struct region;
 struct item;
+struct vector3d;
 
 struct wds_entity_manager {
     multi_vector<entity *> entities;
@@ -86,6 +89,12 @@ struct wds_entity_manager {
                                           const mString &a5,
                                           uint32_t a6,
                                           const _std::list<region *> *a7);
+
+    //0x005C2D80
+    box_trigger *create_and_add_box_trigger(
+            string_hash a1,
+            const vector3d &a3,
+            const convex_box &a4);
 
     //0x005D92D0
     void process_time_limited_entities(Float a2);

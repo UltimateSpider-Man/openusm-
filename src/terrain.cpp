@@ -34,6 +34,7 @@
 #include "static_region_list_methods.h"
 #include "subdivision_node_obb_base.h"
 #include "subdivision_visitor.h"
+#include "texture_to_frame_map.h"
 #include "trace.h"
 #include "traffic_path_graph.h"
 #include "utility.h"
@@ -711,7 +712,10 @@ void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions) 
 region *terrain::find_region(string_hash a2) {
     TRACE("terrain::find_region", a2.to_string());
 
-    return (region *) THISCALL(0x00534920, this, a2);
+    if constexpr (0) {
+    } else {
+        return (region *) THISCALL(0x00534920, this, a2);
+    }
 }
 
 _std::vector<region *> *terrain::sub_6DC8A0(vector3d a2) {
@@ -837,12 +841,56 @@ void find_ideal_terrain_packs_callback(_std::vector<ideal_pack_info> *a1) {
 
 void terrain::un_mash_obb(char *a2, int *a3, region *reg)
 {
-    THISCALL(0x00514310, this, a2, a3, reg);
+    TRACE("terrain::un_mash_obb");
+
+    if constexpr (1) {
+        if ( reg != nullptr )
+        {
+            reg->field_98 = (oriented_bounding_box_root_node *)((unsigned int)(a2 + 63) & 0xFFFFFFC0);
+            reg->field_98->un_mash(a2, a3, reg);
+            if (reg->field_98->field_30 == 0) {
+                reg->field_98 = nullptr;
+            }
+        }
+    } else {
+        THISCALL(0x00514310, this, a2, a3, reg);
+    }
 }
 
 void terrain::un_mash_texture_to_frame(char *a2, int *a3, region *reg)
 {
-    THISCALL(0x00514380, this, a2, a3, reg);
+    TRACE("terrain::un_mash_texture_to_frame");
+
+    if constexpr (1) {
+        *a3 = 0;
+        auto total_frame_maps = *bit_cast<int *>(a2);
+        char *a1 = a2 + 4;
+
+        assert(total_frame_maps > 0);
+        assert(reg->texture_to_frame_maps == nullptr);
+
+        reg->m_total_frame_maps = total_frame_maps;
+        reg->texture_to_frame_maps = (texture_to_frame_map **)(a1 + 4);
+        a1 += 4;
+        int v6 = (int) (a1 + 4 * total_frame_maps);
+        for ( auto i = 0; i < total_frame_maps; ++i ) {
+            *(int *)a1 = v6;
+            v6 += 48;
+            a1 += 4;
+        }
+
+        for ( auto j = 0; j < total_frame_maps; ++j )
+        {
+            reg->texture_to_frame_maps[j] = (texture_to_frame_map *)a1;
+            int a2a;
+            reg->texture_to_frame_maps[j]->un_mash(a1, &a2a);
+            a1 += a2a;
+        }
+
+        *a3 = a1 - a2;
+    } else {
+        THISCALL(0x00514380, this, a2, a3, reg);
+    }
 }
 
 void terrain_patch()

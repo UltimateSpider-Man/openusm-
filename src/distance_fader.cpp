@@ -1,11 +1,15 @@
 #include "distance_fader.h"
 
+#include "trace.h"
+
 #include <cassert>
 
 int distance_fader::get_fade_index_for_fade_distance(Float a1) {
+    TRACE("distance_fader::get_fade_index_for_fade_distance");
+
     int idx = 0;
     float v4 = 3.4028235e38;
-    for (int i = 0; i < 16; ++i) {
+    for (auto i = 0u; i < 16u; ++i) {
         auto v2 = std::abs(distance_fader::fade_distances()[i] - a1);
         if (v4 > v2) {
             v4 = v2;
