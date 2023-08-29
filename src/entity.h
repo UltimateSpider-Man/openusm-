@@ -3,6 +3,8 @@
 #include "color32.h"
 #include "signaller.h"
 
+#include <list.hpp>
+
 struct region;
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
@@ -166,7 +168,12 @@ struct entity : signaller {
     //0x004C0760
     region *get_primary_region();
 
+    //0x004D67D0
+    static int find_entities(int a1);
+
     static Var<int> visit_key3;
+
+    static inline Var<_std::list<entity *> *> found_entities {0x0095A6E0};
 };
 
 extern void entity_patch();

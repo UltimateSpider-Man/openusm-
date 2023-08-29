@@ -1,5 +1,6 @@
 #include "debug_menu_extra.h"
 
+#include "actor.h"
 #include "debug_menu.h"
 #include "debug_render.h"
 #include "os_developer_options.h"
@@ -10,6 +11,7 @@
 #include "rumble_manager.h"
 #include "ngl.h"
 #include "app.h"
+#include "nal_system.h"
 #include "wds.h"
 #include "terrain.h"
 #include "resource_manager.h"
@@ -18,6 +20,8 @@
 #include "femanager.h"
 #include "igofrontend.h"
 #include "entity_tracker_manager.h"
+
+#include <list>
 
 mString ngl_render_callback(debug_menu_entry *a2)
 {
@@ -356,6 +360,16 @@ void create_camera_menu_items(debug_menu *parent) {
     g_debug_camera_entry = new_menu_entry;
 }
 
+void populate_entity_animation_menu(debug_menu_entry *entry);
+
+void create_entity_animation_menu(debug_menu *parent)
+{
+    auto *v5 = create_menu_entry(mString{"Entity Animations"});
+
+    v5->set_submenu(nullptr);
+    v5->set_game_flags_handler(populate_entity_animation_menu);
+    parent->add_entry(v5);
+}
 
 static bool g_debug_menu_just_malored = false;
 
@@ -391,6 +405,77 @@ void warp_poi_handler(debug_menu_entry *menu_entry)
             g_world_ptr()->malor_point(a1, 0, false);
             g_debug_menu_just_malored = true;
             debug_menu::hide();
+        }
+    }
+}
+
+void sub_6A9FED(debug_menu_entry *entry)
+{
+    auto *v7 = (entity *) entry->m_data;
+    if ( v7 != nullptr && v7->is_an_actor() )
+    {
+        auto *v6 = (actor *) v7;
+        auto *context = v6->field_BC;
+        assert(context != nullptr);
+
+        string_hash v4 {entry->get_script_handler().c_str()};
+        resource_manager::push_resource_context(context);
+
+        auto v3 = v6->play_anim(v4);
+        resource_manager::pop_resource_context();
+        v3.set_anim_speed(1.0);
+        debug_menu::release_focus();
+    }
+}
+
+void sub_6918AD(debug_menu_entry *entry)
+{
+    auto *e = (entity *) entry->m_data;
+    if (e->is_an_actor())
+    {
+        auto *a1 = create_menu(entry->get_script_handler(), (debug_menu::sort_mode_t)1);
+        entry->set_submenu(a1);
+        auto *v18 = (actor *) e;
+
+        std::list<nalAnimClass<nalAnyPose> *> v17;
+        actor::get_animations(v18, v17);
+        for (auto *v15 : v17)
+        {
+            auto &v3 = v15->field_8;
+            auto *v4 = v3.to_string();
+            mString v14 {v4};
+
+            auto *v13 = create_menu_entry(v14);
+            v13->m_data = entry->m_data;
+            v13->set_game_flags_handler(sub_6A9FED);
+            a1->add_entry(v13);
+        }
+    }
+}
+
+void populate_entity_animation_menu(debug_menu_entry *entry)
+{
+    auto *v26 = create_menu(entry->get_script_handler(), (debug_menu::sort_mode_t)1);
+    entry->set_submenu(v26);
+    entity::find_entities(1);
+    auto &found_entities = (*entity::found_entities());
+    for (auto *ent : found_entities)
+    {
+        if ( ent->is_an_actor() )
+        {
+            auto *v23 = (actor *) ent;
+            
+            std::list<nalAnimClass<nalAnyPose> *> v22;
+            actor::get_animations(v23, v22);
+            if ( !v22.empty() )
+            {
+                auto *v21 = create_menu_entry(mString {v23->get_id().to_string()});
+
+                v21->set_game_flags_handler(sub_6918AD);
+                v21->m_data = ent;
+                v21->set_submenu(nullptr);
+                v26->add_entry(v21);
+            }
         }
     }
 }

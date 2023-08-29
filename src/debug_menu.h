@@ -114,7 +114,7 @@ struct debug_menu_entry {
     } m_value;
     void (*m_game_flags_handler)(debug_menu_entry *);
     mString (*render_callback)(debug_menu_entry *);
-    void (__cdecl *field_C)(debug_menu_entry *, ai::ai_core *);
+    void (__cdecl *field_C)(debug_menu_entry *, void *);
     void (__cdecl *frame_advance_callback)(debug_menu_entry *);
     script_instance *field_14;
     int field_18;
@@ -123,7 +123,7 @@ struct debug_menu_entry {
     float field_20[4];
     debug_menu_entry *prev;
     debug_menu_entry *next;
-    ai::ai_core *field_38;
+    void *m_data;
     mString field_3C;
     bool m_value_initialized;
 

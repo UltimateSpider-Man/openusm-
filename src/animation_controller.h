@@ -19,6 +19,8 @@ struct animation_controller {
         bool field_0;
         float field_4;
         animation_controller *field_8;
+
+        void set_anim_speed(Float a2);
     };
 
     std::intptr_t m_vtbl;

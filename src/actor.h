@@ -7,6 +7,13 @@
 #include "float.hpp"
 #include "spline.h"
 
+#include <list>
+
+struct nalAnyPose;
+
+template<typename T>
+struct nalAnimClass;
+
 namespace ai {
 struct ai_core;
 }
@@ -194,6 +201,8 @@ struct actor : entity {
 
     //0x004D2060
     static void swap_all_mesh_buffers();
+
+    static void get_animations(actor *a1, std::list<nalAnimClass<nalAnyPose> *> &a2);
 };
 
 namespace ai {

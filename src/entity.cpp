@@ -421,6 +421,11 @@ region *entity::get_primary_region()
     return nullptr;
 }
 
+int entity::find_entities(int a1)
+{
+    return CDECL_CALL(0x004D67D0, a1);
+}
+
 void entity_patch() {
 
     {

@@ -462,7 +462,7 @@ debug_menu_entry::debug_menu_entry(const mString &a1) : field_20{0, 1.0, 0.1, 10
     this->field_C = nullptr;
     this->field_14 = nullptr;
     this->next = nullptr;
-    this->field_38 = nullptr;
+    this->m_data = nullptr;
     this->m_value_initialized = false;
 }
 
@@ -480,7 +480,7 @@ debug_menu_entry::debug_menu_entry(debug_menu *submenu) :
     this->field_C = nullptr;
     this->field_14 = nullptr;
     this->next = nullptr;
-    this->field_38 = nullptr;
+    this->m_data = nullptr;
     this->m_value_initialized = false;
 }
 
@@ -1315,7 +1315,7 @@ void debug_menu::remove_entry(debug_menu_entry *e)
     
     if ( e->field_C != nullptr )
     {
-        e->field_C(e, e->field_38);
+        e->field_C(e, e->m_data);
     }
 
     if ( e != nullptr )
@@ -1347,8 +1347,9 @@ void debug_menu::init() {
     sub_68FFCB(debug_menu::root_menu);
     j_create_memory_menu(debug_menu::root_menu);
     j_create_entity_variant_menu(debug_menu::root_menu);
-    j_create_entity_animation_menu(debug_menu::root_menu);
     */
+
+    create_entity_animation_menu(debug_menu::root_menu);
 }
 
 void debug_menu::hide()

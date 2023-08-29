@@ -699,27 +699,7 @@ bool PlayAnimCommand::process_cmd(const std::vector<mString> &a2)
         auto v24 = v29->play_anim(v16);
         resource_manager::pop_resource_context();
 
-        {
-            auto sub_6856B6 = [](animation_controller::anim_ctrl_handle *self, Float a2) -> void
-            {
-                struct {
-                    char field_0[0x58];
-                    void (__thiscall *field_58)(void *, Float);
-                    void (__thiscall *field_5C)(void *, Float, Float);
-                } * vtbl = CAST(vtbl, self->field_8->m_vtbl);
-
-                if ( self->field_0 ) {
-                    vtbl->field_58(self->field_8, a2);
-                } else {
-                    vtbl->field_5C(
-                        self->field_8,
-                        a2,
-                        self->field_4);
-                }
-            };
-
-            sub_6856B6(&v24, 1.0);
-        }
+        v24.set_anim_speed(1.0);
     }
     else
     {

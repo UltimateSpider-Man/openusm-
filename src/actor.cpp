@@ -670,6 +670,30 @@ ai::ai_core *actor::_get_ai_core() {
     return result;
 }
 
+void actor::get_animations(actor *a1, std::list<nalAnimClass<nalAnyPose> *> &a2)
+{
+    a2.clear();
+    auto *v11 = a1->field_BC;
+    if ( v11 != nullptr )
+    {
+        auto &res_dir = v11->get_resource_directory();
+        auto tlresource_count = res_dir.get_tlresource_count(TLRESOURCE_TYPE_ANIM_FILE);
+        for (auto idx = 0; idx < tlresource_count; ++idx)
+        {
+            auto *tlres_loc = res_dir.get_tlresource_location(idx, TLRESOURCE_TYPE_ANIM_FILE);
+            auto *animFile = (nalAnimFile *) tlres_loc->field_8;
+            if ( animFile->field_0 == 0x10101 )
+            {
+                for ( auto *anim = bit_cast<nalAnimClass<nalAnyPose> *>(animFile->field_34);
+                        anim != nullptr;
+                        anim = anim->field_4 ) {
+                    a2.push_back(anim);
+                }
+            }
+        }
+    }
+}
+
 namespace ai {
 
 void setup_hero_capsule(actor *act) {
