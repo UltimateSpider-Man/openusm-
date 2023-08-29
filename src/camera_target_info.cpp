@@ -48,7 +48,7 @@ camera_target_info::camera_target_info(entity *target,
         this->field_54 = (actor *)target;
         auto v69 = this->field_54->get_abs_po();
         this->field_C = this->field_54->get_visual_center();
-        auto *v8 = this->field_54->field_74;
+        auto *v8 = this->field_54->anim_ctrl;
         if ( v8 != nullptr )
         {
             this->field_C = v69.inverse_xform(this->field_C);

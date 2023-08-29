@@ -51,11 +51,11 @@ bool animation_logic_system::frame_advance_should_do_frame_advance([[maybe_unuse
 
     if (this->the_controller == nullptr) {
         auto *v3 = this->field_6C;
-        if (v3->field_74 == nullptr) {
+        if (v3->anim_ctrl == nullptr) {
             v3->allocate_anim_controller(0, nullptr);
         }
 
-        this->the_controller = CAST(the_controller, this->field_6C->field_74);
+        this->the_controller = CAST(the_controller, this->field_6C->anim_ctrl);
     }
 
     auto *v4 = this->field_6C;

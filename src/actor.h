@@ -2,6 +2,8 @@
 
 #include "entity.h"
 
+#include "animation_controller.h"
+
 #include "float.hpp"
 #include "spline.h"
 
@@ -43,7 +45,7 @@ struct actor : entity {
     damage_interface *m_damage_interface;
     physical_interface *m_physical_interface;
     int field_70;
-    generic_anim_controller *field_74;
+    generic_anim_controller *anim_ctrl;
     advanced_entity_ptrs *adv_ptrs;
     base_ai_data *field_7C;
     interactable_interface *m_interactable_ifc;
@@ -81,6 +83,8 @@ struct actor : entity {
     traffic_light_interface *traffic_light_ifc();
 
     void allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3);
+
+    animation_controller::anim_ctrl_handle play_anim(const string_hash &a3);
 
     void bind_to_scene_anim();
 

@@ -49,7 +49,7 @@ actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3) {
     this->field_A0 = nullptr;
     this->field_88 = 0;
     this->adv_ptrs = nullptr;
-    this->field_74 = nullptr;
+    this->anim_ctrl = nullptr;
     this->field_70 = 0;
     this->field_A4 = 0;
     this->field_BC = nullptr;
@@ -98,7 +98,36 @@ traffic_light_interface *actor::traffic_light_ifc() {
 }
 
 void actor::allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3) {
-    THISCALL(0x004CC630, this, a2, a3);
+    TRACE("actor::allocate_anim_controller");
+
+    if constexpr (0) {
+    } else {
+        THISCALL(0x004CC630, this, a2, a3);
+    }
+}
+
+#include "resource_pack_slot.h"
+#include "resource_directory.h"
+#include "tlresource_location.h"
+#include "nal_system.h"
+
+animation_controller::anim_ctrl_handle actor::play_anim(const string_hash &a3)
+{
+    TRACE("actor::play_anim");
+
+    if ( this->anim_ctrl == nullptr ) {
+        this->allocate_anim_controller(0u, nullptr);
+    }
+
+    assert(anim_ctrl != nullptr);
+    this->anim_ctrl->play_base_layer_anim(a3, 0.0, 32u, true);
+
+    {
+        animation_controller::anim_ctrl_handle result{};
+        result.field_0 = true;
+        result.field_8 = this->anim_ctrl;
+        return result;
+    }
 }
 
 void actor::bind_to_scene_anim() {
@@ -272,11 +301,11 @@ bool actor::has_entity_collision() {
 
 void actor::kill_interact_anim() {
     if constexpr (1) {
-        auto *v2 = this->field_74;
+        auto *v2 = this->anim_ctrl;
         if (v2 != nullptr && (v2->field_10 & 1) != 0) {
             auto &finalize = get_vfunc(v2->m_vtbl, 0x0);
             finalize(v2, true);
-            this->field_74 = nullptr;
+            this->anim_ctrl = nullptr;
         }
 
         if (this->is_a_conglomerate()) {

@@ -792,7 +792,7 @@ bool world_dynamics_system::un_mash_box_triggers(
         int *a5) {
     TRACE("world_dynamics_system::un_mash_box_triggers");
 
-    if constexpr (0) {
+    if constexpr (1) {
         assert(parse_code == BOX_TRIGGERS_TAG);
 
         int buffer_index = 0;
@@ -816,14 +816,13 @@ bool world_dynamics_system::un_mash_box_triggers(
 
             auto *a2 = (vector3d *)&a3[buffer_index];
             buffer_index += sizeof(*a2);
+
             auto &v10 = *v16;
             auto &v9 = *a2;
             auto *v5 = v18->to_string();
             string_hash v8 {v5};
-            auto *v11 = g_world_ptr()->ent_mgr.create_and_add_box_trigger(v8, v9, v10);
-            auto *v14 = v11;
-            if ( v11 != nullptr )
-            {
+            auto *v14 = g_world_ptr()->ent_mgr.create_and_add_box_trigger(v8, v9, v10);
+            if ( v14 != nullptr ) {
                 assert(box_trigger_vec_ptr != nullptr);
 
                 box_trigger_vec_ptr->push_back(v14);
@@ -1126,7 +1125,10 @@ int world_dynamics_system::add_player(const mString &a2)
 {
     TRACE("world_dynamics_system::add_player");
 
-    return THISCALL(0x0055B400, this, &a2);
+    if constexpr (0) {
+    } else {
+        return THISCALL(0x0055B400, this, &a2);
+    }
 }
 
 void world_dynamics_system::deactivate_corner_web_splats() {

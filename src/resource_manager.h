@@ -51,7 +51,7 @@ bool get_pack_location(int a1, resource_pack_location *a2);
 //0x00537610
 resource_pack_slot *get_best_context(resource_partition_enum a1);
 
-void get_and_push_resource_context(resource_partition_enum a1);
+resource_pack_slot *get_and_push_resource_context(resource_partition_enum a1);
 
 //0x00558D20
 void frame_advance(Float a2);

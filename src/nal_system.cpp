@@ -461,6 +461,11 @@ void nalSetAnimDirectory(tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedSt
     nalAnimDirectory() = CAST(nalAnimDirectory(), a1);
 }
 
+tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *nalGetAnimDirectory()
+{
+  return nalAnimDirectory();
+}
+
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *a1) {
     nalSceneAnimDirectory() = CAST(nalSceneAnimDirectory(), a1);
 }

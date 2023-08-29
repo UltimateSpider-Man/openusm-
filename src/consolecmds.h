@@ -161,7 +161,16 @@ struct DebugRenderCommand : ConsoleCommand
 {
     DebugRenderCommand();
 
-    virtual bool process_cmd(const std::vector<mString>&) override;
+    virtual bool process_cmd(const std::vector<mString> &) override;
+
+    virtual const char *helpText() override;
+};
+
+struct PlayAnimCommand : ConsoleCommand
+{
+    PlayAnimCommand();
+
+    virtual bool process_cmd(const std::vector<mString> &) override;
 
     virtual const char *helpText() override;
 };

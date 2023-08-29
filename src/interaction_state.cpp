@@ -44,7 +44,7 @@ void interaction_state::move_actor_to_interact_point() {
 
     v4->set_desired_params(v13);
     this->field_30->set_curr_anim({0});
-    int *v6 = this->field_30->field_2C->does_anim_exist(enum_anim_key::key_enum{0}, true);
+    auto *v6 = this->field_30->field_2C->does_anim_exist(enum_anim_key::key_enum{0}, true);
 
     string_hash v8 = (v6 != nullptr) ? ai::interaction_state::pre_interact_motion_hash()
                                      : ai::interaction_state::pre_interact_run_motion_hash();

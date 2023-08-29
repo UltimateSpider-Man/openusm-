@@ -52,6 +52,8 @@ public:
 
     uint8_t * get_mash_data(uint32_t offset);
 
+    void debug_print() const;
+
     //0x00563070
     int get_tlresource_count(tlresource_type a1);
 

@@ -455,6 +455,8 @@ extern void nalSetAnimFileDirectory(tlResourceDirectory<nalAnimFile, tlFixedStri
 
 extern void nalSetAnimDirectory(tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *a1);
 
+extern tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *nalGetAnimDirectory();
+
 extern void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *a1);
 
 extern void nalStreamInstance_patch();

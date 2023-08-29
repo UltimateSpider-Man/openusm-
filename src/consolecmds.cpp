@@ -1,14 +1,20 @@
 #include "consolecmds.h"
 
+#include "actor.h"
 #include "console.h"
 #include "consolevars.h"
 #include "debug_render.h"
+#include "filespec.h"
 #include "game.h"
 #include "mstring.h"
+#include "nal_system.h"
 #include "script_library_class.h"
 #include "script_manager.h"
 #include "mission_table_container.h"
 #include "region.h"
+#include "resource_directory.h"
+#include "resource_manager.h"
+#include "variables.h"
 #include "wds.h"
 
 std::list<ConsoleCommand *> *g_console_cmds{nullptr};
@@ -566,3 +572,165 @@ const char *DebugRenderCommand::helpText()
     return "render <flag> <value>";
 }
 
+
+static PlayAnimCommand g_PlayAnimCommand{};
+
+PlayAnimCommand::PlayAnimCommand()
+{
+    this->setName(mString {"play_anim"});
+}
+
+bool PlayAnimCommand::process_cmd(const std::vector<mString> &a2)
+{
+    if (a2.size() == 1 || a2.size() == 2 )
+    {
+        auto &v3 = a2.at(0);
+        filespec v35 {v3};
+        mString a1 {v3};
+        v35.m_ext = resource_key_type_ext()[g_platform()][RESOURCE_KEY_TYPE_ANIMATION];
+        actor *v33 = nullptr;
+        if ( a2.size() == 2 )
+        {
+            auto &v5 = a2.at(1);
+            mString v32 {v5};
+            v32.to_upper();
+            auto *v6 = v32.c_str();
+            string_hash v31 {v6};
+            auto *ent = entity_handle_manager::find_entity(v31, IGNORE_FLAVOR, true);
+            v33 = (actor *) ent;
+            if ( v33 == nullptr )
+            {
+                g_console->addToLog("Entity not found");
+                return 1;
+            }
+        }
+        else
+        {
+#if 0
+            j_selection_manager::get(g_selection_mgr, (int)&v30, 0);
+            if ( sub_6784B6(&v30) != 5 )
+            {
+                g_console->addToLog("No entity selected");
+                return 1;
+            }
+
+            v33 = (actor *)sub_676BA2(&v30);
+#else
+            assert(0);
+#endif
+        }
+
+        auto *v29 = v33;
+        if ( v33 != nullptr && !v33->is_an_actor() )
+        {
+            g_console->addToLog("The selected entity is not an actor.");
+            return 1;
+        }
+
+#if 0
+        bool v28 = false;
+        auto v15 = v35.m_name + v35.m_ext;
+        auto *v9 = v15.c_str();
+        auto v27 = create_resource_key_from_path(v9, RESOURCE_KEY_TYPE_NONE);
+        auto *resource = resource_manager::get_resource(v27, nullptr, nullptr);
+        v28 = resource != nullptr;
+        if ( resource == nullptr )
+        {
+            filespec v26 {a1};
+            auto *v11 = v26.m_name.c_str();
+            auto v25 = create_resource_key_from_path(v11, RESOURCE_KEY_TYPE_ANIMATION);
+            auto *v12 = v29->field_BC;
+            resource_manager::push_resource_context(v12);
+            v28 = resource_manager::get_resource(v25, nullptr, nullptr) != nullptr;
+            resource_manager::pop_resource_context();
+            if ( !v28 )
+            {
+                g_console->addToLog("Entity animation not in packfile.");
+                return 1;
+            }
+        }
+
+        if ( !v33->is_an_actor() )
+        {
+            g_console->addToLog("Invalid entity (must be an actor).");
+            return 1;
+        }
+#else
+        {
+            auto *pack_slot = v33->field_BC;
+            if (pack_slot != nullptr) {
+                auto &res_dir = pack_slot->get_resource_directory();
+                auto tlresource_count = res_dir.get_tlresource_count(TLRESOURCE_TYPE_ANIM_FILE);
+                assert(tlresource_count == 1);
+
+                const auto idx = 0;
+                auto *tlres_loc = res_dir.get_tlresource_location(idx, TLRESOURCE_TYPE_ANIM_FILE);
+                nalAnimFile *anim_file = CAST(anim_file, tlres_loc->field_8);
+                assert(anim_file->field_0 == 0x10101);
+
+                nalAnimClass<nalAnyPose> *found_anim = nullptr;
+                for (auto *anim = bit_cast<nalAnimClass<nalAnyPose> *>(anim_file->field_34);
+                        anim != nullptr;
+                        anim = anim->field_4) {
+
+                    if (a1 == mString {anim->field_8.to_string()}) {
+                        found_anim = anim;
+                    }
+
+                    sp_log("%s", anim->field_8.to_string());
+                }
+
+                if (found_anim == nullptr)
+                {
+                    g_console->addToLog("Entity animation not in packfile.");
+                    return 1;
+                }
+
+                a1 = mString {found_anim->field_8.to_string()};
+            }
+        }
+
+#endif
+
+        auto *v13 = v29->field_BC;
+        resource_manager::push_resource_context(v13);
+        string_hash v16 {a1.c_str()};
+
+        auto v24 = v29->play_anim(v16);
+        resource_manager::pop_resource_context();
+
+        {
+            auto sub_6856B6 = [](animation_controller::anim_ctrl_handle *self, Float a2) -> void
+            {
+                struct {
+                    char field_0[0x58];
+                    void (__thiscall *field_58)(void *, Float);
+                    void (__thiscall *field_5C)(void *, Float, Float);
+                } * vtbl = CAST(vtbl, self->field_8->m_vtbl);
+
+                if ( self->field_0 ) {
+                    vtbl->field_58(self->field_8, a2);
+                } else {
+                    vtbl->field_5C(
+                        self->field_8,
+                        a2,
+                        self->field_4);
+                }
+            };
+
+            sub_6856B6(&v24, 1.0);
+        }
+    }
+    else
+    {
+        auto *v2 = this->helpText();
+        g_console->addToLog(v2);
+    }
+
+    return 1;
+}
+
+const char *PlayAnimCommand::helpText()
+{
+  return "play_anim <anim_name> [<entity_id>]";
+}

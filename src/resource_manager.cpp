@@ -446,7 +446,7 @@ resource_pack_slot *get_best_context(resource_pack_slot *slot) {
     }
 }
 
-void get_and_push_resource_context(resource_partition_enum a1) {
+resource_pack_slot *get_and_push_resource_context(resource_partition_enum a1) {
     auto *v1 = get_best_context(a1);
     push_resource_context(v1);
 }

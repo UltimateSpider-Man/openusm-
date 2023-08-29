@@ -2,6 +2,7 @@
 
 #include "ai_find_best_swing_anchor.h"
 #include "ai_interact_resource_handler.h"
+#include "ai_interaction_data.h"
 #include "ai_state_graph_resource_handler.h"
 #include "ai_state_jump.h"
 #include "ai_state_run.h"
@@ -20,6 +21,7 @@
 #include "als_scripted_state.h"
 #include "als_transition_group_base.h"
 #include "anchor_query_visitor.h"
+#include "animation_controller.h"
 #include "animation_interface.h"
 #include "anim_resource_handler.h"
 #include "anim_record.h"
@@ -2364,6 +2366,10 @@ BOOL install_redirects() {
     settings_patch();
 
     game_patch();
+
+    ai_interaction_data_patch();
+
+    animation_controller_patch();
 
     city_lod_patch();
 

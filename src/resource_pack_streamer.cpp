@@ -538,9 +538,16 @@ void resource_pack_streamer::frame_advance_streaming(Float a2)
     if constexpr (1)
     {
         this->field_7C += a2;
+        assert(this->curr_slot != nullptr);
+
         if (this->curr_stream_request_id == NFL_REQUEST_ID_INVALID &&
             this->field_88 == NFL_REQUEST_ID_INVALID) {
             this->curr_slot->notify_load_finished();
+
+            if (os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"})) {
+                auto &res_dir = this->curr_slot->get_resource_directory();
+                res_dir.debug_print();
+            }
 
             this->currently_streaming = false;
 

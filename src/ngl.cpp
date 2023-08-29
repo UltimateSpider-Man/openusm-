@@ -4723,7 +4723,6 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 
     if constexpr (0) {
         int result;
-        BOOL v5;
 
         if (Msg > WM_GETMINMAXINFO) {
             switch (Msg) {
@@ -4740,10 +4739,9 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
             }
             case WM_SYSKEYDOWN:
                 if (wParam == VK_RETURN) {
-                    v5 = !g_Windowed();
-                    g_Windowed() = v5;
+                    g_Windowed() = !g_Windowed();
 
-                    sub_76D230(v5);
+                    sub_76D230(g_Windowed());
                 }
 
                 result = DefWindowProcA(hWnd, Msg, wParam, lParam);
@@ -4766,7 +4764,8 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
                 result = DefWindowProcA(hWnd, Msg, wParam, lParam);
                 break;
             default:
-                goto LABEL_34;
+                result = DefWindowProcA(hWnd, Msg, wParam, lParam);
+                break;
             }
         } else {
             if (Msg != WM_GETMINMAXINFO) {
@@ -4810,14 +4809,16 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 
                 case WM_CANCELMODE:
                     if (g_Windowed()) {
-                        goto LABEL_34;
+                        result = DefWindowProcA(hWnd, Msg, wParam, lParam);
+                        break;
                     }
 
                     ShowCursor(TRUE);
                     byte_971F9C() = true;
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
                 default:
-                    goto LABEL_34;
+                    result = DefWindowProcA(hWnd, Msg, wParam, lParam);
+                    break;
                 }
             }
             *(uint32_t *) (lParam + 24) = 100;
