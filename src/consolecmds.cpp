@@ -4,6 +4,7 @@
 #include "console.h"
 #include "consolevars.h"
 #include "debug_render.h"
+#include "entity_handle_manager.h"
 #include "filespec.h"
 #include "game.h"
 #include "mstring.h"
@@ -712,5 +713,59 @@ bool PlayAnimCommand::process_cmd(const std::vector<mString> &a2)
 
 const char *PlayAnimCommand::helpText()
 {
-  return "play_anim <anim_name> [<entity_id>]";
+    return "play_anim <anim_name> [<entity_id>]";
+}
+
+static ListNearbyEntsCommand g_ListNearbyEntsCommand{};
+
+ListNearbyEntsCommand::ListNearbyEntsCommand() {
+    this->setName(mString {"list_nearby_ents"});
+}
+
+bool ListNearbyEntsCommand::process_cmd(const std::vector<mString> &a2)
+{
+    auto *v3 = g_world_ptr()->get_hero_ptr(0);
+    auto &abs_position = v3->get_abs_position();
+    auto a3 = abs_position;
+    float v25 = 10.0;
+    if ( a2.size() == 1 )
+    {
+        auto &v5 = a2.at(0);
+        v25 = v5.to_float();
+    }
+
+
+    using map = std::decay_t<decltype(entity_handle_manager::the_map())>;
+    auto &the_map = entity_handle_manager::the_map();
+    using iterator = map::iterator;
+
+    iterator v24 = the_map.begin();
+    iterator end = the_map.end();
+    for ( ; v24 != end; ++v24 )
+    {
+        auto &v7 = (*v24);
+        auto *v23 = v7.second;
+        auto &v8 = v23->get_abs_position();
+        auto a2a = v8;
+        auto v9 = a2a - a3;
+        auto v21 = v9.length();
+        if ( v25 >= v21 )
+        {
+            auto v16 = a2a.z;
+            auto v15 = a2a.y;
+            auto v14 = a2a.x;
+            auto v13 = v21;
+            auto id = v23->get_id();
+            auto *v11 = id.to_string();
+            g_console->addToLog("%s at %.2f meters (%.1f, %.1f, %.1f)", v11, v13, v14, v15, v16);
+        }
+    }
+
+    //g_console->addToLog("ENTRY BLOCKS = %d, HASH BLOCKS = %d", dword_1585078, stru_158AC0C.field_8);
+    return true;
+}
+
+const char *ListNearbyEntsCommand::helpText()
+{
+    return "List nearby entities <radius=10>";
 }

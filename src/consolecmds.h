@@ -174,3 +174,12 @@ struct PlayAnimCommand : ConsoleCommand
 
     virtual const char *helpText() override;
 };
+
+struct ListNearbyEntsCommand : ConsoleCommand
+{
+    ListNearbyEntsCommand();
+
+    virtual bool process_cmd(const std::vector<mString> &) override;
+
+    virtual const char *helpText() override;
+};
