@@ -176,7 +176,7 @@ entity_base *wds_entity_manager::get_entity(string_hash a1) {
     return entity_handle_manager::find_entity(a1, entity_flavor_t::IGNORE_FLAVOR, true);
 }
 
-int wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
+entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                                                           string_hash a3,
                                                           const po &a4,
                                                           const mString &a5,
@@ -184,7 +184,7 @@ int wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                                                           const _std::list<region *> *a7) {
     TRACE("wds_entity_manager::create_and_add_entity_or_subclass");
 
-    return THISCALL(0x005E0A10, this, a2, a3, &a4, &a5, a6, a7);
+    return (entity *) THISCALL(0x005E0A10, this, a2, a3, &a4, &a5, a6, a7);
 }
 
 box_trigger *wds_entity_manager::create_and_add_box_trigger(
@@ -210,14 +210,18 @@ entity *wds_entity_manager::add_to_entities(_std::vector<entity *> *vec, entity 
 }
 
 int wds_entity_manager::add_entity_internal(_std::vector<entity *> *vec, entity *ent) {
+    TRACE("wds_entity_manager::add_entity_internal");
+
     if constexpr (1) {
         this->add_to_entities(vec, ent);
 
+        if constexpr (0)
         {
             FUNC_ADDRESS(address, &entity_base::get_entity_size);
             FUNC_ADDRESS(address1, &entity_base::is_alive);
 
             sp_log("0x%08X 0x%08X", (int) address, (int) address1);
+            sp_log("0x%08X", ent->m_vtbl);
         }
 
         auto result = ent->get_flavor() - 4;
@@ -247,7 +251,7 @@ int wds_entity_manager::add_entity_internal(_std::vector<entity *> *vec, entity 
 void wds_entity_manager::add_camera(_std::vector<entity *> *vec, camera *a2) {
     TRACE("wds_entity_manager::add_camera");
 
-    THISCALL(0x005DFC80, this, vec, a2);
+    this->add_entity_internal(vec, a2);
 }
 
 void wds_entity_manager::process_time_limited_entities(Float a2) {

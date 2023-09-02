@@ -37,6 +37,7 @@
 #include "line_info.h"
 #include "manip_obj.h"
 #include "mash_virtual_base.h"
+#include "memory.h"
 #include "motion_effect_struct.h"
 #include "moved_entities.h"
 #include "nal_system.h"
@@ -1125,7 +1126,149 @@ int world_dynamics_system::add_player(const mString &a2)
 {
     TRACE("world_dynamics_system::add_player");
 
-    if constexpr (0) {
+    if constexpr (1) {
+        if ( this->num_players < 1 )
+        {
+            if ( this->num_players == 0 )
+            {
+                auto *v3 = a2.c_str();
+                g_game_ptr()->load_hero_packfile(v3, false);
+            }
+
+            auto *marker = this->field_230[0];
+            if ( marker == nullptr )
+            {
+                string_hash v43 {"HERO_START"};
+                marker = (entity *) find_marker(v43);
+            }
+
+            auto v82 = marker->get_abs_po();
+            uint32_t num_players = this->num_players;
+            switch ( num_players )
+            {
+            case 0u:
+                break;
+            case 1u: {
+                auto &x_facing = v82.get_x_facing();
+                auto v40 = x_facing * 1.5f;
+                auto &position = v82.get_position();
+                auto v8 = position + v40;
+                v82.set_position(v8);
+                break;
+            }
+            case 2u: {
+                auto &v9 = v82.get_x_facing();
+                auto v40 = v9 * 1.5f;
+                auto &v10 = v82.get_position();
+                auto v11 = v10 - v40;
+                v82.set_position(v11);
+                break;
+            }
+            case 3u: {
+                auto v40 = v82.get_z_facing() * 1.5f;
+                auto v14 = v82.get_position() - v40;
+                v82.set_position(v14);
+                break;
+            }
+            default: {
+                auto &v15 = v82.get_z_facing();
+                auto v40 = v15 * 1.5f;
+                auto &v16 = v82.get_position();
+                auto v17 = v16 + v40;
+                v82.set_position(v17);
+                break;
+            }
+            }
+
+            auto &y_facing = v82.get_y_facing();
+            if ( y_facing != YVEC )
+            {
+                auto v81 = v82.get_z_facing();
+                if ( v81.y <= 0.99000001 ) {
+                    v81.y = 0.0;
+                }
+                else {
+                    v81 = ZVEC;
+                }
+
+                v81.normalize();
+                auto v80 = vector3d::cross(YVEC, v81);
+                auto &v20 = v82.get_position();
+                void (__fastcall *sub_48AA30)(void *, void *, const vector3d *, const vector3d *, const vector3d *, const vector3d *) = CAST(sub_48AA30, 0x0048AA30);
+
+                po v45;
+                sub_48AA30(&v45, nullptr, &v80, &YVEC, &v81, &v20);
+                v82 = v45;
+
+                void (__fastcall *sub_48D840)(void *) = CAST(sub_48D840, 0x0048D840);
+                sub_48D840(&v82);
+            }
+
+            mString v79{};
+            if ( this->num_players >= 1 )
+            {
+                auto v42 = "HERO" + mString {this->num_players};
+                v79 = v42;
+            }
+            else
+            {
+                v79 = mString {"HERO"};
+            }
+
+            auto *__old_context = resource_manager::get_and_push_resource_context(RESOURCE_PARTITION_HERO);
+            mString v62 {};
+            auto *v23 = v79.c_str();
+
+            string_hash v36 {v23};
+            string_hash v35 {a2.c_str()};
+            this->field_230[this->num_players] = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+               v35,
+               v36,
+               v82,
+               v62,
+               1,
+               nullptr);
+            auto *v27 = this->field_230[this->num_players];
+            auto v40 = v27->get_rel_position() + YVEC;
+            auto *v29 = this->field_230[this->num_players];
+            v29->set_abs_position(v40);
+            resource_manager::pop_resource_context();
+            
+            assert(resource_manager::get_resource_context() == __old_context);
+            mString v76{};
+            if ( this->num_players >= 1 )
+            {
+                auto v42 = "CHASE_CAM" + mString {this->num_players};
+                v76 = v42;
+            }
+            else
+            {
+                v76 = mString {"CHASE_CAM"};
+            }
+
+            string_hash v43 {v76.c_str()};
+            auto *v31 = this->field_230[this->num_players];
+
+            auto *mem = mem_alloc(sizeof(spiderman_camera));
+            auto *v42 = new (mem) spiderman_camera {v43, v31};
+            this->field_234[this->num_players] = v42;
+
+            auto *v73 = this->field_234[this->num_players];
+            g_world_ptr()->ent_mgr.add_camera(nullptr, v73);
+            if ( this->num_players == 0 ) {
+                g_spiderman_camera_ptr() = CAST(g_spiderman_camera_ptr(), this->field_234[0]);
+            }
+
+            {
+                auto *v40 = bit_cast<actor *>(this->field_230[this->num_players]);
+                v40->create_player_controller(this->num_players);
+            }
+
+            this->field_3E0 = a2;
+            ++this->num_players;
+        }
+
+        return this->num_players;
     } else {
         return THISCALL(0x0055B400, this, &a2);
     }
@@ -1356,7 +1499,7 @@ void world_dynamics_system_patch() {
         REDIRECT(0x0055B2CC, address);
     }
 
-    if constexpr (0)
+    if constexpr (1)
     {
         FUNC_ADDRESS(address, &world_dynamics_system::add_player);
         REDIRECT(0x0055CCA3, address);

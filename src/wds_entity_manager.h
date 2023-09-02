@@ -83,7 +83,7 @@ struct wds_entity_manager {
     int add_ent_to_lists(_std::vector<entity *> *a2, _std::vector<item *> *a3, entity *ent);
 
     //0x005E0A10
-    int create_and_add_entity_or_subclass(string_hash a2,
+    entity *create_and_add_entity_or_subclass(string_hash a2,
                                           string_hash a3,
                                           const po &a4,
                                           const mString &a5,
