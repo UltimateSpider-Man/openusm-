@@ -65,7 +65,7 @@ Var<const char *[30]> entity_flavor_names { 0x0091FD38 };
 entity_base *entity_handle_manager::find_entity(const string_hash &arg0,
                                                 entity_flavor_t a2,
                                                 bool a3) {
-    //sp_log("find_entity %s", arg0.to_string());
+    TRACE("entity_handle_manager::find_entity", arg0.to_string());
 
     entity_base *result = nullptr;
     if constexpr (1)
@@ -77,33 +77,28 @@ entity_base *entity_handle_manager::find_entity(const string_hash &arg0,
         THISCALL(0x00506790, &the_map(), &v13, &arg0);
         if ( !a3 )
         {
-            if ( v13._Ptr != dword_95B7A4() )
+            if ( v13 == the_map().end() )
             {
-                goto LABEL_5;
+                auto *v3 = arg0.to_string();
+                mString v4 {v3};
+                mString v5 {"Unable to find entity "};
+                auto out = v5 + v4;
+                sp_log("%s", out.c_str());
             }
 
-            auto *v3 = arg0.to_string();
-            mString v4 {v3};
-            mString v5 {"Unable to find entity "};
-            auto out = v5 + v4;
-            sp_log("%s", out.c_str());
         }
 
-        if ( v13._Ptr == dword_95B7A4() )
+        if ( v13 == the_map().end() )
         {
             return nullptr;
         }
 
-        LABEL_5:
         if ( a2 != IGNORE_FLAVOR && v13._Ptr->_Myval.second->get_flavor() != a2 )
         {
-            auto *v6 = arg0.to_string();
-            mString v7 {v6};
-            mString v8 {"Entity "};
-            auto v9 = v8 + v7;
-            auto v10 = v9 + " is not a ";
-            auto v12 = entity_flavor_names()[a2];
-            auto v21 = v10 + v12;
+            auto v21 = mString {"Entity "}
+                        + mString {arg0.to_string()}
+                        + " is not a "
+                        + entity_flavor_names()[a2];
             sp_log("%s", v21.c_str());
             assert(0);
         }
@@ -119,22 +114,22 @@ entity_base *entity_handle_manager::find_entity(const string_hash &arg0,
 }
 
 void entity_handle_manager::deregister_entity(entity_base *a1) {
-    //sp_log("deregister_entity %s", a1->field_10.to_string());
+    TRACE("deregister_entity %s", a1->field_10.to_string());
 
+    if constexpr (0) {
+        if (a1->field_10 != ANONYMOUS) {
 #if 0
-    if (a1->field_10.source_hash_code != ANONYMOUS().source_hash_code) {
-#if 0
-        sub_506790(&entity_handle_manager::the_map(), &a1, (unsigned int *) &a1->field_10);
-        if (a1 != bit_cast<entity_base *>(dword_95B7A4())) {
-            sub_56CAA0(&entity_handle_manager::the_map(), (int) &a1, a1);
+            sub_506790(&entity_handle_manager::the_map(), &a1, (unsigned int *) &a1->field_10);
+            if (a1 != bit_cast<entity_base *>(dword_95B7A4())) {
+                sub_56CAA0(&entity_handle_manager::the_map(), (int) &a1, a1);
+            }
+#else
+            entity_handle_manager::the_map().erase(a1->field_10);
+#endif
         }
-#else
-        entity_handle_manager::the_map().erase(a1->field_10);
-#endif
+    } else {
+        CDECL_CALL(0x004DC510, a1);
     }
-#else
-    CDECL_CALL(0x004DC510, a1);
-#endif
 }
 
 void entity_handle_manager::register_entity(entity_base *a1)
@@ -164,9 +159,8 @@ void entity_handle_manager::register_entity(entity_base *a1)
                 const char *v1 = a1->field_10.to_string();
 
                 mString v2{v1};
-                mString v3{"Same entity name appears twice: "};
 
-                mString v4 = v3 + v2;
+                mString v4 = mString {"Same entity name appears twice: "} + v2;
 
                 sp_log("%s", v4.c_str());
             }

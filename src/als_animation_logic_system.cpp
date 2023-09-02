@@ -5,8 +5,11 @@
 #include "als_state.h"
 #include "common.h"
 #include "func_wrapper.h"
+#include "layer_state_machine_shared.h"
 #include "physical_interface.h"
+#include "resource_manager.h"
 #include "time_interface.h"
+#include "trace.h"
 #include "traffic.h"
 #include "utility.h"
 
@@ -99,6 +102,82 @@ void animation_logic_system::frame_advance_post_logic_processing([[maybe_unused]
     }
 }
 
+float animation_logic_system::convert_layer_id_to_priority(layer_types a2) {
+    float (__fastcall *func)(void *, void *, als::layer_types) = CAST(func, 0x0049F360);
+    return func(this, nullptr, a2);
+}
+
+void animation_logic_system::frame_advance_play_new_animations(Float a2)
+{
+    TRACE("animation_logic_system::frame_advance_play_new_animations");
+
+    if ( !this->field_7C )
+    {
+        if ( this->field_6C->has_time_ifc() ) {
+            this->field_6C->time_ifc();
+        }
+
+        auto *old_context = resource_manager::push_resource_context(this->field_6C->field_BC);
+        for ( auto i = -1; ; ++i )
+        {
+            auto v5 = this->field_8.size();
+            if ( i >= v5 ) {
+                break;
+            }
+
+            als::state_machine *state_machine = (i == -1 ? &this->field_18 : this->field_8[i]);
+
+            if ( state_machine->is_active() ) {
+                bool v19 = true;
+                if (!state_machine->did_do_transition()) {
+                    if (i != -1
+                        || state_machine->field_48.is_anim_active()) {
+                        v19 = false;
+                    }
+                }
+
+                if (v19 || this->field_7D) {
+                    auto *curr_state = state_machine->get_curr_state();
+                    assert(curr_state != nullptr);
+
+                    auto v20 = curr_state->get_nal_anim_name();
+                    animation_controller::anim_ctrl_handle v9{};
+                    if ( i == -1 )
+                    {
+                        float a4 = this->field_18.get_optional_pb_int(
+                                            anim_start_frame_hash,
+                                            0,
+                                            nullptr) / 30.0;
+                        auto v18 = curr_state->field_C;
+                        v9 = this->the_controller->play_base_layer_anim(
+                            v20,
+                            a4,
+                            v18,
+                            true);
+                    }
+                    else
+                    {
+                        auto v10 = this->field_8[i]->field_4->field_40;
+                        auto v11 = curr_state->field_C;
+                        auto v19 = state_machine->get_layer_id();
+                        auto v12 = state_machine->get_layer_id();
+                        auto a5 = this->convert_layer_id_to_priority(v12);
+                        v9 = this->the_controller->play_layer_anim(v20, v11, a5, v10, true, v19);
+                    }
+
+                    state_machine->field_48 = v9;
+                    this->field_7D = false;
+                }
+
+            }
+        }
+
+        resource_manager::pop_resource_context();
+        assert(resource_manager::get_resource_context() == old_context);
+    }
+
+}
+
 void animation_logic_system_interface::force_update(Float a2) {
 #if 0
     if ( this->m_vtbl->frame_advance_should_do_frame_advance(this, a2) || a2 == EPSILON )
@@ -138,6 +217,13 @@ void animation_logic_system_interface::force_update(Float a2) {
 } // namespace als
 
 void animation_logic_system_patch() {
+
+    {
+        FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_play_new_animations);
+        //set_vfunc(0x0088148C, address);
+    }
+    return;
+
     FUNC_ADDRESS(address, &als::animation_logic_system_interface::force_update);
     //SET_JUMP(0x00492FC0, address);
 

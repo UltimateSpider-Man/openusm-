@@ -49,6 +49,13 @@ namespace als {
         }
     }
 
+    string_hash state::get_nal_anim_name() const {
+        void (__fastcall *func)(const void *, void *, string_hash *) = CAST(func, get_vfunc(m_vtbl, 0x34));
+        string_hash result;
+        func(this, nullptr, &result);
+        return result;
+    }
+
     int state::get_mash_sizeof() const
     {
         if constexpr (1)

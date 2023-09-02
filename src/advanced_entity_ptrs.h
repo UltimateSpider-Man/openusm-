@@ -1,11 +1,13 @@
 #pragma once
 
+#include "actor.h"
 #include "oldmath_po.h"
 #include "vector3d.h"
 
+#include <vector.hpp>
+
 struct script_instance;
 struct generic_mash_header;
-struct actor;
 struct generic_mash_data_ptrs;
 
 struct movement_info {
@@ -20,9 +22,11 @@ struct movement_info {
     bool field_54;
 };
 
+struct coninfo_t;
+
 struct advanced_entity_ptrs {
-    int *field_0;
-    int *field_4;
+    coninfo_t *coninfo;
+    _std::vector<vhandle_type<actor>> *ignore_col_ents;
     void *field_8;
     movement_info *field_C;
     script_instance *my_script;

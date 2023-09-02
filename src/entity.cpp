@@ -98,14 +98,19 @@ void entity::clear_region(region *r, int i_know_what_i_am_doing) {
     THISCALL(0x004F54A0, this, r, i_know_what_i_am_doing);
 }
 
-entity *entity::compute_sector(terrain *, bool, entity *) {
-    entity *result;
+entity *entity::compute_sector(terrain *a1, bool a2, entity *a3) {
+    if constexpr (0) {
+        entity *result;
 
-    if ((this->field_4 & 0x10000000) == 0) {
-        moved_entities::add_moved({this->get_my_handle()});
+        if ((this->field_4 & 0x10000000) == 0) {
+            moved_entities::add_moved({this->get_my_handle()});
+        }
+
+        return result;
+    } else {
+        auto func = get_vfunc(m_vtbl, 0x16C);
+        func(this, a1, a2, a3);
     }
-
-    return result;
 }
 
 void entity::force_region_hack(region *a2) {
@@ -115,15 +120,21 @@ void entity::force_region_hack(region *a2) {
 }
 
 void entity::force_region(region *r) {
-    if ((this->field_4 & 0x10000000) == 0) {
-        this->remove_from_regions();
-    }
 
-    this->field_4 |= 0x10000000u;
-    if (r != nullptr) {
-        if (!this->is_in_region(r)) {
-            this->add_me_to_region(r);
+    if constexpr (0) {
+        if ((this->field_4 & 0x10000000) == 0) {
+            this->remove_from_regions();
         }
+
+        this->field_4 |= 0x10000000u;
+        if (r != nullptr) {
+            if (!this->is_in_region(r)) {
+                this->add_me_to_region(r);
+            }
+        }
+    } else {
+        auto func = get_vfunc(m_vtbl, 0x174);
+        func(this, r);
     }
 }
 

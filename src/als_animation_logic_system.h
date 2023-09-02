@@ -25,9 +25,16 @@ struct animation_logic_system {
     int *field_74;
     void *field_78;
     bool field_7C;
+    bool field_7D;
 
     //0x004ABB80
     animation_logic_system(actor *a1);
+
+    //0x0049F360
+    float convert_layer_id_to_priority(layer_types a2);
+
+    //0x004A6400
+    void frame_advance_play_new_animations(Float a2);
 
     //0x00498F70
     void enter_biped_physics();
@@ -51,6 +58,8 @@ struct animation_logic_system {
     //0x00498F30
     //virtual
     void change_mocomp();
+
+    static inline const string_hash anim_start_frame_hash{static_cast<int32_t>(to_hash("anim_start_frame"))};
 };
 
 struct animation_logic_system_interface {

@@ -17,12 +17,16 @@ namespace als {
 struct state : mash_virtual_base {
     string_hash field_4;
     string_hash field_8;
-    uint32_t field_C;
+    uint16_t field_C;
+    uint16_t field_E;
     ai::param_block *field_10;
 
     state();
 
     void _unmash(mash_info_struct *, void *);
+
+    //virtual
+    string_hash get_nal_anim_name() const;
 
     //virtual
     int get_mash_sizeof() const;

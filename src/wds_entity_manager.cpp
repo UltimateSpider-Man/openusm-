@@ -3,16 +3,23 @@
 #include "box_trigger.h"
 #include "camera.h"
 #include "common.h"
+#include "debugutil.h"
 #include "entity.h"
+#include "entity_mash.h"
 #include "func_wrapper.h"
 #include "item.h"
 #include "mstring.h"
 #include "oldmath_po.h"
+#include "resource_key.h"
+#include "resource_manager.h"
 #include "trace.h"
 #include "trigger_manager.h"
 #include "utility.h"
 #include "vtbl.h"
 #include "multi_vector.h"
+#include "variables.h"
+#include "wds.h"
+#include "worldly_pack_slot.h"
 
 #include <list.hpp>
 
@@ -181,10 +188,114 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                                                           const po &a4,
                                                           const mString &a5,
                                                           uint32_t a6,
-                                                          const _std::list<region *> *a7) {
+                                                          const _std::list<region *> *regions) {
     TRACE("wds_entity_manager::create_and_add_entity_or_subclass");
 
-    return (entity *) THISCALL(0x005E0A10, this, a2, a3, &a4, &a5, a6, a7);
+    if constexpr (1) {
+        entity *v71 = nullptr;
+
+        auto v68 = a4;
+        auto v66 = (a6 & 1) != 0;
+        auto v64 = (a6 & 4) != 0;
+        auto v63 = (a6 & 8) != 0;
+        auto v62 = (a6 & 0x10) != 0;
+        auto v61 = (a6 & 0x80) != 0;
+        auto v60 = (a6 & 0x20) != 0;
+        auto v59 = (a6 & 0x20000000) == 0;
+        uint32_t v65 = 1;
+        if ( !g_is_the_packer() )
+        {
+            auto v33 = a2;
+            resource_key v58 {v33, RESOURCE_KEY_TYPE_ENTITY};
+
+            int v57;
+            worldly_pack_slot *slot_ptr;
+            auto *v51 = resource_manager::get_resource(v58, &v57, bit_cast<resource_pack_slot **>(&slot_ptr));
+            if ( v51 != nullptr )
+            {
+                assert(slot_ptr != nullptr);
+
+                auto *ent_vec_ptr = slot_ptr->get_entity_instances();
+                auto *item_vec_ptr = slot_ptr->get_item_instances();
+
+                assert(ent_vec_ptr != nullptr);
+
+                assert(item_vec_ptr != nullptr);
+
+                auto *__old_context = resource_manager::push_resource_context(slot_ptr);
+                auto *tmp_e = parse_entity_mash(ent_vec_ptr, item_vec_ptr, v51, &a3, nullptr, false);
+                resource_manager::pop_resource_context();
+                assert(resource_manager::get_resource_context() == __old_context);
+
+                assert(tmp_e->is_an_entity());
+                v71 = bit_cast<entity *>(tmp_e);
+                if ( v71 == nullptr )
+                {
+                    auto *v11 = v58.m_hash.to_string();
+                    sp_log("parse_entity_mash error on entity '%s.ent'", v11);
+                    assert(0);
+                }
+
+                this->add_ent_to_lists(ent_vec_ptr, item_vec_ptr, v71);
+            }
+            else
+            {
+                auto *v12 = a2.to_string();
+                sp_log("Entity '%s.ent' not found in any loaded packfiles!", v12);
+                auto *partition_pointer = resource_manager::get_partition_pointer(RESOURCE_PARTITION_MISSION);
+                debug_print_va("Mission stack contains:");
+                if ( partition_pointer != nullptr ) {
+                    //sub_65ED68(partition_pointer);
+                }
+            }
+        }
+
+        auto v13 = v71 != nullptr;
+        int v70 = 0;
+        if ( v13 )
+        {
+            auto v38 = v66 && !v65
+                || (v70 & 0x2000) != 0
+                || v71->is_flagged(0x2000);
+            v71->set_flag_recursive(entity_flag_t {0x2000}, v38);
+            v38 = !v65
+                || (v70 & 0x40) != 0
+                || v71->is_flagged(0x40);
+            v71->set_flag_recursive(entity_flag_t {0x40}, v38);
+            v38 = v62
+                || (v70 & 0x80) != 0
+                || v71->is_flagged(0x80);
+            v71->set_flag_recursive(entity_flag_t {0x80}, v38);
+            v38 = !v64 || (v70 & 0x200) != 0;
+            v71->set_flag_recursive(entity_flag_t {0x200}, v38);
+            auto *tmp_e = v71;
+            if ( tmp_e->is_an_actor() )
+            {
+                auto *v26 = bit_cast<actor *>(v71);
+                v26->process_extra_scene_flags(a6);
+            }
+
+            v71->set_abs_po(v68);
+            if ( regions != nullptr )
+            {
+                for ( auto &reg : (*regions))
+                {
+                    auto *tmp_e = v71;
+                    tmp_e->force_region(reg);
+                }
+            }
+            else if ( !v60 )
+            {
+                auto *tmp_e = v71;
+                auto *the_terrain = g_world_ptr()->get_the_terrain();
+                tmp_e->compute_sector(the_terrain, g_world_ptr()->is_loading_from_scn_file(), nullptr);
+            }
+        }
+
+        return v71;
+    } else {
+        return (entity *) THISCALL(0x005E0A10, this, a2, a3, &a4, &a5, a6, regions);
+    }
 }
 
 box_trigger *wds_entity_manager::create_and_add_box_trigger(

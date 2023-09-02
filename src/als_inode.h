@@ -1,5 +1,6 @@
 #pragma once
 
+#include "als_layer_types.h"
 #include "info_node.h"
 
 #include "variable.h"
@@ -9,13 +10,6 @@ namespace als {
 struct state_machine;
 struct animation_logic_system;
 
-struct layer_types {
-    int field_0;
-
-    layer_types() = default;
-
-    layer_types(int a1) : field_0(a1) {}
-};
 } // namespace als
 
 namespace ai {

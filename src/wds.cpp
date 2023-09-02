@@ -1138,8 +1138,7 @@ int world_dynamics_system::add_player(const mString &a2)
             auto *marker = this->field_230[0];
             if ( marker == nullptr )
             {
-                string_hash v43 {"HERO_START"};
-                marker = (entity *) find_marker(v43);
+                marker = (entity *) find_marker(string_hash {"HERO_START"});
             }
 
             auto v82 = marker->get_abs_po();
@@ -1159,8 +1158,7 @@ int world_dynamics_system::add_player(const mString &a2)
             case 2u: {
                 auto &v9 = v82.get_x_facing();
                 auto v40 = v9 * 1.5f;
-                auto &v10 = v82.get_position();
-                auto v11 = v10 - v40;
+                auto v11 = v82.get_position() - v40;
                 v82.set_position(v11);
                 break;
             }
@@ -1173,8 +1171,7 @@ int world_dynamics_system::add_player(const mString &a2)
             default: {
                 auto &v15 = v82.get_z_facing();
                 auto v40 = v15 * 1.5f;
-                auto &v16 = v82.get_position();
-                auto v17 = v16 + v40;
+                auto v17 = v82.get_position() + v40;
                 v82.set_position(v17);
                 break;
             }

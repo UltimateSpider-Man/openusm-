@@ -9,6 +9,7 @@
 #include "string_hash.h"
 #include "trace.h"
 #include "utility.h"
+#include "vtbl.h"
 
 VALIDATE_SIZE(animation_controller, 0x10);
 
@@ -17,6 +18,20 @@ void animation_controller::get_camera_root_abs_po(po &arg0)
     TRACE("animation_controller::get_camera_root_abs_po");
 
     THISCALL(0x004A8990, this, &arg0);
+}
+
+animation_controller::anim_ctrl_handle animation_controller::play_layer_anim(
+        const string_hash &a3,
+        unsigned int a4,
+        Float a5,
+        unsigned int a6,
+        bool a7,
+        als::layer_types a8)
+{
+    animation_controller::anim_ctrl_handle result;
+    THISCALL(0x0049BA90, this, &result, &a3, a4, a5, a6, a7, a8);
+
+    return result;
 }
 
 animation_controller::anim_ctrl_handle animation_controller::play_base_layer_anim(
@@ -52,17 +67,32 @@ void animation_controller::anim_ctrl_handle::set_anim_speed(Float a2)
             a2,
             this->field_4);
     }
-};
+}
 
+bool animation_controller::anim_ctrl_handle::is_anim_active()
+{
+    if ( this->field_8 != nullptr && this->field_0 ) {
+        return true;
+    }
+
+    return this->field_8 != nullptr && this->field_8->is_anim_active(this->field_4);
+}
+
+bool animation_controller::is_anim_active(float a1) 
+{
+    auto func = get_vfunc(m_vtbl, 0x2C);
+    return (bool) func(this, a1);
+}
+
+//TODO
 void *get_anim_by_hash(
         const string_hash &a1,
         const als::als_meta_anim_table_shared *a2,
         actor *a3) {
     TRACE("get_anim_by_hash", a1.to_string());
 
-    if constexpr (1) {
-        if ( a2 != nullptr )
-        {
+    if constexpr (0) {
+        if ( a2 != nullptr ) {
             auto *v9 = a3;
             string_hash v8 = a1;
             auto *nal_meta_anim = a2->get_nal_meta_anim(v8, v9);

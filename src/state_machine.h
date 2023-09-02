@@ -1,15 +1,20 @@
 #pragma once
 
+#include "animation_controller.h"
 #include "param_list.h"
 #include "string_hash.h"
 
 namespace als {
 
+struct layer_state_machine_shared;
 struct state;
 
 struct state_machine {
     std::intptr_t m_vtbl;
-    int empty[3];
+    als::layer_state_machine_shared *field_4;
+    bool field_8;
+    bool field_9;
+    string_hash field_C;
     param_list field_10;
     bool field_14;
     bool field_15;
@@ -27,12 +32,14 @@ struct state_machine {
     int field_3C;
     int field_40;
     int field_44;
-    int field_48;
-    int field_4C;
-    int field_50;
+    animation_controller::anim_ctrl_handle field_48;
 
     //0x004A9180
     state_machine();
+
+    bool did_do_transition() const;
+
+    state *get_curr_state();
 
     /* virtual */ string_hash get_category_id();
 
@@ -44,6 +51,8 @@ struct state_machine {
     //virtual
     bool is_interruptable();
 
+    bool is_active() const;
+
     //0x004A6A60
     //virtual
     void set_desired_params(param_list &a2);
@@ -54,5 +63,12 @@ struct state_machine {
 
     //0x00499320
     /* virtual */ string_hash get_state_id();
+
+    int get_optional_pb_int(
+        const string_hash &a2,
+        int a3,
+        bool *a4);
+
+    int get_layer_id();
 };
 } // namespace als

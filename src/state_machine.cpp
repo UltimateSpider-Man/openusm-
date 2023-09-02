@@ -12,6 +12,11 @@ state_machine::state_machine() {
     THISCALL(0x004A9180, this);
 }
 
+bool state_machine::did_do_transition() const
+{
+    return this->field_14;
+}
+
 void state_machine::request_category_transition(string_hash a2) {
     //return this->field_16 || !this->field_17;
 
@@ -26,6 +31,16 @@ bool state_machine::is_interruptable() {
     auto &func = get_vfunc(m_vtbl, 0x14);
 
     return func(this);
+}
+
+bool state_machine::is_active() const
+{
+    if constexpr (0) {
+        return this->m_active;
+    } else {
+        auto func = get_vfunc(m_vtbl, 0x20);
+        return (bool) func(this);
+    }
 }
 
 string_hash state_machine::get_category_id() {
@@ -73,6 +88,23 @@ string_hash als::state_machine::get_state_id() {
     string_hash id;
     get_state_id(this, &id);
     return id;
+}
+
+int state_machine::get_optional_pb_int(
+        const string_hash &a2,
+        int a3,
+        bool *a4) {
+    auto func = get_vfunc(m_vtbl, 0x68);
+    return func(this, &a2, a3, a4);
+}
+
+int state_machine::get_layer_id() {
+    auto func = get_vfunc(m_vtbl, 0x7C);
+    return func(this);
+}
+
+als::state *state_machine::get_curr_state() {
+    return field_30;
 }
 
 } // namespace als
