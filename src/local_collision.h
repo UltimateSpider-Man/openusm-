@@ -78,6 +78,8 @@ struct entfilter : entfilter_base {
 
 struct entfilter_reject_all_t : entfilter_base {};
 
+struct entfilter_accept_all_t : entfilter_base {};
+
 struct primitive_list_t {
     primitive_list_t *field_0;
 
@@ -152,6 +154,8 @@ inline Var<obbfilter_base *> obbfilter_lineseg_test{0x00960064};
 inline Var<obbfilter<obbfilter_OBB_SPHERE_TEST> *> obbfilter_sphere_test{0x00960050};
 
 inline Var<entfilter_reject_all_t *> entfilter_reject_all{0x00960054};
+
+inline Var<entfilter_accept_all_t *> entfilter_accept_all{0x0096004C};
 
 } // namespace local_collision
 

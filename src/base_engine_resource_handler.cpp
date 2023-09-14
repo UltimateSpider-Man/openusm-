@@ -42,7 +42,7 @@ bool base_engine_resource_handler::_handle(worldly_resource_handler::eBehavior a
 
             assert(loc != nullptr);
 
-            if (this->handle_resource(a2, loc) || (a3 && (a3->sub_58E270() >= a3->field_4))) {
+            if (this->handle_resource(a2, loc) || (a3 != nullptr && (a3->elapsed() >= a3->field_4))) {
                 return true;
             }
         }

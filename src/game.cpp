@@ -256,7 +256,7 @@ game::game()
         this->field_154 = -1;
         this->field_15A = 64;
         this->field_58 = 0;
-        this->field_60 = nullptr;
+        this->current_game_camera = nullptr;
         this->field_5C = nullptr;
         this->field_64 = nullptr;
         this->field_7C = nullptr;
@@ -321,12 +321,12 @@ void game::enable_marky_cam(bool a2, bool a3, Float a4, Float a5) {
                     marky_cam->sync(*this->field_5C);
                 }
             } else {
-                this->field_60 = g_spiderman_camera_ptr();
-                if (this->field_60 == nullptr) {
+                this->current_game_camera = g_spiderman_camera_ptr();
+                if (this->current_game_camera == nullptr) {
                     return;
                 }
 
-                this->set_current_camera(bit_cast<camera *>(this->field_60), false);
+                this->set_current_camera(bit_cast<camera *>(this->current_game_camera), false);
 
                 if (a3) {
                     g_spiderman_camera_ptr()->sync(*marky_cam);
@@ -868,6 +868,10 @@ void game::advance_state_wait_link(Float a2) {
 }
 
 void game::handle_cameras(input_mgr *a2, const Float &a3) {
+    TRACE("game::handle_cameras");
+
+    sp_log("%d %d", this->is_user_camera_enabled(), os_developer_options::instance()->get_int(2));
+
     if constexpr (0) {
     } else {
         THISCALL(0x00552F50, this, a2, &a3);
@@ -946,35 +950,34 @@ void game::go_next_state()
 }
 
 void game::set_camera(int a2) {
+    TRACE("game::set_camera");
+
     if constexpr (1) {
-        sp_log("game::set_camera: %d", a2);
+
+        enum {
+            CHASE_CAM = 0,
+            USER_CAM = 1,
+        };
 
         os_developer_options::instance()->set_int(mString{"CAMERA_STATE"}, a2);
-        if (a2 == 1) {
+        if (a2 == USER_CAM) {
             auto *cam = bit_cast<game_camera *>(
                 entity_handle_manager::find_entity(string_hash{"USER_CAM"},
                                                    entity_flavor_t::CAMERA,
                                                    false));
-            auto *v5 = this->field_60;
 
-            cam->set_abs_position(v5->get_rel_position());
-            this->field_5C = cam;
-            if (cam->is_a_game_camera()) {
-                cam->field_12C = false;
-            }
-
-            this->field_64 = this->field_5C->field_C0;
-            color32 v13 = {0xFF, 0xFF, 0xFF, 0xFF};
-            auto v12 = 2.0;
-            mString v11{"New Camera: User Cam"};
+            cam->set_abs_position(this->current_game_camera->get_rel_position());
+            this->set_current_camera(cam, true);
 
             {
+                color32 v13 {0xFF, 0xFF, 0xFF, 0xFF};
+                mString v11{"New Camera: User Cam"};
                 message_board::string str = *bit_cast<message_board::string *>(&v11);
-                this->mb->post(str, v12, v13);
+                this->mb->post(str, 2.0, v13);
             }
 
             if (g_world_ptr()->get_hero_ptr(0) != nullptr) {
-                auto v7 = entity_handle_manager::find_entity(string_hash{"USER_CAM"},
+                auto *v7 = entity_handle_manager::find_entity(string_hash{"USER_CAM"},
                                                              entity_flavor_t::IGNORE_FLAVOR,
                                                              false);
 
@@ -993,10 +996,10 @@ void game::set_camera(int a2) {
             }
 
             cam_target_locked() = false;
-        } else if (a2 != 2) {
-            auto *v3 = bit_cast<game_camera *>(this->field_60);
+        } else if (a2 == CHASE_CAM) {
+            auto *v3 = bit_cast<game_camera *>(this->current_game_camera);
 
-            this->set_current_camera(v3, 1);
+            this->set_current_camera(v3, true);
 
             color32 v13{0xFF, 0xFF, 0xFF, 0xFF};
             auto v12 = 2.0;
@@ -1177,7 +1180,7 @@ void game::load_this_level()
         v28->init_defaults();
 
         {
-            auto time = this->field_2C0.sub_58E270();
+            auto time = this->field_2C0.elapsed();
             sp_log("Pre-load-scene load time: %f seconds", time);
         }
 
@@ -1328,7 +1331,7 @@ void game::load_this_level()
         USOcean2Shader::Init();
 
         {
-            auto time = this->field_2C0.sub_58E270();
+            auto time = this->field_2C0.elapsed();
             sp_log("Post-load-scene load time: %f seconds\n", time);
         }
 
@@ -1338,7 +1341,7 @@ void game::load_this_level()
 
         this->field_64 = find_mic(string_hash{"BOOM_MIC"});
 
-        this->field_60 = this->the_world->get_chase_cam_ptr(0);
+        this->current_game_camera = this->the_world->get_chase_cam_ptr(0);
 
         this->set_current_camera(this->the_world->get_chase_cam_ptr(0), true);
 
@@ -2429,6 +2432,17 @@ void game_patch() {
         REDIRECT(0x0055D8C2, address);
     }
 
+    {
+        FUNC_ADDRESS(address, &game::handle_cameras);
+        REDIRECT(0x0055D74F, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &game::set_camera);
+        REDIRECT(0x00552FA3, address);
+        REDIRECT(0x00552FC2, address);
+    }
+
     if constexpr (0) {
 
         {
@@ -2496,12 +2510,6 @@ void game_patch() {
         {
             FUNC_ADDRESS(address, &game::level_load_stuff::destroy_loading_widgets);
             REDIRECT(0x0055D43C, address);
-        }
-
-        {
-            FUNC_ADDRESS(address, &game::set_camera);
-            REDIRECT(0x00552FA3, address);
-            REDIRECT(0x00552FC2, address);
         }
 
         {

@@ -20,7 +20,7 @@ struct ai_state_machine;
 struct state_graph;
 
 struct ai_core {
-    _std::list<void *> field_0;
+    _std::list<resource_key> field_0;
     ai_state_machine *my_base_machine;
     ai_state_machine *my_locomotion_machine;
     _std::list<ai_state_machine *> my_machine_list;

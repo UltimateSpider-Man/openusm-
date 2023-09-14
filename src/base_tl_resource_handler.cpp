@@ -73,7 +73,7 @@ bool base_tl_resource_handler::_handle(worldly_resource_handler::eBehavior a2, l
             bool v9 = this->handle_resource(a2, loc);
 
             dword_95C824() = nullptr;
-            if ((v9) || (a3 != nullptr && a3->sub_58E270() >= a3->field_4)) {
+            if ((v9) || (a3 != nullptr && a3->elapsed() >= a3->field_4)) {
                 return true;
             }
         }

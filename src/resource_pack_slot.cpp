@@ -199,7 +199,7 @@ bool resource_pack_slot::try_callback(callback_enum a2, limited_timer *a3) {
 bool resource_pack_slot::on_load(limited_timer *a1) {
     if constexpr (0)
     {
-        return (a1 != nullptr && a1->sub_58E270() >= a1->field_4);
+        return (a1 != nullptr && a1->elapsed() >= a1->field_4);
     }
     else
     {

@@ -21,6 +21,6 @@ void limited_timer_base::sub_58E230() {
     this->field_0 = timeGetTime();
 }
 
-double limited_timer_base::sub_58E270() {
+double limited_timer_base::elapsed() const {
     return (double) (timeGetTime() - this->field_0) * 0.001;
 }

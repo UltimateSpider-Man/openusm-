@@ -11,7 +11,7 @@ struct limited_timer_base {
 
     void sub_58E230();
 
-    double sub_58E270();
+    double elapsed() const;
 };
 
 struct limited_timer : limited_timer_base {

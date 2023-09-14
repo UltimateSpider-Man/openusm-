@@ -142,7 +142,7 @@ bool worldly_pack_slot::_on_load(limited_timer *a2)
     if constexpr (1)
     {
         if (a2 != nullptr) {
-            if (a2->sub_58E270() >= a2->field_4) {
+            if (a2->elapsed() >= a2->field_4) {
                 return true;
             }
         }

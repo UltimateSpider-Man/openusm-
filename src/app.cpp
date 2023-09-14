@@ -264,8 +264,8 @@ void app::tick()
 
         scratchpad_stack::reset();
 
-        limited_timer_base local_timer1;
-        local_timer1.sub_58E230();
+        limited_timer_base total_timer;
+        total_timer.sub_58E230();
 
         sub_77B2F0(0);
 
@@ -318,14 +318,14 @@ void app::tick()
             byte_9682F0() = false;
         }
 
-        if (os_developer_options::instance()->get_int(14)) //FRAME_LIMIT
+        if (os_developer_options::instance()->get_int(mString{"FRAME_LIMIT"})) //
         {
-            while (local_timer.sub_58E270() < 0.033333335) {
+            while (local_timer.elapsed() < 0.033333335) {
                 ;
             }
         }
 
-        this->m_game->field_278 = local_timer1.sub_58E270();
+        this->m_game->field_278 = total_timer.elapsed();
         this->m_game->field_280 = 0;
 
     } else {

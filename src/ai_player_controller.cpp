@@ -147,7 +147,7 @@ void ai_player_controller::update_controls(Float a2, bool a3) {
 
 void ai_player_controller::frame_advance(Float a2) {
     if (this->field_4[0] == nullptr) {
-        this->field_4[0] = CAST(this->field_4[0], g_game_ptr()->field_60);
+        this->field_4[0] = CAST(this->field_4[0], g_game_ptr()->current_game_camera);
     }
 
     this->update_controls(a2, false);

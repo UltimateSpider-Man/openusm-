@@ -28,7 +28,7 @@ bool base_entity_resource_handler::_handle(worldly_resource_handler::eBehavior b
 
         while (this->field_C < this->get_num_resources()) {
             if (this->handle_resource(behavior) ||
-                (timer != nullptr && timer->sub_58E270() >= timer->field_4)) {
+                (timer != nullptr && timer->elapsed() >= timer->field_4)) {
                 return true;
             }
         }

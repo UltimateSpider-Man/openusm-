@@ -79,7 +79,7 @@ struct game {
     int field_54;
     int field_58;
     camera *field_5C;
-    entity_base *field_60;
+    entity_base *current_game_camera;
     mic *field_64;
     message_board *mb;
     _std::vector<game_process> process_stack;
@@ -144,6 +144,15 @@ struct game {
 
     //0x00559D10
     ~game();
+
+    void enable_user_camera(bool a2)
+    {
+        this->m_user_camera_enabled = a2;
+    }
+
+    bool is_user_camera_enabled() const {
+        return m_user_camera_enabled;
+    }
 
     game_settings *get_game_settings();
 

@@ -68,7 +68,7 @@ bool mesh_file_resource_handler::_handle_resource(worldly_resource_handler::eBeh
                         }
 
                         if (v12 != nullptr) {
-                            if (v12->sub_58E270() < v12->field_4) {
+                            if (v12->elapsed() < v12->field_4) {
                                 goto LABEL_10;
                             }
 
