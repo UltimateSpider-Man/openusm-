@@ -385,7 +385,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
 
         auto sub_6A3981 = [](auto &a1) -> bool {
             auto sub_691AF1 = [](limited_timer *self) -> bool {
-                return self->sub_58E270() >= self->field_4;
+                return self->elapsed() >= self->field_4;
             };
 
             return a1.field_4 != nullptr && sub_691AF1(a1.field_4);
@@ -406,13 +406,13 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
         };
 
         auto sub_68D9F1 = [](limited_timer_base &a1) -> double {
-            auto result = a1.sub_58E270();
+            auto result = a1.elapsed();
             a1.sub_58E230();
             return result;
         };
 
         auto sub_6A4BE7 = [](limited_timer_base &a1) -> double {
-            return a1.sub_58E270();
+            return a1.elapsed();
         };
 
         sub_6A1898(v81);
@@ -759,7 +759,7 @@ bool world_dynamics_system::un_mash_scene_box_triggers(const resource_key &a1, r
 
             assert(size + sizeof( parse_code ) == mash_data_size);
 
-            dword_15684C0 = v8.sub_58E270();
+            dword_15684C0 = v8.elapsed();
             a4->done();
             return false;
         }
