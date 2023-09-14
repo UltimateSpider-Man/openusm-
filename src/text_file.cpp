@@ -1,5 +1,6 @@
 #include "text_file.h"
 
+#include "func_wrapper.h"
 #include "memory.h"
 
 text_file::text_file()
@@ -21,4 +22,13 @@ text_file::text_file()
 
 bool text_file::is_open() {
     return this->opened || this->field_50;
+}
+
+void text_file::read(char *a2, int a3) {
+    THISCALL(0x005D2DD0, this, a2, a3);
+}
+
+void text_file::read(int *a2)
+{
+    THISCALL(0x005D26C0, this, a2);
 }

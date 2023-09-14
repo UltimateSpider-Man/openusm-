@@ -15,4 +15,10 @@ struct text_file : os_file {
 
     //0x005BC4B0
     bool is_open();
+
+    //0x005D2DD0
+    void read(char *a2, int a3);
+
+    //0x005D26C0
+    void read(int *a2);
 };

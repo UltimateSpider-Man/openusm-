@@ -1,11 +1,16 @@
 #pragma once
 
+#include "mstring.h"
 #include "string_hash.h"
+
+#include <list.hpp>
 
 struct script_executable;
 
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
+
+struct vm_executable_param_symbol {};
 
 struct vm_executable
 {
@@ -18,8 +23,14 @@ struct vm_executable
     int field_C;
     int16_t *field_10;
     int field_14;
-    int *debug_info;
-    unsigned int flags;
+    struct {
+        mString field_0;
+        int field_10;
+        _std::list<vm_executable_param_symbol> field_14;
+        void *parameters;
+        int field_24;
+    } *debug_info;
+    uint32_t flags;
     int field_20;
 
     bool is_un_mashed() const {

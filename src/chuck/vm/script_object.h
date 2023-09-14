@@ -17,7 +17,9 @@ struct script_object {
     string_hash name;
     script_executable *parent;
     script_instance *global_instance;
-    int debug_info;
+    struct {
+        string_hash field_0;
+    } *debug_info;
     int field_10;
     int field_14;
     int field_18;
