@@ -7,6 +7,7 @@
 #include "common.h"
 #include "parse_generic_mash.h"
 #include "utility.h"
+#include "vm_executable.h"
 
 VALIDATE_SIZE(script_executable, 0x5Cu);
 
@@ -36,13 +37,23 @@ void script_executable::quick_un_mash()
     this->constructor_common();
     for ( auto i = 0; i < this->total_script_objects; ++i )
     {
-        this->field_28[i]->sub_5AB420();
+        this->script_objects[i]->sub_5AB420();
     }
 }
 
 void script_executable::un_mash_start(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4, [[maybe_unused]] void *a5)
 {
     this->un_mash(a2, a3, a4);
+}
+
+script_object *script_executable::find_object(int index) const {
+    assert(index >= 0);
+
+    assert(index < total_script_objects);
+
+    assert(script_objects_by_name != nullptr);
+
+    return this->script_objects_by_name[index];
 }
 
 void script_executable::un_mash(generic_mash_header *header, void *a3, generic_mash_data_ptrs *a4)
@@ -58,7 +69,6 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
         else
         {
             assert(script_object_dummy_list == nullptr);
-
             
             if ( int v6 = 4 - ((int)a4->field_0 % 4);
                     v6 < 4 )
@@ -66,8 +76,8 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 a4->field_0 += v6;
             }
 
-            int v7 = this->field_24;
-            this->field_20 = (int)a4->field_0;
+            int v7 = this->sx_exe_image_size;
+            this->sx_exe_image = CAST(this->sx_exe_image, a4->field_0);
             auto *v8 = &a4->field_0[v7];
             a4->field_0 = v8;
             auto v9 = 4 - (bit_cast<int>(a4->field_0) % 4u);
@@ -77,7 +87,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             }
 
             auto v10 = this->total_script_objects;
-            this->field_28 = (script_object **)a4->field_0;
+            this->script_objects = (script_object **)a4->field_0;
             a4->field_0 += 4 * v10;
             for ( auto i = 0; i < this->total_script_objects; ++i )
             {
@@ -93,15 +103,15 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     a4->field_0 += v13;
                 }
                 
-                this->field_28[i] = (script_object *)a4->field_0;
+                this->script_objects[i] = (script_object *)a4->field_0;
                 a4->field_0 += 0x34;
 
                 assert(((int) header) % 4 == 0);
-                auto *v37 = this->field_28[i];
+                auto *v37 = this->script_objects[i];
                 v37->un_mash(header, this, v37, a4);
             }
 
-            this->global_script_object = *this->field_28;
+            this->global_script_object = *this->script_objects;
             auto v14 = 4 - ((int) a4->field_0 % 4);
             if ( v14 < 4 )
             {
@@ -113,7 +123,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             a4->field_0 += 4 * v15;
             for ( auto j = 0; j < this->total_script_objects; ++j )
             {
-                this->script_objects_by_name[j] = this->field_28[(int)this->script_objects_by_name[j]];
+                this->script_objects_by_name[j] = this->script_objects[(int)this->script_objects_by_name[j]];
             }
 
             auto v17 = 4 - ((int) a4->field_0 % 4);
@@ -155,7 +165,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             }
 
             auto v25 = 0x1C * this->field_58;
-            this->field_54 = (int)a4->field_0;
+            this->field_54 = CAST(field_54, a4->field_0);
             auto *v26 = &a4->field_0[v25];
             a4->field_0 = v26;
             auto v27 = 4 - ((int) a4->field_0 % 4u);
@@ -164,20 +174,19 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 a4->field_0 = &v26[v27];
             }
 
-            int a2a = 0;
-            bool v36 = false;
             if ( this->field_58 > 0 )
             {
-                generic_mash_data_ptrs *a5 = nullptr;
-                do
+                for (int a5 = 0; a5 < this->field_58; ++a5)
                 {
                     assert(((int)header) % 4 == 0);
 
-                    auto v28 = this->field_54;
-                    auto v29 = *(int *)((char *)&a5[3].field_0 + v28);
-                    auto *v30 = (char *)a5 + v28;
-                    auto *v31 = this->script_objects_by_name[v29];
-                    if ( *((uint32_t *)v30 + 4) == -1 )
+                    auto *v28 = this->field_54;
+                    auto v29 = v28[a5].field_18;
+                    auto *v30 = &v28[a5];
+                    auto *owner = this->find_object(v29);
+                    assert(owner != nullptr);
+
+                    if ( v30->field_10 == -1 )
                     {
                         auto v32 = 4 - ((int) a4->field_0 % 4);
                         if ( v32 < 4 )
@@ -185,20 +194,13 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                             a4->field_0 += v32;
                         }
 
-                        *((uint32_t *)v30 + 2) = (uint32_t) a4->field_0;
-                        a4->field_0 += 36;
-                        auto **v33 = (script_object **)*((uint32_t *)v30 + 2);
-                        auto *v34 = v33[4];
-                        *v33 = v31;
-                        auto v35 = (unsigned int)v33[7] | 8;
-                        v33[4] = (script_object *)(v31->parent->field_20 + 2 * ((unsigned int)v34 >> 1));
-                        v33[7] = (script_object *)v35;
-                    }
+                        v30->field_8 = CAST(v30->field_8, a4->field_0);
+                        a4->field_0 += sizeof(vm_executable);
 
-                    v36 = ++a2a < this->field_58;
-                    a5 = (generic_mash_data_ptrs *)((char *)a5 + 28);
+                        assert(((int) header) % 4 == 0);
+                        v30->field_8->un_mash(header, owner, v30->field_8, a4);
+                    }
                 }
-                while ( v36 );
             }
 
             this->constructor_common();

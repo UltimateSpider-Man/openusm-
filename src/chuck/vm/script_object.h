@@ -14,14 +14,14 @@ struct generic_mash_header;
 struct generic_mash_data_ptrs;
 
 struct script_object {
-    int field_0;
+    string_hash name;
     script_executable *parent;
-    int field_8;
-    int field_C;
+    script_instance *global_instance;
+    int debug_info;
     int field_10;
     int field_14;
     int field_18;
-    int filed_1C;
+    int data_blocksize;
     vm_executable **funcs;
     int total_funcs;
     int field_28;

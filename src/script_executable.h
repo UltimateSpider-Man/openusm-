@@ -1,5 +1,7 @@
 #pragma once
 
+#include "fixedstring.h"
+
 #include <list.hpp>
 #include <map.hpp>
 
@@ -8,19 +10,13 @@ struct mString;
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
 struct script_object;
+struct vm_executable;
 
 struct script_executable {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    script_object **field_28;
+    fixedstring<8> field_0;
+    int16_t *sx_exe_image;
+    int sx_exe_image_size;
+    script_object **script_objects;
     script_object **script_objects_by_name;
     int total_script_objects;
     script_object *global_script_object;
@@ -31,7 +27,15 @@ struct script_executable {
     void *script_object_dummy_list;
     _std::map<int, script_executable_allocated_stuff_record> *script_allocated_stuff_map;
     uint32_t flags;
-    int field_54;
+    struct {
+        int field_0;
+        int field_4;
+        vm_executable *field_8;
+        int field_C;
+        int field_10;
+        int field_14;
+        int field_18;
+    } *field_54;
     int field_58;
 
     script_executable();
@@ -44,6 +48,8 @@ struct script_executable {
 
     //0x005AFF90
     void quick_un_mash();
+
+    script_object *find_object(int index) const;
 
     void un_mash_start(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4, void *a5);
 
