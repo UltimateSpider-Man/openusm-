@@ -183,13 +183,12 @@ script_executable_entry *script_manager::load(const resource_key &a1, uint32_t a
 
     assert(script_manager_exec_map() != nullptr);
 
-    if constexpr (0)
+    if constexpr (1)
     {
         script_executable_entry_key key{};
         key.field_0 = a1;
         key.field_8 = a4;
         assert(script_manager_exec_map() != nullptr);
-
 
         using map_t = _std::map<script_executable_entry_key, script_executable_entry>;
         using iterator_t = map_t::iterator;
@@ -225,8 +224,7 @@ script_executable_entry *script_manager::load(const resource_key &a1, uint32_t a
             entry.field_8 = bit_cast<int>(a3);
             if ( g_is_the_packer() || using_chuck_old_fashioned() )
             {
-                assert(0);
-                //sub_68E851(entry.exec, (int)a1);
+                entry.exec->load(a1);
             }
             else
             {
@@ -301,8 +299,6 @@ script_executable_entry *script_manager::load(const resource_key &a1, uint32_t a
     }
 }
 
-
-
 void script_manager::init() {
     CDECL_CALL(0x005AFCE0);
 }
@@ -321,6 +317,11 @@ void script_manager::clear() {
     TRACE("script_manager::clear");
 
     CDECL_CALL(0x005B0640);
+}
+
+vm_executable *script_manager::find_function_by_address(const uint16_t *a1)
+{
+    return (vm_executable *) CDECL_CALL(0x0059ED70, a1);
 }
 
 script_executable_entry *script_manager::find_entry(const script_executable *a1) {

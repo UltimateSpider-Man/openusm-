@@ -20,7 +20,7 @@ void vm_executable::un_mash(
     auto *v6 = this->field_10;
     auto *v5 = this->owner->field_4;
 
-    auto sub_6A171C = [](script_executable *a1, unsigned int offset) -> int16_t *
+    auto sub_6A171C = [](script_executable *a1, unsigned int offset) -> uint16_t *
     {
         assert(a1->sx_exe_image != nullptr && "We should have loaded the executable code from the sxl or sxb file");
 

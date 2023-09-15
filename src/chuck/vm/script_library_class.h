@@ -12,8 +12,9 @@ struct vm_stack;
 
 struct script_library_class {
     struct function {
-        struct entry_t {
-            int field_0;
+        enum entry_t {
+            FIRST_ENTRY,
+            RECALL_ENTRY,
         };
 
         std::intptr_t m_vtbl;

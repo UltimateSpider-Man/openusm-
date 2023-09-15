@@ -531,10 +531,11 @@ void script_handler_helper(debug_menu_entry *a2)
 
         assert(exe != nullptr);
 
-        if ( exe->sub_8D1640() == 4 )
+        if ( exe->get_parms_stacksize() == 4 ) {
             a2->field_14->add_thread(exe, (const char *)&a2);
-        else
+        } else {
             a2->field_14->add_thread(exe);
+        }
 
         debug_menu::hide();
     }

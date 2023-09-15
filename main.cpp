@@ -2587,6 +2587,8 @@ BOOL install_redirects() {
 
     vm_patch();
 
+    vm_thread_patch();
+
     resource_pack_standalone_patch();
 
     {
@@ -2647,8 +2649,6 @@ BOOL install_redirects() {
         swing_anchor_finder_patch();
 
         nalStreamInstance_patch();
-
-        vm_thread_patch();
 
         USVariantShaderNode_patch();
 

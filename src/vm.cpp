@@ -160,7 +160,7 @@ bool slf__set_mission_text__num__t::operator()(vm_stack &stack,
 
 bool slf__bring_up_dialog_box_title__num__num__num__t::operator()(
     vm_stack &stack, script_library_class::function::entry_t a2) {
-    sp_log("script_library_class::function::entry_t: %d", a2.field_0);
+    sp_log("script_library_class::function::entry_t: %d", a2);
 
     return (bool) THISCALL(0x00673240, this, &stack, a2);
 }

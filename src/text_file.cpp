@@ -32,3 +32,8 @@ void text_file::read(int *a2)
 {
     THISCALL(0x005D26C0, this, a2);
 }
+
+void text_file::read(mString *a1)
+{
+    THISCALL(0x005D5970, this, a1);
+}

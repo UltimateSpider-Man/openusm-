@@ -21,4 +21,7 @@ struct text_file : os_file {
 
     //0x005D26C0
     void read(int *a2);
+
+    //0x005D5970
+    void read(mString *a1);
 };

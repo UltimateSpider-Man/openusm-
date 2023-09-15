@@ -28,21 +28,33 @@ struct opcode_arg_t {
 };
 
 struct vm_thread {
-    struct argument_t {
-        script_library_class::function *field_0;
+    union argument_t {
+        //vm_num_t val;
+        //vm_str_t str;
+        short word;
+        char* sdr;
+        script_library_class::function *lfr;
+        vm_executable *sfr;
+        unsigned binary;
     };
 
-    int field_0[7];
-    int field_1C;
-    vm_stack field_20;
-    const uint16_t *field_1AC;
+    int field_0;
+    int field_4;
+    int field_8;
+    int field_C;
+    int field_10;
+    int field_14;
+    int field_18;
+    int flags;
+    vm_stack dstack;
+    const uint16_t *PC;
     const uint16_t *field_1B0;
     float field_1B4;
-    _std::vector<unsigned short const *> field_1B8;
+    _std::vector<unsigned short const *> PC_stack;
 
     int field_1C8[4];
 
-    script_library_class::function::entry_t field_1D8;
+    script_library_class::function::entry_t entry;
     void *field_1DC;
     int field_1E0;
     int field_1E4;
@@ -53,14 +65,13 @@ struct vm_thread {
     //0x005A5500
     vm_thread(script_instance *a2, const vm_executable *a3, void *a4);
 
-    auto &get_stack()
+    auto &get_data_stack()
     {
-        return this->field_20;
+        return this->dstack;
     }
 
-    bool sub_B49B80(int a2)
-    {
-        return (a2 & this->field_1C) != 0;
+    bool is_flagged(int f) const {
+        return (f & this->flags) != 0;
     }
 
     void set_flag(int a2, bool a3);
@@ -72,6 +83,9 @@ struct vm_thread {
 
     //0x005ADD00
     bool run();
+
+    //0x005A56F0
+    void push_PC();
 
     //0x00599710
     void raise_event(const vm_thread::argument_t &a2, opcode_arg_t arg_type);

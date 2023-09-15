@@ -13,6 +13,7 @@ struct script_executable_entry_key;
 struct script_executable_entry;
 struct script_executable;
 struct script_executable_allocated_stuff_record;
+struct vm_executable;
 
 enum script_manager_callback_reason
 {};
@@ -60,6 +61,9 @@ struct script_manager {
 
     //0x005AF9F0
     static void run(Float a1, bool a2);
+
+    //0x0059ED70
+    static vm_executable *find_function_by_address(const uint16_t *a1);
 
     static int get_total_loaded();
 };

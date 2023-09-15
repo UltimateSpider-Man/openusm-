@@ -20,8 +20,8 @@ struct vm_executable
     } *owner;
     string_hash field_4;
     string_hash name;
-    int field_C;
-    int16_t *field_10;
+    int parms_stacksize;
+    uint16_t *field_10;
     int field_14;
     struct {
         mString field_0;
@@ -37,9 +37,8 @@ struct vm_executable
         return (this->flags & 8) != 0;
     }
 
-    int sub_8D1640()
-    {
-        return this->field_C;
+    int get_parms_stacksize() const {
+        return this->parms_stacksize;
     }
 
     auto *get_owner()

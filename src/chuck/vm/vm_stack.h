@@ -8,5 +8,9 @@ struct vm_stack {
     //0x00502AC0
     void push(const char *a2, int a3);
 
+    void set_SP(char *sp) {
+        m_stack_pointer = sp;
+    }
+
     int pop_num();
 };

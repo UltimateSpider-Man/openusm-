@@ -60,20 +60,19 @@ int *script_instance::register_callback(
     return (int *) THISCALL(0x005A33F0, this, p_cb, a3);
 }
 
-vm_thread *script_instance::add_thread(const vm_executable *a1, const char *a2)
+vm_thread *script_instance::add_thread(const vm_executable *ex, const char *parms)
 {
-    auto *nt = this->add_thread(a1);
+    auto *nt = this->add_thread(ex);
 
     assert(nt != nullptr);
 
-    if ( a2 != nullptr )
+    if ( parms != nullptr )
     {
-        auto v5 = a1->field_C;
-        auto &v3 = nt->get_stack();
-        v3.push(a2, v5);
+        auto v5 = ex->get_parms_stacksize();
+        nt->get_data_stack().push(parms, v5);
     }
 
-    nt->field_1AC = (const unsigned __int16 *) a1->field_10;
+    nt->PC = ex->field_10;
     return nt;
 }
 
