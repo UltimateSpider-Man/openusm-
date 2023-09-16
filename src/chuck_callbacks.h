@@ -1,0 +1,9 @@
+#pragma once
+
+#include "script_manager.h"
+
+struct script_executable;
+
+extern void script_manager_callback(script_manager_callback_reason a1, script_executable *a2, const char *a3);
+
+extern void chuck_callbacks_patch();

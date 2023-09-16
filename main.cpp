@@ -36,6 +36,7 @@
 #include "camera.h"
 #include "camera_target_info.h"
 #include "character_viewer.h"
+#include "chuck_callbacks.h"
 #include "city_lod.h"
 #include "console.h"
 #include "collide_aux.h"
@@ -2588,6 +2589,8 @@ BOOL install_redirects() {
     vm_patch();
 
     vm_thread_patch();
+
+    chuck_callbacks_patch();
 
     resource_pack_standalone_patch();
 

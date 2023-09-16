@@ -575,6 +575,11 @@ event_type *event_manager::register_event_type(string_hash a1, bool a2) {
     }
 }
 
+void event_manager::clear_script_callbacks(entity_base_vhandle a1, const script_executable *a2)
+{
+    CDECL_CALL(0x004D4380, a1, a2);
+}
+
 void event_manager_patch() {
     SET_JUMP(0x004EE9F0, event_manager::raise_event);
 }

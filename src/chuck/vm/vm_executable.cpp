@@ -17,7 +17,7 @@ void vm_executable::un_mash(
     this->owner = CAST(owner, a3);
     assert((flags & VM_EXECUTABLE_FLAG_FROM_MASH ) != 0);
 
-    auto *v6 = this->field_10;
+    auto *v6 = this->buffer;
     auto *v5 = this->owner->field_4;
 
     auto sub_6A171C = [](script_executable *a1, unsigned int offset) -> uint16_t *
@@ -29,7 +29,7 @@ void vm_executable::un_mash(
         return &a1->sx_exe_image[offset >> 1];
     };
 
-    this->field_10 = sub_6A171C(v5, (unsigned int)v6);
+    this->buffer = sub_6A171C(v5, (unsigned int)v6);
     this->flags |= 8u;
 }
 

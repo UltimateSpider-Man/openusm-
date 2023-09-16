@@ -40,8 +40,8 @@ bool slf__is_point_inside_glass_house__vector3d__t::operator()(
     vm_stack &a1, script_library_class::function::entry_t) {
     sp_log("is_point_inside_glass_house");
 
-    auto *v5 = a1.m_stack_pointer - 12;
-    a1.m_stack_pointer = v5;
+    auto *v5 = a1.SP - 12;
+    a1.SP = v5;
     auto a1a = 0.0f;
     if (glass_house_manager::is_point_in_glass_house(*((const vector3d *) v5))) {
         a1a = 1.0;
@@ -54,11 +54,11 @@ bool slf__is_point_inside_glass_house__vector3d__t::operator()(
 
 bool slf__angle_between__vector3d__vector3d__t::operator()(vm_stack &stack,
                                                            script_library_class::function::entry_t) {
-    auto *v4 = (vector3d *) (stack.m_stack_pointer - sizeof(vector3d) * 2);
-    stack.m_stack_pointer = (char *) v4;
+    auto *v4 = (vector3d *) (stack.SP - sizeof(vector3d) * 2);
+    stack.SP = (char *) v4;
     auto a2a = compute_angle_between_vectors(*v4, *(v4 + 1));
-    *(float *) stack.m_stack_pointer = a2a;
-    stack.m_stack_pointer += 4;
+    *(float *) stack.SP = a2a;
+    stack.SP += 4;
     return true;
 }
 
@@ -66,10 +66,10 @@ bool slf__set_mission_text__num__t::operator()(vm_stack &stack,
                                                script_library_class::function::entry_t) {
 #if 1
 
-    auto *v2 = (float *) (stack.m_stack_pointer - 4);
-    stack.m_stack_pointer = (char *) v2;
+    auto *v2 = (float *) (stack.SP - 4);
+    stack.SP = (char *) v2;
     float *v3 = (float *) ((char *) v2 - (uint64_t) (*v2 * 4.0f));
-    stack.m_stack_pointer = (char *) v3;
+    stack.SP = (char *) v3;
     auto *v4 = g_game_ptr()->field_7C->lookup_scripttext_string((uint64_t) *v3);
     mString a2a{v4};
 
@@ -179,8 +179,8 @@ bool __stdcall slf__get_pack_size__str__t__cl(vm_stack *a1, int v40)
 {
     TRACE("slf__get_pack_size__str__t__cl");
 
-    auto v3 = a1->m_stack_pointer - 4;
-    a1->m_stack_pointer = v3;
+    auto v3 = a1->SP - 4;
+    a1->SP = v3;
     auto out_key = create_resource_key_from_path(*(const char **)v3, RESOURCE_KEY_TYPE_PACK);
     resource_pack_location a2{};
     resource_manager::get_pack_file_stats(out_key, &a2, nullptr, nullptr);
@@ -191,8 +191,8 @@ bool __stdcall slf__get_pack_size__str__t__cl(vm_stack *a1, int v40)
     }
 
     float a1a = v4;
-    *(float *)a1->m_stack_pointer = a1a;
-    a1->m_stack_pointer += 4;
+    *(float *)a1->SP = a1a;
+    a1->SP += 4;
     return true;
 }
 
@@ -200,13 +200,13 @@ bool __stdcall slf__add_3d_debug_str__vector3d__vector3d__num__str__t__cl(vm_sta
 {
     TRACE("slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator()");
 
-    a2->m_stack_pointer += -32;
+    a2->SP += -32;
     struct {
         vector3d field_0;
         vector3d field_C;
         float field_18;
         const char *field_1C;
-    } *a3 = CAST(a3, a2->m_stack_pointer);
+    } *a3 = CAST(a3, a2->SP);
 
     mString v9 {a3->field_1C};
     auto v8 = a3->field_18;

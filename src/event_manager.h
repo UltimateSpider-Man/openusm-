@@ -33,6 +33,8 @@ struct event_manager {
     //0x004E1B00
     static void garbage_collect();
 
+    static void clear_script_callbacks(entity_base_vhandle a1, const script_executable *a2);
+
     static inline Var<_std::vector<event_type *>> event_types{0x0095BA48};
 };
 

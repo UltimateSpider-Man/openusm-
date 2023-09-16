@@ -72,8 +72,18 @@ vm_thread *script_instance::add_thread(const vm_executable *ex, const char *parm
         nt->get_data_stack().push(parms, v5);
     }
 
-    nt->PC = ex->field_10;
+    nt->PC = ex->buffer;
     return nt;
+}
+
+void script_instance::massacre_threads(const vm_executable *a2, const vm_thread *a3)
+{
+    THISCALL(0x005ADB80, this, a2, a3);
+}
+
+void script_instance::kill_thread(const vm_executable *a2, const vm_thread *a3)
+{
+    THISCALL(0x005AD8D0, this, a2, a3);
 }
 
 vm_thread *script_instance::add_thread(const vm_executable *a2)

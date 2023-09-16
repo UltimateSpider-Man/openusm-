@@ -32,6 +32,10 @@ struct script_object {
 
     script_object();
 
+    auto &get_name() const {
+        return name;
+    }
+
     //0x005A0750
     void constructor_common();
 
@@ -58,21 +62,36 @@ struct script_instance
     int field_0;
     int field_4;
     int field_8;
-    string_hash field_C;
-    so_data_block field_10;
-    _std::list<void *> threads;
+    string_hash name;
+    so_data_block data;
+    _std::list<vm_thread *> threads;
     int field_28;
     script_object *parent;
     int field_30;
+
+    auto &get_name() const {
+        return name;
+    }
 
     auto get_parent()
     {
         return this->parent;
     }
 
+    char *get_buffer()
+    {
+        return this->data.get_buffer();
+    }
+
     vm_thread *add_thread(const vm_executable *a2);
 
     vm_thread *add_thread(const vm_executable *a1, const char *a2);
+
+    //0x005ADB80
+    void massacre_threads(const vm_executable *a2, const vm_thread *a3);
+
+    //0x005AD8D0
+    void kill_thread(const vm_executable *a2, const vm_thread *a3);
 
     //0x005A33F0
     int *register_callback(

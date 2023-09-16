@@ -18,11 +18,11 @@ struct vm_executable
         int field_0;
         script_executable *field_4;
     } *owner;
-    string_hash field_4;
+    string_hash fullname;
     string_hash name;
     int parms_stacksize;
-    uint16_t *field_10;
-    int field_14;
+    uint16_t *buffer;
+    int buffer_len;
     struct {
         mString field_0;
         int field_10;
@@ -33,6 +33,22 @@ struct vm_executable
     uint32_t flags;
     int field_20;
 
+    int get_size() const {
+        return buffer_len;
+    }
+
+    auto &get_name() const {
+        return name;
+    }
+
+    auto &get_fullname() const {
+        return fullname;
+    }
+
+    const auto *get_start() const {
+        return buffer;
+    }
+
     bool is_un_mashed() const {
         return (this->flags & 8) != 0;
     }
@@ -41,8 +57,7 @@ struct vm_executable
         return this->parms_stacksize;
     }
 
-    auto *get_owner()
-    {
+    auto *get_owner() const {
         return this->owner;
     }
 
