@@ -25,14 +25,51 @@ Var<void (*)(vm_thread *, string_hash)> dword_965F20 {0x00965F20};
 
 Var<fixed_pool> vm_thread::pool {0x00922D58};
 
-static constexpr auto UNINITIALIZED_SCRIPT_PARM = 0x7BAD05CF;
+vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this) {
+    if constexpr (1) {
+        this->ex = a3;
+        this->inst = a2;
+        this->field_14 = 0;
+        this->field_18 = 0;
+        this->flags = 2;
 
-vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) {
-    THISCALL(0x005A5420, this, a2, a3);
+        this->PC = this->ex->get_start();
+        this->field_0 = 0;
+        this->field_4 = 0;
+        this->field_8 = 0;
+        this->field_1DC = 0;
+        this->field_1E0 = 0;
+        this->field_1E4 = ++id_counter();
+        this->PC_stack.reserve(4u);
+        this->field_1B0 = 0;
+        this->field_1B4 = 0.0;
+    } else {
+        THISCALL(0x005A5420, this, a2, a3);
+    }
 }
 
-vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) {
-    THISCALL(0x005A5500, this, a2, a3, a4);
+vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : dstack(this) {
+
+    if constexpr(0) {
+        this->ex = a3;
+        this->inst = a2;
+        this->field_14 = 0;
+        this->field_18 = 0;
+        this->flags = 2;
+
+        this->PC = this->ex->get_start();
+        this->field_1DC = a4;
+        this->field_0 = 0;
+        this->field_4 = 0;
+        this->field_8 = 0;
+        this->field_1E0 = 0;
+        this->field_1E4 = ++id_counter();
+        this->PC_stack.reserve(4u);
+        this->field_1B0 = 0;
+        this->field_1B4 = 0.0;
+    } else {
+        THISCALL(0x005A5500, this, a2, a3, a4);
+    }
 }
 
 void vm_thread::set_flag(flags_t a2, bool a3)
@@ -128,8 +165,7 @@ bool vm_thread::run() {
         opcode_arg_t prev_argtype = OP_ARG_NULL;
         opcode_arg_t argtype = OP_ARG_NULL;
 
-        vm_thread::argument_t a2{};
-        auto &arg = a2;
+        vm_thread::argument_t arg{};
 
         vm_thread::argument_t prev_arg{};
         uint16_t v113 = 0; 
@@ -175,10 +211,10 @@ bool vm_thread::run() {
             case OP_ARG_POPO:
                 arg.word = *this->PC++;
                 break;
-            case 8:
-            case 9:
-            case 10:
-            case 11:
+            case OP_ARG_SDR:
+            case OP_ARG_SFR:
+            case OP_ARG_LFR:
+            case OP_ARG_CLV:
             case 15:
             case 16:
             case 17: {
@@ -202,7 +238,7 @@ bool vm_thread::run() {
                 if ( argtype == OP_ARG_NUM ) {
 
                     if ( arg.binary == UNINITIALIZED_SCRIPT_PARM
-                            || (int &) this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
+                            || (int &)this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
                     {
                         auto *ex = this->get_executable();
                         auto &v704 = ex->get_fullname();
@@ -220,7 +256,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() += a2.val;
+                    this->dstack.top_num() += arg.val;
                     break;
                 default:
                     assert(0);
@@ -239,7 +275,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() = int(a2.val) & int(this->dstack.top_num());
+                    this->dstack.top_num() = int(arg.val) & int(this->dstack.top_num());
                     break;
                 default:
                     assert(0);
@@ -251,7 +287,7 @@ bool vm_thread::run() {
             case OP_BF: {
                 assert(argtype == OP_ARG_PCR);
 
-                if ( this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
+                if ( (int &)this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
                 {
                     auto *ex = this->get_executable();
                     auto &v704 = ex->get_fullname();
@@ -262,7 +298,7 @@ bool vm_thread::run() {
                 }
 
                 if ( 0.0f == this->dstack.pop_num() ) {
-                    (uint32_t &) this->PC += a2.word;
+                    (uint32_t &)this->PC += arg.word;
                 }
 
                 break;
@@ -270,30 +306,30 @@ bool vm_thread::run() {
             case OP_BRA: {
                 assert(argtype == OP_ARG_PCR);
 
-                this->PC = CAST(PC, bit_cast<char *>(this->PC) + a2.word);
+                (uint32_t &)this->PC += arg.word;
                 break;
             }
             case OP_BSL:
                 assert(argtype == OP_ARG_LFR);
 
-                running = this->call_script_library_function(a2, oldPC);
+                running = this->call_script_library_function(arg, oldPC);
                 break;
             case OP_BSR: {
                 assert(argtype == OP_ARG_SFR);
 
                 this->push_PC();
-                this->PC = a2.sfr->buffer;
+                this->PC = arg.sfr->get_start();
                 break;
             }
             case OP_BST:
                 assert(argtype == OP_ARG_SFR);
 
-                this->spawn_sub_thread(a2);
+                this->spawn_sub_thread(arg);
                 break;
             case OP_BTH:
                 assert(argtype == OP_ARG_SFR);
 
-                this->spawn_parallel_thread(a2);
+                this->spawn_parallel_thread(arg);
                 break;
             case OP_DEC:
                 assert(dsize == 4);
@@ -311,10 +347,10 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() = this->dstack.top_num() / a2.val;
+                    this->dstack.top_num() = this->dstack.top_num() / arg.val;
                     break;
                 case OP_ARG_NUMR:
-                    this->dstack.top_num() = a2.val / this->dstack.top_num();
+                    this->dstack.top_num() = arg.val / this->dstack.top_num();
                     break;
                 default:
                     assert(0);
@@ -326,10 +362,10 @@ bool vm_thread::run() {
                 switch ( argtype )
                 {
                 case OP_ARG_NULL:
-                    this->dstack.push(&this->dstack.SP[-dsize], dsize);
+                    this->dstack.push(this->dstack.get_SP() - dsize, dsize);
                     break;
                 case OP_ARG_SPR:
-                    memcpy(this->dstack.get_SP() + a2.word,
+                    memcpy(this->dstack.get_SP() + arg.word,
                             this->dstack.get_SP() - dsize,
                             dsize);
                     break;
@@ -343,13 +379,13 @@ bool vm_thread::run() {
 
                         this->slf_error(mString {"reference to bad or uninitialized script object instance value"});
                     }
-                    memcpy(si->get_buffer() + a2.word,
+                    memcpy(si->get_buffer() + arg.word,
                             this->dstack.get_SP() - dsize,
                             dsize);
                     break;
                 }
                 case OP_ARG_SDR:
-                    memcpy(a2.sdr, this->dstack.get_SP() - dsize, dsize);
+                    memcpy(arg.sdr, this->dstack.get_SP() - dsize, dsize);
                     break;
                 default:
                     assert(0);
@@ -381,7 +417,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() = (this->dstack.top_num() == a2.val);
+                    this->dstack.top_num() = (this->dstack.top_num() == arg.val);
                     break;
                 default:
                     assert(0);
@@ -393,8 +429,7 @@ bool vm_thread::run() {
             case OP_GE:
                 assert(dsize == 4);
 
-                if ( argtype == OP_ARG_NUM
-                        || argtype == OP_ARG_NUMR )
+                if ( argtype != OP_ARG_NULL )
                 {
                     if ( arg.binary == UNINITIALIZED_SCRIPT_PARM
                             || (int &) this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
@@ -416,10 +451,10 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() = this->dstack.top_num() >= a2.val;
+                    this->dstack.top_num() = this->dstack.top_num() >= arg.val;
                     break;
                 case OP_ARG_NUMR:
-                    this->dstack.top_num() = a2.val >= this->dstack.top_num();
+                    this->dstack.top_num() = arg.val >= this->dstack.top_num();
                     break;
                 default:
                     assert(0);
@@ -467,14 +502,14 @@ bool vm_thread::run() {
                 case OP_ARG_SFR: {
 
                     vm_thread *t = nullptr;
-                    if ( this->ex == a2.sfr )
+                    if ( this->ex == arg.sfr )
                     {
                         kill_me = true;
                         running = false;
                         t = this;
                     }
 
-                    this->inst->kill_thread(a2.sfr, t);
+                    this->inst->kill_thread(arg.sfr, t);
                     break;
                 }
                 default:
@@ -492,25 +527,22 @@ bool vm_thread::run() {
             }
             case OP_LE:
                 assert(dsize == 4);
-                if ( argtype != 0 )
-                {
-                    auto v35 = argtype - 1;
-                    if ( v35 )
-                    {
-                        if ( v35 == 1 )
-                        {
-                            this->dstack.top_num() = (a2.val <= this->dstack.top_num());
-                        }
-                    }
-                    else
-                    {
-                        this->dstack.top_num() = (this->dstack.top_num() <= a2.val);
-                    }
-                }
-                else
-                {
+
+                switch (argtype) {
+                case OP_ARG_NULL: {
                     vm_num_t v = this->dstack.pop_num();
                     this->dstack.top_num() = this->dstack.top_num() <= v;
+                    break;
+                }
+                case OP_ARG_NUM:
+                    this->dstack.top_num() = (this->dstack.top_num() <= arg.val);
+                    break;
+                case OP_ARG_NUMR:
+                    this->dstack.top_num() = (arg.val <= this->dstack.top_num());
+                    break;
+                default:
+                    assert(0);
+                    break;
                 }
 
                 break;
@@ -526,11 +558,10 @@ bool vm_thread::run() {
             case OP_LT: {
                 assert(dsize == 4);
 
-                if ( argtype == OP_ARG_NUM
-                        || argtype == OP_ARG_NUMR )
+                if ( argtype != OP_ARG_NULL )
                 {
                     if ( arg.binary == UNINITIALIZED_SCRIPT_PARM
-                            || this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
+                            || (int &) this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
                     {
                         auto *ex = this->get_executable();
                         auto &v704 = ex->get_fullname();
@@ -570,10 +601,10 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() = int(this->dstack.top_num()) % int(a2.val);
+                    this->dstack.top_num() = int(this->dstack.top_num()) % int(arg.val);
                     break;
                 case OP_ARG_NUMR:
-                    this->dstack.top_num() = int(a2.val) % int(this->dstack.top_num());
+                    this->dstack.top_num() = int(arg.val) % int(this->dstack.top_num());
                     break;
                 default:
                     assert(0);
@@ -668,7 +699,7 @@ bool vm_thread::run() {
                     {
                         auto v57 = dsize;
                         auto *v58 = this->dstack.SP - dsize;
-                        auto *v59 = this->dstack.SP + a2.word;
+                        auto *v59 = this->dstack.SP + arg.word;
 
                         memcpy(v59, v58, v57);
                         this->dstack.pop(v57);
@@ -677,7 +708,7 @@ bool vm_thread::run() {
                         v109 = false;
                         auto v60 = v113;
                         memcpy(
-                            &this->dstack.SP[v60 * int(v114) + a2.word],
+                            this->dstack.SP + v60 * int(v114) + arg.word,
                             this->dstack.SP - v60,
                             v60);
 
@@ -703,14 +734,14 @@ bool vm_thread::run() {
                         auto v63 = v113;
                         auto *buffer = si->get_buffer();
                         memcpy(
-                            si->get_buffer() + a2.word + v63 * int(v114),
+                            si->get_buffer() + arg.word + v63 * int(v114),
                             this->dstack.get_SP() - v63,
                             v63);
 
                         this->dstack.pop(v63);
                     } else {
                         auto v57 = dsize;
-                        memcpy(si->get_buffer() + a2.word,
+                        memcpy(si->get_buffer() + arg.word,
                                 this->dstack.get_SP() - dsize,
                                 v57);
 
@@ -729,7 +760,7 @@ bool vm_thread::run() {
                         assert(offset == dsize && "dsize should be divisible by 4");
 
                         auto *v183 = this->dstack.get_SP();
-                        memcpy(a2.sdr, &v183[-dsize], dsize);
+                        memcpy(arg.sdr, v183 - dsize, dsize);
                         this->dstack.pop(dsize);
                         break;
                     }
@@ -745,8 +776,8 @@ bool vm_thread::run() {
 
                     auto v273 = v113;
                     auto *v182 = this->dstack.get_SP();
-                    memcpy(a2.sdr + v273 * int(v114),
-                            &v182[-v273],
+                    memcpy(arg.sdr + v273 * int(v114),
+                            v182 - v273,
                             v273);
                     this->dstack.pop(v273);
                     break;
@@ -759,7 +790,7 @@ bool vm_thread::run() {
                         auto *v64 = this->dstack.get_SP();
                         auto *v58 = v64 - v113;
                         auto v57 = v113;
-                        auto v59 = a2.sdr + v113 * int(v114);
+                        auto v59 = arg.sdr + v113 * int(v114);
                         memcpy(v59, v58, v57);
                         this->dstack.pop(v57);
                     }
@@ -767,14 +798,15 @@ bool vm_thread::run() {
                     {
                         auto v57 = dsize;
                         auto *v64 = this->dstack.get_SP();
-                        auto *v58 = &v64[-dsize];
-                        memcpy(a2.sdr, v58, v57);
+                        auto *v58 = v64 - dsize;
+                        memcpy(arg.sdr, v58, v57);
                         this->dstack.pop(v57);
                     }
 
                     break;
                 }
                 default:
+                    assert(0);
                     break;
                 }
 
@@ -784,7 +816,7 @@ bool vm_thread::run() {
                 switch ( argtype )
                 {
                 case OP_ARG_NUM:
-                    if (a2.binary == UNINITIALIZED_SCRIPT_PARM) {
+                    if (arg.binary == UNINITIALIZED_SCRIPT_PARM) {
                         auto *ex = this->get_executable();
                         auto &v728 = ex->get_fullname();
                         auto *v186 = v728.to_string();
@@ -792,13 +824,13 @@ bool vm_thread::run() {
                         this->slf_error(v352);
                     }
 
-                    this->dstack.push(a2.val);
+                    this->dstack.push(arg.val);
                     break;
                 case OP_ARG_STR:
-                    this->dstack.push(a2.str);
+                    this->dstack.push(arg.str);
                     break;
                 case OP_ARG_SPR:
-                    this->dstack.push(this->dstack.get_SP() + a2.word, dsize);
+                    this->dstack.push(this->dstack.get_SP() + arg.word, dsize);
                     break;
                 case OP_ARG_POPO: {
                     auto *si = static_cast<script_instance *>(this->dstack.pop_addr());
@@ -811,25 +843,25 @@ bool vm_thread::run() {
                         this->slf_error(mString {"reference to bad or uninitialized script object instance value"});
                     }
 
-                    this->dstack.push(si->get_buffer() + a2.word, dsize);
+                    this->dstack.push(si->get_buffer() + arg.word, dsize);
                     break;
                 }
                 case OP_ARG_SDR:
                 case 17:
-                    this->dstack.push(a2.sdr, dsize);
+                    this->dstack.push(arg.sdr, dsize);
                     break;
                 case OP_ARG_CLV:
-                    this->dstack.push(static_cast<int>(a2.binary));
+                    this->dstack.push(static_cast<int>(arg.binary));
                     break;
                 case 15: {
                     this->field_18 = 0;
-                    this->dstack.push(static_cast<int>(a2.binary));
+                    this->dstack.push(static_cast<int>(arg.binary));
                     break;
                 }
                 case 16: {
                     this->dstack.pop(4);
                     this->field_18 = *(int *)this->dstack.get_SP();
-                    this->dstack.push(static_cast<int>(a2.binary));
+                    this->dstack.push(static_cast<int>(arg.binary));
 
                     break;
                 }
@@ -898,7 +930,7 @@ bool vm_thread::run() {
             case OP_SPA: {
                 assert(argtype == OP_ARG_WORD);
 
-                this->dstack.move_SP(a2.word);
+                this->dstack.move_SP(arg.word);
                 while ( this->field_1C8.size() )
                 {
                     auto size = this->field_1C8.size();
@@ -929,10 +961,10 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() -= a2.val;
+                    this->dstack.top_num() -= arg.val;
                     break;
                 case OP_ARG_NUMR:
-                    this->dstack.top_num() = a2.val - this->dstack.top_num();
+                    this->dstack.top_num() = arg.val - this->dstack.top_num();
                     break;
                 default:
                     assert(0);
@@ -950,7 +982,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_NUM:
-                    this->dstack.top_num() = int(this->dstack.top_num()) ^ int(a2.val);
+                    this->dstack.top_num() = int(this->dstack.top_num()) ^ int(arg.val);
                     break;
                 default:
                     assert(0);
@@ -967,7 +999,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_STR:
-                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), a2.str) == 0);
+                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), arg.str) == 0);
                     break;
                 default:
                     assert(0);
@@ -986,7 +1018,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_STR:
-                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), a2.str) != 0);
+                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), arg.str) != 0);
                     break;
 
                 default:
@@ -998,25 +1030,25 @@ bool vm_thread::run() {
             }
             case OP_ECB:
                 assert(argtype == OP_ARG_SFR);
-                this->create_event_callback(a2, false);
+                this->create_event_callback(arg, false);
                 break;
             case OP_ESB:
                 assert(argtype == OP_ARG_SFR);
-                this->create_static_event_callback(a2, false);
+                this->create_static_event_callback(arg, false);
                 break;
             case OP_ECO:
                 assert(argtype == OP_ARG_SFR);
-                this->create_event_callback(a2, true);
+                this->create_event_callback(arg, true);
                 break;
             case OP_SCO:
                 assert(argtype == OP_ARG_SFR);
-                this->create_static_event_callback(a2, true);
+                this->create_static_event_callback(arg, true);
                 break;
             case 47:
-                this->raise_event(a2, argtype);
+                this->raise_event(arg, argtype);
                 break;
             case 48:
-                this->raise_all_event(a2, argtype);
+                this->raise_all_event(arg, argtype);
                 break;
             case 49: {
                 assert(argtype == OP_ARG_SFR);
@@ -1025,14 +1057,14 @@ bool vm_thread::run() {
 
                 auto *si = static_cast<script_instance *>(this->dstack.pop_addr());
                 vm_thread *v32 = nullptr;
-                if ( this->inst == si && this->ex == a2.sfr )
+                if ( this->inst == si && this->ex == arg.sfr )
                 {
                     running = false;
                     kill_me = true;
                     v32 = this;
                 }
 
-                si->kill_thread(a2.sfr, v32);
+                si->kill_thread(arg.sfr, v32);
                 break;
             }
             case 50: {
@@ -1049,7 +1081,7 @@ bool vm_thread::run() {
                 }
 
                 if ( this->dstack.top_num() == 0.0f ) {
-                    (uint32_t &)this->PC += a2.word;
+                    (uint32_t &)this->PC += arg.word;
                 }
 
                 break;
@@ -1092,7 +1124,7 @@ bool vm_thread::run() {
                     v33->massacre_threads(nullptr, this);
                 } else {
                     assert(argtype == OP_ARG_SFR);
-                    v33->massacre_threads(a2.sfr, this);
+                    v33->massacre_threads(arg.sfr, this);
                 }
 
                 break;
@@ -1103,31 +1135,31 @@ bool vm_thread::run() {
                 assert(prev_argtype == OP_ARG_SPR);
 
                 auto *si = static_cast<script_instance *>(this->dstack.pop_addr());
-                if ( this->inst == si && this->ex == a2.sfr )
+                if ( this->inst == si && this->ex == arg.sfr )
                 {
                     kill_me = true;
                     running = false;
                 }
 
-                si->massacre_threads(a2.sfr, this);
+                si->massacre_threads(arg.sfr, this);
                 break;
             }
             case 56: {
-                this->dstack.pop(a2.word);
+                this->dstack.pop(arg.word);
                 vm_num_t v1258 = this->dstack.pop_num();
-                auto v278 = a2.word;
+                auto v278 = arg.word;
                 auto *v221 = this->dstack.get_SP();
-                auto *src = v221 + prev_arg.word + a2.word + a2.word * int(v1258);
+                auto *src = v221 + prev_arg.word + arg.word + arg.word * int(v1258);
                 auto *v222 = this->dstack.get_SP();
                 memcpy(v222, src, v278);
-                this->dstack.move_SP(a2.word);
+                this->dstack.move_SP(arg.word);
                 break;
             }
             case 57: {
                 assert(argtype == OP_ARG_WORD);
 
                 v109 = true;
-                v113 = a2.word;
+                v113 = arg.word;
                 v114 = this->dstack.pop_num();
                 break;
             }
@@ -1143,7 +1175,7 @@ bool vm_thread::run() {
 
                 auto num_0 = this->dstack.pop_num();
                 auto num_1 = this->dstack.pop_num();
-                auto v89 = a2.word;
+                auto v89 = arg.word;
 
                 auto *src = si->get_buffer() + int(num_0) + v89 * int(num_1);
                 memcpy(
@@ -1155,9 +1187,9 @@ bool vm_thread::run() {
 
             }
             case 59: {
-                this->dstack.pop(a2.word);
+                this->dstack.pop(arg.word);
                 auto v93 = this->dstack.pop_num();
-                auto v85 = a2.word;
+                auto v85 = arg.word;
                 auto *v88 = prev_arg.sdr + v85 * int(v93);
                 auto *v87 = this->dstack.get_SP();
                 memcpy(v87, v88, v85);

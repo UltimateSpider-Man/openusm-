@@ -28,6 +28,8 @@ mission_stack_manager::mission_stack_manager() {
 }
 
 resource_pack_group *mission_stack_manager::get_pack_group_for_pack(const mString &a1) {
+    TRACE("mission_stack_manager::get_pack_group_for_pack");
+
     return (resource_pack_group *) THISCALL(0x005D2250, this, &a1);
 }
 

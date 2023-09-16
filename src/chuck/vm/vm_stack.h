@@ -3,11 +3,17 @@
 using vm_num_t = float;
 typedef const char * vm_str_t;
 
+struct vm_thread;
+
+inline constexpr auto UNINITIALIZED_SCRIPT_PARM = 0x7BAD05CF;
+
 struct vm_stack {
     int field_0[96];
     char *buffer;
     char *SP;
-    int **field_188;
+    vm_thread *my_thread;
+
+    vm_stack(vm_thread *t);
 
     int capacity() const {
         return 384;

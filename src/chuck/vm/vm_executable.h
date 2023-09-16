@@ -6,6 +6,7 @@
 #include <list.hpp>
 
 struct script_executable;
+struct script_object;
 
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
@@ -14,10 +15,7 @@ struct vm_executable_param_symbol {};
 
 struct vm_executable
 {
-    struct {
-        int field_0;
-        script_executable *field_4;
-    } *owner;
+    script_object *owner;
     string_hash fullname;
     string_hash name;
     int parms_stacksize;

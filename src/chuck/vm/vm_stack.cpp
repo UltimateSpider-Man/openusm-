@@ -9,6 +9,16 @@
 #include <cstring>
 #include <string>
 
+vm_stack::vm_stack(vm_thread *t) {
+    this->my_thread = t;
+    this->buffer = (char *)this;
+    for (auto i = 0u; i < 96u; ++i) {
+        *(uint32_t *)&this->buffer[4 * i] = UNINITIALIZED_SCRIPT_PARM;
+    }
+
+    this->SP = this->buffer;
+}
+
 void vm_stack::push(const char *a2, int a3) {
     TRACE("vm_stack::push(const char *, int)", std::to_string(a3).c_str());
 

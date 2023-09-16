@@ -19,10 +19,14 @@
 #include "trace.h"
 #include "utility.h"
 
+#include <script_executable.h>
+#include <script_object.h>
+#include <vm_thread.h>
+
 VALIDATE_SIZE(vm_stack, 0x18C);
 
-mString *generate_pack_name(mString *out, const char *a2, vm_stack &stack) {
-    mString v6{*(const char **) (*(uint32_t *) (*((uint32_t *) stack.field_188 + 3) + 44) + 4)};
+mString generate_pack_name(const char *a2, vm_stack &stack) {
+    mString v6{stack.my_thread->inst->parent->parent->field_0.to_string()};
 
     mString a1a{0, "%s_%s", a2, v6.c_str()};
 
@@ -31,9 +35,8 @@ mString *generate_pack_name(mString *out, const char *a2, vm_stack &stack) {
 
     resource_key_type type = RESOURCE_KEY_TYPE_NONE;
     resource_key::calc_resource_string_and_type_from_path(a1a.c_str(), &v4, &type);
-    *out = v4;
 
-    return out;
+    return v4;
 }
 
 bool slf__is_point_inside_glass_house__vector3d__t::operator()(

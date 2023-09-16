@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "script_executable.h"
+#include "script_object.h"
 
 VALIDATE_SIZE(vm_executable, 0x24u);
 
@@ -18,7 +19,7 @@ void vm_executable::un_mash(
     assert((flags & VM_EXECUTABLE_FLAG_FROM_MASH ) != 0);
 
     auto *v6 = this->buffer;
-    auto *v5 = this->owner->field_4;
+    auto *v5 = this->owner->parent;
 
     auto sub_6A171C = [](script_executable *a1, unsigned int offset) -> uint16_t *
     {

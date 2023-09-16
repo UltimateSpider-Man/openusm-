@@ -3,13 +3,14 @@
 inline constexpr auto OP_DSIZE_FLAG   = 0x0080u;
 inline constexpr auto OP_ARGTYPE_MASK = 0x007Fu;
 
+                    // FUNCTION                 ARGUMENT_TYPES_ALLOWED
 enum opcode_t {
     OP_ADD = 0,
     OP_AND = 1,
     OP_BF = 2,
     OP_BRA = 3,
-    OP_BSL = 4,
-    OP_BSR = 5,
+    OP_BSL = 4,     // Call library function    LFR
+    OP_BSR = 5,     // Branch to subroutine     SFR
     OP_BST = 6,
     OP_BTH = 7,
     OP_DEC = 8,
@@ -106,7 +107,7 @@ enum opcode_arg_t {
     OP_ARG_POPO = 7,    // stack contents (pop) plus offset (2 bytes)
     OP_ARG_SDR = 8,
     OP_ARG_SFR = 9,
-    OP_ARG_LFR = 10,
+    OP_ARG_LFR = 10,    // library function member reference (4 bytes)
     OP_ARG_CLV = 11,    // class value reference (4 bytes)
     OP_ARG_SIG = 15,
     OP_ARG_PSIG = 16,

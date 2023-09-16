@@ -110,6 +110,8 @@ struct vm_thread {
     static Var<char[64][256]> string_registers;
 
     static Var<fixed_pool> pool;
+
+    static inline Var<int> id_counter {0x00965F0C};
 };
 
 extern void vm_thread_patch();
