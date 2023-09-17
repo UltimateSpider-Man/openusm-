@@ -69,5 +69,5 @@ struct mission_table_container
     void un_mash(generic_mash_header *a2, void *a3, void *a4, generic_mash_data_ptrs *a5);
 };
 
-extern inline Var<mission_table_container*> s_current_un_mashing_mission_table_container {0x00968524};
+inline Var<mission_table_container*> s_current_un_mashing_mission_table_container {0x00968524};
 

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "script_executable.h"
 #include "script_object.h"
+#include "trace.h"
 
 VALIDATE_SIZE(vm_executable, 0x24u);
 
@@ -14,23 +15,16 @@ void vm_executable::un_mash(
         void *,
         generic_mash_data_ptrs *)
 {
+    TRACE("vm_executable::un_mash");
+
     assert(!is_un_mashed());
     this->owner = CAST(owner, a3);
     assert((flags & VM_EXECUTABLE_FLAG_FROM_MASH ) != 0);
 
-    auto *v6 = this->buffer;
+    auto offset = bit_cast<uint32_t>(this->buffer);
     auto *v5 = this->owner->parent;
 
-    auto sub_6A171C = [](script_executable *a1, unsigned int offset) -> uint16_t *
-    {
-        assert(a1->sx_exe_image != nullptr && "We should have loaded the executable code from the sxl or sxb file");
-
-        assert(offset < (uint32_t) a1->sx_exe_image_size && "offset into exec code is out of bounds... bad juju man");
-
-        return &a1->sx_exe_image[offset >> 1];
-    };
-
-    this->buffer = sub_6A171C(v5, (unsigned int)v6);
+    this->buffer = v5->get_exec_code(offset);
     this->flags |= 8u;
 }
 

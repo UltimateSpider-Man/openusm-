@@ -32,6 +32,10 @@ struct script_object {
 
     script_object();
 
+    auto *get_parent() {
+        return parent;
+    }
+
     auto &get_name() const {
         return name;
     }

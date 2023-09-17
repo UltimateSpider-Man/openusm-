@@ -34,6 +34,8 @@ constexpr auto SCRIPT_EXECUTABLE_FLAG_UN_MASHED = 4u;
 
 void script_executable::quick_un_mash()
 {
+    TRACE("script_executable::quick_un_mash");
+
     assert(( flags & SCRIPT_EXECUTABLE_FLAG_UN_MASHED ) != 0);
 
     assert(( flags & SCRIPT_EXECUTABLE_FLAG_LINKED ) != 0);
@@ -68,7 +70,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
     if constexpr (1)
     {
-        if ( (this->flags & 4) != 0 )
+        if ( (this->flags & SCRIPT_EXECUTABLE_FLAG_UN_MASHED) != 0 )
         {
             this->quick_un_mash();
         }
@@ -82,19 +84,16 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 a4->field_0 += v6;
             }
 
-            int v7 = this->sx_exe_image_size;
             this->sx_exe_image = CAST(this->sx_exe_image, a4->field_0);
-            auto *v8 = &a4->field_0[v7];
-            a4->field_0 = v8;
-            auto v9 = 4 - (bit_cast<int>(a4->field_0) % 4u);
+            a4->field_0 += this->sx_exe_image_size;
+            auto v9 = 4 - (bit_cast<uint32_t>(a4->field_0) % 4u);
             if ( v9 < 4 )
             {
-                a4->field_0 = &v8[v9];
+                a4->field_0 += v9;
             }
 
-            auto v10 = this->total_script_objects;
-            this->script_objects = (script_object **)a4->field_0;
-            a4->field_0 += 4 * v10;
+            this->script_objects = CAST(this->script_objects, a4->field_0);
+            a4->field_0 += 4 * this->total_script_objects;
             for ( auto i = 0; i < this->total_script_objects; ++i )
             {
                 auto v12 = 8 - ((int) a4->field_0 % 8);
@@ -109,12 +108,12 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     a4->field_0 += v13;
                 }
                 
-                this->script_objects[i] = (script_object *)a4->field_0;
-                a4->field_0 += 0x34;
+                this->script_objects[i] = bit_cast<script_object *>(a4->field_0);
+                a4->field_0 += sizeof(script_object);
 
                 assert(((int) header) % 4 == 0);
-                auto *v37 = this->script_objects[i];
-                v37->un_mash(header, this, v37, a4);
+                auto *so = this->script_objects[i];
+                so->un_mash(header, this, so, a4);
             }
 
             this->global_script_object = *this->script_objects;
@@ -124,12 +123,11 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 a4->field_0 += v14;
             }
 
-            auto v15 = this->total_script_objects;
-            this->script_objects_by_name = (script_object **)a4->field_0;
-            a4->field_0 += 4 * v15;
-            for ( auto j = 0; j < this->total_script_objects; ++j )
+            this->script_objects_by_name = bit_cast<script_object **>(a4->field_0);
+            a4->field_0 += 4 * this->total_script_objects;
+            for ( auto i = 0; i < this->total_script_objects; ++i )
             {
-                this->script_objects_by_name[j] = this->script_objects[(int)this->script_objects_by_name[j]];
+                this->script_objects_by_name[i] = this->script_objects[(int)this->script_objects_by_name[i]];
             }
 
             auto v17 = 4 - ((int) a4->field_0 % 4);
@@ -138,10 +136,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 a4->field_0 += v17;
             }
 
-            auto v18 = this->permanent_string_table_size;
             this->permanent_string_table = CAST(this->permanent_string_table, a4->field_0);
-            a4->field_0 += 4 * v18;
-            for ( auto k = 0; k < this->permanent_string_table_size; ++k )
+            a4->field_0 += 4 * this->permanent_string_table_size;
+            for ( auto i = 0; i < this->permanent_string_table_size; ++i )
             {
                 auto v20 = 4 - ((int)a4->field_0 % 4);
                 if ( v20 < 4 )
@@ -149,10 +146,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     a4->field_0 += v20;
                 }
 
-                auto v21 = *(uint32_t *)a4->field_0;
-                auto v22 = a4->field_0 + 4;
-                a4->field_0 = v22;
-                this->permanent_string_table[k] = (char *) v22;
+                auto v21 = *bit_cast<uint32_t *>(a4->field_0);
+                a4->field_0 += 4u;
+                this->permanent_string_table[i] = (char *) a4->field_0;
                 a4->field_0 += v21;
             }
 
@@ -170,14 +166,12 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 a4->field_0 += v24;
             }
 
-            auto v25 = 0x1C * this->field_58;
             this->field_54 = CAST(field_54, a4->field_0);
-            auto *v26 = &a4->field_0[v25];
-            a4->field_0 = v26;
+            a4->field_0 += 0x1C * this->field_58;
             auto v27 = 4 - ((int) a4->field_0 % 4u);
             if ( v27 < 4 )
             {
-                a4->field_0 = &v26[v27];
+                a4->field_0 += v27;
             }
 
             if ( this->field_58 > 0 )
@@ -186,10 +180,8 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 {
                     assert(((int)header) % 4 == 0);
 
-                    auto *v28 = this->field_54;
-                    auto v29 = v28[a5].field_18;
-                    auto *v30 = &v28[a5];
-                    auto *owner = this->find_object(v29);
+                    auto *v30 = this->field_54 + a5;
+                    auto *owner = this->find_object(v30->field_18);
                     assert(owner != nullptr);
 
                     if ( v30->field_10 == -1 )
@@ -210,7 +202,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             }
 
             this->constructor_common();
-            this->flags |= 4u;
+            this->flags |= SCRIPT_EXECUTABLE_FLAG_UN_MASHED;
         }
     }
     else
@@ -261,8 +253,7 @@ void script_executable::sub_672318(script_object *a1, int a3)
 
 constexpr auto CHUCK_STR_MAX_LENGTH = 47u;
 
-void script_executable::load(const resource_key &resource_id)
-{
+void script_executable::load(const resource_key &resource_id) {
     script_manager::run_callbacks((script_manager_callback_reason)3, this, nullptr);
     auto &a1a = resource_id.m_hash;
     auto *v2 = a1a.to_string();
@@ -447,6 +438,18 @@ void script_executable::load(const resource_key &resource_id)
 
     script_manager::run_callbacks((script_manager_callback_reason)2, this, nullptr);
 }
+
+uint16_t * script_executable::get_exec_code(unsigned int offset) {
+
+    TRACE("script_executable::get_exec_code", std::to_string(offset).c_str());
+
+    assert(sx_exe_image != nullptr && "We should have loaded the executable code from the sxl or sxb file");
+
+    assert(offset < (uint32_t) sx_exe_image_size && "offset into exec code is out of bounds... bad juju man");
+
+    return sx_exe_image + (offset >> 1);
+};
+
 
 void script_executable_patch()
 {

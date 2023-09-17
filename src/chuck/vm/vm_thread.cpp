@@ -37,11 +37,11 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
         this->field_0 = 0;
         this->field_4 = 0;
         this->field_8 = 0;
-        this->field_1DC = 0;
+        this->field_1DC = nullptr;
         this->field_1E0 = 0;
         this->field_1E4 = ++id_counter();
         this->PC_stack.reserve(4u);
-        this->field_1B0 = 0;
+        this->field_1B0 = nullptr;
         this->field_1B4 = 0.0;
     } else {
         THISCALL(0x005A5420, this, a2, a3);
@@ -50,7 +50,7 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
 
 vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : dstack(this) {
 
-    if constexpr(0) {
+    if constexpr(1) {
         this->ex = a3;
         this->inst = a2;
         this->field_14 = 0;
@@ -65,7 +65,7 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
         this->field_1E0 = 0;
         this->field_1E4 = ++id_counter();
         this->PC_stack.reserve(4u);
-        this->field_1B0 = 0;
+        this->field_1B0 = nullptr;
         this->field_1B4 = 0.0;
     } else {
         THISCALL(0x005A5500, this, a2, a3, a4);
@@ -732,7 +732,6 @@ bool vm_thread::run() {
                     {
                         v109 = false;
                         auto v63 = v113;
-                        auto *buffer = si->get_buffer();
                         memcpy(
                             si->get_buffer() + arg.word + v63 * int(v114),
                             this->dstack.get_SP() - v63,

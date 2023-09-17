@@ -72,7 +72,7 @@ void *parse_generic_mash_init(generic_mash_header *&header,
         assert(size_table_lookup != nullptr);
         assert(virtual_table_lookup != nullptr);
 
-        v16 = &cur_ptr[size_table_lookup[header->class_id]];
+        v16 = cur_ptr + size_table_lookup[header->class_id];
 
         //sp_log("%d %d %d %d", addr[0], addr[1], addr[2], addr[3]);
         assert(addr[0] == MASH_V_TABLE_VAL[0] ||
@@ -97,7 +97,7 @@ void *parse_generic_mash_init(generic_mash_header *&header,
         assert(size_table_lookup == nullptr);
         assert(virtual_table_lookup == nullptr);
 
-        v16 = &cur_ptr[struct_size];
+        v16 = cur_ptr + struct_size;
     }
 
     a4->field_0 = v16;

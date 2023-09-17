@@ -48,6 +48,8 @@ struct script_executable {
     //0x0059BBA0
     bool has_threads();
 
+    uint16_t * get_exec_code(unsigned int offset);
+
     //0x005AFF90
     void quick_un_mash();
 
