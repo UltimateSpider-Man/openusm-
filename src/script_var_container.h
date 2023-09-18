@@ -1,16 +1,16 @@
 #pragma once
 
+#include "chuck/vm/so_data_block.h"
+
 struct script_library_class;
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
 
 struct script_var_container {
-    int field_0;
-    void *field_4;
-    int field_8;
-    int *script_var_to_addr;
+    so_data_block script_var_block;
+    int (*script_var_to_addr)[2];
     int field_10;
-    int *field_14;
+    int *debug_info;
     int flags;
 
     //0x0059B9B0

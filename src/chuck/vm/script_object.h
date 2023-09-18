@@ -19,10 +19,10 @@ struct script_object {
     script_instance *global_instance;
     struct {
         string_hash field_0;
+        _std::list<void *> field_4;
+        _std::list<void *> field_10;
     } *debug_info;
-    int field_10;
-    int field_14;
-    int field_18;
+    so_data_block data;
     int data_blocksize;
     vm_executable **funcs;
     int total_funcs;

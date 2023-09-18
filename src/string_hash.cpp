@@ -19,6 +19,8 @@ Var<string_hash> loco_allow_web_tie_id{0x00958538};
 
 string_hash ANONYMOUS{};
 
+string_hash string_hash::INVALID_STRING_HASH = {0};
+
 #ifndef TEST_CASE
 Var<char[12]> string_hash::ghetto_string = {0x0095C7D0};
 #else

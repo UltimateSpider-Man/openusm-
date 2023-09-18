@@ -30,10 +30,6 @@ Var<_std::map<script_executable_entry_key, script_executable_entry> *> script_ma
 Var<_std::map<int, script_executable_allocated_stuff_record> *>
     script_manager_script_allocated_stuff_map{0x00965F00};
 
-Var<script_var_container *> script_manager_game_var_container = {0x00965EEC};
-
-Var<script_var_container *> script_manager_shared_var_container = {0x00965EF0};
-
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
 
 void *script_manager::get_game_var_address(const mString &a1, bool *a2, script_library_class **a3) {
@@ -140,17 +136,17 @@ void script_manager::link() {
     CDECL_CALL(0x005A3620);
 }
 
-script_var_container *script_manager::load_game_var_buffer(const char *a1) {
+int script_manager::load_game_var_buffer(const char *a1) {
     auto *result = script_manager_game_var_container();
     if (a1 != nullptr) {
-        std::memcpy(script_manager_game_var_container()->field_4,
+        std::memcpy(script_manager_game_var_container()->script_var_block.buffer,
                     a1,
-                    script_manager_game_var_container()->field_0);
+                    script_manager_game_var_container()->script_var_block.field_0);
     } else if (script_manager_game_var_container() == nullptr) {
-        return result;
+        return 0;
     }
 
-    return (script_var_container *) result->field_0;
+    return result->script_var_block.field_0;
 }
 
 void script_manager::run_callbacks(script_manager_callback_reason a1)

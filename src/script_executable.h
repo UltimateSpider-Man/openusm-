@@ -30,8 +30,8 @@ struct script_executable {
     _std::map<int, script_executable_allocated_stuff_record> *script_allocated_stuff_map;
     uint32_t flags;
     struct {
-        int field_0;
-        int field_4;
+        string_hash field_0;
+        string_hash so_name;
         vm_executable *field_8;
         int field_C;
         int field_10;

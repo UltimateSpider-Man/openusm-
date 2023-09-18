@@ -46,6 +46,8 @@ struct string_hash {
 
     static Var<char[12]> ghetto_string;
 
+    static string_hash INVALID_STRING_HASH;
+
     [[nodiscard]] string_hash sub_501E80();
 };
 

@@ -7,7 +7,6 @@
 
 #include <vector.hpp>
 
-struct vm_executable {};
 struct mString;
 struct script_instance;
 

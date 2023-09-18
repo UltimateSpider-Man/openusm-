@@ -202,6 +202,7 @@
 #include "variables.h"
 #include "vector3d.h"
 #include "vm.h"
+#include "vm_executable.h"
 #include "vm_thread.h"
 #include "vtbl.h"
 #include "wds.h"
@@ -2589,6 +2590,8 @@ BOOL install_redirects() {
     vm_patch();
 
     vm_thread_patch();
+
+    vm_executable_patch();
 
     chuck_callbacks_patch();
 

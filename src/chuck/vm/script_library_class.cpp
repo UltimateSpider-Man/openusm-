@@ -40,6 +40,14 @@ const char *script_library_class::get_name() {
     return this->name;
 }
 
+script_library_class::function *script_library_class::get_func(int index)
+{
+    assert(index >= 0);
+    assert(index < total_funcs);
+    
+    return this->funcs[index];
+}
+
 void script_library_class::add_function(script_library_class::function *func) {
 
     if ( g_is_the_packer() || script_manager::using_chuck_old_fashioned() )
@@ -119,6 +127,7 @@ script_library_class::function::function(const char *name) {
 script_library_class::function::function(script_library_class *a2, const char *a3) {
     THISCALL(0x0058EDE0, this, a2, a3);
 }
+
 
 void *__thiscall script_library_class_function_ctor(void *s, const char *name) {
     auto *self = static_cast<script_library_class::function *>(s);

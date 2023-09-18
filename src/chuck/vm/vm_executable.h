@@ -64,4 +64,10 @@ struct vm_executable
             void *a3,
             void *a4,
             generic_mash_data_ptrs *a5);
+
+    void link_un_mash(const script_executable *a2);
+
+    static inline Var<void (*)(const char *, uint32_t *)> resolve_signal_callback {0x00965F08};
 };
+
+extern void vm_executable_patch();

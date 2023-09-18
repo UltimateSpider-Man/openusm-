@@ -181,6 +181,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     assert(((int)header) % 4 == 0);
 
                     auto *v30 = this->field_54 + a5;
+                    
+                    assert(v30->so_name == string_hash::INVALID_STRING_HASH);
+
                     auto *owner = this->find_object(v30->field_18);
                     assert(owner != nullptr);
 

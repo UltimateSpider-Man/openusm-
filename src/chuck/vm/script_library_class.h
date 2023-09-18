@@ -49,7 +49,13 @@ struct script_library_class {
     int next_func_slot;
     uint32_t field_1C;
 
+    int get_size() const {
+        return this->field_8;
+    }
+
     const char *get_name();
+
+    function *get_func(int index);
 
     bool are_funcs_from_mash() const
     {

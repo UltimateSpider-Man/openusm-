@@ -37,7 +37,7 @@ struct script_manager {
     static void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3);
 
     //0x0058F480
-    static script_var_container *load_game_var_buffer(const char *a1);
+    static int load_game_var_buffer(const char *a1);
 
     //0x005B0750
     static script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4);
@@ -67,6 +67,12 @@ struct script_manager {
 
     static int get_total_loaded();
 };
+
+
+inline Var<script_var_container *> script_manager_game_var_container {0x00965EEC};
+
+inline Var<script_var_container *> script_manager_shared_var_container {0x00965EF0};
+
 
 extern Var<float> script_manager_time_inc;
 
