@@ -22,7 +22,7 @@ struct script_object {
         _std::list<void *> field_4;
         _std::list<void *> field_10;
     } *debug_info;
-    so_data_block data;
+    so_data_block static_data;
     int data_blocksize;
     vm_executable **funcs;
     int total_funcs;
@@ -34,6 +34,14 @@ struct script_object {
 
     auto *get_parent() {
         return parent;
+    }
+
+    char *get_static_data_buffer() const {
+        return this->static_data.get_buffer();
+    }
+
+    int get_static_data_size() const {
+        return this->static_data.size();
     }
 
     auto &get_name() const {

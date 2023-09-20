@@ -23,3 +23,10 @@ void script_var_container::un_mash(generic_mash_header *a2, void *a3, generic_ma
 void *script_var_container::get_script_var_address(const char *a2, script_library_class **a3) {
     return (void *) THISCALL(0x005A0520, this, a2, a3);
 }
+
+char *script_var_container::get_address(int offset)
+{
+    assert(this->script_var_block.get_buffer() != nullptr);
+    assert(script_var_block.is_address_in_buffer( int( script_var_block.get_buffer() ) + offset ));
+    return (this->script_var_block.get_buffer() + offset);
+}

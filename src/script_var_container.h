@@ -21,4 +21,6 @@ struct script_var_container {
 
     //0x005A0520
     void *get_script_var_address(const char *a2, script_library_class **a3);
+
+    char *get_address(int offset);
 };

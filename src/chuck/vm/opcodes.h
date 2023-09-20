@@ -105,7 +105,7 @@ enum opcode_arg_t {
     OP_ARG_PCR = 5,     // PC-relative address (2 bytes)
     OP_ARG_SPR = 6,     // SP-relative address (2 bytes)
     OP_ARG_POPO = 7,    // stack contents (pop) plus offset (2 bytes)
-    OP_ARG_SDR = 8,
+    OP_ARG_SDR = 8,     // static data member reference (4 bytes)
     OP_ARG_SFR = 9,
     OP_ARG_LFR = 10,    // library function member reference (4 bytes)
     OP_ARG_CLV = 11,    // class value reference (4 bytes)

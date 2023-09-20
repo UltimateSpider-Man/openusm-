@@ -141,12 +141,12 @@ int script_manager::load_game_var_buffer(const char *a1) {
     if (a1 != nullptr) {
         std::memcpy(script_manager_game_var_container()->script_var_block.buffer,
                     a1,
-                    script_manager_game_var_container()->script_var_block.field_0);
+                    script_manager_game_var_container()->script_var_block.size());
     } else if (script_manager_game_var_container() == nullptr) {
         return 0;
     }
 
-    return result->script_var_block.field_0;
+    return result->script_var_block.size();
 }
 
 void script_manager::run_callbacks(script_manager_callback_reason a1)
