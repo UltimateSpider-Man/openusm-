@@ -8,12 +8,13 @@
 
 void script_manager_callback(script_manager_callback_reason a1, script_executable *a2, const char *buffer)
 {
-    TRACE("script_manager_callback");
-    sp_log("%d", a1);
+    TRACE("script_manager_callback", std::to_string(int(a1)).c_str());
 
     switch ( a1 )
     {
     case 0:
+    case 2:
+    case 3:
     case 6:
     case 7:
         return;

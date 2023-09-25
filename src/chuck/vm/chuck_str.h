@@ -1,6 +1,12 @@
 #pragma once
 
+#include <string_hash.h>
+
 #include <float.hpp>
+
+struct chuck_str_t {
+    static inline const string_hash INVALID_STRING_HASH {0};
+};
 
 //0x0058FAE0
 extern char *chuck_strcpy(char *dest, const char *src, unsigned int dest_buffer_length);

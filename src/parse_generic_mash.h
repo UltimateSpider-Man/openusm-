@@ -29,8 +29,8 @@ struct generic_mash_header {
     }
 
     inline auto generate_safety_key() const {
-        return (this->field_8 + 0x7BADBA5D - (this->field_4 & 0xFFFFFFF) +
-                this->class_id + this->field_E) & 0xFFFFFFF | 0x70000000;
+        return ((this->field_8 + 0x7BADBA5D - (this->field_4 & 0xFFFFFFF) +
+                this->class_id + this->field_E) & 0xFFFFFFF) | 0x70000000;
     }
 };
 

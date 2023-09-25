@@ -151,16 +151,24 @@ int script_manager::load_game_var_buffer(const char *a1) {
 
 void script_manager::run_callbacks(script_manager_callback_reason a1)
 {
+    TRACE("script_manager::run_callbacks");
+
     CDECL_CALL(0x005A0AC0, a1);
 }
 
 void script_manager::run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3)
 {
+    TRACE("script_manager::run_callbacks");
+
     assert(script_manager_callbacks() != nullptr);
 
-    for ( auto &cb : (*script_manager_callbacks()) )
-    {
-        cb(a1, a2, a3);
+    if constexpr (0) {
+        for ( auto &cb : (*script_manager_callbacks()) )
+        {
+            cb(a1, a2, a3);
+        }
+    } else {
+        CDECL_CALL(0x005A0AC0, a1, a2, a3);
     }
 }
 
@@ -390,9 +398,5 @@ void script_manager_patch()
         REDIRECT(0x0057ED77, script_manager::init_game_var);
     }
 
-    {
-        REDIRECT(0x0055C8F3, script_manager::load);
-        REDIRECT(0x0055C938, script_manager::load);
-        REDIRECT(0x0055BF1A, script_manager::load);
-    }
+    SET_JUMP(0x005B0750, script_manager::load);
 }

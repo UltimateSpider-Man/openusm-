@@ -2597,6 +2597,8 @@ BOOL install_redirects() {
 
     resource_pack_standalone_patch();
 
+    os_file_patch();
+
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
         REDIRECT(0x008218B0, hookDirectInputAddress);
@@ -2783,8 +2785,6 @@ BOOL install_redirects() {
         character_viewer_patch();
 
         ghetto_mash_file_header_patch();
-
-        os_file_patch();
 
         string_hash_patch();
 

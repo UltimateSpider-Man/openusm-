@@ -6,6 +6,7 @@
 #include "log.h"
 #include "os_developer_options.h"
 #include "string_hash_dictionary.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
 
@@ -321,8 +322,9 @@ int os_file::get_size() {
 static Var<cdecl_call> dword_965EA0{0x00965EA0};
 
 void os_file::open(const mString &path, int shareMode) {
+    TRACE("os_file::open", path.c_str());
+
     if constexpr (1) {
-        //sp_log("Creating file %s", a2.c_str());
 
         if (os_file::system_locked() &&
             !os_developer_options::instance()->get_flag(39)) { //MOVE_EDITOR
@@ -511,6 +513,6 @@ void os_file_patch() {
 
     {
         FUNC_ADDRESS(address, &os_file::open);
-        REDIRECT(0x0059EAF7, address);
+        SET_JUMP(0x0059B740, address);
     }
 }

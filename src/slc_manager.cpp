@@ -32,6 +32,10 @@ void slc_manager::init()
 
     if constexpr (0)
     {
+        if (slc_manager_classes == nullptr) {
+            slc_manager_classes = new std::set<script_library_class *>{};
+        }
+
         if (slc_manager_class_array() == nullptr)
         {
             slc_manager_class_array() = new _std::vector<script_library_class *>{};
@@ -49,6 +53,24 @@ void slc_manager::init()
 
 void slc_manager::kill() {
     CDECL_CALL(0x005A5200);
+}
+
+script_library_class *slc_manager::get(const char *a1)
+{
+    assert(slc_manager_classes != nullptr);
+
+    script_library_class v9{};
+    v9.store_name(a1);
+    auto it = slc_manager_classes->find(&v9);
+    auto end = slc_manager_classes->end();
+    if ( it == end )
+    {
+        return nullptr;
+    }
+    else
+    {
+        return (*it);
+    }
 }
 
 void slc_manager::un_mash_all_funcs()

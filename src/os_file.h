@@ -10,7 +10,7 @@ struct os_file {
     enum mode_flags
     {
         FILE_READ = 1,
-        FILE_WRIE = 2,
+        FILE_WRITE = 2,
         FILE_MODIFY = 3,
         FILE_APPEND = 4
     };
@@ -44,7 +44,7 @@ struct os_file {
     //0x0059B6F0
     ~os_file();
 
-    inline bool is_open() {
+    bool is_open() const {
         return opened;
     }
 
