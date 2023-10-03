@@ -1,7 +1,9 @@
 #include "vm_executable.h"
 
+#include "chunk_file.h"
 #include "common.h"
 #include "func_wrapper.h"
+#include "memory.h"
 #include "opcodes.h"
 #include "script_library_class.h"
 #include "slc_manager.h"
@@ -14,8 +16,8 @@
 
 VALIDATE_SIZE(vm_executable, 0x24u);
 
-constexpr auto VM_EXECUTABLE_FLAG_LINKED = 2u;
-constexpr auto VM_EXECUTABLE_FLAG_FROM_MASH = 4u;
+vm_executable::vm_executable(script_object *so) : owner(so) {
+}
 
 void vm_executable::un_mash(
         generic_mash_header *,
@@ -30,33 +32,42 @@ void vm_executable::un_mash(
     assert((flags & VM_EXECUTABLE_FLAG_FROM_MASH ) != 0);
 
     auto offset = bit_cast<uint32_t>(this->buffer);
-    auto *v5 = this->owner->parent;
+    auto *se = this->owner->parent;
 
-    this->buffer = v5->get_exec_code(offset);
-    this->flags |= 8u;
+    this->buffer = se->get_exec_code(offset);
+    this->flags |= VM_EXECUTABLE_FLAG_UN_MASHED;
+
+    assert(this->debug_info == nullptr);
 }
 
-void vm_executable::link(const script_executable *a2)
-{
+void vm_executable::link(const script_executable *a2) {
+    TRACE("vm_executable::link");
+
     this->link_un_mash(a2);
 }
 
-namespace opcodes {
-    struct op_t {};
-
-    struct op_arg_t {
-        opcode_arg_t type;
-        uint8_t size; // bytes
-    };
-}
-
-void vm_executable::link_un_mash(const script_executable *a2)
-{
+void vm_executable::link_un_mash(const script_executable *a2) {
     TRACE("vm_executable::link_un_mash", this->fullname.to_string());
 
+    {
+        printf("permanent_string_table: %d\n", a2->permanent_string_table_size);
+        for (auto i = 0; i < a2->permanent_string_table_size; ++i) {
+            auto &str = a2->permanent_string_table[i];
+            printf("%s\n", str);
+        }
+
+        printf("\n");
+        printf("system_string_table: %d\n", a2->system_string_table_size);
+        for (auto i = 0; i < a2->system_string_table_size; ++i) {
+            auto &str = a2->system_string_table[i];
+            printf("%s\n", str);
+        }
+
+        printf("\n");
+    }
+
     if constexpr (1) {
-        if ( (this->flags & VM_EXECUTABLE_FLAG_LINKED) == 0 )
-        {
+        if (!this->is_linked()) {
             uint16_t *buffer = this->buffer;
             this->flags |= VM_EXECUTABLE_FLAG_LINKED;
             auto *v5 = a2;
@@ -69,7 +80,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                 }
 
                 auto argtype = opcode_arg_t(opword & OP_ARGTYPE_MASK);
-                printf("argtype = %s\n", opcode_arg_t_str[argtype]);
+                printf("argtype = %d %s\n", argtype, opcode_arg_t_str[argtype]);
                 switch ( argtype )
                 {
                 case OP_ARG_NULL:
@@ -184,6 +195,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                             ? script_manager_game_var_container()
                             : script_manager_shared_var_container()
                             );
+                    assert(container != nullptr);
 
                     auto addr = uint32_t(container->get_address(v14));
                     assert(addr != 0 && "make sure you pack after you compile a script");
@@ -208,6 +220,262 @@ void vm_executable::link_un_mash(const script_executable *a2)
     } else {
         THISCALL(0x0059F000, this, a2);
     }
+}
+
+void vm_executable::write(chunk_file *file, const vm_executable *x, const std::set<string_hash> &set) {
+    TRACE("vm_executable::serialize");
+
+    assert(x->debug_info == nullptr);
+
+    assert(x != nullptr);
+    assert(x->owner != nullptr);
+
+    file->write(CHUNK_VM_EXECUTABLE);
+
+    sp_log("x->fullname = %s", x->fullname.to_string());
+    auto v16 = script_executable::get_system_string_index(set, x->fullname);
+    file->write(v16);
+
+#ifdef TARGET_XBOX
+    cf = file->read<chunk_flavor>();
+    chunk_flavor v6 {"extern"};
+    if ( cf == v6 )
+    {
+        script_manager::run_callbacks((script_manager_callback_reason)4, nullptr, "extern no longer supported");
+    }
+    else
+    {
+        assert(cf == chunk_flavor {"defined"});
+    }
+#endif
+
+    sp_log("x->flags = 0x%08X", x->flags);
+
+#ifdef TARGET_XBOX
+    cf = file->read<chunk_flavor>();
+    if ( cf == chunk_flavor {"static"} )
+    {
+        x->flags |= 1u;
+    }
+    else
+    {
+        assert(cf == chunk_flavor {"nostatic"});
+    }
+
+    cf = file->read<chunk_flavor>();
+    if ( cf == chunk_flavor {"srcfile"} )
+    {
+        auto v43 = file->read<mString>();
+        [[maybe_unused]] auto v42 = file->read<int>();
+        cf = file->read<chunk_flavor>();
+    }
+
+    auto v41 = -1;
+    if ( cf == chunk_flavor {"Nparms"} )
+    {
+        v41 = 0;
+        x->debug_info->field_24 = file->read<int>();
+        if ( x->debug_info->field_24 > 0 )
+        {
+            x->debug_info->parameters = new void *[x->debug_info->field_24];
+            assert(x->debug_info->parameters != nullptr);
+
+            for ( auto i = 0; i < x->debug_info->field_24; ++i ) {
+                auto v17 = file->read<unsigned>();
+                auto *v10 = x->owner->get_parent();
+                auto *v11 = v10->get_system_string(v17);
+                
+                mString v39 {v11};
+                auto *v38 = v10->find_library_class(v39);
+                if ( v38 == nullptr )
+                {
+                    v38 = slc_manager::get(v39.c_str());
+                    if ( v38 == nullptr )
+                    {
+                        auto v37 = "library class " + v39 + " not found.";
+                        auto *v13 = v37.c_str();
+                        script_manager::run_callbacks((script_manager_callback_reason)4, nullptr, v13);
+                    }
+                }
+
+                x->debug_info->parameters[i] = v38;
+                auto size = v38->get_size();
+                v41 += size;
+            }
+        }
+
+        cf = file->read<chunk_flavor>();
+    }
+#endif
+
+    file->write(CHUNK_PARMS_STACKSIZE);
+
+    file->write(x->parms_stacksize);
+
+#ifdef TARGET_XBOX
+    if ( v41 != -1 )
+    {
+        if ( x->parms_stacksize == v41 )
+        {
+            assert(( x->flags & VM_EXECUTABLE_FLAG_STATIC ) != 0);
+        }
+        else
+        {
+            assert(( x->flags & VM_EXECUTABLE_FLAG_STATIC ) == 0);
+        }
+    }
+#endif
+
+#ifdef TARGET_XBOX
+    auto cf = file->read<chunk_flavor>();
+    while ( cf == CHUNK_PARMS_NAME )
+    {
+        struct {
+            mString field_0;
+            mString field_C;
+        } v36 {};
+
+        v36.field_0 = file->read<mString>();
+        v36.field_C = file->read<mString>();
+        cf = file->read<chunk_flavor>();
+    }
+#endif
+
+    file->write(CHUNK_CODESIZE);
+
+    file->write(x->buffer_len * 2);
+
+    file->write(CHUNK_CODE);
+
+    auto *v15 = x->owner->get_parent();
+    uint32_t offset = ((int)x->buffer - (int) v15->get_exec_code(0));
+    file->write(offset);
+}
+
+void vm_executable::read(chunk_file *file, vm_executable *x) {
+    TRACE("vm_executable::load");
+
+    auto *mem = mem_alloc(0x24);
+    x->debug_info = new (mem) debug_info_t {};
+
+    assert(x->debug_info != nullptr);
+
+    assert(x != nullptr);
+
+    assert(x->owner != nullptr);
+
+    chunk_flavor cf {"UNREG"};
+    cf = file->read<chunk_flavor>();
+    assert(cf == CHUNK_VM_EXECUTABLE);
+
+    auto v16 = file->read<unsigned>();
+    auto *parent = x->owner->get_parent();
+    auto *system_string = parent->get_system_string(v16);
+    mString v46 {system_string};
+    auto a3 = v46.find("(", 0);
+    mString v45 = (a3 == -1 ? v46 : v46.substr(0, a3));
+
+    x->name = string_hash {v45.c_str()};
+    x->fullname = string_hash {v46.c_str()};
+
+    cf = file->read<chunk_flavor>();
+    if ( cf == chunk_flavor {"extern"} ) {
+        script_manager::run_callbacks((script_manager_callback_reason)4, nullptr, "extern no longer supported");
+    } else {
+        assert(cf == chunk_flavor {"defined"});
+    }
+
+    cf = file->read<chunk_flavor>();
+    if ( cf == chunk_flavor {"static"} ) {
+        x->flags |= 1u;
+    } else {
+        assert(cf == chunk_flavor {"nostatic"});
+    }
+
+    cf = file->read<chunk_flavor>();
+
+    if ( cf == chunk_flavor {"srcfile"} ) {
+        auto v43 = file->read<mString>();
+        [[maybe_unused]] auto v42 = file->read<int>();
+        cf = file->read<chunk_flavor>();
+    }
+
+    auto v41 = -1;
+    if ( cf == chunk_flavor {"Nparms"} ) {
+        v41 = 0;
+        x->debug_info->field_24 = file->read<int>();
+        if ( x->debug_info->field_24 > 0 )
+        {
+            x->debug_info->parameters = (void **)operator new(4 * x->debug_info->field_24);
+            assert(x->debug_info->parameters != nullptr);
+
+            for ( auto i = 0; i < x->debug_info->field_24; ++i )
+            {
+                auto v17 = file->read<unsigned>();
+                auto *v10 = x->owner->get_parent();
+                auto *v11 = v10->get_system_string(v17);
+                
+                mString v39 {v11};
+                auto *v38 = v10->find_library_class(v39);
+                if ( v38 == nullptr )
+                {
+                    v38 = slc_manager::get(v39.c_str());
+                    if ( v38 == nullptr )
+                    {
+                        auto v37 = "library class " + v39 + " not found.";
+                        auto *v13 = v37.c_str();
+                        script_manager::run_callbacks((script_manager_callback_reason)4, nullptr, v13);
+                    }
+                }
+
+                x->debug_info->parameters[i] = v38;
+                auto size = v38->get_size();
+                v41 += size;
+            }
+        }
+
+        cf = file->read<chunk_flavor>();
+    }
+
+    assert(cf == CHUNK_PARMS_STACKSIZE);
+
+    x->parms_stacksize = file->read<int>();
+
+    if ( v41 != -1 ) {
+        if ( x->parms_stacksize == v41 )
+        {
+            assert(( x->flags & VM_EXECUTABLE_FLAG_STATIC ) != 0);
+        }
+        else
+        {
+            assert(( x->flags & VM_EXECUTABLE_FLAG_STATIC ) == 0);
+        }
+    }
+
+    cf = file->read<chunk_flavor>();
+
+    while ( cf == CHUNK_PARMS_NAME ) {
+        struct {
+            mString field_0;
+            mString field_C;
+        } v36 {};
+
+        v36.field_0 = file->read<mString>();
+        v36.field_C = file->read<mString>();
+        cf = file->read<chunk_flavor>();
+    }
+
+    assert(cf == CHUNK_CODESIZE);
+
+    auto v35 = file->read<int>();
+    x->buffer_len = v35 / 2;
+
+    cf = file->read<chunk_flavor>();
+    assert(cf == CHUNK_CODE);
+
+    auto offset = file->read<unsigned>();
+    auto *v15 = x->owner->get_parent();
+    x->buffer = v15->get_exec_code(offset);
 }
 
 void vm_executable_patch() {

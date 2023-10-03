@@ -28,6 +28,10 @@ struct script_manager {
     //0x005AFCE0
     static void init();
 
+    static void dump_threads_to_console();
+
+    static void dump_threads_to_file();
+
     //0x005A3620
     static void link();
 

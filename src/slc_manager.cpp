@@ -30,8 +30,7 @@ void slc_manager::init()
 {
     TRACE("slc_manager::init");
 
-    if constexpr (0)
-    {
+    if constexpr (1) {
         if (slc_manager_classes == nullptr) {
             slc_manager_classes = new std::set<script_library_class *>{};
         }

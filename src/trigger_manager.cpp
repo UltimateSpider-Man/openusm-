@@ -6,6 +6,7 @@
 #include "func_wrapper.h"
 #include "memory.h"
 #include "point_trigger.h"
+#include "trace.h"
 #include "vtbl.h"
 
 VALIDATE_SIZE(trigger_manager, 8u);
@@ -30,8 +31,11 @@ trigger *trigger_manager::sub_51E5B0(entity_base *a2) {
     return (trigger *) THISCALL(0x0051E5B0, this, a2);
 }
 
+//TODO
 void trigger_manager::delete_trigger(trigger *delete_me) {
-    if constexpr (1) {
+    TRACE("trigger_manager::delete_trigger");
+
+    if constexpr (0) {
         assert(delete_me != nullptr);
 
         trigger **t = nullptr;

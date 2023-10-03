@@ -183,3 +183,11 @@ struct ListNearbyEntsCommand : ConsoleCommand
 
     virtual const char *helpText() override;
 };
+
+struct DumpThreadsCommand : ConsoleCommand {
+    DumpThreadsCommand();
+
+    virtual bool process_cmd(const std::vector<mString> &) override;
+
+    virtual const char *helpText() override;
+};

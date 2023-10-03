@@ -1,5 +1,6 @@
 #include "script_library_class.h"
 
+#include "chuck_str.h"
 #include "common.h"
 #include "func_wrapper.h"
 #include "memory.h"
@@ -25,6 +26,26 @@ Var<slc_num_t *> slc_num{0x00965ECC};
 
 Var<slc_str_t *> slc_str{0x00965ED0};
 
+script_library_class::script_library_class(
+        const char *a2,
+        int a3,
+        const char *a4,
+        bool a5)
+{
+    THISCALL(0x005AA860, this, a2, a3, a4, a5);
+}
+
+void script_library_class::store_name(const char *a2)
+{
+    if ( this->name != nullptr ) {
+        operator delete[](this->name);
+    }
+
+    auto v3 = strlen(a2);
+    this->name = new char[v3 + 1];
+    chuck_strcpy(this->name, a2, v3 + 1);
+}
+
 bool script_library_class::function::operator()(vm_stack &a2,
                                                 script_library_class::function::entry_t a3) const {
     bool __stdcall (
@@ -34,7 +55,7 @@ bool script_library_class::function::operator()(vm_stack &a2,
     return func(a2, a3);
 }
 
-const char *script_library_class::get_name() {
+const char *script_library_class::get_name() const {
     assert(name != nullptr);
 
     return this->name;

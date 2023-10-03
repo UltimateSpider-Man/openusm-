@@ -5,6 +5,7 @@
 #include "func_wrapper.h"
 #include "region.h"
 #include "terrain.h"
+#include "trace.h"
 #include "traffic_path_graph.h"
 #include "traffic_path_lane.h"
 #include "wds.h"
@@ -16,6 +17,12 @@ void traffic::sub_6DA3B0(Float a2, Float a3, Float a4) {
     v4[0] = a2;
     v4[1] = a3;
     v4[2] = a4;
+}
+
+void traffic::enable_traffic(bool a1, bool a2) {
+    TRACE("traffic::enable_traffic");
+
+    CDECL_CALL(0x006D33C0, a1, a2);
 }
 
 void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, bool a3) {
@@ -85,7 +92,6 @@ void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, 
 
 bool traffic::is_unanimated_car(actor *a1) {
     if constexpr (1) {
-        traffic *v1;
 
         bool result = false;
         if ((a1->field_4 & 0x800) != 0) {
@@ -103,4 +109,9 @@ bool traffic::is_unanimated_car(actor *a1) {
 
 traffic *traffic::get_traffic_from_entity(vhandle_type<entity> a1) {
     return (traffic *) CDECL_CALL(0x006C3510, a1);
+}
+
+void traffic_patch() {
+    REDIRECT(0x006779EB, traffic::enable_traffic);
+    REDIRECT(0x006779FF, traffic::enable_traffic);
 }

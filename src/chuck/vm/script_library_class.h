@@ -49,11 +49,26 @@ struct script_library_class {
     int next_func_slot;
     uint32_t field_1C;
 
+    script_library_class() = default;
+
+    //0x005AA860
+    script_library_class(
+        const char *a2,
+        int a3,
+        const char *a4,
+        bool a5);
+
+    bool operator<(const script_library_class &slc) const {
+        return strcmp(this->get_name(), slc.get_name()) < 0;
+    }
+
+    void store_name(const char *a2);
+
     int get_size() const {
         return this->field_8;
     }
 
-    const char *get_name();
+    const char *get_name() const;
 
     function *get_func(int index);
 

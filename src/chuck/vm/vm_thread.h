@@ -30,7 +30,9 @@ struct vm_thread {
         SUSPENDABLE = 0x0002,
     };
 
-    int field_0;
+    struct {
+        vm_thread *_sl_next_element;
+    } simple_list_vars;
     int field_4;
     int field_8;
     script_instance *inst;
@@ -59,8 +61,7 @@ struct vm_thread {
         return this->ex;
     }
 
-    auto &get_data_stack()
-    {
+    auto &get_data_stack() {
         return this->dstack;
     }
 

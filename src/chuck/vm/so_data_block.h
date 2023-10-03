@@ -15,6 +15,8 @@ struct so_data_block
 
     void init(int a2);
 
+    void set_to_zero();
+
     void clear();
 
     auto size() const {

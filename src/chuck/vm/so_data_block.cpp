@@ -18,6 +18,13 @@ void so_data_block::operator=(int a2) {
     this->init(a2);
 }
 
+void so_data_block::set_to_zero() {
+    if ( this->m_size > 0 ) {
+        assert(buffer != nullptr);
+        memset(this->buffer, 0, this->m_size);
+    }
+}
+
 void so_data_block::init(int a2)
 {
     //assert(!is_from_mash());

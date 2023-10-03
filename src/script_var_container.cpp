@@ -2,6 +2,7 @@
 
 #include "func_wrapper.h"
 #include "common.h"
+#include "trace.h"
 
 #include <cassert>
 
@@ -24,8 +25,9 @@ void *script_var_container::get_script_var_address(const char *a2, script_librar
     return (void *) THISCALL(0x005A0520, this, a2, a3);
 }
 
-char *script_var_container::get_address(int offset)
-{
+char *script_var_container::get_address(int offset) {
+    TRACE("script_var_container::get_address", std::to_string(offset).c_str());
+
     assert(this->script_var_block.get_buffer() != nullptr);
     assert(script_var_block.is_address_in_buffer( int( script_var_block.get_buffer() ) + offset ));
     return (this->script_var_block.get_buffer() + offset);

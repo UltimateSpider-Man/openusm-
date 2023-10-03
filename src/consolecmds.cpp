@@ -765,7 +765,37 @@ bool ListNearbyEntsCommand::process_cmd(const std::vector<mString> &a2)
     return true;
 }
 
-const char *ListNearbyEntsCommand::helpText()
-{
+const char *ListNearbyEntsCommand::helpText() {
     return "List nearby entities <radius=10>";
 }
+
+
+static DumpThreadsCommand g_DumpThreadsCommand{};
+
+DumpThreadsCommand::DumpThreadsCommand() {
+    this->setName(mString {"dump_threads"});
+}
+
+bool DumpThreadsCommand::process_cmd(const std::vector<mString> &a2) {
+    if ( a2.size() != 0 ) {
+        auto &v2 = a2.at(0);
+        if ( v2 != "1" ) {
+            return false;
+        }
+
+        g_console->addToLog("Threads dumped to file.");
+        script_manager::dump_threads_to_file();
+    }
+    else
+    {
+        g_console->addToLog(mString::null());
+        script_manager::dump_threads_to_console();
+    }
+    
+    return true; 
+}
+
+const char *DumpThreadsCommand::helpText() {
+    return "Dumps script threads to the console (pass a '1' to dump to a file)";
+}
+

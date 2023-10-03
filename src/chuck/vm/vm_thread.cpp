@@ -34,7 +34,6 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
         this->flags = 2;
 
         this->PC = this->ex->get_start();
-        this->field_0 = 0;
         this->field_4 = 0;
         this->field_8 = 0;
         this->field_1DC = nullptr;
@@ -59,7 +58,6 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
 
         this->PC = this->ex->get_start();
         this->field_1DC = a4;
-        this->field_0 = 0;
         this->field_4 = 0;
         this->field_8 = 0;
         this->field_1E0 = 0;
@@ -1262,6 +1260,7 @@ bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, c
     if constexpr (1) {
         auto *oldSP = this->dstack.SP;
 
+        printf("arg.lfr = 0x%08X\n", arg.lfr->m_vtbl);
         if (arg.lfr->operator()(this->dstack, this->entry)) {
             this->entry = script_library_class::function::entry_t::FIRST_ENTRY;
             this->field_1B0 = nullptr;

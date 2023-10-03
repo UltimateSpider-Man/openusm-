@@ -160,6 +160,8 @@
 #include "scene_anim_resource_handler.h"
 #include "scratchpad_stack.h"
 #include "script.h"
+#include "script_access.h"
+#include "script_object.h"
 #include "script_data_interface.h"
 #include "script_executable.h"
 #include "script_controller.h"
@@ -189,6 +191,7 @@
 #include "tl_instance_bank.h"
 #include "tlresourcedirectory.h"
 #include "tlresource_directory.h"
+#include "traffic.h"
 #include "tx_system.h"
 #include "unlockables_menu.h"
 #include "us_decal.h"
@@ -2598,6 +2601,12 @@ BOOL install_redirects() {
     resource_pack_standalone_patch();
 
     os_file_patch();
+
+    traffic_patch();
+
+    script_instance_patch();
+
+    script_access_patch();
 
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;

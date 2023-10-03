@@ -39,6 +39,8 @@ struct traffic : spawnable {
 
     void sub_6DA3B0(Float a2, Float a3, Float a4);
 
+    static void enable_traffic(bool a1, bool a2);
+
     //0x006D0910
     static void get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, bool a3);
 
@@ -48,3 +50,5 @@ struct traffic : spawnable {
     //0x006C3510
     static traffic *get_traffic_from_entity(vhandle_type<entity> a1);
 };
+
+extern void traffic_patch();
