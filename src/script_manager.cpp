@@ -31,11 +31,25 @@ Var<_std::map<script_executable_entry_key, script_executable_entry> *> script_ma
 Var<_std::map<int, script_executable_allocated_stuff_record> *>
     script_manager_script_allocated_stuff_map{0x00965F00};
 
+#define SCRIPT_MANAGER_STANDALONE 1 
+#if !SCRIPT_MANAGER_STANDALONE 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_first_run {0x00965EF8};
+#else
 
-void *script_manager::get_game_var_address(const mString &a1, bool *a2, script_library_class **a3) {
+#include <list>
+
+std::list<script_executable_entry> *g_script_manager_execs_pending_first_run {nullptr};
+Var<std::list<script_executable_entry> *> script_manager_execs_pending_first_run {(int) &g_script_manager_execs_pending_first_run};
+
+std::list<script_executable_entry> *g_script_manager_execs_pending_link_list {nullptr};
+Var<std::list<script_executable_entry> *> script_manager_execs_pending_link_list {(int) &g_script_manager_execs_pending_link_list};
+#endif
+
+namespace script_manager {
+
+void *get_game_var_address(const mString &a1, bool *a2, script_library_class **a3) {
     TRACE("script_manager::get_game_var_address", a1.c_str());
 
     assert(script_manager_game_var_container() != nullptr);
@@ -64,12 +78,11 @@ void *script_manager::get_game_var_address(const mString &a1, bool *a2, script_l
     return result;
 }
 
-bool script_manager::using_chuck_old_fashioned()
-{
+bool using_chuck_old_fashioned() {
     return os_developer_options::instance()->get_flag(mString {"CHUCK_OLD_FASHIONED"});
 }
 
-int script_manager::get_total_loaded() {
+int get_total_loaded() {
     int result = 0;
 
     if (script_manager_exec_map() != nullptr) {
@@ -79,7 +92,7 @@ int script_manager::get_total_loaded() {
     return result;
 }
 
-void script_manager::init_game_var()
+void init_game_var()
 {
     TRACE("script_manager::init_game_var");
 
@@ -133,7 +146,7 @@ void script_manager::init_game_var()
     }
 }
 
-void script_manager::link() {
+void link() {
     TRACE("script_manager::link");
 
     if constexpr (1) {
@@ -153,7 +166,7 @@ void script_manager::link() {
     }
 }
 
-int script_manager::load_game_var_buffer(const char *a1) {
+int load_game_var_buffer(const char *a1) {
     auto *result = script_manager_game_var_container();
     if (a1 != nullptr) {
         std::memcpy(script_manager_game_var_container()->script_var_block.buffer,
@@ -166,14 +179,14 @@ int script_manager::load_game_var_buffer(const char *a1) {
     return result->script_var_block.size();
 }
 
-void script_manager::run_callbacks(script_manager_callback_reason a1)
+void run_callbacks(script_manager_callback_reason a1)
 {
     TRACE("script_manager::run_callbacks");
 
     CDECL_CALL(0x005A0AC0, a1);
 }
 
-void script_manager::run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3)
+void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3)
 {
     TRACE("script_manager::run_callbacks");
 
@@ -189,7 +202,7 @@ void script_manager::run_callbacks(script_manager_callback_reason a1, script_exe
     }
 }
 
-bool script_manager::is_loadable(const resource_key &a1)
+bool is_loadable(const resource_key &a1)
 {
     TRACE("script_manager::is_loadable");
 
@@ -198,7 +211,7 @@ bool script_manager::is_loadable(const resource_key &a1)
     return (resource_manager::get_resource(a1a, &mash_data_size, nullptr) != nullptr);
 }
 
-script_executable_entry *script_manager::load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4)
+script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4)
 {
     TRACE("script_manager::load", a1.get_platform_string(g_platform()).c_str());
 
@@ -317,8 +330,83 @@ script_executable_entry *script_manager::load(const resource_key &a1, uint32_t a
     }
 }
 
-void script_manager::init() {
-    CDECL_CALL(0x005AFCE0);
+void init() {
+    TRACE("script_manager::init");
+
+    if constexpr (1) {
+        if ( !script_manager_initialized() ) {
+            script_manager_time_inc() = 0.0;
+
+            using script_manager_execs_pending_link_list_t = std::decay_t<decltype(*script_manager_execs_pending_link_list())>;
+            script_manager_execs_pending_link_list() = new  script_manager_execs_pending_link_list_t {};
+            assert(script_manager_execs_pending_link_list() != nullptr);
+
+            using script_manager_execs_pending_first_run_t = std::decay_t<decltype(*script_manager_execs_pending_first_run())>;
+            script_manager_execs_pending_first_run() = new  script_manager_execs_pending_first_run_t {};
+            assert(script_manager_execs_pending_first_run() != nullptr);
+
+            if ( script_manager_exec_map() == nullptr )
+            {
+                script_manager_exec_map() = new _std::map<script_executable_entry_key,script_executable_entry>{};
+                assert(script_manager_exec_map() != nullptr);
+            }
+
+            if ( script_manager_script_allocated_stuff_map() == nullptr )
+            {
+                script_manager_script_allocated_stuff_map() = new _std::map<int, script_executable_allocated_stuff_record>{};
+                assert(script_manager_script_allocated_stuff_map() != nullptr);
+            }
+
+            if ( script_manager_callbacks() == nullptr )
+            {
+                auto *mem = operator new(0xCu);
+                script_manager_callbacks() = CAST(script_manager_callbacks(), THISCALL(0x005B6F70, mem));
+                assert(script_manager_callbacks() != nullptr);
+            }
+
+            script_manager_initialized() = true;
+        }
+    } else {
+        CDECL_CALL(0x005AFCE0);
+    }
+}
+
+void kill() {
+    TRACE("script_manager::kill");
+
+    assert(script_manager_initialized());
+    script_manager::clear();
+    if ( script_manager_execs_pending_link_list() != nullptr )
+    {
+        delete script_manager_execs_pending_link_list();
+        script_manager_execs_pending_link_list() = nullptr;
+    }
+
+    if ( script_manager_execs_pending_first_run() != nullptr )
+    {
+        delete script_manager_execs_pending_first_run();
+        script_manager_execs_pending_first_run() = nullptr;
+    }
+
+    if ( script_manager_exec_map() != nullptr )
+    {
+        delete script_manager_exec_map();
+        script_manager_exec_map() = nullptr;
+    }
+
+    if ( script_manager_script_allocated_stuff_map() != nullptr )
+    {
+        delete script_manager_script_allocated_stuff_map();
+        script_manager_script_allocated_stuff_map() = nullptr;
+    }
+
+    if ( script_manager_callbacks() != nullptr )
+    {
+        delete script_manager_callbacks();
+        script_manager_callbacks() = nullptr;
+    }
+
+    script_manager_initialized() = false;
 }
 
 FILE *sub_65D5CB(const char *a1, char arg4)
@@ -375,11 +463,11 @@ FILE *sub_65D5CB(const char *a1, char arg4)
     return v12;
 }
 
-void script_manager::dump_threads_to_console()
+void dump_threads_to_console()
 {
 }
 
-void script_manager::dump_threads_to_file() {
+void dump_threads_to_file() {
     TRACE("script_manager::dump_threads_to_file");
 
     auto *file = sub_65D5CB("C:\\scriptdump.txt", 2);
@@ -393,7 +481,7 @@ void script_manager::dump_threads_to_file() {
     fclose(file);
 }
 
-void script_manager::run(Float a1, bool a2) {
+void run(Float a1, bool a2) {
     TRACE("script_manager::run");
 
     if constexpr (1) {
@@ -433,26 +521,130 @@ void script_manager::run(Float a1, bool a2) {
     }
 }
 
-void script_manager::destroy_game_var() {
+void destroy_game_var() {
     CDECL_CALL(0x005A52F0);
 }
 
-void script_manager::clear() {
-    TRACE("script_manager::clear");
+void un_load(const resource_key &a1, bool a2, const resource_key &a3) {
+    TRACE("script_manager::un_load");
 
-    CDECL_CALL(0x005B0640);
+    script_executable_entry_key v32{};
+    v32.field_0 = a1;
+    v32.field_8 = a3;
+    assert(script_manager_exec_map() != nullptr);
+
+    auto a1a = script_manager_exec_map()->find(v32);
+    if ( auto end = script_manager_exec_map()->end();
+            a1a == end )
+    {
+        ;
+        auto v9 = mString {"Trying to un load a non-loaded script executable '"}
+                + mString {a1.m_hash.to_string()}
+                + mString {"'"};
+        auto *v5 = v9.c_str();
+        //script_manager::run_callbacks((script_manager_callback_reason)5, nullptr, v5);
+    }
+    else
+    {
+        auto &v6 = (*a1a);
+        auto *found = &v6.second;
+        --v6.second.field_4;
+        if ( found->field_4 == 0 )
+        {
+            assert(script_manager_execs_pending_link_list() != nullptr);
+
+            auto pending_it = script_manager_execs_pending_link_list()->begin();
+            auto end = script_manager_execs_pending_link_list()->end();
+            while ( pending_it != end ) {
+                assert(pending_it->exec != found->exec && "why are we trying to un_load a non-linked executable?");
+                ++pending_it;
+            }
+
+            if ( found->exec == script_manager_master_script() ) {
+                script_manager_master_script() = nullptr;
+            }
+
+            found->exec->un_load(a2);
+            if ( !script_manager_execs_pending_first_run()->empty() )
+            {
+                auto v27 = script_manager_execs_pending_first_run()->begin();
+                auto v26 = script_manager_execs_pending_first_run()->end();
+                while ( v27 != v26 )
+                {
+                    auto &v8 = (*v27);
+                    if ( v8.exec == found->exec )
+                    {
+                        script_manager_execs_pending_first_run()->erase(v27);
+                        break;
+                    }
+
+                    ++v27;
+                }
+            }
+
+            if ( found->exec->is_from_mash() )
+            {
+                found->exec->release_mem();
+            }
+            else
+            {
+                auto *exec = found->exec;
+                if ( exec != nullptr ) {
+                    delete exec;
+                }
+            }
+
+            script_manager_exec_map()->erase(a1a);
+        }
+    }
 }
 
-vm_executable *script_manager::find_function_by_address(const uint16_t *a1)
+void clear() {
+    TRACE("script_manager::clear");
+
+    if constexpr (1) {
+        script_manager_time_inc() = 0.0;
+        script_manager_master_script() = nullptr;
+
+        assert(script_manager_exec_map() != nullptr);
+        while ( !script_manager_exec_map()->empty() ) {
+            auto it = script_manager_exec_map()->begin();
+            auto *exec = it->second.exec;
+            exec->un_load(false);
+            if ( exec->is_from_mash() )
+            {
+                exec->release_mem();
+            }
+            else if ( exec != nullptr )
+            {
+                delete exec;
+            }
+
+            script_manager_exec_map()->erase(it);
+        }
+        
+        assert(script_manager_exec_map()->size() == 0);
+
+        script_manager_execs_pending_link_list()->clear();
+        script_manager_execs_pending_first_run()->clear();
+
+        assert(script_manager_callbacks() != nullptr);
+        script_manager_callbacks()->clear();
+    } else {
+        CDECL_CALL(0x005B0640);
+    }
+}
+
+vm_executable *find_function_by_address(const uint16_t *a1)
 {
     return (vm_executable *) CDECL_CALL(0x0059ED70, a1);
 }
 
-script_executable_entry *script_manager::find_entry(const script_executable *a1) {
+script_executable_entry *find_entry(const script_executable *a1) {
     return (script_executable_entry *) CDECL_CALL(0x0059EE10, a1);
 }
 
-int script_manager::save_game_var_buffer(char *a1) {
+int save_game_var_buffer(char *a1) {
     /*
     script_var_container *result; // eax
 
@@ -468,6 +660,7 @@ int script_manager::save_game_var_buffer(char *a1) {
     */
 
     return CDECL_CALL(0x0058F4C0, a1);
+}
 }
 
 void *parse_generic_mash_init_hook(generic_mash_header *&header, void *a2, bool *allocated_mem, generic_mash_data_ptrs *a4, unsigned int struct_size, unsigned int *virtual_table_lookup, unsigned int *size_table_lookup, unsigned int num_table_entries, unsigned int base_class_size, void *a10)
@@ -495,13 +688,17 @@ void script_manager_patch()
         REDIRECT(0x0055BEA7, register_chuck_callbacks);
     }
 
-    {
-        REDIRECT(0x0055C94C, script_manager::clear);
-    }
-
     SET_JUMP(0x005A3620, script_manager::link);
 
     SET_JUMP(0x005AF9F0, script_manager::run);
+
+    SET_JUMP(0x005AFCE0, script_manager::init);
+
+    SET_JUMP(0x005B0970, script_manager::kill);
+
+    SET_JUMP(0x005B0640, script_manager::clear);
+
+    SET_JUMP(0x005B04F0, script_manager::un_load);
 
     {
         REDIRECT(0x0055C8A6, script_manager::is_loadable);

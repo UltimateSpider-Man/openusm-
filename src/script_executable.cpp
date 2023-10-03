@@ -537,6 +537,12 @@ void script_executable::un_load(bool a2) {
     THISCALL(0x005AF780, this, a2);
 }
 
+void script_executable::release_mem() {
+    TRACE("script_executable::release_mem");
+
+    THISCALL(0x005B0470, this);
+}
+
 script_library_class * script_executable::find_library_class(const mString &a2) const {
     TRACE("script_executable::find_library_class", a2.c_str());
 

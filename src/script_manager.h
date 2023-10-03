@@ -18,65 +18,70 @@ struct vm_executable;
 enum script_manager_callback_reason
 {};
 
-struct script_manager {
+namespace script_manager {
     //0x005A09B0
-    static void *get_game_var_address(const mString &a1, bool *a2, script_library_class **a3);
+    void *get_game_var_address(const mString &a1, bool *a2, script_library_class **a3);
 
     //0x0058F4C0
-    static int save_game_var_buffer(char *a1);
+    int save_game_var_buffer(char *a1);
 
     //0x005AFCE0
-    static void init();
+    void init();
 
-    static void dump_threads_to_console();
+    void dump_threads_to_console();
 
-    static void dump_threads_to_file();
+    void dump_threads_to_file();
 
     //0x005A3620
-    static void link();
+    void link();
 
     //0x005A0AC0
-    static void run_callbacks(script_manager_callback_reason a1);
+    void run_callbacks(script_manager_callback_reason a1);
 
-    static void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3);
+    void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3);
 
     //0x0058F480
-    static int load_game_var_buffer(const char *a1);
+    int load_game_var_buffer(const char *a1);
+
+    void un_load(const resource_key &a1, bool a2, const resource_key &a3);
 
     //0x005B0750
-    static script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4);
+    script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4);
 
     //0x0059EE90
-    static void init_game_var();
+    void init_game_var();
 
     //0x0059EE10
-    static script_executable_entry *find_entry(const script_executable *a1);
+    script_executable_entry *find_entry(const script_executable *a1);
 
-    static bool using_chuck_old_fashioned();
+    bool using_chuck_old_fashioned();
 
     //0x0058F3A0
-    static bool is_loadable(const resource_key &a1);
+    bool is_loadable(const resource_key &a1);
 
     //0x005A52F0
-    static void destroy_game_var();
+    void destroy_game_var();
 
     //0x005B0640
-    static void clear();
+    void clear();
+
+    //0x005B0970
+    void kill();
 
     //0x005AF9F0
-    static void run(Float a1, bool a2);
+    void run(Float a1, bool a2);
 
     //0x0059ED70
-    static vm_executable *find_function_by_address(const uint16_t *a1);
+    vm_executable *find_function_by_address(const uint16_t *a1);
 
-    static int get_total_loaded();
-};
+    int get_total_loaded();
+}
 
+inline Var<bool> script_manager_initialized {0x00965EE1};
 
 inline Var<script_var_container *> script_manager_game_var_container {0x00965EEC};
 
 inline Var<script_var_container *> script_manager_shared_var_container {0x00965EF0};
-
 
 extern Var<float> script_manager_time_inc;
 

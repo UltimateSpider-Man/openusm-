@@ -115,6 +115,9 @@ struct script_executable {
 
     void load(const resource_key &a1);
 
+    //0x005B0470
+    void release_mem();
+
     //0x005AF780
     void un_load(bool a2);
 
