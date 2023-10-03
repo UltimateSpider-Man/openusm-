@@ -3,7 +3,14 @@
 #include "float.hpp"
 #include "variable.h"
 
+#include <list.hpp>
 #include <map.hpp>
+
+#define SCRIPT_MANAGER_STANDALONE 1 
+#if SCRIPT_MANAGER_STANDALONE
+#include <map>
+#endif
+
 
 struct mString;
 struct script_var_container;
@@ -13,6 +20,8 @@ struct script_executable_entry_key;
 struct script_executable_entry;
 struct script_executable;
 struct script_executable_allocated_stuff_record;
+struct script_object;
+struct string_hash;
 struct vm_executable;
 
 enum script_manager_callback_reason
@@ -74,20 +83,38 @@ namespace script_manager {
     //0x0059ED70
     vm_executable *find_function_by_address(const uint16_t *a1);
 
-    int get_total_loaded();
-}
+    //0x0059EDC0
+    vm_executable *find_function_by_name(string_hash a1);
 
-inline Var<bool> script_manager_initialized {0x00965EE1};
+    int get_total_loaded();
+
+
+#if !SCRIPT_MANAGER_STANDALONE 
+    _std::map<script_executable_entry_key, script_executable_entry> *get_exec_list();
+#else
+    std::map<script_executable_entry_key, script_executable_entry> *get_exec_list();
+#endif
+
+    //0x0059ED20
+    script_object *find_object(const string_hash &a1);
+    
+    //0x005A0870
+    script_object *find_object(
+        const resource_key &,
+        const string_hash &,
+        const resource_key &);
+
+    //0x005AFE40
+    int register_allocated_stuff_callback(
+        void (*a1)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &));
+
+    float get_time_inc();
+}
 
 inline Var<script_var_container *> script_manager_game_var_container {0x00965EEC};
 
 inline Var<script_var_container *> script_manager_shared_var_container {0x00965EF0};
 
 extern Var<float> script_manager_time_inc;
-
-extern Var<_std::map<script_executable_entry_key, script_executable_entry> *> script_manager_exec_map;
-
-extern Var<_std::map<int, script_executable_allocated_stuff_record> *>
-    script_manager_script_allocated_stuff_map;
 
 extern void script_manager_patch();

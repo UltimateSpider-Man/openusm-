@@ -531,6 +531,11 @@ void script_executable::load(const resource_key &resource_id) {
     script_manager::run_callbacks((script_manager_callback_reason)2, this, nullptr);
 }
 
+vm_thread *script_executable::sub_5AB510(Float a2)
+{
+    return (vm_thread *) THISCALL(0x005AB510, this, a2);
+}
+
 void script_executable::un_load(bool a2) {
     TRACE("script_executable::un_load");
 

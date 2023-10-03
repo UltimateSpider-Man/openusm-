@@ -18,6 +18,7 @@ struct generic_mash_data_ptrs;
 struct resource_key;
 struct script_object;
 struct vm_executable;
+struct vm_thread;
 struct script_library_class;
 
 struct script_executable {
@@ -133,6 +134,8 @@ struct script_executable {
 
     //0x005AF460
     void register_allocated_stuff_callback(int a1, void (*a2)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &));
+
+    vm_thread *sub_5AB510(Float a2);
 
     static inline constexpr auto SCRIPT_EXECUTABLE_FLAG_LINKED = 1u;
     static inline constexpr auto SCRIPT_EXECUTABLE_FLAG_FROM_MASH = 2u;

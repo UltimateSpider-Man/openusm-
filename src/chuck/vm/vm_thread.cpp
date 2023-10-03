@@ -1293,7 +1293,6 @@ bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, c
 void vm_thread_patch() {
     {
         FUNC_ADDRESS(address, &vm_thread::call_script_library_function);
-
         SET_JUMP(0x0058F7E0, address);
     }
 

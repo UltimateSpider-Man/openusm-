@@ -25,17 +25,20 @@ Var<script_executable *> script_manager_master_script {0x00965EE8};
 
 Var<_std::list<void (*)(script_manager_callback_reason, script_executable *, const char *)> *> script_manager_callbacks {0x00965F04};
 
-Var<_std::map<script_executable_entry_key, script_executable_entry> *> script_manager_exec_map{
-    0x00965EE4};
 
-Var<_std::map<int, script_executable_allocated_stuff_record> *>
-    script_manager_script_allocated_stuff_map{0x00965F00};
-
-#define SCRIPT_MANAGER_STANDALONE 1 
 #if !SCRIPT_MANAGER_STANDALONE 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_first_run {0x00965EF8};
+
+Var<_std::map<script_executable_entry_key, script_executable_entry> *> script_manager_exec_map {0x00965EE4};
+
+Var<bool> script_manager_initialized {0x00965EE1};
+
+Var<int> script_manager_next_stuff_id {0x00965EFC};
+
+Var<_std::map<int, script_executable_allocated_stuff_record> *>
+    script_manager_script_allocated_stuff_map{0x00965F00};
 #else
 
 #include <list>
@@ -45,6 +48,21 @@ Var<std::list<script_executable_entry> *> script_manager_execs_pending_first_run
 
 std::list<script_executable_entry> *g_script_manager_execs_pending_link_list {nullptr};
 Var<std::list<script_executable_entry> *> script_manager_execs_pending_link_list {(int) &g_script_manager_execs_pending_link_list};
+
+std::map<script_executable_entry_key, script_executable_entry> *g_script_manager_exec_map {nullptr};
+Var<std::map<script_executable_entry_key, script_executable_entry> *> script_manager_exec_map{
+    (int)&g_script_manager_exec_map};
+
+static bool g_script_manager_initialized {false};
+Var<bool> script_manager_initialized {(int)&g_script_manager_initialized};
+
+static int g_script_manager_next_stuff_id {};
+Var<int> script_manager_next_stuff_id {(int) &g_script_manager_next_stuff_id};
+
+static std::map<int, script_executable_allocated_stuff_record> *
+    g_script_manager_script_allocated_stuff_map {nullptr};
+Var<std::map<int, script_executable_allocated_stuff_record> *>
+    script_manager_script_allocated_stuff_map {(int) &g_script_manager_script_allocated_stuff_map};
 #endif
 
 namespace script_manager {
@@ -211,8 +229,25 @@ bool is_loadable(const resource_key &a1)
     return (resource_manager::get_resource(a1a, &mash_data_size, nullptr) != nullptr);
 }
 
-script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4)
+int register_allocated_stuff_callback(
+        void (*a1)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &))
 {
+    TRACE("script_manager::register_allocated_stuff_callback");
+
+    if ( script_manager_script_allocated_stuff_map() == nullptr ) {
+        using script_manager_script_allocated_stuff_map_t = std::decay_t<decltype(*script_manager_script_allocated_stuff_map())>;
+        script_manager_script_allocated_stuff_map() = new script_manager_script_allocated_stuff_map_t {};
+        assert(script_manager_script_allocated_stuff_map() != nullptr);
+    }
+
+    auto v7 = script_manager_next_stuff_id()++;
+    script_executable_allocated_stuff_record a2{};
+    a2.field_0 = a1;
+    script_manager_script_allocated_stuff_map()->insert({v7, a2});
+    return v7;
+}
+
+script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4) {
     TRACE("script_manager::load", a1.get_platform_string(g_platform()).c_str());
 
     assert(script_manager_exec_map() != nullptr);
@@ -224,12 +259,7 @@ script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, con
         key.field_8 = a4;
         assert(script_manager_exec_map() != nullptr);
 
-        using map_t = _std::map<script_executable_entry_key, script_executable_entry>;
-        using iterator_t = map_t::iterator;
-
-        iterator_t (__fastcall *find)(void *, void *, const script_executable_entry_key *) 
-            = CAST(find, 0x005B3360);
-        auto v28 = find(script_manager_exec_map(), nullptr, &key);
+        auto v28 = script_manager_exec_map()->find(key);
         auto v4 = script_manager_exec_map()->end();
         script_executable_entry *result = nullptr;
         if ( v28 != v4 )
@@ -307,8 +337,7 @@ script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, con
                 entry.exec->register_allocated_stuff_callback(v7, v9.field_0);
             }
 
-            _std::pair<script_executable_entry_key, script_executable_entry> pair {key, entry};
-            script_manager_exec_map()->insert(pair);
+            script_manager_exec_map()->insert({key, entry});
             auto v28 = script_manager_exec_map()->find(key);
             auto v8 = script_manager_exec_map()->end();
             if ( v28 != v8 )
@@ -330,6 +359,11 @@ script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, con
     }
 }
 
+float get_time_inc()
+{
+    return script_manager_time_inc();
+}
+
 void init() {
     TRACE("script_manager::init");
 
@@ -345,20 +379,19 @@ void init() {
             script_manager_execs_pending_first_run() = new  script_manager_execs_pending_first_run_t {};
             assert(script_manager_execs_pending_first_run() != nullptr);
 
-            if ( script_manager_exec_map() == nullptr )
-            {
-                script_manager_exec_map() = new _std::map<script_executable_entry_key,script_executable_entry>{};
+            if ( script_manager_exec_map() == nullptr ) {
+                using script_manager_exec_map_t = std::decay_t<decltype(*script_manager_exec_map())>;
+                script_manager_exec_map() = new script_manager_exec_map_t{};
                 assert(script_manager_exec_map() != nullptr);
             }
 
-            if ( script_manager_script_allocated_stuff_map() == nullptr )
-            {
-                script_manager_script_allocated_stuff_map() = new _std::map<int, script_executable_allocated_stuff_record>{};
+            if ( script_manager_script_allocated_stuff_map() == nullptr ) {
+                using script_manager_script_allocated_stuff_map_t = std::decay_t<decltype(*script_manager_script_allocated_stuff_map())>;
+                script_manager_script_allocated_stuff_map() = new script_manager_script_allocated_stuff_map_t {};
                 assert(script_manager_script_allocated_stuff_map() != nullptr);
             }
 
-            if ( script_manager_callbacks() == nullptr )
-            {
+            if ( script_manager_callbacks() == nullptr ) {
                 auto *mem = operator new(0xCu);
                 script_manager_callbacks() = CAST(script_manager_callbacks(), THISCALL(0x005B6F70, mem));
                 assert(script_manager_callbacks() != nullptr);
@@ -525,6 +558,73 @@ void destroy_game_var() {
     CDECL_CALL(0x005A52F0);
 }
 
+#if !SCRIPT_MANAGER_STANDALONE 
+    _std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
+#else
+    std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
+#endif
+{
+    return script_manager_exec_map();
+}
+
+script_object *find_object(const string_hash &a1) {
+    TRACE("script_manager::find_object");
+
+    assert(script_manager_exec_map() != nullptr);
+
+    for ( auto &v1 : (*script_manager_exec_map()) ) {
+        auto *so = v1.second.exec->find_object(a1, nullptr);
+        if ( so != nullptr) {
+            return so;
+        }
+    }
+
+    return nullptr;
+}
+
+script_object *find_object(
+        const resource_key &a1,
+        const string_hash &a2,
+        const resource_key &a3) {
+    TRACE("script_manager::find_object");
+
+    if ( a1.m_hash == string_hash {0} ) {
+        return find_object(a2);
+    }
+
+    assert(script_manager_exec_map() != nullptr);
+
+    script_executable_entry_key v14{};
+    v14.field_0 = a1;
+    v14.field_8 = a3;
+    auto v13 = script_manager_exec_map()->find(v14);
+    if ( auto end = script_manager_exec_map()->end();
+            v13 != end ) {
+        auto &v5 = (*v13);
+        auto *so = v5.second.exec->find_object(a2, nullptr);
+        return so;
+    }
+
+    return nullptr;
+}
+
+void add_global_constructor_thread(Float a1, bool a2) {
+    TRACE("script_manager::add_global_constructor_thread");
+
+    assert(script_manager_exec_map() != nullptr);
+    if ( a2 )
+    {
+        assert(script_manager_master_script() != nullptr);
+        script_manager_master_script()->sub_5AB510(a1);
+    }
+    else
+    {
+        for ( auto &v2 : (*script_manager_exec_map()) ) {
+            v2.second.exec->sub_5AB510(a1);
+        }
+    }
+}
+
 void un_load(const resource_key &a1, bool a2, const resource_key &a3) {
     TRACE("script_manager::un_load");
 
@@ -541,7 +641,7 @@ void un_load(const resource_key &a1, bool a2, const resource_key &a3) {
         auto v9 = mString {"Trying to un load a non-loaded script executable '"}
                 + mString {a1.m_hash.to_string()}
                 + mString {"'"};
-        auto *v5 = v9.c_str();
+        [[maybe_unused]] auto *v5 = v9.c_str();
         //script_manager::run_callbacks((script_manager_callback_reason)5, nullptr, v5);
     }
     else
@@ -635,13 +735,60 @@ void clear() {
     }
 }
 
-vm_executable *find_function_by_address(const uint16_t *a1)
-{
-    return (vm_executable *) CDECL_CALL(0x0059ED70, a1);
+vm_executable *find_function_by_address(const uint16_t *a1) {
+    TRACE("script_manager::find_function_by_address");
+
+    if constexpr(1) {
+        if ( script_manager_exec_map() == nullptr ) {
+            return nullptr;
+        }
+
+        for ( auto &v2 : (*script_manager_exec_map()) ) {
+            if ( v2.second.exec != nullptr ) {
+                auto *v5 = v2.second.exec->find_function_by_address(a1);
+                if ( v5 != nullptr ) {
+                    return v5;
+                }
+            }
+        }
+
+        return nullptr;
+    } else {
+        return (vm_executable *) CDECL_CALL(0x0059ED70, a1);
+    }
+}
+
+vm_executable *find_function_by_name(string_hash a1) {
+    TRACE("script_manager::find_function_by_name");
+
+    assert(script_manager_exec_map() != nullptr);
+    for ( auto &v1 : (*script_manager_exec_map()) ) {
+        auto *exec = v1.second.exec;
+        auto *func = exec->find_function_by_name(a1);
+        if ( func != nullptr) {
+            return func;
+        }
+    }
+
+    return nullptr;
 }
 
 script_executable_entry *find_entry(const script_executable *a1) {
-    return (script_executable_entry *) CDECL_CALL(0x0059EE10, a1);
+    TRACE("script_manager::find_entry");
+
+    if constexpr(1) {
+        assert(script_manager_exec_map() != nullptr);
+
+        for ( auto &p : (*script_manager_exec_map()) ) {
+            if ( p.second.exec == a1 ) {
+                return &p.second;
+            }
+        }
+
+        return nullptr;
+    } else {
+        return (script_executable_entry *) CDECL_CALL(0x0059EE10, a1);
+    }
 }
 
 int save_game_var_buffer(char *a1) {
@@ -687,6 +834,29 @@ void script_manager_patch()
         REDIRECT(0x0055C951, register_chuck_callbacks);
         REDIRECT(0x0055BEA7, register_chuck_callbacks);
     }
+
+    {
+        using find_object_t = script_object * (*)(
+                const resource_key &,
+                const string_hash &,
+                const resource_key &);
+        find_object_t find_object = &script_manager::find_object;
+        SET_JUMP(0x005A0870, find_object);
+    }
+
+    SET_JUMP(0x0058F400, script_manager::get_time_inc);
+
+    SET_JUMP(0x005AFE40, script_manager::register_allocated_stuff_callback); 
+
+    SET_JUMP(0x005AB5D0, script_manager::add_global_constructor_thread);
+
+    SET_JUMP(0x0059EE10, script_manager::find_entry);
+
+    SET_JUMP(0x0059EDC0, script_manager::find_function_by_name);
+
+    SET_JUMP(0x0059ED70, script_manager::find_function_by_address);
+
+    SET_JUMP(0x0058F500, script_manager::get_exec_list);
 
     SET_JUMP(0x005A3620, script_manager::link);
 
