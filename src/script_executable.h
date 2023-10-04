@@ -67,6 +67,11 @@ struct script_executable {
     //0x005AFC50
     void constructor_common();
 
+    script_object *get_global_object()
+    {
+        return this->global_script_object;
+    }
+
     //0x0059BBA0
     bool has_threads();
 

@@ -19,8 +19,14 @@ struct script_var_container {
     //0x00599440
     void un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4);
 
+    void destroy();
+
     //0x005A0520
     void *get_script_var_address(const char *a2, script_library_class **a3);
+
+    int save_script_var_buffer(char *a2);
+
+    int load_script_var_buffer(char *a2);
 
     char *get_address(int offset);
 };

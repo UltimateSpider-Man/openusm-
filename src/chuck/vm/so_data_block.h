@@ -1,12 +1,17 @@
 #pragma once
 
+#include <cstdint>
+
 inline constexpr auto SO_DATA_BLOCK_FLAG_FROM_MASH = 1u;
+
+struct generic_mash_header;
+struct generic_mash_data_ptrs;
 
 struct so_data_block
 {
     int m_size;
     char *buffer;
-    int field_8;
+    uint32_t flags;
 
     so_data_block() = default;
     so_data_block(int a2);
@@ -19,12 +24,17 @@ struct so_data_block
 
     void clear();
 
+    void un_mash(
+        generic_mash_header *a2,
+        void *a3,
+        generic_mash_data_ptrs *a4);
+
     auto size() const {
         return m_size;
     }
 
     bool is_from_mash() const {
-        return (this->field_8 & SO_DATA_BLOCK_FLAG_FROM_MASH) != 0;
+        return (this->flags & SO_DATA_BLOCK_FLAG_FROM_MASH) != 0;
     }
 
     auto *get_buffer() const {

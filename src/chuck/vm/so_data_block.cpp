@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "memory.h"
+#include "parse_generic_mash.h"
 
 VALIDATE_SIZE(so_data_block, 0xC);
 
@@ -9,7 +10,7 @@ so_data_block::so_data_block(int a2)
 {
     this->m_size = 0;
     this->buffer = nullptr;
-    this->field_8 = 0;
+    this->flags = 0;
     this->init(a2);
 }
 
@@ -53,4 +54,19 @@ void so_data_block::clear()
             this->m_size = 0;
         }
     }
+}
+
+void so_data_block::un_mash(
+        generic_mash_header *,
+        void *,
+        generic_mash_data_ptrs *a4)
+{
+    auto v4 = 4 - (unsigned int)a4->field_0 % 4;
+    if ( v4 < 4 ) {
+        a4->field_0 += v4;
+    }
+
+    this->buffer = (char *)a4->field_0;
+    a4->field_0 += this->m_size;
+    assert(( this->flags & SO_DATA_BLOCK_FLAG_FROM_MASH ) != 0);
 }

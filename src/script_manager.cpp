@@ -21,8 +21,6 @@
 
 Var<float> script_manager_time_inc{0x00961930};
 
-Var<script_executable *> script_manager_master_script {0x00965EE8};
-
 Var<_std::list<void (*)(script_manager_callback_reason, script_executable *, const char *)> *> script_manager_callbacks {0x00965F04};
 
 
@@ -39,6 +37,9 @@ Var<int> script_manager_next_stuff_id {0x00965EFC};
 
 Var<_std::map<int, script_executable_allocated_stuff_record> *>
     script_manager_script_allocated_stuff_map{0x00965F00};
+
+Var<script_executable *> script_manager_master_script {0x00965EE8};
+
 #else
 
 #include <list>
@@ -63,6 +64,9 @@ static std::map<int, script_executable_allocated_stuff_record> *
     g_script_manager_script_allocated_stuff_map {nullptr};
 Var<std::map<int, script_executable_allocated_stuff_record> *>
     script_manager_script_allocated_stuff_map {(int) &g_script_manager_script_allocated_stuff_map};
+
+static script_executable *g_script_manager_master_script {nullptr};
+Var<script_executable *> script_manager_master_script {(int) &g_script_manager_master_script};
 #endif
 
 namespace script_manager {
@@ -114,10 +118,8 @@ void init_game_var()
 {
     TRACE("script_manager::init_game_var");
 
-    if constexpr (1)
-    {
-        if ( script_manager_game_var_container() == nullptr )
-        {
+    if constexpr (1) {
+        if ( script_manager_game_var_container() == nullptr ) {
             resource_key a1 {string_hash {"master"}, RESOURCE_KEY_TYPE_SCRIPT_GV};
             auto *v0 = resource_manager::get_resource(a1, nullptr, nullptr);
             if ( v0 != nullptr )
@@ -137,12 +139,10 @@ void init_game_var()
             }
         }
 
-        if ( script_manager_shared_var_container() == nullptr )
-        {
+        if ( script_manager_shared_var_container() == nullptr ) {
             resource_key a1 {string_hash {"master"}, RESOURCE_KEY_TYPE_SCRIPT_SV};
             auto *v1 = resource_manager::get_resource(a1, nullptr, nullptr);
-            if ( v1 != nullptr )
-            {
+            if ( v1 != nullptr ) {
                 auto allocated_mem = parse_generic_object_mash(
                     script_manager_shared_var_container(),
                     v1,
@@ -184,17 +184,16 @@ void link() {
     }
 }
 
-int load_game_var_buffer(const char *a1) {
-    auto *result = script_manager_game_var_container();
-    if (a1 != nullptr) {
-        std::memcpy(script_manager_game_var_container()->script_var_block.buffer,
-                    a1,
-                    script_manager_game_var_container()->script_var_block.size());
-    } else if (script_manager_game_var_container() == nullptr) {
+int load_game_var_buffer(char *a1) {
+    TRACE("script_manager::load_game_var_buffer");
+
+    if (a1 == nullptr || script_manager_game_var_container() == nullptr) {
         return 0;
     }
 
-    return result->script_var_block.size();
+    assert(script_manager_game_var_container() != nullptr);
+
+    return script_manager_game_var_container()->load_script_var_buffer(a1);
 }
 
 void run_callbacks(script_manager_callback_reason a1)
@@ -357,6 +356,17 @@ script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, con
     {
         return (script_executable_entry *) CDECL_CALL(0x005B0750, &a1, a2, a3, &a4);
     }
+}
+
+script_object *find_global_object()
+{
+    TRACE("script_manager::find_global_object");
+
+    if ( script_manager_master_script() != nullptr ) {
+        return script_manager_master_script()->get_global_object();
+    }
+
+    return nullptr;
 }
 
 float get_time_inc()
@@ -555,7 +565,35 @@ void run(Float a1, bool a2) {
 }
 
 void destroy_game_var() {
-    CDECL_CALL(0x005A52F0);
+    TRACE("script_manager::destroy_game_var");
+
+    if constexpr(1) {
+        if ( script_manager_game_var_container() != nullptr )
+        {
+            if ( (script_manager_game_var_container()->flags & 1) == 0 )
+            {
+                auto &v0 = script_manager_game_var_container();
+                v0->destroy();
+                operator delete(v0);
+            }
+
+            script_manager_game_var_container() = nullptr;
+        }
+
+        if ( script_manager_shared_var_container() != nullptr )
+        {
+            if ( (script_manager_shared_var_container()->flags & 1) == 0 )
+            {
+                auto &v1 = script_manager_shared_var_container();
+                v1->destroy();
+                operator delete(v1);
+            }
+
+            script_manager_shared_var_container() = nullptr;
+        }
+    } else {
+        CDECL_CALL(0x005A52F0);
+    }
 }
 
 #if !SCRIPT_MANAGER_STANDALONE 
@@ -792,22 +830,21 @@ script_executable_entry *find_entry(const script_executable *a1) {
 }
 
 int save_game_var_buffer(char *a1) {
-    /*
-    script_var_container *result; // eax
+    TRACE("script_manager::save_game_var_buffer");
 
-    result = script_manager_game_var_container;
-    if (a1) {
-        qmemcpy(a1,
-                script_manager_game_var_container->field_4,
-                script_manager_game_var_container->field_0);
-    } else if (!script_manager_game_var_container) {
-        return result;
+    if constexpr (1) {
+        if ( a1 == nullptr && script_manager_game_var_container() == nullptr ) {
+            return 0;
+        }
+
+        assert(script_manager_game_var_container() != nullptr);
+        return script_manager_game_var_container()->save_script_var_buffer(a1);
+
+    } else {
+        return CDECL_CALL(0x0058F4C0, a1);
     }
-    return (script_var_container *) result->field_0;
-    */
-
-    return CDECL_CALL(0x0058F4C0, a1);
 }
+
 }
 
 void *parse_generic_mash_init_hook(generic_mash_header *&header, void *a2, bool *allocated_mem, generic_mash_data_ptrs *a4, unsigned int struct_size, unsigned int *virtual_table_lookup, unsigned int *size_table_lookup, unsigned int num_table_entries, unsigned int base_class_size, void *a10)
@@ -844,6 +881,16 @@ void script_manager_patch()
         SET_JUMP(0x005A0870, find_object);
     }
 
+    SET_JUMP(0x005A52F0, script_manager::destroy_game_var);
+
+    SET_JUMP(0x005A09B0, script_manager::get_game_var_address);
+
+    SET_JUMP(0x0058F480, script_manager::load_game_var_buffer);
+
+    SET_JUMP(0x0058F4C0, script_manager::save_game_var_buffer);
+
+    SET_JUMP(0x0058F390, script_manager::find_global_object);
+
     SET_JUMP(0x0058F400, script_manager::get_time_inc);
 
     SET_JUMP(0x005AFE40, script_manager::register_allocated_stuff_callback); 
@@ -874,10 +921,7 @@ void script_manager_patch()
         REDIRECT(0x0055C8A6, script_manager::is_loadable);
     }
 
-    {
-        REDIRECT(0x0055C890, script_manager::init_game_var);
-        REDIRECT(0x0057ED77, script_manager::init_game_var);
-    }
+    SET_JUMP(0x0059EE90, script_manager::init_game_var);
 
     SET_JUMP(0x005B0750, script_manager::load);
 }

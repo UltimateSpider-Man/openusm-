@@ -50,7 +50,7 @@ namespace script_manager {
     void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3);
 
     //0x0058F480
-    int load_game_var_buffer(const char *a1);
+    int load_game_var_buffer(char *a1);
 
     void un_load(const resource_key &a1, bool a2, const resource_key &a3);
 
@@ -107,6 +107,8 @@ namespace script_manager {
     //0x005AFE40
     int register_allocated_stuff_callback(
         void (*a1)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &));
+
+    script_object *find_global_object();
 
     float get_time_inc();
 }
