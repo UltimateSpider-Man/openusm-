@@ -3,7 +3,7 @@
 #include <config.h>
 #include <variable.h>
 
-struct slab_allocator {
+namespace slab_allocator {
     struct slab_list_t;
 
     struct slab_t {
@@ -12,7 +12,9 @@ struct slab_allocator {
 
             slab_t *operator*();
 
-            iterator operator++(int a3);
+            iterator operator++();
+
+            iterator operator++(int);
 
             bool operator!=(const slab_t::iterator &a2);
 
@@ -58,48 +60,48 @@ struct slab_allocator {
     };
 
     //0x0059F5A0
-    static void initialize();
+    void initialize();
 
     //0x0059F750
-    static void *allocate(int size, slab_t **a2);
+    void *allocate(int size, slab_t **a2);
 
     //0x00439820
-    static uint32_t get_max_object_size();
+    uint32_t get_max_object_size();
 
     //0x0059DE20
-    static slab_allocator::slab_t *create_slab(int size);
+    slab_allocator::slab_t *create_slab(int size);
 
     //0x0059DCA0
-    static void deallocate(void *a1, slab_t *a2);
+    void deallocate(void *a1, slab_t *a2);
 
     //0x00592D50
-    static slab_t *find_slab_for_object(void *obj);
+    slab_t *find_slab_for_object(void *obj);
 
     //0x0059AF70
-    static void process_lists();
+    void process_lists();
 
-    static void dump_debug_info();
+    void dump_debug_info();
 
     //0x00965F34
-    static Var<int *> static_slab_arena;
+    extern Var<char *> static_slab_arena;
 
     //0x00965F38
-    static Var<slab_t *> static_slab_headers;
+    extern Var<slab_t *> static_slab_headers;
 
-    static Var<bool> initialized;
+    extern Var<bool> initialized;
 
-    static Var<bool> g_dump_slab_info;
+    extern Var<bool> g_dump_slab_info;
 
-    static constexpr auto SLAB_SIZE = 4096;
+    constexpr auto SLAB_SIZE = 4096;
 
-    static int allocated_object_count[44];
-    static int free_object_count[44];
+    extern int allocated_object_count[44];
+    extern int free_object_count[44];
 
-    static int partial_slab_count[44];
-    static int full_slab_count[44];
+    extern int partial_slab_count[44];
+    extern int full_slab_count[44];
 
-    static int free_slab_count;
-    static int total_slab_count;
+    extern int free_slab_count;
+    extern int total_slab_count;
 
     struct slab_list_t {
         slab_t *_first_element;
@@ -128,11 +130,16 @@ struct slab_allocator {
             return iter;
         }
 
+        slab_t::iterator end() {
+            slab_t::iterator iter{};
+
+            return iter;
+        }
+
         bool contains(slab_t *iter) {
             return iter && iter->simple_list_vars._sl_list_owner == this;
         }
 
-        slab_t::iterator get_default_iterator();
 
         //0x005B3C10
         slab_t::iterator push_back(slab_t *tmp);
@@ -149,13 +156,13 @@ struct slab_allocator {
         slab_list_t field_4[44];
     };
 
-    static Var<slab_list_t *> slab_partial_list;
+    extern Var<slab_list_t *> slab_partial_list;
 
-    static Var<slab_list_t *> slab_full_list;
+    extern Var<slab_list_t *> slab_full_list;
 
-    static Var<slab_list_t *> slab_free_list;
+    extern Var<slab_list_t *> slab_free_list;
 
-}; // namespace slab_allocator
+} // namespace slab_allocator
 
 extern void swap(slab_allocator::slab_t::iterator &a, slab_allocator::slab_t::iterator &b);
 

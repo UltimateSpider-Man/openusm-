@@ -2608,6 +2608,8 @@ BOOL install_redirects() {
 
     script_access_patch();
 
+    slab_allocator_patch();
+
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
         REDIRECT(0x008218B0, hookDirectInputAddress);
@@ -2878,8 +2880,6 @@ BOOL install_redirects() {
         eligible_pack_streamer_patch();
 
         als_inode_patch();
-
-        slab_allocator_patch();
 
         nglMesh_patch();
 
