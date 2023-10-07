@@ -49,19 +49,17 @@ endif()
 option(USE_GLM "description" OFF)
 option(USE_FSTREAM "" OFF)
 
-add_subdirectory(third_party/glm)
-
 option(CHECK_STRUCT_SIZES "" ON)
 
 if(CHECK_STRUCT_SIZES)
     add_compile_definitions(CHECK_STRUCT_SIZES)
 endif()
 
-
 add_compile_definitions(CINTERFACE)
 
 if(USE_GLM)
     add_compile_definitions(USE_GLM)
+    add_subdirectory(third_party/glm)
 endif()
 
 option(TARGET_XBOX "" OFF)
