@@ -104,5 +104,5 @@ void sub_54DC10(const char *a1, bool a2) {
 }
 
 int sub_79A160() {
-    CDECL_CALL(0x0079A160);
+    return CDECL_CALL(0x0079A160);
 }

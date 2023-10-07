@@ -14,12 +14,10 @@
 
 VALIDATE_SIZE(mString, 0x10);
 
-Var<char *> mString::null = (0x0091E7C0);
+Var<int> mString_count {0x00957CEC};
 
-Var<int> mString_count = {0x00957CEC};
-
-Var<const char *[4]> packfile_ext = {0x00936BF0};
-Var<const char *[4]> packfile_dir = {0x00936BD0};
+Var<const char *[4]> packfile_ext {0x00936BF0};
+Var<const char *[4]> packfile_dir {0x00936BD0};
 
 int mString::npos = -1;
 
@@ -27,25 +25,19 @@ mString::mString(float a1) : mString() {
     char Dest[128];
     sprintf(Dest, "%0.3f", float{a1});
 
-    update_guts(Dest, -1);
+    this->update_guts(Dest, -1);
 }
 
 mString::mString([[maybe_unused]] int a2, const char *Format, ...)
-#ifdef _STDEX_NATIVE_CPP11_SUPPORT
     : mString()
-#endif
 {
-#ifndef _STDEX_NATIVE_CPP11_SUPPORT
-    *this = mString();
-#endif
-
     char Dest[1024];
     va_list Args;
 
     va_start(Args, Format);
     vsprintf(Dest, Format, Args);
 
-    this->update_guts(Dest, 0xFFFFFFFF);
+    this->update_guts(Dest, -1);
 }
 
 mString::mString(int a2)
@@ -60,11 +52,11 @@ mString::mString(int a2)
 
     this->field_C = nullptr;
     ++mString_count();
-    mString::update_guts(Dest, 0xFFFFFFFF);
+    this->update_guts(Dest, -1);
 }
 
 mString &mString::operator=(const char *a2) {
-    this->update_guts(a2, 0xFFFFFFFF);
+    this->update_guts(a2, -1);
     return (*this);
 }
 
@@ -114,17 +106,10 @@ void mString::initialize() {
 }
 
 mString::mString(const char *a2)
-#ifdef _STDEX_NATIVE_CPP11_SUPPORT
     : mString()
-#endif
 {
-
-#ifndef _STDEX_NATIVE_CPP11_SUPPORT
-    *this = mString();
-#endif
-
     if (a2 != nullptr) {
-        this->update_guts(a2, 0xFFFFFFFF);
+        this->update_guts(a2, -1);
     }
 }
 
@@ -242,7 +227,7 @@ mString::mString()
     : mContainer(), guts(mString::null()),
 
       field_C(nullptr) {
-    //sp_log("mString():");
+    //sp_log("mString::mString():");
 
 #ifndef TEST_CASE
     ++(mString_count());
@@ -461,14 +446,14 @@ mString operator+(const char *a2, const mString &a3) {
     mString v5;
 
     if (a2 != nullptr) {
-        v5.update_guts(a2, 0xFFFFFFFF);
+        v5.update_guts(a2, -1);
     }
 
     v5.append(a3.guts, 0xFFFFFFFF);
 
     mString a1{};
 
-    a1.update_guts(v5.guts, 0xFFFFFFFF);
+    a1.update_guts(v5.guts, -1);
 
     return a1;
 }
@@ -477,19 +462,14 @@ mString operator+(const mString &arg4, const char *Source) {
     char *v3 = arg4.guts;
 
     mString v6;
-    v6.update_guts(v3, 0xFFFFFFFF);
+    v6.update_guts(v3, -1);
 
     v6.append(Source, 0xFFFFFFFF);
     char *v4 = v6.guts;
 
-    mString a1 =
-#ifdef _STDEX_NATIVE_CPP11_SUPPORT
-        mString{};
-#else
-        mString();
-#endif
+    mString a1 {};
 
-    a1.update_guts(v4, 0xFFFFFFFF);
+    a1.update_guts(v4, -1);
 
     return a1;
 }

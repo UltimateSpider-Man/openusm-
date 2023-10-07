@@ -190,7 +190,7 @@ public:
 
     static int npos;
 
-    static Var<char *> null;
+    static inline Var<char *> null {0x0091E7C0};
 };
 
 //0x0064DF30
