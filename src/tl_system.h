@@ -97,7 +97,7 @@ extern void tlInitListInit();
 extern void tlStackRangeInit();
 
 //0x0074A520
-void tlSetSystemCallbacks(const tlSystemCallbacks *a1);
+void tlSetSystemCallbacks(const tlSystemCallbacks &a1);
 
 //0x0074A6C0
 void tlReleaseFile(tlFileBuf *File);

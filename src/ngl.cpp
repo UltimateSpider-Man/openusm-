@@ -3637,8 +3637,8 @@ nglTexture *nglLoadTexture(const tlHashString &a1)
 }
 
 nglFont *create_and_parse_fdf(const tlFixedString &a1, char *a2) {
-    auto *font = static_cast<nglFont *>(tlMemAlloc(sizeof(nglFont), 8u, 0x1000000u));
-    std::memset(font, 0, sizeof(nglFont));
+    auto *mem = tlMemAlloc(sizeof(nglFont), 8u, 0x1000000u);
+    auto *font = new (mem) nglFont {};
     font->field_20 = 1;
     font->field_40 = 2;
     font->field_44 = 2;
@@ -5460,6 +5460,8 @@ void sub_76DF40() {
 
 void ngl_patch() {
 
+    SET_JUMP(0x007791A0, create_and_parse_fdf);
+
     {
         void (*func)(nglFont *Font, const char *, uint32_t *, uint32_t *a4, Float a5, Float a6) = nglGetStringDimensions;
         REDIRECT(0x00617C3E, func);
@@ -5536,9 +5538,6 @@ void ngl_patch() {
     REDIRECT(0x005B86CD, nglSaveTexture);
     REDIRECT(0x007731E2, nglSaveTexture);
     REDIRECT(0x00773210, nglSaveTexture);
-
-    REDIRECT(0x00779F73, create_and_parse_fdf);
-    REDIRECT(0x00779281, create_and_parse_fdf);
 
     {
         FUNC_ADDRESS(address, &nglMeshSection::internal::createVertexBufferAndWriteData);

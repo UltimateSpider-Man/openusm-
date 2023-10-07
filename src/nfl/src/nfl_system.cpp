@@ -485,7 +485,7 @@ void *nfsPreAllocate(uint32_t size, uint32_t align, Struct_984498 &dword_984498)
 
     dword_984498.used += v14;
     return (dword_984498.field_0 != 0 ? (void *) v4 : nullptr);
-};
+}
 
 size_t nflSystem::init(void *a1) {
     if constexpr (1)

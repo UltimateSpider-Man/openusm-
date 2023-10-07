@@ -1538,7 +1538,7 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
     };
 
-    tlSetSystemCallbacks(&ngl_callbacks);
+    tlSetSystemCallbacks(ngl_callbacks);
 
     nWidth() = g_cx();
     nHeight() = g_cy();

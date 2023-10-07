@@ -236,7 +236,7 @@ void nglListAddMesh(nglMesh *Mesh,
                 nglListAlloc(sizeof(nglMeshNode), 64));
 
             meshNode->field_88 = Mesh;
-            std::memcpy(&meshNode->field_0, v5, sizeof(meshNode->field_0));
+            meshNode->field_0 = {};
 
             struct {
                 const void *field_0;

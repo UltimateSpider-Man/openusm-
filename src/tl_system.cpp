@@ -26,15 +26,31 @@ VALIDATE_SIZE(tldir_t::SkipListIterator, 0xC);
 VALIDATE_SIZE(tldir_t::Impl, 0x10);
 VALIDATE_SIZE(tldir_t::Node, 0x8);
 
-Var<tlSystemCallbacks> tlCurSystemCallbacks = (0x00970D6C);
-
-Var<int> tlMemAllocCounter = (0x00970D58);
-
 Var<int> tlScratchPadRefCount{0x00970D5C};
 
 Var<char[256]> tlHostPrefix{0x00970D88};
 
 Var<tlInstanceBank> nglShaderBank = (0x00972840);
+
+#define TL_SYSTEM_STANDALONE 1
+#if !TL_SYSTEM_STANDALONE
+
+Var<int> tlMemAllocCounter = (0x00970D58);
+
+Var<tlSystemCallbacks> tlCurSystemCallbacks = (0x00970D6C);
+
+#else
+
+#define make_var(type, name) \
+    static type g_##name {}; \
+    Var<type> name {(int) &g_##name}
+
+make_var(int, tlMemAllocCounter);
+
+make_var(tlSystemCallbacks, tlCurSystemCallbacks);
+
+#undef make_var
+#endif
 
 template<>
 void *tlInstanceBankResourceDirectory<nglFont, tlFixedString>::Add(nglFont *p_font) {
@@ -303,7 +319,7 @@ void tlMemFree(void *Ptr) {
 }
 
 void *tlMemAlloc(uint32_t Size, uint32_t Alignment, uint32_t Flags) {
-    //sp_log("tlMemAlloc(): %u", Size);
+    TRACE("tlMemAlloc", std::to_string(Size).c_str());
 
     void *memPtr;
 
@@ -411,13 +427,8 @@ bool tlReadFile(const char *FileName, tlFileBuf *File, unsigned int Align, unsig
     }
 }
 
-void tlSetSystemCallbacks(const tlSystemCallbacks *a1) {
-    tlCurSystemCallbacks().ReadFile = a1->ReadFile;
-    tlCurSystemCallbacks().ReleaseFile = a1->ReleaseFile;
-    tlCurSystemCallbacks().field_8 = a1->field_8;
-    tlCurSystemCallbacks().field_C = a1->field_C;
-    tlCurSystemCallbacks().MemAlloc = a1->MemAlloc;
-    tlCurSystemCallbacks().MemFree = a1->MemFree;
+void tlSetSystemCallbacks(const tlSystemCallbacks &a1) {
+    tlCurSystemCallbacks() = a1;
 }
 
 void tlGetSystemCallbacks(tlSystemCallbacks *a1) {
@@ -776,31 +787,26 @@ nglMesh *tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Impl::Find(cons
         return nullptr;
     }
 
-    auto *v7 = this->field_8;
-    auto v8 = this->m_size;
+    Node *v7 = this->field_8;
     Node *v6 = nullptr;
-    do {
-        while (1) {
-            v6 = v7->field_4[v8];
-            if (v6 == nullptr) {
-                break;
-            }
-
-            auto *v3 = nglMesh::get_string(v6->field_0);
-            auto v5 = v3->compare(a2);
-            if (v5 == 0) {
-                return v6->field_0;
-            }
-
-            if (v5 > 0) {
-                break;
-            }
-
-            v7 = v6;
+    for (auto i = this->m_size; i >= 0; --i) {
+        v6 = v7->field_4[i];
+        if (v6 == nullptr) {
+            break;
         }
 
-        --v8;
-    } while (v8 >= 0);
+        auto *v3 = nglMesh::get_string(v6->field_0);
+        auto v5 = v3->compare(a2);
+        if (v5 == 0) {
+            return v6->field_0;
+        }
+
+        if (v5 > 0) {
+            break;
+        }
+
+        v7 = v6;
+    }
 
     if (v6 != nullptr) {
         const auto v4 = *nglMesh::get_string(v6->field_0);
@@ -816,7 +822,6 @@ template<>
 nglMesh *tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Find(const tlHashString &a2) {
     if constexpr (1) {
         return this->field_4.Find(a2);
-
     } else {
         return (nglMesh *) THISCALL(0x00770C30, this, &a2);
     }
@@ -828,14 +833,11 @@ struct tlInitList {
 
 void tlInitListInit() {
     if constexpr (1) {
-        auto *i = (nglShader *) tlInitList::head();
-        if (i != nullptr) {
-            do {
-                auto &Register = get_vfunc(i->m_vtbl, 0x0);
-
-                Register(i);
-                i = (nglShader *) i->field_4;
-            } while (i);
+        for (auto *shader = static_cast<nglShader *>(tlInitList::head());
+                shader != nullptr;
+                shader = shader->field_4) {
+            auto &Register = get_vfunc(shader->m_vtbl, 0x0);
+            Register(shader);
         }
     } else {
         CDECL_CALL(0x00749FD0);
@@ -844,13 +846,19 @@ void tlInitListInit() {
 
 void tl_patch() {
 
-    {
-        REDIRECT(0x007700AE, tlReadFile);
-    }
+    SET_JUMP(0x0074A710, tlReadFile);
+
+    SET_JUMP(0x0074A5C0, tlMemAlloc);
+
+    SET_JUMP(0x0074A600, tlMemFree);
+
+    SET_JUMP(0x0074A6C0, tlReleaseFile);
+
+    SET_JUMP(0x0074A520, tlSetSystemCallbacks);
+
+    SET_JUMP(0x00749FD0, tlInitListInit);
 
     return;
-
-    REDIRECT(0x0076E59D, tlInitListInit);
 
     {
         auto func = &tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Find;

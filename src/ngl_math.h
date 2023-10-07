@@ -80,4 +80,4 @@ struct MatClass : matrix4x4 {
     }
 };
 
-}; // namespace math
+} // namespace math

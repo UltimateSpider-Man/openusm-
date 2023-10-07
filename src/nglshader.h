@@ -13,7 +13,7 @@ struct tlFixedString;
 
 struct nglShader {
     std::intptr_t m_vtbl;
-    void *field_4;
+    nglShader *field_4;
     int field_8;
 
     nglShader();
