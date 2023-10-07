@@ -70,7 +70,7 @@ if (TARGET_XBOX)
 endif()
 
 add_library(utility src/utility/trace.cpp)
-target_include_directories(utility PUBLIC 
+target_include_directories(utility PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/utility>)
 
 add_library(variables src/variables/variables.cpp)
@@ -298,11 +298,12 @@ if(ENABLE_TESTS)
 
     include(CTest)
     enable_testing()
-add_subdirectory(test)
+    add_subdirectory(test)
 endif()
 
-set_target_properties(binkw32
-    PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../Ultimate Spider-Man/"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../Ultimate Spider-Man/"
-)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../Ultimate Spider-Man/")
+    add_custom_command(TARGET binkw32 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/build/binkw32.dll" "${CMAKE_CURRENT_SOURCE_DIR}/../Ultimate Spider-Man/binkw32.dll"
+        COMMAND_EXPAND_LISTS
+        )
+endif()
