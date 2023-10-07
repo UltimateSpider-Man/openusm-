@@ -19,10 +19,7 @@
 
 #include <cassert>
 
-Var<float> script_manager_time_inc{0x00961930};
-
 Var<_std::list<void (*)(script_manager_callback_reason, script_executable *, const char *)> *> script_manager_callbacks {0x00965F04};
-
 
 #if !SCRIPT_MANAGER_STANDALONE 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
@@ -39,6 +36,12 @@ Var<_std::map<int, script_executable_allocated_stuff_record> *>
     script_manager_script_allocated_stuff_map{0x00965F00};
 
 Var<script_executable *> script_manager_master_script {0x00965EE8};
+
+Var<script_var_container *> script_manager_game_var_container {0x00965EEC};
+
+Var<script_var_container *> script_manager_shared_var_container {0x00965EF0};
+
+Var<float> script_manager_time_inc{0x00961930};
 
 #else
 
@@ -67,6 +70,17 @@ Var<std::map<int, script_executable_allocated_stuff_record> *>
 
 static script_executable *g_script_manager_master_script {nullptr};
 Var<script_executable *> script_manager_master_script {(int) &g_script_manager_master_script};
+
+static script_var_container *g_script_manager_game_var_container {nullptr};
+Var<script_var_container *> script_manager_game_var_container
+    {(int) &g_script_manager_game_var_container};
+
+static script_var_container *g_script_manager_shared_var_container {nullptr};
+Var<script_var_container *> script_manager_shared_var_container
+    {(int) &g_script_manager_shared_var_container};
+
+static float g_script_manager_time_inc {};
+Var<float> script_manager_time_inc{(int) &g_script_manager_time_inc};
 #endif
 
 namespace script_manager {
@@ -98,6 +112,22 @@ void *get_game_var_address(const mString &a1, bool *a2, script_library_class **a
     }
 
     return result;
+}
+
+char *get_game_var_address(int a1)
+{
+    TRACE("script_manager::get_game_var_address");
+
+    assert(script_manager_game_var_container() != nullptr);
+    return script_manager_game_var_container()->get_address(a1);
+}
+
+char *get_shared_var_address(int a1)
+{
+    TRACE("script_manager::get_shared_var_address");
+
+    assert(script_manager_shared_var_container() != nullptr);
+    return script_manager_shared_var_container()->get_address(a1);
 }
 
 bool using_chuck_old_fashioned() {
@@ -597,9 +627,9 @@ void destroy_game_var() {
 }
 
 #if !SCRIPT_MANAGER_STANDALONE 
-    _std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
+_std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
 #else
-    std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
+std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
 #endif
 {
     return script_manager_exec_map();
@@ -845,6 +875,25 @@ int save_game_var_buffer(char *a1) {
     }
 }
 
+int register_callback(
+        void (*a2)(script_manager_callback_reason, script_executable *, char *))
+{
+    TRACE("script_manager::register_callback");
+
+    assert(script_manager_callbacks() != nullptr && "need to initialize the script_manager first!!!");
+
+    std::pair<decltype(a2), bool> ret;
+    void (__fastcall *insert_unique)(void *, void *, decltype(&ret), decltype(&a2)) = CAST(insert_unique, 0x005B50E0);
+    insert_unique(
+        script_manager_callbacks(),
+        nullptr,
+        &ret,
+        &a2);
+
+    assert(ret.second && "c is already registered!!!!");
+    return 0;
+}
+
 }
 
 void *parse_generic_mash_init_hook(generic_mash_header *&header, void *a2, bool *allocated_mem, generic_mash_data_ptrs *a4, unsigned int struct_size, unsigned int *virtual_table_lookup, unsigned int *size_table_lookup, unsigned int num_table_entries, unsigned int base_class_size, void *a10)
@@ -881,9 +930,21 @@ void script_manager_patch()
         SET_JUMP(0x005A0870, find_object);
     }
 
+    SET_JUMP(0x005A3600, script_manager::register_callback);
+
     SET_JUMP(0x005A52F0, script_manager::destroy_game_var);
 
-    SET_JUMP(0x005A09B0, script_manager::get_game_var_address);
+    SET_JUMP(0x0058F470, script_manager::get_shared_var_address);
+
+    {
+        void * (*func)(const mString &, bool *, script_library_class **) = &script_manager::get_game_var_address;
+        SET_JUMP(0x005A09B0, func);
+    }
+
+    {
+        char * (*func)(int) = &script_manager::get_game_var_address;
+        SET_JUMP(0x0058F460, func);
+    }
 
     SET_JUMP(0x0058F480, script_manager::load_game_var_buffer);
 

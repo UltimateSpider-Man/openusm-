@@ -15,6 +15,8 @@
 #include "sound_manager.h"
 #include "event.h"
 #include "parse_generic_mash.h"
+#include "script_executable.h"
+#include "script_executable_entry.h"
 #include "trace.h"
 
 #include <cassert>
@@ -371,7 +373,32 @@ void mission_manager::frame_advance(Float a2)
 
 void mission_manager::kill_braindead_script()
 {
-    THISCALL(0x005D7EF0, this);
+    TRACE("mission_manager::kill_braindead_script");
+
+    if constexpr (1) {
+        if ( this->m_script != nullptr && !this->m_unload_script ) {
+            auto *exec_list = script_manager::get_exec_list();
+
+            script_executable_entry_key a2 {};
+            auto *v1 = this->m_script->field_0.c_str();
+            string_hash v6 {v1};
+            resource_key v9 {v6, RESOURCE_KEY_TYPE_SCRIPT};
+            a2.field_0 = v9;
+            a2.field_8 = resource_key {};
+            auto it = exec_list->find(a2);
+            auto end = exec_list->end();
+            if ( it != end ) {
+                auto &v4 = (*it);
+                if ( !v4.second.exec->has_threads() ) {
+                    if ( !event_manager::does_script_have_callbacks(v4.second.exec) ) {
+                        assert(false && "mission script appears to be dead");
+                    }
+                }
+            }
+        }
+    } else {
+        THISCALL(0x005D7EF0, this);
+    }
 }
 
 void mission_manager::sort_district_priorities()
@@ -479,5 +506,10 @@ void mission_manager_patch()
     {
         FUNC_ADDRESS(address, &mission_manager::frame_advance);
         REDIRECT(0x0055D75B, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &mission_manager::kill_braindead_script);
+        SET_JUMP(0x005D7EF0, address);
     }
 }

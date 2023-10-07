@@ -18,9 +18,9 @@ state_trans_action::state_trans_action(int action, string_hash a2, int message, 
 }
 
 state_trans_action::state_trans_action(const state_trans_action &a2) {
-    the_action = a2.the_action;
-    field_4 = a2.field_4;
-    the_message = a2.the_message;
-    field_C = a2.field_C;
+    this->the_action = a2.the_action;
+    this->field_4 = a2.field_4;
+    this->the_message = a2.the_message;
+    this->field_C = a2.field_C;
 }
 } // namespace ai

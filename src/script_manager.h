@@ -31,6 +31,10 @@ namespace script_manager {
     //0x005A09B0
     void *get_game_var_address(const mString &a1, bool *a2, script_library_class **a3);
 
+    char *get_game_var_address(int a1);
+
+    char *get_shared_var_address(int a1);
+
     //0x0058F4C0
     int save_game_var_buffer(char *a1);
 
@@ -111,12 +115,9 @@ namespace script_manager {
     script_object *find_global_object();
 
     float get_time_inc();
+
+    int register_callback(
+        void (*a2)(script_manager_callback_reason, script_executable *, char *));
 }
-
-inline Var<script_var_container *> script_manager_game_var_container {0x00965EEC};
-
-inline Var<script_var_container *> script_manager_shared_var_container {0x00965EF0};
-
-extern Var<float> script_manager_time_inc;
 
 extern void script_manager_patch();

@@ -1273,7 +1273,7 @@ bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, c
         this->dstack.set_SP(oldSP);
         this->entry = script_library_class::function::entry_t::RECALL_ENTRY;
         if (v5) {
-            this->field_1B4 += script_manager_time_inc();
+            this->field_1B4 += script_manager::get_time_inc();
             if (this->field_1B4 > 10.0f) {
                 this->field_1B4 = 0.0;
             }

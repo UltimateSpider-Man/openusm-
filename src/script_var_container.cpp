@@ -3,6 +3,7 @@
 #include "func_wrapper.h"
 #include "common.h"
 #include "parse_generic_mash.h"
+#include "script_manager.h"
 #include "trace.h"
 
 #include <cassert>
@@ -15,6 +16,37 @@ void script_var_container::un_mash_start(generic_mash_header *a2, void *a3, gene
 {
     assert(( flags & SCRIPT_VAR_FLAG_UN_MASHED ) == 0);
     this->un_mash(a2, a3, a4);
+}
+
+void __fastcall sub_599380(
+        void *a1,
+        void *,
+        generic_mash_header *,
+        script_var_container *a3,
+        void *,
+        generic_mash_data_ptrs *a5)
+{
+
+    struct {
+        uint8_t *field_0;
+        int field_4;
+    } *self = static_cast<decltype(self)>(a1);
+    auto v5 = 4 - ((int)a5->field_0 & 3);
+    if ( v5 < 4 ) {
+        a5->field_0 += v5;
+    }
+
+    int v6;
+    memcpy(&v6, a5->field_0, 4);
+    a5->field_0 += 4;
+    self->field_0 = a5->field_0;
+    a5->field_0 += v6;
+    int addr = ( ((a3->flags & 2) != 0)
+            ? (int) script_manager::get_game_var_address(self->field_4)
+            : (int) script_manager::get_shared_var_address(self->field_4)
+            );
+
+    self->field_4 = addr;
 }
 
 void script_var_container::un_mash(generic_mash_header *header, void *a3, generic_mash_data_ptrs *a4)
@@ -44,14 +76,6 @@ void script_var_container::un_mash(generic_mash_header *header, void *a3, generi
 
         for ( auto i = 0; i < this->field_10; ++i ) {
             assert(((int)header) % 4 == 0);
-
-            void (__fastcall *sub_599380)(
-                void *self,
-                void *,
-                generic_mash_header *a2,
-                script_var_container *a3,
-                void *a4,
-                generic_mash_data_ptrs *a5) = CAST(sub_599380, 0x00599380);
 
             sub_599380(
                 this->script_var_to_addr[i],

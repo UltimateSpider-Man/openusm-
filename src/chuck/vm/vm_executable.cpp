@@ -191,13 +191,11 @@ void vm_executable::link_un_mash(const script_executable *a2) {
                     auto v14 = *buffer++;
                     auto v15 = *buffer++;
 
-                    auto *container = (v15 == 1
-                            ? script_manager_game_var_container()
-                            : script_manager_shared_var_container()
+                    auto addr = (v15 == 1
+                            ? (int) script_manager::get_game_var_address(v14)
+                            : (int) script_manager::get_shared_var_address(v14)
                             );
-                    assert(container != nullptr);
 
-                    auto addr = uint32_t(container->get_address(v14));
                     assert(addr != 0 && "make sure you pack after you compile a script");
 
                     *(buffer - 2) = addr >> 16;
