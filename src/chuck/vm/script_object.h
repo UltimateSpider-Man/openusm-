@@ -88,6 +88,14 @@ struct script_object {
     //0x005A0750
     void constructor_common();
 
+    //0x005AF320
+    void create_destructor_instances();
+
+    //0x005AF750
+    void run(bool a2);
+
+    bool has_threads() const;
+
     void sub_5AB420();
 
     void dump_threads_to_file(FILE *a2);
@@ -121,6 +129,15 @@ struct script_object {
     int find_func(string_hash a2) const;
 
     static void read(chunk_file *file, script_object *so);
+
+    struct function {
+        script_object *field_0;
+        string_hash field_4;
+        int field_8;
+        int field_C;
+    };
+
+    static inline Var<function[20]> function_cache {0x00966D10};
 };
 
 struct script_instance_callback_reason_t {
@@ -165,6 +182,8 @@ struct script_instance {
 
     //0x005AF500
     void build_parameters();
+
+    bool has_threads() const;
 
     //0x005AAC20
     vm_thread *add_thread(const vm_executable *a2);

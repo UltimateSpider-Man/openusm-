@@ -117,7 +117,7 @@ namespace script_manager {
     float get_time_inc();
 
     int register_callback(
-        void (*a2)(script_manager_callback_reason, script_executable *, char *));
+        void (*a2)(script_manager_callback_reason, script_executable *, const char *));
 }
 
 extern void script_manager_patch();

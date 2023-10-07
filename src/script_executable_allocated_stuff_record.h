@@ -7,10 +7,8 @@ struct mString;
 
 struct script_executable_allocated_stuff_record {
     void (*field_0)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &);
-    _std::list<void *> field_4;
-    int field_10;
-    int field_14;
-    int field_18;
+    _std::list<uint32_t> field_4;
+    _std::list<mString> field_10;
 
-    script_executable_allocated_stuff_record();
+    script_executable_allocated_stuff_record() = default;
 };

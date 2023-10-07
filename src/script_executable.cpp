@@ -13,6 +13,7 @@
 #include "parse_generic_mash.h"
 #include "resource_key.h"
 #include "script_library_class.h"
+#include "script_executable_allocated_stuff_record.h"
 #include "utility.h"
 #include "variables.h"
 #include "vm_executable.h"
@@ -536,10 +537,76 @@ vm_thread *script_executable::sub_5AB510(Float a2)
     return (vm_thread *) THISCALL(0x005AB510, this, a2);
 }
 
+static bool g_cant_create_threads {};
+
 void script_executable::un_load(bool a2) {
     TRACE("script_executable::un_load");
 
-    THISCALL(0x005AF780, this, a2);
+    if constexpr (1) {
+        script_manager::run_callbacks((script_manager_callback_reason)1, this, nullptr);
+        for ( auto i = 0; i < 20; ++i )
+        {
+            if ( script_object::function_cache()[i].field_0 != nullptr ) {
+                if ( script_object::function_cache()[i].field_0->get_parent() == this )
+                {
+                    script_object::function_cache()[i].field_0 = nullptr;
+                    script_object::function_cache()[i].field_4 = string_hash {0};
+                    script_object::function_cache()[i].field_8 = -1;
+                    script_object::function_cache()[i].field_C = 0;
+                }
+            }
+        }
+
+        if ( a2 ) {
+            for ( auto j = 0; j < this->total_script_objects; ++j )
+            {
+                auto &v13 = this->script_objects[j];
+                v13->create_destructor_instances();
+            }
+
+            g_cant_create_threads = true;
+            bool v12 = false;
+            int v11 = 0;
+            while ( !v12 ) {
+                v12 = true;
+                for ( auto k = this->total_script_objects - 1; k >= 0; --k ) {
+                    auto &v9 = this->script_objects[k];
+
+                    auto sub_65DF67 = [](auto *self) -> uint32_t {
+                        return (self->instances == nullptr ? 0 : self->instances->size());
+                    };
+
+                    if ( sub_65DF67(v9) > 0 ) {
+                        v9->run(true);
+                        if ( v9->has_threads() ) {
+                            v12 = false;
+                        }
+                    }
+                }
+
+                if ( ++v11 > 50000 ) {
+                    script_manager::dump_threads_to_file();
+                    sp_log("Script destructors never finished executing. Talk to martin or the script author.");
+                    assert(0);
+                }
+            }
+        }
+
+        assert(this->script_allocated_stuff_map != nullptr);
+
+        for ( auto &v2 : (*this->script_allocated_stuff_map) ) {
+            if ( v2.second.field_4.size() != 0 ) {
+                auto &v6 = v2.second.field_10;
+                auto &v5 = v2.second.field_4;
+                v2.second.field_0(this, v5, v6);
+            }
+        }
+
+        g_cant_create_threads = false;
+        script_manager::run_callbacks((script_manager_callback_reason) 0, this, nullptr);
+    } else {
+        THISCALL(0x005AF780, this, a2);
+    }
 }
 
 void script_executable::release_mem() {

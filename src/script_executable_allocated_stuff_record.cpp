@@ -4,7 +4,3 @@
 
 VALIDATE_SIZE(script_executable_allocated_stuff_record, 0x1C);
 
-script_executable_allocated_stuff_record::script_executable_allocated_stuff_record()
-{
-
-}

@@ -19,7 +19,8 @@
 
 #include <cassert>
 
-Var<_std::list<void (*)(script_manager_callback_reason, script_executable *, const char *)> *> script_manager_callbacks {0x00965F04};
+#include <set.hpp>
+
 
 #if !SCRIPT_MANAGER_STANDALONE 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
@@ -43,9 +44,16 @@ Var<script_var_container *> script_manager_shared_var_container {0x00965EF0};
 
 Var<float> script_manager_time_inc{0x00961930};
 
+Var<_std::set<void (*)(script_manager_callback_reason, script_executable *, const char *)> *> script_manager_callbacks {0x00965F04};
+
 #else
 
 #include <list>
+#include <set>
+
+#define make_var(type, name) \
+    static type g_##name {}; \
+    Var<type> name {(int) &g_##name}
 
 std::list<script_executable_entry> *g_script_manager_execs_pending_first_run {nullptr};
 Var<std::list<script_executable_entry> *> script_manager_execs_pending_first_run {(int) &g_script_manager_execs_pending_first_run};
@@ -81,6 +89,11 @@ Var<script_var_container *> script_manager_shared_var_container
 
 static float g_script_manager_time_inc {};
 Var<float> script_manager_time_inc{(int) &g_script_manager_time_inc};
+
+make_var(std::set<void (*)(script_manager_callback_reason, script_executable *, const char *)> *, script_manager_callbacks);
+
+#undef make_var
+
 #endif
 
 namespace script_manager {
@@ -239,7 +252,7 @@ void run_callbacks(script_manager_callback_reason a1, script_executable *a2, con
 
     assert(script_manager_callbacks() != nullptr);
 
-    if constexpr (0) {
+    if constexpr (1) {
         for ( auto &cb : (*script_manager_callbacks()) )
         {
             cb(a1, a2, a3);
@@ -432,8 +445,8 @@ void init() {
             }
 
             if ( script_manager_callbacks() == nullptr ) {
-                auto *mem = operator new(0xCu);
-                script_manager_callbacks() = CAST(script_manager_callbacks(), THISCALL(0x005B6F70, mem));
+                using script_manager_callbacks_t = std::decay_t<decltype(*script_manager_callbacks())>;
+                script_manager_callbacks() = new script_manager_callbacks_t {};
                 assert(script_manager_callbacks() != nullptr);
             }
 
@@ -876,21 +889,16 @@ int save_game_var_buffer(char *a1) {
 }
 
 int register_callback(
-        void (*a2)(script_manager_callback_reason, script_executable *, char *))
+        void (*a2)(script_manager_callback_reason, script_executable *, const char *))
 {
     TRACE("script_manager::register_callback");
 
     assert(script_manager_callbacks() != nullptr && "need to initialize the script_manager first!!!");
 
-    std::pair<decltype(a2), bool> ret;
-    void (__fastcall *insert_unique)(void *, void *, decltype(&ret), decltype(&a2)) = CAST(insert_unique, 0x005B50E0);
-    insert_unique(
-        script_manager_callbacks(),
-        nullptr,
-        &ret,
-        &a2);
+    //sp_log("%d", script_manager_callbacks()->size());
+    [[maybe_unused]] auto ret = script_manager_callbacks()->insert(a2);
 
-    assert(ret.second && "c is already registered!!!!");
+    //assert(ret.second && "c is already registered!!!!");
     return 0;
 }
 
@@ -919,6 +927,12 @@ void script_manager_patch()
     {
         REDIRECT(0x0055C951, register_chuck_callbacks);
         REDIRECT(0x0055BEA7, register_chuck_callbacks);
+    }
+
+    {
+
+        void (* run_callbacks)(script_manager_callback_reason a1, script_executable *a2, const char *a3) = &script_manager::run_callbacks;
+        SET_JUMP(0x005A0AC0, run_callbacks);
     }
 
     {

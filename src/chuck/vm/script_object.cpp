@@ -14,6 +14,7 @@
 #include <cassert>
 
 VALIDATE_SIZE(script_object, 0x34);
+VALIDATE_SIZE(script_object::function, 0x10);
 
 script_object::script_object()
 {
@@ -30,6 +31,10 @@ void script_object::constructor_common() {
     THISCALL(0x005A0750, this);
 
     assert(instances != nullptr);
+}
+
+void script_object::create_destructor_instances() {
+    THISCALL(0x005AF320, this);
 }
 
 void script_object::sub_5AB420() {
@@ -130,6 +135,29 @@ int script_object::get_constructor_parmsize() {
     }
 
     return v2;
+}
+
+void script_object::run(bool a2)
+{
+    TRACE("script_object::run");
+
+    for (auto &v1 : (*this->instances) ) {
+        v1.run(a2);
+    }
+}
+
+bool script_object::has_threads() const
+{
+    if (this->instances != nullptr) {
+
+        for (auto &v1 : (*this->instances)) {
+            if (v1.has_threads()) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void script_object::dump_threads_to_file(FILE *a2) {
@@ -474,6 +502,10 @@ vm_thread *script_instance::add_thread(const vm_executable *a2) {
     } else {
         return (vm_thread *) THISCALL(0x005AAC20, this, a2);
     }
+}
+
+bool script_instance::has_threads() const {
+    return (this->threads.size() != 0);
 }
 
 void script_instance_patch() {
