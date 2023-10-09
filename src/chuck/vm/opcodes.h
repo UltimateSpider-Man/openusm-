@@ -113,7 +113,7 @@ enum opcode_arg_t {
     OP_ARG_PSIG = 16,
 };
 
-inline const char * opcode_arg_t_str[] = {
+inline const char *opcode_arg_t_str[] = {
     "OP_ARG_NULL",
     "OP_ARG_NUM",
     "OP_ARG_NUMR",
@@ -126,6 +126,8 @@ inline const char * opcode_arg_t_str[] = {
     "OP_ARG_SFR",
     "OP_ARG_LFR",
     "OP_ARG_CLV",
+    "OP_ARG_SIG",
+    "OP_ARG_PSIG",
     "OP_ARG_UNDEFINED",
     "OP_ARG_UNDEFINED",
     "OP_ARG_UNDEFINED",

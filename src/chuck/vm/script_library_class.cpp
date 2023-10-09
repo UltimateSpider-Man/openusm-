@@ -41,9 +41,9 @@ void script_library_class::store_name(const char *a2)
         operator delete[](this->name);
     }
 
-    auto v3 = strlen(a2);
-    this->name = new char[v3 + 1];
-    chuck_strcpy(this->name, a2, v3 + 1);
+    auto len = strlen(a2);
+    this->name = new char[len + 1];
+    chuck_strcpy(this->name, a2, len + 1);
 }
 
 bool script_library_class::function::operator()(vm_stack &a2,
@@ -71,10 +71,9 @@ script_library_class::function *script_library_class::get_func(int index)
 
 void script_library_class::add_function(script_library_class::function *func) {
 
-    if ( g_is_the_packer() || script_manager::using_chuck_old_fashioned() )
-    {}
-    else
-    {
+    if ( g_is_the_packer() || script_manager::using_chuck_old_fashioned() ) {
+
+    } else {
         assert(total_funcs > 0);
 
         assert(are_funcs_from_mash());
@@ -82,10 +81,8 @@ void script_library_class::add_function(script_library_class::function *func) {
         assert(funcs != nullptr);
 
         bool found = false;
-        for ( auto i = this->next_func_slot; i < this->total_funcs; ++i )
-        {
-            if ( this->funcs[i] != nullptr )
-            {
+        for ( auto i = this->next_func_slot; i < this->total_funcs; ++i ) {
+            if ( this->funcs[i] != nullptr ) {
                 found = true;
                 this->next_func_slot = i;
                 break;
@@ -97,7 +94,6 @@ void script_library_class::add_function(script_library_class::function *func) {
         assert(next_func_slot < total_funcs);
 
         this->funcs[this->next_func_slot++] = func;
-
     }
 }
 

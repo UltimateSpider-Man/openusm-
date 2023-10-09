@@ -67,6 +67,18 @@ struct script_executable {
     //0x005AFC50
     void constructor_common();
 
+    //0x005A34B0
+    void add_allocated_stuff(
+        int a2,
+        uint32_t a3,
+        const mString &a1);
+
+    //0x005A0790
+    void remove_allocated_stuff(int a2, uint32_t a3);
+
+    //0x005A07F0
+    int get_total_allocated_stuff(int a2);
+
     script_object *get_global_object()
     {
         return this->global_script_object;

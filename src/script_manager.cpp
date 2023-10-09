@@ -76,19 +76,13 @@ static std::map<int, script_executable_allocated_stuff_record> *
 Var<std::map<int, script_executable_allocated_stuff_record> *>
     script_manager_script_allocated_stuff_map {(int) &g_script_manager_script_allocated_stuff_map};
 
-static script_executable *g_script_manager_master_script {nullptr};
-Var<script_executable *> script_manager_master_script {(int) &g_script_manager_master_script};
+make_var(script_executable *, script_manager_master_script);
 
-static script_var_container *g_script_manager_game_var_container {nullptr};
-Var<script_var_container *> script_manager_game_var_container
-    {(int) &g_script_manager_game_var_container};
+make_var(script_var_container *, script_manager_game_var_container);
 
-static script_var_container *g_script_manager_shared_var_container {nullptr};
-Var<script_var_container *> script_manager_shared_var_container
-    {(int) &g_script_manager_shared_var_container};
+make_var(script_var_container *, script_manager_shared_var_container);
 
-static float g_script_manager_time_inc {};
-Var<float> script_manager_time_inc{(int) &g_script_manager_time_inc};
+make_var(float, script_manager_time_inc);
 
 make_var(std::set<void (*)(script_manager_callback_reason, script_executable *, const char *)> *, script_manager_callbacks);
 

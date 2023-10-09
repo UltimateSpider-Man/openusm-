@@ -213,8 +213,8 @@ bool vm_thread::run() {
             case OP_ARG_SFR:
             case OP_ARG_LFR:
             case OP_ARG_CLV:
-            case 15:
-            case 16:
+            case OP_ARG_SIG:
+            case OP_ARG_PSIG:
             case 17: {
                 arg.binary = (*this->PC++) << 16;
                 arg.binary += *this->PC++;
@@ -227,6 +227,65 @@ bool vm_thread::run() {
 
             assert(PC_stack.end() >= PC_stack.begin());
 
+            auto shr = [](int a, int b) {
+                return a >> b;
+            };
+
+            auto shl = [](int a, int b) {
+                return a << b;
+            };
+
+            auto binary_func = [this](opcode_arg_t argtype, const argument_t &arg, auto func) -> void {
+                switch (argtype) {
+                case OP_ARG_NULL: {
+                    vm_num_t v = this->dstack.pop_num();
+                    this->dstack.top_num() = func(this->dstack.top_num(), v);
+                    break;
+                }
+                case OP_ARG_NUM:
+                    this->dstack.top_num() = func(this->dstack.top_num(), arg.val);
+                    break;
+                case OP_ARG_NUMR:
+                    this->dstack.top_num() = func(arg.val, this->dstack.top_num());
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+            };
+
+            auto commutative_binary_func = [this](opcode_arg_t argtype, const argument_t &arg, auto func) -> void {
+                switch (argtype) {
+                case OP_ARG_NULL: {
+                    vm_num_t v = this->dstack.pop_num();
+                    this->dstack.top_num() = func(this->dstack.top_num(), v);
+                    break;
+                }
+                case OP_ARG_NUM:
+                    this->dstack.top_num() = func(this->dstack.top_num(), arg.val);
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+            };
+
+            auto compare_string = [this](opcode_arg_t argtype, const argument_t &arg, auto func) -> void {
+                switch(argtype) {
+                case OP_ARG_NULL: {
+                    vm_str_t v = this->dstack.pop_str();
+                    this->dstack.top_num() = func(strcmp(this->dstack.top_str(), v), 0);
+                    break;
+                }
+                case OP_ARG_STR:
+                    this->dstack.top_num() = func(strcmp(this->dstack.top_str(), arg.str), 0);
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+            };
+
             printf("op = %d, argtype = %s\n", int(op), opcode_arg_t_str[argtype]);
             switch ( op )
             {
@@ -234,10 +293,8 @@ bool vm_thread::run() {
                 assert(dsize == 4);
 
                 if ( argtype == OP_ARG_NUM ) {
-
                     if ( arg.binary == UNINITIALIZED_SCRIPT_PARM
-                            || (int &)this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
-                    {
+                            || (int &)this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM ) {
                         auto *ex = this->get_executable();
                         auto &v704 = ex->get_fullname();
                         auto *v118 = v704.to_string();
@@ -247,39 +304,13 @@ bool vm_thread::run() {
                     }
                 }
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() += v;
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() += arg.val;
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::plus<vm_num_t>{});
                 break;
             }
             case OP_AND: {
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = int(v) & int(this->dstack.top_num());
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = int(arg.val) & int(this->dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                commutative_binary_func(argtype, arg, std::bit_and<int>{});
                 break;
             }
             case OP_BF: {
@@ -338,23 +369,7 @@ bool vm_thread::run() {
             case OP_DIV:
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = this->dstack.top_num() / v;
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = this->dstack.top_num() / arg.val;
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = arg.val / this->dstack.top_num();
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::divides<vm_num_t>{});
                 break;
             case OP_DUP:
                 switch ( argtype )
@@ -408,20 +423,7 @@ bool vm_thread::run() {
                     }
                 }
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = (this->dstack.top_num() == v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = (this->dstack.top_num() == arg.val);
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                commutative_binary_func(argtype, arg, std::equal_to<vm_num_t>{});
                 break;
             }
             case OP_GE:
@@ -441,45 +443,12 @@ bool vm_thread::run() {
                     }
                 }
 
-                switch (argtype)
-                {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = (this->dstack.top_num() >= v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = this->dstack.top_num() >= arg.val;
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = arg.val >= this->dstack.top_num();
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::greater_equal<vm_num_t>{});
                 break;
             case OP_GT:
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = (this->dstack.top_num() > v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = (this->dstack.top_num() > arg.val);
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = (arg.val > this->dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::greater<vm_num_t>{});
                 break;
             case OP_INC: {
                 assert(dsize == 4);
@@ -526,23 +495,7 @@ bool vm_thread::run() {
             case OP_LE:
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = this->dstack.top_num() <= v;
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = (this->dstack.top_num() <= arg.val);
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = (arg.val <= this->dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::less_equal<vm_num_t>{});
                 break;
             case OP_LNT: {
                 assert(dsize == 4);
@@ -556,8 +509,7 @@ bool vm_thread::run() {
             case OP_LT: {
                 assert(dsize == 4);
 
-                if ( argtype != OP_ARG_NULL )
-                {
+                if ( argtype != OP_ARG_NULL ) {
                     if ( arg.binary == UNINITIALIZED_SCRIPT_PARM
                             || (int &) this->dstack.top_num() == UNINITIALIZED_SCRIPT_PARM )
                     {
@@ -570,83 +522,25 @@ bool vm_thread::run() {
                     }
                 }
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = (this->dstack.top_num() < v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = (this->dstack.top_num() < arg.val);
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = (arg.val < this->dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::less<vm_num_t>{});
                 break;
             }
             case OP_MOD: {
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = int(this->dstack.top_num()) % int(v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = int(this->dstack.top_num()) % int(arg.val);
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = int(arg.val) % int(this->dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, std::modulus<int>{});
                 break;
             }
             case OP_MUL: {
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() *= v;
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() *= arg.val;
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                commutative_binary_func(argtype, arg, std::multiplies<vm_num_t>{});
                 break;
             }
             case OP_NE:
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = (this->dstack.top_num() != v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = (this->dstack.top_num() != arg.val);
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                commutative_binary_func(argtype, arg, std::not_equal_to<vm_num_t>{});
                 break;
             case OP_NEG: {
                 assert(dsize == 4);
@@ -669,20 +563,7 @@ bool vm_thread::run() {
             case OP_OR: {
                 assert(dsize == 4);
 
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = int(dstack.top_num()) | int(v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = int(dstack.top_num()) | int(arg.val);
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                commutative_binary_func(argtype, arg, std::bit_or<int>{});
                 break;
             }
             case OP_POP: {
@@ -693,8 +574,7 @@ bool vm_thread::run() {
                     break;
                 }
                 case OP_ARG_SPR: {
-                    if ( !v109 )
-                    {
+                    if ( !v109 ) {
                         auto v57 = dsize;
                         auto *v58 = this->dstack.SP - dsize;
                         auto *v59 = this->dstack.SP + arg.word;
@@ -726,8 +606,7 @@ bool vm_thread::run() {
                         this->slf_error(mString {"reference to bad or uninitialized script object instance value"});
                     }
 
-                    if ( v109 )
-                    {
+                    if ( v109 ) {
                         v109 = false;
                         auto v63 = v113;
                         memcpy(
@@ -764,8 +643,7 @@ bool vm_thread::run() {
 
                     v109 = false;
                     int offset;
-                    for ( offset = 4; offset < v113; offset += 4 )
-                    {
+                    for ( offset = 4; offset < v113; offset += 4 ) {
                         assert((*(int*)( dstack.get_SP() - offset )) != UNINITIALIZED_SCRIPT_PARM);
                     }
 
@@ -778,21 +656,16 @@ bool vm_thread::run() {
                             v273);
                     this->dstack.pop(v273);
                     break;
-
                 }
                 case 17: {
-                    if ( v109 )
-                    {
+                    if ( v109 ) {
                         v109 = false;
-                        auto *v64 = this->dstack.get_SP();
-                        auto *v58 = v64 - v113;
+                        auto *v58 = this->dstack.get_SP() - v113;
                         auto v57 = v113;
                         auto v59 = arg.sdr + v113 * int(v114);
                         memcpy(v59, v58, v57);
                         this->dstack.pop(v57);
-                    }
-                    else
-                    {
+                    } else {
                         auto v57 = dsize;
                         auto *v64 = this->dstack.get_SP();
                         auto *v58 = v64 - dsize;
@@ -850,16 +723,15 @@ bool vm_thread::run() {
                 case OP_ARG_CLV:
                     this->dstack.push(static_cast<int>(arg.binary));
                     break;
-                case 15: {
+                case OP_ARG_SIG: {
                     this->field_18 = 0;
                     this->dstack.push(static_cast<int>(arg.binary));
                     break;
                 }
-                case 16: {
+                case OP_ARG_PSIG: {
                     this->dstack.pop(4);
                     this->field_18 = *(int *)this->dstack.get_SP();
                     this->dstack.push(static_cast<int>(arg.binary));
-
                     break;
                 }
                 default:
@@ -883,45 +755,13 @@ bool vm_thread::run() {
             case OP_SHL: {
                 assert(dsize == 4);
 
-                switch ( argtype ) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = int(this->dstack.top_num()) << int(v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    dstack.top_num() = int(dstack.top_num()) << int(arg.val);
-                    break;
-                case OP_ARG_NUMR:
-                    dstack.top_num() = int(arg.val) << int(dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, shl);
                 break;
             }
             case OP_SHR: {
                 assert(dsize == 4);
 
-                switch ( argtype ) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = int(this->dstack.top_num()) >> int(v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    dstack.top_num() = int(dstack.top_num()) >> int(arg.val);
-                    break;
-                case OP_ARG_NUMR:
-                    dstack.top_num() = int(arg.val) >> int(dstack.top_num());
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
-
+                binary_func(argtype, arg, shr);
                 break;
             }
             case OP_SPA: {
@@ -951,78 +791,25 @@ bool vm_thread::run() {
             }
             case OP_SUB: {
                 assert(dsize == 4);
-                switch (argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() -= v;
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() -= arg.val;
-                    break;
-                case OP_ARG_NUMR:
-                    this->dstack.top_num() = arg.val - this->dstack.top_num();
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
 
+                binary_func(argtype, arg, std::minus<vm_num_t>{});
                 break;
             }
             case OP_XOR:
                 assert(dsize == 4);
-                switch(argtype) {
-                case OP_ARG_NULL: {
-                    vm_num_t v = this->dstack.pop_num();
-                    this->dstack.top_num() = int(this->dstack.top_num()) ^ int(v);
-                    break;
-                }
-                case OP_ARG_NUM:
-                    this->dstack.top_num() = int(this->dstack.top_num()) ^ int(arg.val);
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
 
+                commutative_binary_func(argtype, arg, std::bit_xor<int>{});
                 break;
             case OP_STR_EQ: {
                 assert(dsize == 4);
-                switch(argtype) {
-                case OP_ARG_NULL: {
-                    vm_str_t v = this->dstack.pop_str();
-                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), v) == 0);
-                    break;
-                }
-                case OP_ARG_STR:
-                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), arg.str) == 0);
-                    break;
-                default:
-                    assert(0);
-                    break;
-                }
 
+                compare_string(argtype, arg, std::equal_to<int>{});
                 break;
             }
             case OP_STR_NE: {
                 assert(dsize == 4);
 
-                switch(argtype) {
-                case OP_ARG_NULL: {
-                    vm_str_t v = this->dstack.pop_str();
-                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), v) != 0);
-                    break;
-                }
-                case OP_ARG_STR:
-                    this->dstack.top_num() = (strcmp(this->dstack.top_str(), arg.str) != 0);
-                    break;
-
-                default:
-                    assert(0);
-                    break;
-                }
-
+                compare_string(argtype, arg, std::not_equal_to<int>{});
                 break;
             }
             case OP_ECB:
@@ -1086,6 +873,7 @@ bool vm_thread::run() {
             case 51:
             case 52: {
                 assert(argtype == OP_ARG_WORD);
+
                 auto a1 = this->dstack.pop_num();
                 static char byte_967F90[256]{};
                 if ( op == 51 ) {
@@ -1114,8 +902,7 @@ bool vm_thread::run() {
             }
             case 54: {
                 auto *v33 = this->inst;
-                if ( argtype == OP_ARG_NULL )
-                {
+                if ( argtype == OP_ARG_NULL ) {
                     kill_me = true;
                     running = false;
                     v33->massacre_threads(nullptr, this);

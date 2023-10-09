@@ -187,7 +187,28 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
             static auto *start_debug = a4->field_0;
 
-            this->sx_exe_image = CAST(this->sx_exe_image, a4->field_0);
+            [this, &a4]() {
+                if constexpr (1) {
+                    filespec v98 {mString {this->field_0.to_string()}};
+                    v98.m_dir = mString {"scripts\\"};
+                    v98.m_ext = mString {".pc"} + "sxl";
+
+                    os_file v85 {};
+                    v85.open(v98.fullname(), os_file::FILE_READ);
+                    if ( v85.is_open() ) {
+                        sp_log("found pcsxl file %s", v98.fullname().c_str());
+                        this->sx_exe_image_size = v85.get_size();
+                        this->sx_exe_image = new uint16_t[this->sx_exe_image_size / 2];
+                        assert(sx_exe_image != nullptr);
+
+                        v85.read(this->sx_exe_image, this->sx_exe_image_size);
+                        return;
+                    }
+                }
+
+                this->sx_exe_image = CAST(this->sx_exe_image, a4->field_0);
+            }();
+
             a4->field_0 += this->sx_exe_image_size;
 
             rebase(a4, 4u);
@@ -200,7 +221,6 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
             for ( auto i = 0; i < this->total_script_objects; ++i ) {
-
                 rebase(a4, 8u);
 
                 rebase(a4, 4u);
@@ -282,9 +302,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             this->constructor_common();
             this->flags |= SCRIPT_EXECUTABLE_FLAG_UN_MASHED;
         }
-    }
-    else
-    {
+    } else {
         THISCALL(0x005B01F0, this, header, a3, a4);
     }
 }
@@ -297,9 +315,30 @@ vm_executable *script_executable::find_function_by_name(string_hash a2) const {
     return (vm_executable *) THISCALL(0x0058F310, this, a2);
 }
 
-void script_executable::register_allocated_stuff_callback(int a1, void (*a2)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &))
+void script_executable::register_allocated_stuff_callback(int a2, void (*a3)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &))
 {
-    THISCALL(0x005AF460, this, a1, a2);
+    TRACE("script_executable::register_allocated_stuff_callback");
+
+    if constexpr (1) {
+        assert(script_allocated_stuff_map != nullptr);
+        script_executable_allocated_stuff_record a2a {};
+        a2a.field_0 = a3;
+
+        this->script_allocated_stuff_map->insert({a2, a2a});
+    } else {
+        THISCALL(0x005AF460, this, a2, a3);
+    }
+}
+
+int script_executable::get_total_allocated_stuff(int a2)
+{
+    TRACE("script_executable::get_total_allocated_stuff");
+    assert(this->script_allocated_stuff_map != nullptr);
+
+    auto it = this->script_allocated_stuff_map->find(a2);
+    assert(it != script_allocated_stuff_map->end() && "you need to register first");
+
+    return it->second.stuff.size();
 }
 
 void script_executable::add_object_by_name(script_object *a1, int a3) {
@@ -441,7 +480,6 @@ void script_executable::load(const resource_key &resource_id) {
     
     v98.m_ext = get_platform_extension() + "sx";
     io.open(v98.fullname(), os_file::FILE_READ);
-
     assert(io.is_open());
 
     {
@@ -452,8 +490,7 @@ void script_executable::load(const resource_key &resource_id) {
         filespec v86 {v87};
         os_file v85 {};
         v85.open(v86.fullname(), os_file::FILE_READ);
-        if ( v85.is_open() )
-        {
+        if ( v85.is_open() ) {
             auto file_size = v85.get_size();
             this->sx_exe_image_size = file_size;
             this->sx_exe_image = new uint16_t[file_size / 2];
@@ -595,9 +632,9 @@ void script_executable::un_load(bool a2) {
         assert(this->script_allocated_stuff_map != nullptr);
 
         for ( auto &v2 : (*this->script_allocated_stuff_map) ) {
-            if ( v2.second.field_4.size() != 0 ) {
-                auto &v6 = v2.second.field_10;
-                auto &v5 = v2.second.field_4;
+            if ( v2.second.stuff.size() != 0 ) {
+                auto &v6 = v2.second.debug_stuff_descriptions;
+                auto &v5 = v2.second.stuff;
                 v2.second.field_0(this, v5, v6);
             }
         }
@@ -803,11 +840,71 @@ void script_executable::first_run(Float a2, bool a3) {
     }
 }
 
+void script_executable::add_allocated_stuff(
+        int a2,
+        uint32_t a3,
+        const mString &a1)
+{
+    TRACE("script_executable::add_allocated_stuff");
+
+    assert(this->script_allocated_stuff_map != nullptr);
+
+    auto it = this->script_allocated_stuff_map->find(a2);
+    assert(it != this->script_allocated_stuff_map->end() && "you need to register first");
+
+    auto &v5 = (*it);
+    v5.second.stuff.push_front(a3);
+    v5.second.debug_stuff_descriptions.push_front(a1);
+}
+
+void script_executable::remove_allocated_stuff(int a2, uint32_t a3)
+{
+    TRACE("script_executable::remove_allocated_stuff");
+
+    assert(this->script_allocated_stuff_map != nullptr);
+
+    auto it = this->script_allocated_stuff_map->find(a2);
+    assert(it != script_allocated_stuff_map->end() && "you need to register first");
+
+    assert(it->second.stuff.size() == it->second.debug_stuff_descriptions.size());
+
+    auto dsc_it = it->second.debug_stuff_descriptions.begin();
+    for ( auto stuff_it = it->second.stuff.begin(), stuff_end = it->second.stuff.end();
+            stuff_it != stuff_end;
+            ++dsc_it, ++stuff_it
+            ) {
+        if ( (*stuff_it) == a3 ) {
+            it->second.stuff.erase(stuff_it);
+            it->second.debug_stuff_descriptions.erase(dsc_it);
+            return;
+        }
+    }
+}
 
 void script_executable_patch()
 {
     {
+        FUNC_ADDRESS(address, &script_executable::get_total_allocated_stuff); 
+        SET_JUMP(0x005A07F0, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &script_executable::un_mash);
         REDIRECT(0x005B0850, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &script_executable::register_allocated_stuff_callback);
+        REDIRECT(0x005AF460, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &script_executable::add_allocated_stuff);
+        SET_JUMP(0x005A34B0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &script_executable::remove_allocated_stuff);
+        SET_JUMP(0x005A0790, address);
     }
 }
