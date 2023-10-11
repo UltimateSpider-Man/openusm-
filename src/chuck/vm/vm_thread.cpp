@@ -1048,6 +1048,10 @@ bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, c
         auto *oldSP = this->dstack.SP;
 
         printf("arg.lfr = 0x%08X\n", arg.lfr->m_vtbl);
+
+#if SLC_NAME_FIELD
+        printf("arg.lfr = %s\n", arg.lfr->get_name());
+#endif
         if (arg.lfr->operator()(this->dstack, this->entry)) {
             this->entry = script_library_class::function::entry_t::FIRST_ENTRY;
             this->field_1B0 = nullptr;

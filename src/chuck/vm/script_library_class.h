@@ -8,7 +8,7 @@
 
 struct vm_stack;
 
-#define NAME_FIELD 1
+#define SLC_NAME_FIELD 1
 
 struct script_library_class {
     struct function {
@@ -19,8 +19,8 @@ struct script_library_class {
 
         std::intptr_t m_vtbl;
 
-#if NAME_FIELD
-        const char *field_4;
+#if SLC_NAME_FIELD
+        const char *m_name;
 #endif
 
         //0x0058EE30
@@ -33,9 +33,9 @@ struct script_library_class {
         /* virtual */ bool operator()(vm_stack &a2,
                                       script_library_class::function::entry_t a3) const;
 
-#if NAME_FIELD
-        inline const char *get_name() {
-            return this->field_4;
+#if SLC_NAME_FIELD
+        const char *get_name() const { 
+            return this->m_name;
         }
 #endif
     };
@@ -78,6 +78,8 @@ struct script_library_class {
     }
 
     void add_function(script_library_class::function *a2);
+
+    void add_functions_complete();
 };
 
 struct slc_str_t : script_library_class {};

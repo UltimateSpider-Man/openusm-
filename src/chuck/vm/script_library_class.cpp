@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "script_manager.h"
 #include "slab_allocator.h"
+#include "trace.h"
 #include "utility.h"
 #include "vtbl.h"
 #include "variables.h"
@@ -14,7 +15,7 @@
 
 VALIDATE_SIZE(script_library_class, 0x20);
 
-#if NAME_FIELD
+#if SLC_NAME_FIELD
 VALIDATE_SIZE(script_library_class::function, 0x8);
 #else
 VALIDATE_SIZE(script_library_class::function, 0x4);
@@ -69,8 +70,8 @@ script_library_class::function *script_library_class::get_func(int index)
     return this->funcs[index];
 }
 
-void script_library_class::add_function(script_library_class::function *func) {
-
+void script_library_class::add_function(script_library_class::function *func)
+{
     if ( g_is_the_packer() || script_manager::using_chuck_old_fashioned() ) {
 
     } else {
@@ -97,39 +98,19 @@ void script_library_class::add_function(script_library_class::function *func) {
     }
 }
 
-void __thiscall script_library_class__function__ctor(script_library_class::function *self,
-                                                     const char *a1) {
-    self->m_vtbl = 0x0088EAFC;
-
-#if NAME_FIELD
-    self->field_4 = a1;
-#endif
-
-    assert(slc_global() != nullptr);
-
-    slc_global()->add_function(self);
-}
-
-void __thiscall script_library_class__function__ctor(script_library_class::function *self,
-                                                     script_library_class *a2,
-                                                     const char *a3) {
-    self->m_vtbl = 0x0088EAFC;
-
-#if NAME_FIELD
-    self->field_4 = a3;
-#endif
-
-    assert(a2 != nullptr);
-
-    a2->add_function(self);
+void script_library_class::add_functions_complete()
+{
+    if ( g_is_the_packer() || script_manager::using_chuck_old_fashioned() ) {
+        assert(this->funcs == nullptr);
+    }
 }
 
 script_library_class::function::function(const char *name) {
     if constexpr (1) {
         this->m_vtbl = 0x0088EAFC;
 
-#if NAME_FIELD
-        this->field_4 = name;
+#if SLC_NAME_FIELD
+        this->m_name = name;
 #endif
 
         assert(slc_global() != nullptr);
@@ -141,35 +122,20 @@ script_library_class::function::function(const char *name) {
     }
 }
 
-script_library_class::function::function(script_library_class *a2, const char *a3) {
-    THISCALL(0x0058EDE0, this, a2, a3);
-}
+script_library_class::function::function(script_library_class *slc, const char *name) {
+    TRACE("script_library_class::function::function", name);
 
+    if constexpr (1) {
 
-void *__thiscall script_library_class_function_ctor(void *s, const char *name) {
-    auto *self = static_cast<script_library_class::function *>(s);
-
-    static constexpr auto size = sizeof(script_library_class::function);
-
-    auto *mem = mem_alloc(size);
-
-#if 1
-
-    sp_log("%s: old_mem = 0x%08X, mem = 0x%08X", name, self, mem);
-
+#if SLC_NAME_FIELD
+        this->m_name = name;
 #endif
 
-    auto *func = new (mem) script_library_class::function{name};
-
-    slab_allocator::deallocate(self, nullptr);
-
-    assert(0x0088EAFC == func->m_vtbl);
-
-    sp_log("DEBUG_1");
-
-    return func;
+        slc->add_function(this);
+    } else {
+        THISCALL(0x0058EDE0, this, slc, name);
+    }
 }
 
 void script_library_class_patch() {
-    SET_JUMP(0x0058EE30, &script_library_class_function_ctor);
 }
