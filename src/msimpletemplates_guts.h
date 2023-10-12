@@ -40,6 +40,10 @@ struct simple_list {
         return this->m_size;
     }
 
+    bool empty() const {
+        return (this->m_size == 0);
+    }
+
     iterator begin() {
         return iterator {this->_first_element};
     }
@@ -100,4 +104,54 @@ struct simple_list {
             return this->push_back(tmp);
         }
     }
+
+    bool contains(iterator a2) const {
+        return a2._Ptr != nullptr && a2._Ptr->simple_list_vars._sl_list_owner == this;
+    }
+
+    T *common_erase(T *iter, bool a3) {
+        T *result = nullptr;
+        if ( iter != nullptr ) {
+            assert(this->contains(iterator {iter}));
+
+            result = (a3
+                    ? iter->simple_list_vars._sl_prev_element
+                    : iter->simple_list_vars._sl_next_element
+                    );
+
+            if ( iter->simple_list_vars._sl_prev_element != nullptr ) {
+                iter->simple_list_vars._sl_prev_element = iter->simple_list_vars._sl_next_element;
+            } else {
+                assert(iter->simple_list_vars._sl_list_owner->_first_element == iter);
+
+                iter->simple_list_vars._sl_list_owner->_first_element = iter->simple_list_vars._sl_next_element;
+            }
+
+            if ( iter->simple_list_vars._sl_next_element != nullptr ) {
+                iter->simple_list_vars._sl_next_element->simple_list_vars._sl_prev_element = iter->simple_list_vars._sl_prev_element;
+            } else {
+                assert(iter->simple_list_vars._sl_list_owner->_last_element == iter);
+
+                iter->simple_list_vars._sl_list_owner->_last_element = iter->simple_list_vars._sl_prev_element;
+            }
+
+            assert(iter->simple_list_vars._sl_list_owner->m_size >= 0);
+
+            iter->simple_list_vars._sl_next_element = nullptr;
+            iter->simple_list_vars._sl_prev_element = nullptr;
+            iter->simple_list_vars._sl_list_owner = nullptr;
+        }
+
+        return result;
+    }
+
+    bool erase(iterator a2) {
+        if ( !this->contains(a2) ) {
+            return false;
+        }
+
+        this->common_erase(a2._Ptr, false);
+        return true;
+    }
+
 };

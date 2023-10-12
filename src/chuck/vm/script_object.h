@@ -7,6 +7,7 @@
 #include "msimpletemplates_guts.h"
 
 #include <list.hpp>
+#include <set.hpp>
 
 #include <set>
 
@@ -23,29 +24,32 @@ struct generic_mash_data_ptrs;
 inline constexpr auto SCRIPT_OBJECT_FLAG_GLOBAL = (1u << 0);
 inline constexpr auto SCRIPT_OBJECT_FLAG_EXTERNAL = (1u << 2);
 
+struct vm_symbol {
+    mString field_0;
+    mString field_C;
+    mString field_18;
+    mString field_24;
+    int field_30;
+    int field_34;
+    bool field_38;
+
+    void read(chunk_file *file);
+};
+
 struct script_object {
     string_hash name;
     script_executable *parent;
     script_instance *global_instance;
+
     struct debug_info_t {
         string_hash field_0;
+        _std::list<vm_symbol> field_4;
+        _std::list<vm_symbol> field_10;
 
-        struct internal {
-            mString field_0;
-            mString field_C;
-            mString field_18;
-            mString field_24;
-            mString field_30;
-            mString field_34;
-            bool field_38;
-
-            void read(chunk_file *file);
-
-        };
-
-        _std::list<internal> field_4;
-
-        _std::list<internal> field_10;
+        ~debug_info_t() {
+            void (__fastcall *func)(void *) = CAST(func, 0x005B7BE0);
+            func(this);
+        }
     };
 
     debug_info_t *debug_info;
@@ -58,6 +62,9 @@ struct script_object {
     uint32_t flags;
 
     script_object();
+
+    //0x005AF6C0
+    ~script_object();
 
     bool is_external_object() const {
         return (this->flags & SCRIPT_OBJECT_FLAG_EXTERNAL) != 0;
@@ -87,6 +94,12 @@ struct script_object {
 
     //0x005A0750
     void constructor_common();
+
+    //0x005AD9A0
+    void destructor_common();
+
+    //0x005AF3E0
+    void destroy();
 
     //0x005AF320
     void create_destructor_instances();
@@ -152,6 +165,8 @@ struct script_instance {
     vm_executable *field_28;
     script_object *parent;
     uint32_t flags;
+    void (* m_callback)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *);
+    _std::set<void *> field_38;
 
     //0x005AAA40
     script_instance(string_hash a2,
@@ -173,12 +188,17 @@ struct script_instance {
     }
 
     //0x005AAE60
-    _std::list<vm_thread *>::iterator delete_thread(
-        _std::list<vm_thread *>::iterator a3);
+    simple_list<vm_thread>::iterator delete_thread(
+        simple_list<vm_thread>::iterator a3);
 
     void dump_threads_to_file(FILE *a2);
 
     void run(bool a2);
+
+    //0x0059EC70
+    void run_callbacks(
+        script_instance_callback_reason_t a2,
+        vm_thread *a3);
 
     //0x005AF500
     void build_parameters();

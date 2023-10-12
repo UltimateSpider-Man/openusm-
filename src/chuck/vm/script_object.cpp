@@ -16,6 +16,10 @@
 VALIDATE_SIZE(script_object, 0x34);
 VALIDATE_SIZE(script_object::function, 0x10);
 
+VALIDATE_SIZE(script_instance, 0x44);
+
+VALIDATE_SIZE(vm_symbol, 0x4C);
+
 script_object::script_object()
 {
     this->instances = nullptr;
@@ -33,6 +37,70 @@ void script_object::constructor_common() {
     assert(instances != nullptr);
 }
 
+script_object::~script_object()
+{
+    if ( (this->flags & 2) != 0 ) {
+        this->destructor_common();
+    } else {
+        this->destroy();
+    }
+
+    if ( (this->static_data.flags & 1) == 0 ) {
+        auto &buffer = this->static_data.buffer;
+        if ( buffer != nullptr ) {
+            mem_dealloc(buffer, this->static_data.size());
+
+            this->static_data.buffer = nullptr;
+            this->static_data.m_size = 0;
+        }
+    }
+}
+
+void script_object::destructor_common()
+{
+    if ( this->instances != nullptr ) {
+        while ( !this->instances->empty() ) {
+            auto begin = this->instances->begin();
+            auto v5 = begin;
+            this->instances->erase(v5);
+            auto *v3 = v5._Ptr;
+            if ( v3 != nullptr ) {
+                delete v3;
+            }
+        }
+
+        mem_dealloc(this->instances, sizeof(*this->instances));
+        this->instances = nullptr;
+    }
+
+    this->global_instance = nullptr;
+}
+
+void script_object::destroy()
+{
+    if ( debug_info != nullptr ) {
+        this->debug_info->~debug_info_t();
+        operator delete(debug_info);
+        this->debug_info = nullptr;
+    }
+
+    if ( this->funcs != nullptr ) {
+        for ( auto i = 0; i < this->total_funcs; ++i ) {
+            auto &v5 = this->funcs[i];
+            if ( v5 != nullptr ) {
+                v5->~vm_executable();
+                operator delete(v5);
+            }
+        }
+
+        operator delete[](this->funcs);
+        this->funcs = nullptr;
+        this->total_funcs = 0;
+    }
+
+    this->destructor_common();
+}
+
 void script_object::create_destructor_instances() {
     THISCALL(0x005AF320, this);
 }
@@ -44,11 +112,11 @@ void script_object::sub_5AB420() {
     }
 }
 
-_std::list<vm_thread *>::iterator script_instance::delete_thread(
-        _std::list<vm_thread *>::iterator a3) {
+simple_list<vm_thread>::iterator script_instance::delete_thread(
+        simple_list<vm_thread>::iterator a3) {
     TRACE("script_instance::delete_thread");
 
-    _std::list<vm_thread *>::iterator iter{};
+    simple_list<vm_thread>::iterator iter{};
     THISCALL(0x005AAE60, this, &iter, a3);
     return iter;
 }
@@ -67,24 +135,33 @@ void script_instance::dump_threads_to_file(FILE *a2) {
     }
 }
 
-void script_instance::run(bool a2) {
+void script_instance::run(bool a2)
+{
     TRACE("script_instance::run");
 
     this->flags |= 2u;
     this->build_parameters();
     auto it = this->threads.begin();
     auto end = this->threads.end();
-    while (it != end)
-    {
+    while (it != end) {
         auto *t = it._Ptr;
         assert(t != nullptr);
         if ( (a2 || (t->flags & 1) == 0) && t->run() ) {
-            _std::list<vm_thread *>::iterator iter {};
-            iter._Ptr = CAST(iter._Ptr, it._Ptr);
-            it._Ptr = CAST(it._Ptr, this->delete_thread(iter)._Ptr);
+            it = this->delete_thread(it);
         } else {
             ++it;
         }
+    }
+}
+
+void script_instance::run_callbacks(
+        script_instance_callback_reason_t a2,
+        vm_thread *a3)
+{
+    TRACE("script_instance::run_callbacks");
+
+    for ( auto &v1 : this->field_38 ) {
+        this->m_callback(a2, this, a3, v1);
     }
 }
 
@@ -276,7 +353,7 @@ int script_object::find_func(string_hash a2) const {
     return THISCALL(0x0058EF80, this, a2);
 }
 
-void script_object::debug_info_t::internal::read(chunk_file *file) {
+void vm_symbol::read(chunk_file *file) {
     this->field_0 = file->read<mString>();
     this->field_C = file->read<mString>();
 
@@ -327,7 +404,7 @@ void script_object::read(chunk_file *file, script_object *so)
     if ( cf == CHUNK_NSTATIC ) {
         auto i = file->read<int>();
         while ( i ) {
-            debug_info_t::internal v38{};
+            vm_symbol v38{};
             v38.read(file);
 
             so->debug_info->field_4.push_back(v38);
@@ -397,12 +474,10 @@ void script_object::read(chunk_file *file, script_object *so)
         cf = file->read<chunk_flavor>();
     }
 
-    if ( cf == CHUNK_NDATA )
-    {
+    if ( cf == CHUNK_NDATA ) {
         auto i = file->read<int>();
-        while ( i )
-        {
-            debug_info_t::internal v23{};
+        while ( i != 0 ) {
+            vm_symbol v23{};
             v23.read(file);
             so->debug_info->field_10.push_back(v23);
             --i;
