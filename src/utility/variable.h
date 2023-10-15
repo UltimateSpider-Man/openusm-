@@ -4,7 +4,6 @@
 
 #include <cassert>
 #include <cstdio>
-#include <cxxabi.h>
 
 template<typename T>
 struct Var {
