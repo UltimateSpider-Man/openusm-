@@ -646,6 +646,13 @@ bool actor::add_item(int a4, bool a6)
     THISCALL(0x004E3B80, this, a4, a6);
 }
 
+void actor::add_collision_ignorance(entity_base_vhandle a2)
+{
+    TRACE("actor::add_collision_ignorance");
+
+    THISCALL(0x004E2C10, this, a2);
+}
+
 nglMesh **actor::sub_4B8BCA() {
     return this->field_90.field_0;
 }

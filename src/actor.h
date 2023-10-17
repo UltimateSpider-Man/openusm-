@@ -89,6 +89,9 @@ struct actor : entity {
 
     traffic_light_interface *traffic_light_ifc();
 
+    //0x004E2C10
+    void add_collision_ignorance(entity_base_vhandle a2);
+
     void allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3);
 
     animation_controller::anim_ctrl_handle play_anim(const string_hash &a3);

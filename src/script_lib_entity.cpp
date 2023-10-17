@@ -22,7 +22,29 @@ struct slf__entity__add_collision_ignorance__entity__t : script_library_class::f
         m_vtbl = 0x0089AF94;
     }
 
-    bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
+    struct parms_t {
+        entity_base_vhandle me;
+        entity_base_vhandle it;
+    };
+
+    bool operator()(vm_stack &stack, script_library_class::function::entry_t) const
+    {
+        TRACE("slf__entity__add_collision_ignorance__entity__t::operator()");
+
+        SLF_PARMS;
+
+        auto *eb_parms_me = (actor *) parms->me.get_volatile_ptr();
+        if ( eb_parms_me != nullptr ) {
+            auto *eb_parms_it = parms->it.get_volatile_ptr();
+            if ( eb_parms_it != nullptr ) {
+                if ( eb_parms_me->is_an_actor() && eb_parms_it->is_an_actor() ) {
+                    eb_parms_me->add_collision_ignorance(eb_parms_it->my_handle);
+                }
+            }
+        }
+
+        SLF_DONE;
+    }
 };
 
 struct slf__entity__add_exclusive_interactor__string_hash__interactable_interface__t : script_library_class::function {
