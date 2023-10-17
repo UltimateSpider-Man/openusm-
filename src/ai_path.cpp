@@ -12,6 +12,8 @@
 #include "region.h"
 #include "subdivision_node_obb_base.h"
 #include "terrain.h"
+#include "trace.h"
+#include "utility.h"
 #include "vector3d.h"
 #include "wds.h"
 
@@ -52,6 +54,8 @@ ai_path::ai_path() {
 }
 
 void ai_path::frame_advance_all_ai_paths(Float a1) {
+    TRACE("ai_path::frame_advance_all_ai_paths");
+
     CDECL_CALL(0x00479ED0, a1);
 }
 
@@ -360,4 +364,8 @@ bool ai_path::find_region_route(region *a1, region *a2, _std::vector<region *> *
     } else {
         return (bool) CDECL_CALL(0x00487F10, a1, a2, route);
     }
+}
+
+void ai_path_patch() {
+    REDIRECT(0x0055844B, ai_path::frame_advance_all_ai_paths);
 }

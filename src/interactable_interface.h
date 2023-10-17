@@ -24,3 +24,5 @@ struct interactable_interface {
     //0x004D1C10
     static void frame_advance_all(Float a1);
 };
+
+extern void interactable_interface_patch();

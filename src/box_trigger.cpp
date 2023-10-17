@@ -5,8 +5,6 @@
 
 VALIDATE_SIZE(box_trigger, 0xECu);
 
-box_trigger::box_trigger() {}
-
 box_trigger::box_trigger(string_hash a2, const vector3d &a3) : trigger(a2) {
     this->m_vtbl = 0x0088A0B8;
     this->field_58 = {0};

@@ -33,6 +33,34 @@ resource_pack_group *mission_stack_manager::get_pack_group_for_pack(const mStrin
     return (resource_pack_group *) THISCALL(0x005D2250, this, &a1);
 }
 
+resource_pack_group *mission_stack_manager::get_pack_group(const mString &a1)
+{
+    TRACE("mission_stack_manager::get_pack_group");
+
+    resource_key v12 {string_hash {a1.c_str()}, (resource_key_type)69};
+
+    auto *mission_partition = resource_manager::get_partition_pointer(3);
+    resource_directory *v2 = mission_partition->get_pack_slots().front()->pack_directory.field_0;
+    auto size = v2->field_68.m_size;
+    auto *v4 = &v2->field_68;
+
+    if ( size == 0 ) {
+        return nullptr;
+    }
+
+    auto &m_data = v4->m_data;
+    for ( uint16_t i = 0; i < size; ++i ) {
+        auto v8 = m_data[i].field_0;
+        auto *v9 = &m_data[i];
+        if ( v8 == v12.m_hash.source_hash_code && v9->field_4 == v12.m_type ) {
+            return &m_data[i];
+        }
+    }
+
+    return nullptr;
+
+}
+
 bool mission_stack_manager::waiting_for_push_or_pop() {
     return (bool) THISCALL(0x005BB640, this);
 }

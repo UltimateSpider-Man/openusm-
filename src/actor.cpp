@@ -641,6 +641,11 @@ vector3d actor::_get_visual_center()
     }
 }
 
+bool actor::add_item(int a4, bool a6)
+{
+    THISCALL(0x004E3B80, this, a4, a6);
+}
+
 nglMesh **actor::sub_4B8BCA() {
     return this->field_90.field_0;
 }

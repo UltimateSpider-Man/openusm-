@@ -72,3 +72,5 @@ struct ai_path {
     //0x00452CF0
     static void set_status(ai_path *a1, ai_path::eAIPathStatus a2, const char *Format, ...);
 };
+
+extern void ai_path_patch();

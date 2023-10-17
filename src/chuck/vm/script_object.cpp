@@ -44,28 +44,28 @@ script_object::~script_object()
     } else {
         this->destroy();
     }
+}
 
-    if ( (this->static_data.flags & 1) == 0 ) {
-        auto &buffer = this->static_data.buffer;
-        if ( buffer != nullptr ) {
-            mem_dealloc(buffer, this->static_data.size());
+void script_object::release_mem()
+{
+    TRACE("script_object::release_mem");
 
-            this->static_data.buffer = nullptr;
-            this->static_data.m_size = 0;
-        }
-    }
+    this->destructor_common();
 }
 
 void script_object::destructor_common()
 {
+    TRACE("script_object::destructor_common");
+
     if ( this->instances != nullptr ) {
         while ( !this->instances->empty() ) {
-            auto begin = this->instances->begin();
-            auto v5 = begin;
-            this->instances->erase(v5);
+            auto v5 = this->instances->begin();
+            this->instances->common_erase(v5._Ptr);
+
             auto *v3 = v5._Ptr;
             if ( v3 != nullptr ) {
-                delete v3;
+                v3->~script_instance();
+                slab_allocator::deallocate(v3, nullptr);
             }
         }
 
@@ -191,9 +191,9 @@ void script_instance::build_parameters() {
             {
                 auto *v10 = this->field_28;
                 auto *v9 = v10;
-                if ( v10 != nullptr )
-                {
-                    delete v9;
+                if ( v10 != nullptr ) {
+                    v9->~vm_executable();
+                    delete(v9);
                 }
             }
 
@@ -351,6 +351,27 @@ vm_executable *script_object::get_func(int i)
 
 int script_object::find_func(string_hash a2) const {
     return THISCALL(0x0058EF80, this, a2);
+}
+
+int script_object::find_function_by_address(const uint16_t *a2)
+{
+    TRACE("script_object::find_function_by_address");
+
+    for ( auto i = 0; i < this->total_funcs; ++i ) {
+        auto &v4 = this->funcs[i];
+        if ( v4 != nullptr )
+        {
+            if ( a2 >= v4->get_start() )
+            {
+                auto *v2 = v4->get_start();
+                if ( a2 < v2 + v4->get_size() ) {
+                    return i;
+                }
+            }
+        }
+    }
+
+    return -1;
 }
 
 void vm_symbol::read(chunk_file *file) {
@@ -528,6 +549,10 @@ script_instance::script_instance(
     THISCALL(0x005AAA40, this, a2, Size, a4);
 }
 
+script_instance::~script_instance() {
+    THISCALL(0x005AD7A0, this);
+}
+
 int *script_instance::register_callback(
     void (*p_cb)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *),
     void *a3) {
@@ -579,7 +604,10 @@ vm_thread *script_instance::add_thread(const vm_executable *a2) {
     }
 }
 
-bool script_instance::has_threads() const {
+bool script_instance::has_threads() const
+{
+    TRACE("script_instance::has_threads");
+
     return (this->threads.size() != 0);
 }
 

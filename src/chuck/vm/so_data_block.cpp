@@ -14,6 +14,10 @@ so_data_block::so_data_block(int a2)
     this->init(a2);
 }
 
+so_data_block::~so_data_block() {
+    this->destroy();
+}
+
 void so_data_block::operator=(int a2) {
     clear();
     this->init(a2);
@@ -40,6 +44,17 @@ void so_data_block::init(int a2)
     else
     {
         this->buffer = nullptr;
+    }
+}
+
+void so_data_block::destroy()
+{
+    if ( !this->is_from_mash() ) {
+        if ( this->buffer != nullptr ) {
+            mem_dealloc(this->buffer, this->m_size);
+            this->buffer = nullptr;
+            this->m_size = 0;
+        }
     }
 }
 

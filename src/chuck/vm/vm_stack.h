@@ -19,6 +19,10 @@ struct vm_stack {
         return 384;
     }
 
+    vm_thread *get_thread() {
+        return my_thread;
+    }
+
     int size() const {
         return this->SP - this->buffer;
     }

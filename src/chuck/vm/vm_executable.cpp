@@ -19,6 +19,18 @@ VALIDATE_SIZE(vm_executable, 0x24u);
 vm_executable::vm_executable(script_object *so) : owner(so) {
 }
 
+vm_executable::~vm_executable()
+{
+    if ( (this->flags & 4) == 0 ) {
+        this->destroy();
+    }
+}
+
+void vm_executable::destroy()
+{
+    THISCALL(0x005AF2C0, this);
+}
+
 void vm_executable::un_mash(
         generic_mash_header *,
         void *a3,

@@ -20,7 +20,7 @@ enum entity_flavor_t {
     MIC = 8,
     LIGHT_SOURCE = 9,
     PFX = 10,
-    ITEM = 11,
+    ENTITY_ITEM = 11,
     CONGLOMERATE = 12,
     CONGLOMERATE_CLONE = 13,
     BEAM = 14,

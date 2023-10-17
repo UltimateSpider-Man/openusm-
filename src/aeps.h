@@ -15,4 +15,8 @@ struct aeps {
 
     //0x004D91A0
     static int Reset();
+
+    static void Init();
 };
+
+extern void aeps_patch();

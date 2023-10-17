@@ -198,7 +198,10 @@ void entity_slot::vacate(const entity_base_vhandle &ent_handle)
     this->my_ptr = nullptr;
 }
 
-void entity_handle_manager::create_inst() {
+void entity_handle_manager::create_inst()
+{
+    TRACE("entity_handle_manager::create_inst");
+
     if constexpr (1) {
         ent_slots() = new entity_slot[10240];
         ENTS() = ent_slots();
@@ -329,6 +332,8 @@ int entity_handle_manager::add_entity(entity_base *ent_to_add) {
 }
 
 void entity_handle_manager_patch() {
+
+    REDIRECT(0x005AD2E4, entity_handle_manager::create_inst);
 
     {
         REDIRECT(0x004F33B0, entity_handle_manager::register_entity);

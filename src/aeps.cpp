@@ -3,6 +3,8 @@
 #include "func_wrapper.h"
 #include "game.h"
 #include "os_developer_options.h"
+#include "trace.h"
+#include "utility.h"
 
 Var<void *> aeps::s_activeStructs{0x0095B83C};
 
@@ -50,3 +52,16 @@ void aeps::RefreshDevOptions() {
 int aeps::Reset() {
     CDECL_CALL(0x004D91A0);
 }
+
+void aeps::Init()
+{
+    TRACE("aeps::Init");
+
+    CDECL_CALL(0x004DDDC0);
+}
+
+void aeps_patch()
+{
+    REDIRECT(0x005AD2DF, aeps::Init);
+}
+

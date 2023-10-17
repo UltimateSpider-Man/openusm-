@@ -57,6 +57,9 @@ struct vm_thread {
     //0x005A5500
     vm_thread(script_instance *a2, const vm_executable *a3, void *a4);
 
+    //0x005A55E0
+    ~vm_thread();
+
     const vm_executable *get_executable() const {
         return this->ex;
     }

@@ -3,6 +3,8 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "interaction.h"
+#include "trace.h"
+#include "utility.h"
 
 VALIDATE_SIZE(interactable_interface, 0x1C);
 VALIDATE_ALIGNMENT(interactable_interface, 4);
@@ -16,6 +18,8 @@ interactable_interface::interactable_interface(from_mash_in_place_constructor *a
 }
 
 void interactable_interface::frame_advance_all(Float a1) {
+    TRACE("interactable_interface::frame_advance_all");
+
     CDECL_CALL(0x004D1C10, a1);
 }
 
@@ -28,4 +32,8 @@ void interactable_interface::frame_advance(Float a2) {
             v3->field_38 = 0.0;
         }
     }
+}
+
+void interactable_interface_patch() {
+    REDIRECT(0x00558451, interactable_interface::frame_advance_all);
 }

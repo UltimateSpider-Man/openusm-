@@ -49,6 +49,11 @@ struct vm_executable
 
     vm_executable(script_object *so);
 
+    //0x005AF310
+    ~vm_executable();
+
+    void destroy();
+
     int get_size() const {
         return buffer_len;
     }

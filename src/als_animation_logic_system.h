@@ -48,9 +48,18 @@ struct animation_logic_system {
     //0x00498D10
     /* virtual */ bool frame_advance_should_do_frame_advance(Float a2);
 
+    /* virtual */ void frame_advance_main_als_advance(Float a2);
+
     //0x0049CC90
     //virtual
     void frame_advance_post_logic_processing(Float a2);
+
+    //virtual
+    //0x0049F1A0
+    void frame_advance_post_request_processing(Float a2);
+
+    //virtual
+    void frame_advance_on_layer_trans(Float a2);
 
     //0x004A63F0
     /* virtual */ state_machine *get_als_layer(layer_types a2);
@@ -60,11 +69,6 @@ struct animation_logic_system {
     void change_mocomp();
 
     static inline const string_hash anim_start_frame_hash{static_cast<int32_t>(to_hash("anim_start_frame"))};
-};
-
-struct animation_logic_system_interface {
-    //0x00492FC0
-    void force_update(Float a2);
 };
 
 } // namespace als

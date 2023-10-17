@@ -16,9 +16,13 @@ struct so_data_block
     so_data_block() = default;
     so_data_block(int a2);
 
+    ~so_data_block();
+
     void operator=(int a2);
 
     void init(int a2);
+
+    void destroy();
 
     void set_to_zero();
 

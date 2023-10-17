@@ -9,10 +9,10 @@ struct box_trigger : trigger {
     vector3d field_68;
     convex_box box;
 
-    box_trigger();
-
+    //0x0053C870
     box_trigger(string_hash a2, const vector3d &a3);
 
+    //0x0053C940
     box_trigger(string_hash a2, entity_base *a3);
 
     void update_center();

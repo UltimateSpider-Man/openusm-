@@ -1,19 +1,20 @@
 #pragma once
 
+#include "entity.h"
 #include "signaller.h"
 
-struct entity;
 
 struct trigger : signaller {
     float field_48;
     int field_4C;
-    _std::list<vhandle_type<entity, vhandle_type<signaller, entity_base_vhandle>>>
-        *trigger_current_entities;
-    trigger *field_54;
+    _std::list<vhandle_type<entity>> *trigger_current_entities;
+    trigger *m_next_trigger;
 
-    trigger();
-
+    //0x0050CBD0
     trigger(string_hash a2);
+
+    //0x0056FE50
+    ~trigger();
 
     //0x0053C390
     void set_multiple_entrance(bool a2);

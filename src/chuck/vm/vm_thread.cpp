@@ -70,6 +70,10 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
     }
 }
 
+vm_thread::~vm_thread() {
+    THISCALL(0x005A55E0, this);
+}
+
 void vm_thread::set_flag(flags_t a2, bool a3)
 {
     this->flags = ( a3 ? (a2 | this->flags) : (this->flags & ~a2) );

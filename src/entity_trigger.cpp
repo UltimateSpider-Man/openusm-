@@ -4,11 +4,6 @@
 
 VALIDATE_SIZE(entity_trigger, 0x68);
 
-entity_trigger::entity_trigger()
-{
-
-}
-
 entity_trigger::entity_trigger(string_hash a2, entity_base *a3, Float a4) : trigger(a2) {
     this->m_vtbl = 0x0088A240;
     this->field_58 = a3->get_my_vhandle();

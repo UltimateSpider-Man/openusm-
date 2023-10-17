@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generic_interface.h"
+#include "string_hash.h"
 
 struct conglomerate;
 struct variant_info;
@@ -33,6 +34,10 @@ struct variant_interface : generic_interface {
 
     variant_info *sub_4CAD00();
 
+    void apply_variant(string_hash a2);
+
     void apply_variant(variant_info *info);
 
 };
+
+extern void variant_interface_patch();

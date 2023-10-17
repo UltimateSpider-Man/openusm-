@@ -95,6 +95,8 @@ void mission_manager::show_mission_loading_panel(const mString &a1)
 }
 
 int mission_manager::run_script(const mission_manager_script_data &arg0) {
+    TRACE("mission_manager::run_script");
+
     if constexpr (0)
     {}
     else
@@ -145,6 +147,8 @@ void mission_manager::unload_script_now() {
 }
 
 void mission_manager::unload_script_if_requested() {
+    TRACE("mission_manager::unload_script_if_requested");
+
     THISCALL(0x005DBD00, this);
 }
 
@@ -491,6 +495,24 @@ void mission_manager::update_hero_switch() {
     }
 }
 
+entity_base *mission_manager::get_mission_key_entity()
+{
+    assert(m_script != nullptr);
+
+    string_hash a1 {this->m_script->field_84.c_str()};
+    return entity_handle_manager::find_entity(a1, (entity_flavor_t)29, false);
+}
+
+int *mission_manager::get_mission_nums()
+{
+    return &this->m_script->field_34;
+}
+
+int *mission_manager::get_mission_strings()
+{
+    return &this->m_script->strings;
+}
+
 void mission_manager_patch()
 {
     {
@@ -499,8 +521,20 @@ void mission_manager_patch()
     }
 
     {
+        FUNC_ADDRESS(address, &mission_manager::run_script);
+        REDIRECT(0x005E1A96, address);
+        REDIRECT(0x005E1B2B, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &mission_manager::show_mission_loading_panel);
         REDIRECT(0x005DEF4C, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &mission_manager::unload_script_if_requested);
+        REDIRECT(0x005DBE99, address);
+        REDIRECT(0x005E1A65, address);
     }
 
     {

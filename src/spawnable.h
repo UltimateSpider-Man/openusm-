@@ -12,3 +12,5 @@ struct spawnable {
     //0x006D8610
     static void advance_traffic_and_peds(Float a1);
 };
+
+extern void spawnable_patch();

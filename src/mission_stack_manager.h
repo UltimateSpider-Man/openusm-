@@ -20,6 +20,9 @@ struct mission_stack_manager {
     //0x005D2250
     resource_pack_group *get_pack_group_for_pack(const mString &a1);
 
+    //0x005D21A0
+    resource_pack_group *get_pack_group(const mString &a1);
+
     //0x005BB640
     bool waiting_for_push_or_pop();
 

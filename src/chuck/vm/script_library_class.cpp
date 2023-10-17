@@ -4,21 +4,29 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "memory.h"
+#include "mstring.h"
 #include "script_manager.h"
 #include "slab_allocator.h"
 #include "trace.h"
 #include "utility.h"
 #include "vtbl.h"
 #include "variables.h"
+#include "vm_stack.h"
+#include "vm_thread.h"
 
 #include <cassert>
 
-VALIDATE_SIZE(script_library_class, 0x20);
 
 #if SLC_NAME_FIELD
 VALIDATE_SIZE(script_library_class::function, 0x8);
 #else
 VALIDATE_SIZE(script_library_class::function, 0x4);
+#endif
+
+#if SLC_FUNC_LIST_FIELD
+VALIDATE_SIZE(script_library_class, 0x2C);
+#else
+VALIDATE_SIZE(script_library_class, 0x20);
 #endif
 
 Var<script_library_class *> slc_global{0x00965EC4};
@@ -47,6 +55,21 @@ void script_library_class::store_name(const char *a2)
     chuck_strcpy(this->name, a2, len + 1);
 }
 
+void verify_parms_integrity(
+        script_library_class::function *func,
+        vm_stack *the_stack,
+        unsigned int *parms,
+        int parms_size)
+{
+    for ( auto i = 0; i < parms_size; ++i ) {
+        if ( parms[i] == UNINITIALIZED_SCRIPT_PARM ) {
+            auto v6 = mString {"uninitialized parameters in call to "} + func->get_name();
+            the_stack->get_thread()->slf_error(v6);
+            assert(0 && "uninitialized parameters in call to script library function");
+        }
+    }
+}
+
 bool script_library_class::function::operator()(vm_stack &a2,
                                                 script_library_class::function::entry_t a3) const {
     bool __stdcall (
@@ -70,10 +93,18 @@ script_library_class::function *script_library_class::get_func(int index)
     return this->funcs[index];
 }
 
-void script_library_class::add_function(script_library_class::function *func)
+void script_library_class::add_function(script_library_class::function *f)
 {
     if ( g_is_the_packer() || script_manager::using_chuck_old_fashioned() ) {
+#if SLC_FUNC_LIST_FIELD 
+        if ( ! this->func_list.empty() ) {
+            if ( this->func_list.back() != nullptr ) {
+                assert(strcmp( func_list.back()->get_name(), f->get_name() ) < 0);
+            }
+        }
 
+        this->func_list.push_back(f);
+#endif
     } else {
         assert(total_funcs > 0);
 
@@ -94,7 +125,7 @@ void script_library_class::add_function(script_library_class::function *func)
 
         assert(next_func_slot < total_funcs);
 
-        this->funcs[this->next_func_slot++] = func;
+        this->funcs[this->next_func_slot++] = f;
     }
 }
 

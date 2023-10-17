@@ -15,7 +15,7 @@ struct simple_list {
     };
 
     struct iterator {
-        T *_Ptr;
+        T *_Ptr {nullptr};
 
         bool operator==(const iterator &it) const {
             return this->_Ptr == it._Ptr;
@@ -34,6 +34,7 @@ struct simple_list {
         T &operator*() {
             return (*this->_Ptr);
         }
+
     };
 
     uint32_t size() const {
@@ -105,22 +106,24 @@ struct simple_list {
         }
     }
 
-    bool contains(iterator a2) const {
-        return a2._Ptr != nullptr && a2._Ptr->simple_list_vars._sl_list_owner == this;
+    bool contains(T *iter) const {
+        return (iter != nullptr)
+                && (iter->simple_list_vars._sl_list_owner == this);
     }
 
-    T *common_erase(T *iter, bool a3) {
+    T *erase(T *iter, bool a3) {
         T *result = nullptr;
         if ( iter != nullptr ) {
-            assert(this->contains(iterator {iter}));
+            assert(this->contains(iter));
 
             result = (a3
-                    ? iter->simple_list_vars._sl_prev_element
-                    : iter->simple_list_vars._sl_next_element
-                    );
+                    ? result = iter->simple_list_vars._sl_prev_element
+                    : result = iter->simple_list_vars._sl_next_element
+                        );
 
-            if ( iter->simple_list_vars._sl_prev_element != nullptr ) {
-                iter->simple_list_vars._sl_prev_element = iter->simple_list_vars._sl_next_element;
+            auto *sl_prev_element = iter->simple_list_vars._sl_prev_element;
+            if ( sl_prev_element != nullptr ) {
+                sl_prev_element->simple_list_vars._sl_next_element = iter->simple_list_vars._sl_next_element;
             } else {
                 assert(iter->simple_list_vars._sl_list_owner->_first_element == iter);
 
@@ -137,6 +140,7 @@ struct simple_list {
 
             assert(iter->simple_list_vars._sl_list_owner->m_size >= 0);
 
+            --iter->simple_list_vars._sl_list_owner->m_size;
             iter->simple_list_vars._sl_next_element = nullptr;
             iter->simple_list_vars._sl_prev_element = nullptr;
             iter->simple_list_vars._sl_list_owner = nullptr;
@@ -145,12 +149,12 @@ struct simple_list {
         return result;
     }
 
-    bool erase(iterator a2) {
+    bool common_erase(T *a2) {
         if ( !this->contains(a2) ) {
             return false;
         }
 
-        this->common_erase(a2._Ptr, false);
+        this->erase(a2, false);
         return true;
     }
 

@@ -11,7 +11,7 @@ struct trigger;
 struct entity_base;
 
 struct trigger_manager : singleton {
-    trigger *field_4;
+    trigger *m_triggers;
 
     trigger_manager();
 
@@ -25,6 +25,8 @@ struct trigger_manager : singleton {
 
     trigger *sub_51E5B0(entity_base *a2);
 
+    void remove(trigger **trem);
+
     void delete_trigger(trigger *delete_me);
 
     void add_trigger(trigger *a2);
@@ -37,5 +39,12 @@ struct trigger_manager : singleton {
 
     trigger *new_box_trigger(string_hash a2, entity_base *a3);
 
+    trigger *new_point_trigger(
+        string_hash a2,
+        vector3d a3,
+        Float a4);
+
     static Var<trigger_manager *> instance;
 };
+
+extern void trigger_manager_patch();

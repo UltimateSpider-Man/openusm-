@@ -9,6 +9,7 @@
 struct vm_stack;
 
 #define SLC_NAME_FIELD 1
+#define SLC_FUNC_LIST_FIELD 0 
 
 struct script_library_class {
     struct function {
@@ -44,6 +45,11 @@ struct script_library_class {
     char *name;
     int field_8;
     const char *field_C;
+
+#if SLC_FUNC_LIST_FIELD
+    _std::list<script_library_class::function *> func_list;
+#endif
+
     script_library_class::function **funcs;
     int total_funcs;
     int next_func_slot;
@@ -82,6 +88,12 @@ struct script_library_class {
     void add_functions_complete();
 };
 
+extern void verify_parms_integrity(
+        script_library_class::function *func,
+        vm_stack *the_stack,
+        unsigned int *parms,
+        int parms_size);
+
 struct slc_str_t : script_library_class {};
 
 struct slc_num_t : script_library_class {};
@@ -93,3 +105,26 @@ extern Var<slc_num_t *> slc_num;
 extern Var<slc_str_t *> slc_str;
 
 extern void script_library_class_patch();
+
+#ifdef DEBUG
+#define SLF_PARMS \
+  assert( (sizeof(parms_t) & 3) == 0 ); \
+  stack.pop(sizeof(parms_t)); \
+  parms_t* parms = (parms_t*)stack.get_SP(); \
+  verify_parms_integrity(this, &stack, (unsigned int *) parms, sizeof(parms_t)/4)
+#else
+#define SLF_PARMS \
+  stack.pop(sizeof(parms_t)); \
+  parms_t* parms = (parms_t*)stack.get_SP()
+#endif
+
+#define SLF_RETURN \
+  stack.push((char*)&result,sizeof(result)) \
+
+// Use this to be re-called next frame.
+#define SLF_RECALL \
+  return false
+
+// Use this to signal termination.
+#define SLF_DONE \
+  return true

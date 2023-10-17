@@ -1,8 +1,10 @@
 #include "forwards.h"
 
+#include "aeps.h"
 #include "ai_find_best_swing_anchor.h"
 #include "ai_interact_resource_handler.h"
 #include "ai_interaction_data.h"
+#include "ai_path.h"
 #include "ai_state_graph_resource_handler.h"
 #include "ai_state_jump.h"
 #include "ai_state_run.h"
@@ -11,6 +13,7 @@
 #include "ai_std_hero.h"
 #include "als_animation_logic_system.h"
 #include "als_animation_logic_system_shared.h"
+#include "als_animation_logic_system_interface.h"
 #include "als_category.h"
 #include "als_inode.h"
 #include "als_meta_anim_base.h"
@@ -87,6 +90,7 @@
 #include "input_action.h"
 #include "input_mgr.h"
 #include "inputsettings.h"
+#include "interactable_interface.h"
 #include "interaction_inode.h"
 #include "interaction_state.h"
 #include "layer_state_machine_shared.h"
@@ -174,6 +178,7 @@
 #include "sound_alias_database.h"
 #include "sound_alias_database_resource_handler.h"
 #include "sound_bank_slot.h"
+#include "spawnable.h"
 #include "spiderman_camera.h"
 #include "spider_monkey.h"
 #include "spidey_base_state.h"
@@ -192,6 +197,7 @@
 #include "tlresourcedirectory.h"
 #include "tlresource_directory.h"
 #include "traffic.h"
+#include "trigger_manager.h"
 #include "tx_system.h"
 #include "unlockables_menu.h"
 #include "us_decal.h"
@@ -204,6 +210,7 @@
 #include "utility.h"
 #include "variables.h"
 #include "vector3d.h"
+#include "variant_interface.h"
 #include "vm.h"
 #include "vm_executable.h"
 #include "vm_thread.h"
@@ -748,13 +755,6 @@ void free_file(FileUSM *file) {
 void sub_4DDEC0() {
     CDECL_CALL(0x004DDEC0);
 }
-
-namespace aeps {
-//0x004DDDC0
-void Init() {
-    CDECL_CALL(0x004DDDC0);
-}
-} // namespace aeps
 
 void bink_set_sound_system() {
     CDECL_CALL(0x0060BBA0);
@@ -2370,6 +2370,8 @@ BOOL install_redirects() {
 
     settings_patch();
 
+    aeps_patch();
+
     game_patch();
 
     ai_interaction_data_patch();
@@ -2610,6 +2612,26 @@ BOOL install_redirects() {
 
     slab_allocator_patch();
 
+    trigger_manager_patch();
+
+    spawnable_patch();
+
+    ai_path_patch();
+
+    ai_core_patch();
+    
+    interactable_interface_patch();
+
+    als_animation_logic_system_interface_patch();
+
+    animation_logic_system_patch();
+
+    event_manager_patch();
+
+    variant_interface_patch();
+
+    nalStreamInstance_patch();
+
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
         REDIRECT(0x008218B0, hookDirectInputAddress);
@@ -2666,8 +2688,6 @@ BOOL install_redirects() {
         rigid_body_patch();
 
         swing_anchor_finder_patch();
-
-        nalStreamInstance_patch();
 
         USVariantShaderNode_patch();
 
@@ -2824,8 +2844,6 @@ BOOL install_redirects() {
 
         physical_interface_patch();
 
-        animation_logic_system_patch();
-
         script_patch();
 
         nglRenderList_patch();
@@ -2851,8 +2869,6 @@ BOOL install_redirects() {
         state_graph_patch();
 
         jump_state_patch();
-
-        ai_core_patch();
 
         character_viewer_patch();
 
@@ -2882,8 +2898,6 @@ BOOL install_redirects() {
         als_inode_patch();
 
         nglMesh_patch();
-
-        event_manager_patch();
 
         pole_swing_state_patch();
 

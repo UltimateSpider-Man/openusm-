@@ -1,16 +1,26 @@
 #include "slc_manager.h"
 
+#include "debugutil.h"
 #include "func_wrapper.h"
 #include "memory.h"
+#include "mission_manager.h"
+#include "mission_stack_manager.h"
 #include "utility.h"
+#include "open_city_neighborhoods.h"
 #include "os_developer_options.h"
 #include "resource_key.h"
 #include "resource_manager.h"
+#include "resource_pack_group.h"
 #include "script_manager.h"
+
+#include "script_lib_anim.h"
+#include "script_lib_entity.h"
+
 #include "script_library_class.h"
 #include "trace.h"
 #include "variables.h"
 #include "vm_stack.h"
+#include "vm_thread.h"
 
 #if !SLC_MANAGER_STANDALONE
 Var<_std::vector<script_library_class *> *> slc_manager_class_array{0x00965EC8};
@@ -36,6 +46,7 @@ void destruct_client_script_libs()
 }
 
 
+
 #define BUILD_SLC_NAME(type) slc_ ## type ## _t
 
 #define DECLARE_SLC(type, base_type, vtbl)                          \
@@ -46,19 +57,11 @@ void destruct_client_script_libs()
             }                                                       \
     }
 
-#define BUILD_SLF_NAME(klass, type) slf__ ## klass ## __ ## type ## __t
-
-#define BUILD_GLOBAL_SLF_NAME(type) slf__ ## type ## __t
-
 DECLARE_SLC(pfx, "\0", 0x0089C878);
 
 DECLARE_SLC(interactable_interface, "\0", 0x0089B5A8);
 
-DECLARE_SLC(anim, "\0", 0x0089AAB0);
-
 DECLARE_SLC(beam, entity, 0x0089AAF8);
-
-DECLARE_SLC(entity, signaller, 0x0089A4C0);
 
 DECLARE_SLC(cut_scene, "\0", 0x0089B7A8);
 
@@ -130,6 +133,13 @@ DECLARE_SLC(critical_section, "\0", 0x0089C7DC);
 
 DECLARE_SLC(district, signaller, 0x0089A4FC);
 
+#undef DECLARE_SLC
+#undef BUILD_SLC_NAME
+
+#define BUILD_SLF_NAME(_KLASS, _TYPE) slf__ ## _KLASS ## __ ## _TYPE ## __t
+
+#define BUILD_GLOBAL_SLF_NAME(type) slf__ ## type ## __t
+
 #define DECLARE_GLOBAL_SLF_BEGIN(NAME, VTBL) \
     struct BUILD_GLOBAL_SLF_NAME(NAME) : script_library_class::function { \
         BUILD_GLOBAL_SLF_NAME(NAME) (const char *a3) : function(a3)  { \
@@ -145,6 +155,7 @@ DECLARE_GLOBAL_SLF_BEGIN(abs_delay__num, 0x0089A724)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -152,6 +163,7 @@ DECLARE_GLOBAL_SLF_BEGIN(acos__num, 0x0089A91C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -159,6 +171,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_2d_debug_str__vector3d__vector3d__num__str, 0x0089A
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -166,6 +179,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_2d_debug_str__vector3d__vector3d__num__str__num, 0x
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -173,6 +187,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_3d_debug_str__vector3d__vector3d__num__str, 0x0089A
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -180,6 +195,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_civilian_info__vector3d__num__num__num, 0x0089C5BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -187,6 +203,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_civilian_info_entity__entity__num__num__num, 0x0089
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -194,6 +211,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_debug_cyl__vector3d__vector3d__num, 0x0089A774)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -201,6 +219,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_debug_cyl__vector3d__vector3d__num__vector3d__num, 
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -208,6 +227,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_debug_line__vector3d__vector3d, 0x0089A764)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -215,6 +235,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_debug_line__vector3d__vector3d__vector3d__num, 0x00
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -222,6 +243,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_debug_sphere__vector3d__num, 0x0089A754)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -229,6 +251,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_debug_sphere__vector3d__num__vector3d__num, 0x0089A
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -236,6 +259,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str, 0x0089A548)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -243,6 +267,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str__num, 0x0089A550)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -250,6 +275,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str__num__vector3d, 0x0089A560)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -257,6 +283,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str__vector3d, 0x0089A558)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -264,6 +291,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_to_console__str, 0x0089A834)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -271,6 +299,7 @@ DECLARE_GLOBAL_SLF_BEGIN(add_traffic_model__num__str, 0x0089C5A4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -278,6 +307,7 @@ DECLARE_GLOBAL_SLF_BEGIN(allow_suspend_thread__num, 0x0089A594)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -285,6 +315,7 @@ DECLARE_GLOBAL_SLF_BEGIN(angle_between__vector3d__vector3d, 0x0089BA50)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -292,6 +323,7 @@ DECLARE_GLOBAL_SLF_BEGIN(apply_donut_damage__vector3d__num__num__num__num__num, 
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -299,6 +331,7 @@ DECLARE_GLOBAL_SLF_BEGIN(apply_radius_damage__vector3d__num__num__num__num, 0x00
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -306,6 +339,7 @@ DECLARE_GLOBAL_SLF_BEGIN(apply_radius_subdue__vector3d__num__num__num__num, 0x00
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -313,6 +347,7 @@ DECLARE_GLOBAL_SLF_BEGIN(assert__num__str, 0x0089A518)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -320,6 +355,7 @@ DECLARE_GLOBAL_SLF_BEGIN(attach_decal__str__vector3d__num__vector3d__entity, 0x0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -327,6 +363,7 @@ DECLARE_GLOBAL_SLF_BEGIN(begin_screen_recording__str__num, 0x0089B7B0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -334,6 +371,7 @@ DECLARE_GLOBAL_SLF_BEGIN(blackscreen_off__num, 0x0089BCAC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -341,6 +379,7 @@ DECLARE_GLOBAL_SLF_BEGIN(blackscreen_on__num, 0x0089BCA0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -348,6 +387,7 @@ DECLARE_GLOBAL_SLF_BEGIN(bring_up_dialog_box__num__num, 0x0089BC28)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -355,6 +395,7 @@ DECLARE_GLOBAL_SLF_BEGIN(bring_up_dialog_box_debug__str__num__str, 0x0089BC38)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -362,6 +403,7 @@ DECLARE_GLOBAL_SLF_BEGIN(bring_up_dialog_box_title__num__num__num, 0x0089BC30)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -369,6 +411,7 @@ DECLARE_GLOBAL_SLF_BEGIN(bring_up_medal_award_box__num, 0x0089BB10)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -376,6 +419,7 @@ DECLARE_GLOBAL_SLF_BEGIN(bring_up_race_announcer, 0x0089BB08)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -383,6 +427,7 @@ DECLARE_GLOBAL_SLF_BEGIN(calc_launch_vector__vector3d__vector3d__num__entity, 0x
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -390,6 +435,7 @@ DECLARE_GLOBAL_SLF_BEGIN(can_load_pack__str, 0x0089C3F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -397,6 +443,7 @@ DECLARE_GLOBAL_SLF_BEGIN(chase_cam, 0x0089AF04)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -404,6 +451,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_all_grenades, 0x0089A95C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -411,6 +459,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_civilians_within_radius__vector3d__num, 0x0089C5E
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -418,6 +467,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_controls, 0x0089BD48)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -425,6 +475,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_debug_all, 0x0089A79C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -432,6 +483,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_debug_cyls, 0x0089A794)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -439,6 +491,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_debug_lines, 0x0089A78C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -446,6 +499,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_debug_spheres, 0x0089A784)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -453,6 +507,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_screen, 0x0089A944)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -460,6 +515,7 @@ DECLARE_GLOBAL_SLF_BEGIN(clear_traffic_within_radius__vector3d__num, 0x0089C5DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -467,6 +523,7 @@ DECLARE_GLOBAL_SLF_BEGIN(col_check__vector3d__vector3d__num, 0x0089A868)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -474,6 +531,7 @@ DECLARE_GLOBAL_SLF_BEGIN(console_exec__str, 0x0089A83C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -481,6 +539,7 @@ DECLARE_GLOBAL_SLF_BEGIN(copy_vector3d_list__vector3d_list__vector3d_list, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -488,6 +547,7 @@ DECLARE_GLOBAL_SLF_BEGIN(cos__num, 0x0089A90C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -495,6 +555,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_beam, 0x0089ABB4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -502,6 +563,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_credits, 0x0089BAE8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -509,6 +571,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_cut_scene__str, 0x0089B7C0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -516,6 +579,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_debug_menu_entry__str, 0x0089C704)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -523,6 +587,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_debug_menu_entry__str__str, 0x0089C70C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -530,6 +595,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_decal__str__vector3d__num__vector3d, 0x0089A9F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -537,6 +603,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_entity__str, 0x0089AF0C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -544,6 +611,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_entity__str__str, 0x0089AF14)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -551,6 +619,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_entity_in_hero_region__str, 0x0089AF2C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -558,6 +627,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_entity_list, 0x0089BFCC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -565,6 +635,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_entity_tracker__entity, 0x0089C594)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -572,6 +643,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_item__str, 0x0089B6B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -579,6 +651,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_line_info__vector3d__vector3d, 0x0089B708)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -586,6 +659,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_lofi_stereo_sound_inst__str, 0x0089B818)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -593,6 +667,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_num_list, 0x0089BF54)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -600,6 +675,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_pfx__str, 0x0089C904)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -607,6 +683,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_pfx__str__vector3d, 0x0089C90C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -614,6 +691,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_polytube, 0x0089C228)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -621,6 +699,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_polytube__str, 0x0089C230)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -628,6 +707,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_progression_menu_entry__str__str, 0x0089C714)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -635,6 +715,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_sound_inst, 0x0089B7F8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -642,6 +723,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_sound_inst__str, 0x0089B800)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -649,6 +731,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_stompable_music_sound_inst__str, 0x0089B808)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -656,6 +739,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_str_list, 0x0089C044)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -663,6 +747,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_taunt_entry__entity__str__num, 0x0089C63C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -670,6 +755,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_taunt_exchange__entity__entity__num__num__num__n
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -677,6 +763,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_taunt_exchange_list, 0x0089C0DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -684,6 +771,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_threat_assessment_meter, 0x0089C6CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -691,6 +779,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_time_limited_entity__str__num, 0x0089AF3C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -698,6 +787,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_trigger__entity__num, 0x0089B970)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -705,6 +795,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_trigger__str__vector3d__num, 0x0089B968)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -712,6 +803,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_trigger__vector3d__num, 0x0089B960)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -719,6 +811,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_unstompable_script_cutscene_sound_inst__str, 0x0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -726,6 +819,7 @@ DECLARE_GLOBAL_SLF_BEGIN(create_vector3d_list, 0x0089BECC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -733,6 +827,7 @@ DECLARE_GLOBAL_SLF_BEGIN(cross__vector3d__vector3d, 0x0089BA38)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -740,6 +835,7 @@ DECLARE_GLOBAL_SLF_BEGIN(debug_breakpoint, 0x0089A510)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -747,6 +843,7 @@ DECLARE_GLOBAL_SLF_BEGIN(debug_print__num__str, 0x0089A528)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -754,6 +851,7 @@ DECLARE_GLOBAL_SLF_BEGIN(debug_print__num__vector3d__str, 0x0089A530)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -761,6 +859,7 @@ DECLARE_GLOBAL_SLF_BEGIN(debug_print__str, 0x0089A520)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -768,6 +867,7 @@ DECLARE_GLOBAL_SLF_BEGIN(debug_print_set_background_color__vector3d, 0x0089A538)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -775,6 +875,7 @@ DECLARE_GLOBAL_SLF_BEGIN(delay__num, 0x0089A71C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -782,6 +883,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_credits, 0x0089BAF0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -789,6 +891,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_debug_menu_entry__debug_menu_entry, 0x0089C71C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -796,6 +899,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_entity__entity, 0x0089AF34)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -803,6 +907,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_entity_list__entity_list, 0x0089BFD4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -810,6 +915,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_entity_tracker__entity_tracker, 0x0089C59C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -817,6 +923,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_line_info__line_info, 0x0089B710)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -824,6 +931,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_num_list__num_list, 0x0089BF5C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -831,6 +939,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_pfx__pfx, 0x0089C914)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -838,6 +947,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_str_list__str_list, 0x0089C04C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -845,6 +955,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_taunt_entry__taunt_entry, 0x0089C644)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -852,6 +963,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_taunt_exchange__taunt_exchange, 0x0089C6BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -859,6 +971,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_taunt_exchange_list__taunt_exchange_list, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -866,6 +979,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_threat_assessment_meter__tam, 0x0089C6D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -873,6 +987,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_trigger__trigger, 0x0089B978)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -880,6 +995,7 @@ DECLARE_GLOBAL_SLF_BEGIN(destroy_vector3d_list__vector3d_list, 0x0089BEDC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -887,6 +1003,7 @@ DECLARE_GLOBAL_SLF_BEGIN(dilated_delay__num, 0x0089A72C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -894,6 +1011,7 @@ DECLARE_GLOBAL_SLF_BEGIN(disable_marky_cam__num, 0x0089A5F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -901,6 +1019,7 @@ DECLARE_GLOBAL_SLF_BEGIN(disable_nearby_occlusion_only_obb__vector3d, 0x0089A5E4
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -908,6 +1027,7 @@ DECLARE_GLOBAL_SLF_BEGIN(disable_player_shadows, 0x0089A614)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -915,6 +1035,7 @@ DECLARE_GLOBAL_SLF_BEGIN(disable_subtitles, 0x0089A93C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -922,6 +1043,7 @@ DECLARE_GLOBAL_SLF_BEGIN(disable_vibrator, 0x0089A7DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -929,6 +1051,7 @@ DECLARE_GLOBAL_SLF_BEGIN(disable_zoom_map__num, 0x0089BBF0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -936,6 +1059,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance3d__vector3d__vector3d, 0x0089BA48)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -943,6 +1067,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_chase_widget_set_pos__num, 0x0089BB88)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -950,6 +1075,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_chase_widget_turn_off, 0x0089BB80)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -957,6 +1083,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_chase_widget_turn_on__num__num, 0x0089BB78)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -964,6 +1091,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_set_boss_pos__num, 0x0089BBA8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -971,6 +1099,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_set_hero_pos__num, 0x0089BBA0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -978,6 +1107,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_set_types__num__num, 0x0089BBB0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -985,6 +1115,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_turn_off, 0x0089BB98)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -992,6 +1123,7 @@ DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_turn_on, 0x0089BB90)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -999,6 +1131,7 @@ DECLARE_GLOBAL_SLF_BEGIN(district_id__str, 0x0089C47C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1006,6 +1139,7 @@ DECLARE_GLOBAL_SLF_BEGIN(district_name__num, 0x0089C484)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1013,6 +1147,7 @@ DECLARE_GLOBAL_SLF_BEGIN(dot__vector3d__vector3d, 0x0089BA30)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1020,6 +1155,7 @@ DECLARE_GLOBAL_SLF_BEGIN(dump_searchable_region_list__str, 0x0089A994)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1027,6 +1163,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_ai__num, 0x0089A6CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1034,6 +1171,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_civilians__num, 0x0089C5EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1041,6 +1179,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_controls__num, 0x0089BD40)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1048,6 +1187,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_entity_fading__num, 0x0089B05C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1055,6 +1195,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_interface__num, 0x0089A6C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1062,6 +1203,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_marky_cam__num, 0x0089A5BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1069,6 +1211,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_mini_map__num, 0x0089BBE8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1076,6 +1219,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_nearby_occlusion_only_obb__vector3d, 0x0089A5DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1083,6 +1227,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_obb__vector3d__num, 0x0089A588)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1090,6 +1235,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_pause__num, 0x0089A6AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1097,6 +1243,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_physics__num, 0x0089A6DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1104,6 +1251,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_player_shadows, 0x0089A61C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1111,6 +1259,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_pois__num, 0x0089A6EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1118,6 +1267,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_quad_path_connector__district__num__district__nu
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1125,6 +1275,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_subtitles, 0x0089A934)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1132,6 +1283,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_tokens_of_type__num__num, 0x0089B54C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1139,6 +1291,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_traffic__num, 0x0089C5FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1146,6 +1299,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_user_camera__num, 0x0089A5D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1153,6 +1307,7 @@ DECLARE_GLOBAL_SLF_BEGIN(enable_vibrator, 0x0089A7E4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1160,6 +1315,7 @@ DECLARE_GLOBAL_SLF_BEGIN(end_current_patrol, 0x0089C4FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1167,6 +1323,7 @@ DECLARE_GLOBAL_SLF_BEGIN(end_cut_scenes, 0x0089B7C8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1174,6 +1331,7 @@ DECLARE_GLOBAL_SLF_BEGIN(end_screen_recording, 0x0089B7B8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1181,6 +1339,7 @@ DECLARE_GLOBAL_SLF_BEGIN(entity_col_check__entity__entity, 0x0089A88C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1188,6 +1347,7 @@ DECLARE_GLOBAL_SLF_BEGIN(entity_exists__str, 0x0089AF24)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1195,6 +1355,7 @@ DECLARE_GLOBAL_SLF_BEGIN(entity_get_entity_tracker__entity, 0x0089B034)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1202,6 +1363,7 @@ DECLARE_GLOBAL_SLF_BEGIN(entity_has_entity_tracker__entity, 0x0089B02C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1209,6 +1371,7 @@ DECLARE_GLOBAL_SLF_BEGIN(exit_water__entity, 0x0089A604)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1216,6 +1379,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_closest_point_on_a_path_to_point__vector3d, 0x0089
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1223,6 +1387,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_district_for_point__vector3d, 0x0089A81C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1230,6 +1395,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_entities_in_radius__entity_list__vector3d__num__nu
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1237,6 +1403,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_entity__str, 0x0089AF1C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1244,6 +1411,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_innermost_district__vector3d, 0x0089A824)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1251,6 +1419,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_outermost_district__vector3d, 0x0089A82C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1258,6 +1427,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_trigger__entity, 0x0089B950)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1265,6 +1435,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_trigger__str, 0x0089B948)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1272,6 +1443,7 @@ DECLARE_GLOBAL_SLF_BEGIN(find_trigger_in_district__district__str, 0x0089B958)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1279,6 +1451,7 @@ DECLARE_GLOBAL_SLF_BEGIN(float_random__num, 0x0089A74C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1286,6 +1459,7 @@ DECLARE_GLOBAL_SLF_BEGIN(force_mission__district__str__num, 0x0089C3B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1293,6 +1467,7 @@ DECLARE_GLOBAL_SLF_BEGIN(force_streamer_refresh, 0x0089C4AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1300,6 +1475,7 @@ DECLARE_GLOBAL_SLF_BEGIN(format_time_string__num, 0x0089BC74)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1307,6 +1483,7 @@ DECLARE_GLOBAL_SLF_BEGIN(freeze_hero__num, 0x0089A5FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1314,6 +1491,7 @@ DECLARE_GLOBAL_SLF_BEGIN(game_ini_get_flag__str, 0x0089A97C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1321,6 +1499,7 @@ DECLARE_GLOBAL_SLF_BEGIN(game_time_advance__num__num, 0x0089C4DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1328,6 +1507,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_all_execs_thread_count__str, 0x0089A9EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1335,6 +1515,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_all_instances_thread_count__str, 0x0089A9E4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1342,6 +1523,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_attacker_entity, 0x0089AA24)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1349,6 +1531,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_attacker_member, 0x0089AA2C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1356,6 +1539,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_available_stack_size, 0x0089C4EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1363,6 +1547,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_character_packname_list, 0x0089C354)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1370,6 +1555,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_closest_point_on_lane_with_facing__num__vector3d__v
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1377,6 +1563,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_col_hit_ent, 0x0089A884)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1384,6 +1571,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_col_hit_norm, 0x0089A87C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1391,6 +1579,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_col_hit_pos, 0x0089A874)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1398,6 +1587,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_control_state__num, 0x0089A7F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1405,6 +1595,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_control_trigger__num, 0x0089A7EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1412,6 +1603,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_current_instance_thread_count__str, 0x0089A9DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1419,6 +1611,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_pos, 0x0089A5B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1426,6 +1619,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_x_facing, 0x0089A59C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1433,6 +1627,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_y_facing, 0x0089A5A4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1440,6 +1635,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_z_facing, 0x0089A5AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1447,6 +1643,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_fog_color, 0x0089A8F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1454,6 +1651,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_fog_distance, 0x0089A8FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1461,6 +1659,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_game_info_num__str, 0x0089A8C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1468,6 +1667,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_game_info_str__str, 0x0089A8D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1475,6 +1675,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_glam_cam__num, 0x0089B780)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1482,28 +1683,39 @@ DECLARE_GLOBAL_SLF_BEGIN(get_global_time_dilation, 0x0089A894)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 
 DECLARE_GLOBAL_SLF_BEGIN(get_ini_flag__str, 0x0089A94C)
 {
-    TRACE("slf__get_ini_flag__str_t::operator()");
+    TRACE("slf__get_ini_flag__str__t::operator()");
 
+    (void)entry;
     auto *v3 = stack.SP - 4;
     stack.SP = v3;
     mString v5 {*(const char **)v3};
     auto a1a = (float) os_developer_options::instance()->get_flag(v5);
     *(float *)stack.SP = a1a;
     stack.SP += 4;
-    return true;
+
+    SLF_DONE;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_ini_num__str, 0x0089A954)
 {
-    (void) stack;
     (void) entry;
+    TRACE("slf__get_ini_num__str__t::operator()");
+
+    auto *v3 = stack.SP - 4;
+    stack.SP = v3;
+    mString v5 {*(const char **)v3};
+    auto v7 = (float)os_developer_options::instance()->get_int(v5);
+    *(float *)stack.SP = v7;
+    stack.SP += 4;
+    return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1511,6 +1723,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_int_num__num, 0x0089A92C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1518,6 +1731,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_camera_marker__num, 0x0089C414)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1525,13 +1739,18 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_camera_transform_marker__num, 0x0089C454)
 {
     (void) stack;
     (void) entry;
+    return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_mission_entity, 0x0089C38C)
 {
-    (void) stack;
     (void) entry;
+    TRACE("slf__get_mission_entity__t::operator()");
+
+    *(DWORD *)stack.SP = (int)mission_manager::s_inst()->get_mission_key_entity();
+    stack.SP += 4;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1539,6 +1758,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_key_posfacing3d, 0x0089C36C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1546,6 +1766,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_key_position, 0x0089C364)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1553,13 +1774,17 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_marker__num, 0x0089C40C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_mission_nums, 0x0089C3AC)
 {
-    (void) stack;
     (void) entry;
+
+    *(DWORD *)stack.SP = (int)mission_manager::s_inst()->get_mission_nums();
+    stack.SP += 4;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1567,6 +1792,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_patrol_waypoint, 0x0089C384)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1574,13 +1800,17 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_positions, 0x0089C39C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_mission_strings, 0x0089C3A4)
 {
-    (void) stack;
     (void) entry;
+
+    *(DWORD *)stack.SP = (int)mission_manager::s_inst()->get_mission_strings();
+    stack.SP += 4;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1588,6 +1818,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_transform_marker__num, 0x0089C42C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1595,6 +1826,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_mission_trigger, 0x0089C394)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1602,6 +1834,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_missions_key_position_by_index__district__str__num,
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1609,6 +1842,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_missions_nums_by_index__district__str__num__num_lis
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1616,20 +1850,43 @@ DECLARE_GLOBAL_SLF_BEGIN(get_missions_patrol_waypoint_by_index__district__str__n
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_neighborhood_name__num, 0x0089C54C)
 {
-    (void) stack;
     (void) entry;
+
+    auto *v2 = stack.SP - 4;
+    stack.SP = v2;
+    *(DWORD *)stack.SP = (int)get_neighborhood_name((neighborhood_e)*(float *)v2);
+    stack.SP += 4;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_num_free_slots__str, 0x0089C3E4)
 {
-    (void) stack;
     (void) entry;
+
+    auto *v3 = stack.SP - 4;
+    stack.SP = v3;
+    auto **v4 = (const char **)v3;
+    if ( mission_stack_manager::s_inst()->waiting_for_push_or_pop() ) {
+        return false;
+    }
+
+    mString v7 {*v4};
+    auto *pack_group = mission_stack_manager::s_inst()->get_pack_group(v7);
+    auto num_free_slots = 0.0f;
+    if ( pack_group ) {
+        num_free_slots = (float)pack_group->get_num_free_slots();
+    }
+
+    *(float *)stack.SP = num_free_slots;
+    stack.SP += 4;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1637,6 +1894,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_num_mission_transform_marker, 0x0089C434)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1644,13 +1902,33 @@ DECLARE_GLOBAL_SLF_BEGIN(get_pack_group__str, 0x0089C3EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
 DECLARE_GLOBAL_SLF_BEGIN(get_pack_size__str, 0x0089C4E4)
 {
-    (void) stack;
     (void) entry;
+
+    auto *v3 = stack.SP - 4;
+    stack.SP = v3;
+    auto the_key = create_resource_key_from_path(*(const char **)v3, RESOURCE_KEY_TYPE_PACK);
+    resource_pack_location a2 {};
+    if (!resource_manager::get_pack_file_stats(the_key, &a2, nullptr, nullptr)) {
+        mString v7 {*(const char **)v3};
+        auto v5 = "Packfile " + v7 + " not found in amalgapak. Perhaps you need to repack it?";
+        auto *t = stack.get_thread();
+        t->slf_error(v5);
+    }
+
+    auto size = (double)a2.loc.m_size;
+    if ( a2.loc.m_size < 0 ) {
+        size += 4.2949673e9;
+    }
+
+    *(float *)stack.SP = size;
+    stack.SP += 4;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1658,6 +1936,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_patrol_difficulty__str, 0x0089C534)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1665,6 +1944,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_patrol_node_position_by_index__str__num, 0x0089C52C
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1672,6 +1952,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_patrol_start_position__str, 0x0089C524)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1679,6 +1960,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_patrol_unlock_threshold__str, 0x0089C53C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1686,6 +1968,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_platform, 0x0089A508)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1693,6 +1976,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_render_opt_num__str, 0x0089A8E4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1700,6 +1984,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_spider_reflexes_spiderman_time_dilation, 0x0089CAC4
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1707,6 +1992,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_spider_reflexes_world_time_dilation, 0x0089CAD4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1714,6 +2000,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_time_inc, 0x0089A7A4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1721,6 +2008,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_time_of_day, 0x0089A974)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1728,6 +2016,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_time_of_day_rate, 0x0089A96C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1735,6 +2024,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_token_index_from_id__num__num, 0x0089B554)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1742,6 +2032,7 @@ DECLARE_GLOBAL_SLF_BEGIN(get_traffic_spawn_point_near_camera__vector3d_list, 0x0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1749,6 +2040,7 @@ DECLARE_GLOBAL_SLF_BEGIN(greater_than_or_equal_rounded__num__num, 0x0089BC90)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1756,6 +2048,10 @@ DECLARE_GLOBAL_SLF_BEGIN(hard_break, 0x0089AA1C)
 {
     (void) stack;
     (void) entry;
+
+    debug_print_va("Debug break requested by script.");
+    __debugbreak();
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1763,6 +2059,7 @@ DECLARE_GLOBAL_SLF_BEGIN(has_substring__str__str, 0x0089A580)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1770,6 +2067,7 @@ DECLARE_GLOBAL_SLF_BEGIN(hero, 0x0089AED4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1777,6 +2075,7 @@ DECLARE_GLOBAL_SLF_BEGIN(hero_exists, 0x0089AEDC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1784,6 +2083,7 @@ DECLARE_GLOBAL_SLF_BEGIN(hero_type, 0x0089AEE4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1791,6 +2091,7 @@ DECLARE_GLOBAL_SLF_BEGIN(hide_controller_gauge, 0x0089BB20)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1798,6 +2099,7 @@ DECLARE_GLOBAL_SLF_BEGIN(initialize_encounter_object, 0x0089AA0C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1805,6 +2107,7 @@ DECLARE_GLOBAL_SLF_BEGIN(initialize_encounter_objects, 0x0089AA04)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1812,6 +2115,7 @@ DECLARE_GLOBAL_SLF_BEGIN(insert_pack__str, 0x0089C3D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1819,6 +2123,7 @@ DECLARE_GLOBAL_SLF_BEGIN(invoke_pause_menu_unlockables, 0x0089BC98)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1826,6 +2131,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_ai_enabled, 0x0089A6D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1833,6 +2139,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_cut_scene_playing, 0x0089B7D0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1840,6 +2147,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_district_loaded__num, 0x0089C49C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1847,6 +2155,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_hero_frozen, 0x0089A60C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1854,6 +2163,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_hero_peter_parker, 0x0089AEFC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1861,6 +2171,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_hero_spidey, 0x0089AEEC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1868,6 +2179,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_hero_venom, 0x0089AEF4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1875,6 +2187,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_marky_cam_enabled, 0x0089A5C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1882,6 +2195,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_mission_active, 0x0089C50C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1889,6 +2203,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_mission_loading, 0x0089C514)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1896,6 +2211,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_pack_available__str, 0x0089C404)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1903,6 +2219,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_pack_loaded__str, 0x0089C3FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1910,6 +2227,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_pack_pushed__str, 0x0089C34C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1917,6 +2235,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_path_graph_inside_glass_house__str, 0x0089AAA0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1924,6 +2243,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_patrol_active, 0x0089C504)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1931,6 +2251,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_patrol_node_empty__num, 0x0089C544)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1938,6 +2259,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_paused, 0x0089A6B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1945,6 +2267,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_physics_enabled, 0x0089A6E4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1952,6 +2275,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_point_inside_glass_house__vector3d, 0x0089A540)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1959,6 +2283,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_point_under_water__vector3d, 0x0089AA3C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1966,6 +2291,7 @@ DECLARE_GLOBAL_SLF_BEGIN(is_user_camera_enabled, 0x0089A5CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1973,6 +2299,7 @@ DECLARE_GLOBAL_SLF_BEGIN(load_anim__str, 0x0089AAF0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1980,6 +2307,7 @@ DECLARE_GLOBAL_SLF_BEGIN(load_level__str__vector3d, 0x0089A8AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1987,6 +2315,7 @@ DECLARE_GLOBAL_SLF_BEGIN(lock_all_districts, 0x0089C4C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -1994,6 +2323,7 @@ DECLARE_GLOBAL_SLF_BEGIN(lock_district__num, 0x0089C494)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2001,6 +2331,7 @@ DECLARE_GLOBAL_SLF_BEGIN(lock_mission_manager__num, 0x0089C51C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2008,6 +2339,7 @@ DECLARE_GLOBAL_SLF_BEGIN(los_check__vector3d__vector3d, 0x0089A814)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2015,6 +2347,7 @@ DECLARE_GLOBAL_SLF_BEGIN(lower_hotpursuit_indicator_level, 0x0089BAE0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2022,6 +2355,7 @@ DECLARE_GLOBAL_SLF_BEGIN(malor__vector3d__num, 0x0089A984)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2029,6 +2363,7 @@ DECLARE_GLOBAL_SLF_BEGIN(normal__vector3d, 0x0089BA40)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2036,6 +2371,7 @@ DECLARE_GLOBAL_SLF_BEGIN(pause_game__num, 0x0089A6BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2043,6 +2379,7 @@ DECLARE_GLOBAL_SLF_BEGIN(play_credits, 0x0089BAF8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2050,6 +2387,7 @@ DECLARE_GLOBAL_SLF_BEGIN(play_prerender__str, 0x0089A8B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2057,6 +2395,7 @@ DECLARE_GLOBAL_SLF_BEGIN(pop_pack__str, 0x0089C344)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2064,6 +2403,7 @@ DECLARE_GLOBAL_SLF_BEGIN(post_message__str__num, 0x0089A73C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2071,6 +2411,7 @@ DECLARE_GLOBAL_SLF_BEGIN(pre_roll_all_pfx__num, 0x0089AA34)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2078,6 +2419,7 @@ DECLARE_GLOBAL_SLF_BEGIN(press_controller_gauge__num, 0x0089BB28)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2085,6 +2427,7 @@ DECLARE_GLOBAL_SLF_BEGIN(press_controller_gauge__num__num__num, 0x0089BB30)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2092,6 +2435,7 @@ DECLARE_GLOBAL_SLF_BEGIN(purge_district__num, 0x0089C4BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2099,6 +2443,7 @@ DECLARE_GLOBAL_SLF_BEGIN(push_pack__str, 0x0089C334)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2106,6 +2451,7 @@ DECLARE_GLOBAL_SLF_BEGIN(push_pack_into_district_slot__str, 0x0089C33C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2113,6 +2459,7 @@ DECLARE_GLOBAL_SLF_BEGIN(raise_hotpursuit_indicator_level, 0x0089BAD8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2120,6 +2467,7 @@ DECLARE_GLOBAL_SLF_BEGIN(random__num, 0x0089A744)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2127,6 +2475,7 @@ DECLARE_GLOBAL_SLF_BEGIN(remove_civilian_info__num, 0x0089C5C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2134,6 +2483,7 @@ DECLARE_GLOBAL_SLF_BEGIN(remove_civilian_info_entity__entity__num, 0x0089C5D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2141,6 +2491,7 @@ DECLARE_GLOBAL_SLF_BEGIN(remove_glass_house__str, 0x0089A568)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2148,6 +2499,7 @@ DECLARE_GLOBAL_SLF_BEGIN(remove_item_entity_from_world__entity, 0x0089AFFC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2155,6 +2507,7 @@ DECLARE_GLOBAL_SLF_BEGIN(remove_pack__str, 0x0089C3DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2162,6 +2515,7 @@ DECLARE_GLOBAL_SLF_BEGIN(remove_traffic_model__num, 0x0089C5AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2169,6 +2523,7 @@ DECLARE_GLOBAL_SLF_BEGIN(reset_externed_alses, 0x0089B064)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2176,6 +2531,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_all_anchors_activated__num, 0x0089CAEC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2183,6 +2539,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_blur__num, 0x0089A63C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2190,6 +2547,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_blur_blend_mode__num, 0x0089A664)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2197,6 +2555,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_blur_color__vector3d, 0x0089A644)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2204,6 +2563,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_blur_offset__num__num, 0x0089A654)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2211,6 +2571,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_blur_rot__num, 0x0089A65C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2218,6 +2579,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_blur_scale__num__num, 0x0089A64C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2225,6 +2587,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_clear_color__vector3d, 0x0089A6F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2232,6 +2595,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_current_mission_objective_caption__num, 0x0089CADC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2239,6 +2603,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_default_traffic_hitpoints__num, 0x0089C614)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2246,6 +2611,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_dialog_box_flavor__num, 0x0089BC5C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2253,6 +2619,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_dialog_box_lockout_time__num, 0x0089BC6C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2260,6 +2627,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_engine_property__str__num, 0x0089A99C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2267,6 +2635,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_fov__num, 0x0089A62C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2274,6 +2643,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_game_info_num__str__num, 0x0089A8BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2281,6 +2651,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_game_info_str__str__str, 0x0089A8CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2288,6 +2659,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_global_time_dilation__num, 0x0089A89C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2295,6 +2667,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_marky_cam_lookat__vector3d, 0x0089A5EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2302,6 +2675,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_max_streaming_distance__num, 0x0089C4B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2309,6 +2683,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_mission_key_pos_facing__vector3d__vector3d, 0x0089C
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2316,6 +2691,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_mission_key_position__vector3d, 0x0089C374)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2323,6 +2699,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_mission_text__num, 0x0089BBF8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2330,6 +2707,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_mission_text_box_flavor__num, 0x0089BC64)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2337,6 +2715,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_mission_text_debug__str, 0x0089BC00)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2344,6 +2723,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_parking_density__num, 0x0089C60C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2351,6 +2731,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_pedestrian_density__num, 0x0089C5F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2358,6 +2739,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_render_opt_num__str__num, 0x0089A8DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2365,6 +2747,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_score_widget_score__num, 0x0089BAC8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2372,6 +2755,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_sound_category_volume__num__num__num, 0x0089A9D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2379,6 +2763,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur__num, 0x0089A674)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2386,6 +2771,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_blend_mode__num, 0x0089A69C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2393,6 +2779,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_color__vector3d, 0x0089A67C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2400,6 +2787,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_offset__num__num, 0x0089A68C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2407,6 +2795,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_rot__num, 0x0089A694)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2414,6 +2803,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_scale__num__num, 0x0089A684)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2421,6 +2811,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_hero_meter_depletion_rate__num, 0x0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2428,6 +2819,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_spiderman_time_dilation__num, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2435,6 +2827,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_world_time_dilation__num, 0x0089CAC
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2442,6 +2835,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_state_of_the_story_caption__num, 0x0089CAE4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2449,6 +2843,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_target_info__entity__vector3d__vector3d, 0x0089B6C4
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2456,6 +2851,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_time_of_day__num, 0x0089A964)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2463,6 +2859,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_traffic_density__num, 0x0089C604)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2470,6 +2867,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_traffic_model_usage__num__num, 0x0089C5B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2477,6 +2875,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_vibration_resume__num, 0x0089A7D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2484,6 +2883,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_interp_rate__num, 0x0089B504)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2491,6 +2891,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_pitch_range__num__num, 0x0089B4FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2498,6 +2899,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_speed_range__num__num, 0x0089B4EC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2505,6 +2907,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_volume_range__num__num, 0x0089B4F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2512,6 +2915,7 @@ DECLARE_GLOBAL_SLF_BEGIN(set_zoom__num, 0x0089A624)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2519,6 +2923,7 @@ DECLARE_GLOBAL_SLF_BEGIN(show_controller_gauge, 0x0089BB18)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2526,6 +2931,7 @@ DECLARE_GLOBAL_SLF_BEGIN(show_hotpursuit_indicator__num, 0x0089BAD0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2533,6 +2939,7 @@ DECLARE_GLOBAL_SLF_BEGIN(show_score_widget__num, 0x0089BAC0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2540,6 +2947,7 @@ DECLARE_GLOBAL_SLF_BEGIN(shut_up_all_ai_voice_boxes, 0x0089B50C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2547,6 +2955,7 @@ DECLARE_GLOBAL_SLF_BEGIN(sin__num, 0x0089A904)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2554,6 +2963,7 @@ DECLARE_GLOBAL_SLF_BEGIN(sin_cos__num, 0x0089A924)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2561,6 +2971,7 @@ DECLARE_GLOBAL_SLF_BEGIN(soft_load__num, 0x0089BCBC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2568,6 +2979,7 @@ DECLARE_GLOBAL_SLF_BEGIN(soft_save__num, 0x0089BCB4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2575,6 +2987,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_add_hero_points__num, 0x0089CAA4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2582,6 +2995,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_bank_stylepoints, 0x0089C91C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2589,6 +3003,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_break_web, 0x0089C9E4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2596,6 +3011,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_add_shake__num__num__num, 0x0089CB34)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2603,6 +3019,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_autocorrect__num, 0x0089C924)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2610,6 +3027,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_clear_fixedstatic, 0x0089CAFC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2617,6 +3035,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_enable_combat__num, 0x0089CB24)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2624,6 +3043,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_enable_lookaround__num, 0x0089CB1C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2631,6 +3051,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_fixedstatic__vector3d__vector3d, 0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2638,6 +3059,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_follow__entity, 0x0089CB2C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2645,6 +3067,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_hero_underwater__num, 0x0089CB3C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2652,6 +3075,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_interpolation_time__num, 0x0089CB1
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2659,6 +3083,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_lockon_min_distance__num, 0x0089CB
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2666,6 +3091,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_lockon_y_offset__num, 0x0089CB0C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2673,6 +3099,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_charged_jump, 0x0089C98C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2680,6 +3107,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_enable_control_button__num__num, 0x0089CA94)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2687,6 +3115,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_enable_lockon__num, 0x0089C9AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2694,6 +3123,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_engage_lockon__num, 0x0089C9B4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2701,6 +3131,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_engage_lockon__num__entity, 0x0089C9BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2708,6 +3139,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_get_hero_points, 0x0089CA9C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2715,6 +3147,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_get_max_zip_length, 0x0089C9DC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2722,6 +3155,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_get_spidey_sense_level, 0x0089C99C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2729,6 +3163,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_crawling, 0x0089C934)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2736,6 +3171,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_falling, 0x0089C964)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2743,6 +3179,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_jumping, 0x0089C96C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2750,6 +3187,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_on_ceiling, 0x0089C944)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2757,6 +3195,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_on_ground, 0x0089C94C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2764,6 +3203,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_on_wall, 0x0089C93C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2771,6 +3211,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_running, 0x0089C95C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2778,6 +3219,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_sprint_crawling, 0x0089C984)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2785,6 +3227,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_sprinting, 0x0089C974)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2792,6 +3235,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_swinging, 0x0089C954)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2799,6 +3243,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_wallsprinting, 0x0089C97C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2806,6 +3251,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_lock_spider_reflexes_off, 0x0089CA24)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2813,6 +3259,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_lock_spider_reflexes_on, 0x0089CA1C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2820,6 +3267,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_lockon_camera_engaged, 0x0089CA0C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2827,6 +3275,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_lockon_mode_engaged, 0x0089CA04)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2834,6 +3283,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_camera_target__entity, 0x0089CA14)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2841,6 +3291,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_desired_mode__num__vector3d__vector3d, 0x
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2848,6 +3299,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_health_beep_min_max_cooldown_time__num__n
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2855,6 +3307,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_health_beep_threshold__num, 0x0089C9FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2862,6 +3315,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_hero_meter_empty_rate__num, 0x0089CB44)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2869,6 +3323,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_max_height__num, 0x0089C9CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2876,6 +3331,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_max_zip_length__num, 0x0089C9D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2883,6 +3339,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_min_height__num, 0x0089C9C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2890,6 +3347,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_spidey_sense_level__num, 0x0089C994)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2897,6 +3355,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_swing_anchor_max_sticky_time__num, 0x0089
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2904,6 +3363,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_subtract_hero_points__num, 0x0089CAAC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2911,6 +3371,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_alternating_wall_run_occurrence_thresh
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2918,6 +3379,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_alternating_wall_run_time_threshold__n
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2925,6 +3387,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_big_air_height_threshold__num, 0x0089C
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2932,6 +3395,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_continuous_air_swings_threshold__num, 
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2939,6 +3403,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_gain_altitude_height_threshold__num, 0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2946,6 +3411,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_near_miss_trigger_radius__num, 0x0089C
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2953,6 +3419,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_near_miss_velocity_threshold__num, 0x0
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2960,6 +3427,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_orbit_min_radius_threshold__num, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2967,6 +3435,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_soft_landing_velocity_threshold__num, 
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2974,6 +3443,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_super_speed_speed_threshold__num, 0x00
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2981,6 +3451,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_swinging_wall_run_time_threshold__num,
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2988,6 +3459,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_wall_sprint_time_threshold__num, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -2995,6 +3467,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_unlock_spider_reflexes, 0x0089CA2C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3002,6 +3475,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spiderman_wait_add_threat__entity__str__num__num, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3009,6 +3483,7 @@ DECLARE_GLOBAL_SLF_BEGIN(spidey_can_see__vector3d, 0x0089C92C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3016,6 +3491,7 @@ DECLARE_GLOBAL_SLF_BEGIN(sqrt__num, 0x0089A914)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3023,6 +3499,7 @@ DECLARE_GLOBAL_SLF_BEGIN(start_patrol__str, 0x0089C4F4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3030,6 +3507,7 @@ DECLARE_GLOBAL_SLF_BEGIN(stop_all_sounds, 0x0089B514)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3037,6 +3515,7 @@ DECLARE_GLOBAL_SLF_BEGIN(stop_credits, 0x0089BB00)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3044,6 +3523,7 @@ DECLARE_GLOBAL_SLF_BEGIN(stop_vibration, 0x0089A7CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3051,6 +3531,7 @@ DECLARE_GLOBAL_SLF_BEGIN(subtitle__num__num__num__num__num__num, 0x0089BCC4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3058,6 +3539,7 @@ DECLARE_GLOBAL_SLF_BEGIN(swap_hero_costume__str, 0x0089C4D4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3065,6 +3547,7 @@ DECLARE_GLOBAL_SLF_BEGIN(text_width__str, 0x0089A7AC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3072,6 +3555,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_get_count_up, 0x0089BB70)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3079,6 +3563,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_get_time, 0x0089BB60)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3086,6 +3571,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_set_count_up__num, 0x0089BB68)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3093,6 +3579,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_set_time__num, 0x0089BB58)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3100,6 +3587,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_start, 0x0089BB48)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3107,6 +3595,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_stop, 0x0089BB50)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3114,6 +3603,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_turn_off, 0x0089BB40)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3121,6 +3611,7 @@ DECLARE_GLOBAL_SLF_BEGIN(timer_widget_turn_on, 0x0089BB38)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3128,6 +3619,7 @@ DECLARE_GLOBAL_SLF_BEGIN(to_beam__entity, 0x0089ABBC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3135,6 +3627,7 @@ DECLARE_GLOBAL_SLF_BEGIN(to_gun__entity, 0x0089B5A0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3142,6 +3635,7 @@ DECLARE_GLOBAL_SLF_BEGIN(to_item__entity, 0x0089B6BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3149,6 +3643,7 @@ DECLARE_GLOBAL_SLF_BEGIN(to_polytube__entity, 0x0089C238)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3156,6 +3651,7 @@ DECLARE_GLOBAL_SLF_BEGIN(to_switch__entity, 0x0089B8E4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3163,6 +3659,7 @@ DECLARE_GLOBAL_SLF_BEGIN(trace__str, 0x0089AA14)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3170,6 +3667,7 @@ DECLARE_GLOBAL_SLF_BEGIN(trigger_is_valid__trigger, 0x0089B9B8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3177,6 +3675,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_off_boss_health, 0x0089BBD0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3184,6 +3683,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_off_hero_health, 0x0089BBD8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3191,6 +3691,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_off_mission_text, 0x0089BC20)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3198,6 +3699,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_off_third_party_health, 0x0089BBE0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3205,6 +3707,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_on_boss_health__num__entity, 0x0089BBB8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3212,6 +3715,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_on_hero_health__num__entity, 0x0089BBC0)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3219,6 +3723,7 @@ DECLARE_GLOBAL_SLF_BEGIN(turn_on_third_party_health__num__entity, 0x0089BBC8)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3226,6 +3731,7 @@ DECLARE_GLOBAL_SLF_BEGIN(unload_script, 0x0089C35C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3233,6 +3739,7 @@ DECLARE_GLOBAL_SLF_BEGIN(unlock_all_exterior_districts, 0x0089C4CC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3240,6 +3747,7 @@ DECLARE_GLOBAL_SLF_BEGIN(unlock_district__num, 0x0089C48C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3247,6 +3755,7 @@ DECLARE_GLOBAL_SLF_BEGIN(vibrate_controller__num, 0x0089A7C4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3254,6 +3763,7 @@ DECLARE_GLOBAL_SLF_BEGIN(vibrate_controller__num__num, 0x0089A7BC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3261,6 +3771,7 @@ DECLARE_GLOBAL_SLF_BEGIN(vibrate_controller__num__num__num__num__num__num, 0x008
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3268,6 +3779,7 @@ DECLARE_GLOBAL_SLF_BEGIN(vo_delay__num__num__num__num, 0x0089A734)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3275,6 +3787,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_animate_fog_color__vector3d__num, 0x0089A6FC)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3282,6 +3795,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_animate_fog_distance__num__num, 0x0089A704)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3289,6 +3803,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_animate_fog_distances__num__num__num, 0x0089A70C)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3296,6 +3811,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_change_blur__num__vector3d__num__num__num__num__nu
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3303,6 +3819,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_change_spider_reflexes_blur__num__vector3d__num__n
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3310,6 +3827,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_for_streamer_to_reach_equilibrium, 0x0089C4A4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3317,6 +3835,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_fps_test__num__num__vector3d__vector3d, 0x0089A8EC
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3324,6 +3843,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_frame, 0x0089A714)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3331,6 +3851,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_set_global_time_dilation__num__num, 0x0089A8A4)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3338,6 +3859,7 @@ DECLARE_GLOBAL_SLF_BEGIN(wait_set_zoom__num__num, 0x0089A634)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3345,6 +3867,7 @@ DECLARE_GLOBAL_SLF_BEGIN(write_to_file__str__str, 0x0089A844)
 {
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_GLOBAL_SLF_END()
 
@@ -3362,3994 +3885,2608 @@ DECLARE_GLOBAL_SLF_END()
 #define DECLARE_SLF_END() \
     };
 
-DECLARE_SLF_BEGIN(anim, kill_anim, 0x0089AAE8)
-{
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(anim, pause, 0x0089AAB8){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(anim, play, 0x0089AAD8){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(anim, set_fade_time__num, 0x0089AAC8){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(anim, set_time__num, 0x0089AAD0){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(anim, set_timescale__num, 0x0089AAC0){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(anim, wait_finished, 0x0089AAE0){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, add_alpha_effect__num__num__num__num__num__num, 0x0089AB9C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, add_color_effect__num__num__num__num__num__num__num__num__num__num, 0x0089AB8C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, add_width_effect__num__num__num__num__num__num, 0x0089AB94){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, get_impact_normal, 0x0089AB1C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, get_impact_point, 0x0089AB14){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, hit_hero, 0x0089AB0C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, hit_world, 0x0089AB04){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, kill_all_effects__num, 0x0089ABAC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, kill_effect__num__num, 0x0089ABA4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_additive__num, 0x0089AB64){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_collide_beamable__num, 0x0089AB54){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_collide_hero__num, 0x0089AB44){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_collide_world__num, 0x0089AB4C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_color__num__num__num__num, 0x0089AB34){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_detect_stealth__num, 0x0089AB3C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_material__str, 0x0089AB84){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_max_length__num, 0x0089AB2C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_no_collision, 0x0089AB5C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_point_to_point__vector3d__vector3d, 0x0089AB6C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_thickness__num, 0x0089AB24){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_tiles_per_meter__num, 0x0089AB7C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(beam, set_uv_anim__num__num, 0x0089AB74){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(critical_section, critical_section__num, 0x0089C7E8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(cut_scene, wait_play, 0x0089B7D8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(cut_scene, wait_play__entity_list, 0x0089B7E0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_handler, 0x0089C744){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_id, 0x0089C734){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_max_value, 0x0089C784){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_min_value, 0x0089C774){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_name, 0x0089C724){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_step_scale, 0x0089C7A4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_step_size, 0x0089C794){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_value, 0x0089C754){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, get_value_type, 0x0089C764){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_handler__str, 0x0089C74C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_id__num, 0x0089C73C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_max_value__num, 0x0089C78C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_min_value__num, 0x0089C77C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_name__str, 0x0089C72C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_step_scale__num, 0x0089C7AC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_step_size__num, 0x0089C79C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_value__num, 0x0089C75C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(debug_menu_entry, set_value_type__num, 0x0089C76C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, contains_point__vector3d, 0x0089C838){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, district__num, 0x0089C7F0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, district__str, 0x0089C7F8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, get_id, 0x0089C818){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, get_name, 0x0089C850){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, get_neighborhood, 0x0089C868){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, get_num_missions__str, 0x0089C860){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, get_variant, 0x0089C840){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, get_variant_count, 0x0089C848){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, is_in_neighborhood__num, 0x0089C870){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, is_loaded, 0x0089C820){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, is_locked, 0x0089C828){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, lock, 0x0089C800){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, purge, 0x0089C810){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, set_variant__num, 0x0089C858){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, unlock, 0x0089C808){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(district, wait_for_load, 0x0089C830){
     (void) stack;
     (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, abs_snap_to__entity, 0x0089AE34){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, add_collision_ignorance__entity, 0x0089AF94){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, add_exclusive_interactor__string_hash__interactable_interface, 0x0089B5C4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, add_item__entity, 0x0089AF44){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, add_selectable_target__entity, 0x0089B17C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, add_vehicle_to_traffic_system__num, 0x0089B474){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_get_viseme_morph_set__str__str, 0x0089B3F4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_get_viseme_stream__str, 0x0089B3EC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_is_speaking, 0x0089B40C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_run_lip_sync__str, 0x0089B3E4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_say_file__str__num__num, 0x0089B3CC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_say_gab__str__num__num, 0x0089B424){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_say_sound_group__str__num__num, 0x0089B414){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_shut_up, 0x0089B404){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_come_on_camera__vector3d__num, 0x0089B2EC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_come_on_camera__vector3d__vector3d__num, 0x0089B2F4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_follow_entity__entity__num, 0x0089B2FC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_follow_vehicle__entity, 0x0089B304){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_get_value__num, 0x0089B2BC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_get_value__num__num, 0x0089B2B4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_goto__vector3d__num__num__num, 0x0089B2CC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_set_value__num__num, 0x0089B2C4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_spawn_away_from__vector3d__num, 0x0089B2DC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_spawn_behind__entity, 0x0089B2E4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_traffic_spawn_near__vector3d, 0x0089B2D4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_voice_box_set_team_respect__string_hash__num, 0x0089B3C4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_wait_say_file__str__num__num, 0x0089B3D4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_wait_say_gab__str__num__num, 0x0089B42C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_wait_say_preregistered_file__str__num__num, 0x0089B3DC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ai_wait_say_sound_group__str__num__num, 0x0089B41C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, anim_finished, 0x0089AEC4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, anim_finished__num, 0x0089AECC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_continuous_rotation__vector3d__num__num, 0x0089ACA4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_damage__num, 0x0089ADBC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_directed_damage__num__vector3d, 0x0089ADD4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_directed_damage_cat__num__vector3d__str__num, 0x0089ADDC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_explosive_damage__num__vector3d, 0x0089ADE4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_explosive_damage__num__vector3d__vector3d, 0x0089ADEC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, apply_subdue__num, 0x0089ADC4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_get_target, 0x0089AE44){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_orbit__vector3d__num__num__num, 0x0089AE74){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_set_collide_with_world__num, 0x0089AE5C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_set_roll__num, 0x0089AE4C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_set_target__vector3d, 0x0089AE3C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_slide_to__vector3d__vector3d__num__num, 0x0089AE64){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, camera_slide_to_orbit__vector3d__num__num__num__num, 0x0089AE6C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, cancel_tether, 0x0089B1D4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, car_random_body_and_color, 0x0089B1C4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, change_ai_base_machine__str, 0x0089B144){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, collisions_enabled, 0x0089B43C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, compute_sector, 0x0089ABE4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, create_damage_interface, 0x0089B34C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, create_interactable_ifc, 0x0089B5B4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, create_physical_interface, 0x0089B344){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, create_script_data_interface, 0x0089B334){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, create_web_ifc__str__num__num, 0x0089B534){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, disable_as_target, 0x0089B14C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, disable_collisions, 0x0089AF84){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, disable_fading, 0x0089ADB4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, disgorge_items, 0x0089AF74){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, enable_as_target, 0x0089B154){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, enable_collisions, 0x0089AF8C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, enable_collisions__num, 0x0089B434){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, eye_check_ent__entity, 0x0089B054){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, eye_check_pos__vector3d, 0x0089B04C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, force_activate_interaction__string_hash__interactable_interface, 0x0089B62C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, force_current_region, 0x0089AD24){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, force_region__entity, 0x0089AD1C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_abs_position, 0x0089ABCC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_base_machine_name, 0x0089B16C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_param_float__str, 0x0089B074){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_param_hash__str, 0x0089B08C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_param_int__str, 0x0089B07C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_param_str__str, 0x0089B084){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_param_vector3d__str, 0x0089B094){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ai_signaller, 0x0089AF6C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_anchor_point, 0x0089AC1C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_carry_slave, 0x0089B19C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_current_animation_name, 0x0089B044){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_damage_force, 0x0089ABD4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_debug_name, 0x0089B444){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_detonate_position, 0x0089ABDC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_district, 0x0089B024){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_facing, 0x0089ABEC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_fade_timer, 0x0089B1AC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_first_child, 0x0089AC4C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_hash_name, 0x0089B44C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_hidey_pos__vector3d__num, 0x0089AC2C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ifc_num__str, 0x0089B284){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ifc_str__str, 0x0089B2A4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ifc_vec__str, 0x0089B294){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_ifl_frame, 0x0089B03C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_inode_param_float__str__str, 0x0089B0DC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_inode_param_hash__str__str, 0x0089B0F4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_inode_param_int__str__str, 0x0089B0E4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_inode_param_str__str__str, 0x0089B0EC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_inode_param_vector3d__str__str, 0x0089B0FC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_interactable_ifc, 0x0089B5BC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_item__num, 0x0089AF54){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_item_by_name__str, 0x0089AF5C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_item_quantity__num, 0x0089AF64){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_last_anchor, 0x0089AC0C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_last_attacker, 0x0089AC14){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_last_item_used, 0x0089B20C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_member__str, 0x0089AE8C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_next_sibling, 0x0089AC54){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_num_items, 0x0089AF4C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_parent, 0x0089AC44){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_pendulum_length, 0x0089B3B4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_rel_position, 0x0089AC24){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_rel_velocity__entity, 0x0089AD04){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_render_alpha, 0x0089B254){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_render_color, 0x0089B24C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_scripted_target, 0x0089B194){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_sector_name, 0x0089AD14){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_state__num, 0x0089B56C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_time_dilation, 0x0089B314){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_time_mode, 0x0089B324){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_x_facing, 0x0089ABF4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_y_facing, 0x0089ABFC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, get_z_facing, 0x0089AC04){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, has_carry_slave, 0x0089B1A4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, has_member__str, 0x0089AE94){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, has_script_data_interface, 0x0089B33C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, hates__entity, 0x0089B51C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ifl_damage_lock__num, 0x0089B004){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ifl_lock__num, 0x0089B00C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ifl_pause, 0x0089B014){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, ifl_play, 0x0089B01C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, in_sector__vector3d__vector3d__num, 0x0089AD0C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, inhibit_universal_soldier_ability__str__num, 0x0089B174){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, invoke_facial_expression__num__num__num__num, 0x0089B3FC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, is_a_car, 0x0089AD5C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, is_picked_up, 0x0089AE1C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, is_suspended, 0x0089B45C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, is_throwable, 0x0089AD64){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, is_valid, 0x0089B464){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, is_visible, 0x0089AD74){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, kill_anim_in_slot__num, 0x0089AEBC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, likes__entity, 0x0089B524){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, look_at__vector3d, 0x0089AC7C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, motion_blur_off, 0x0089ADFC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, motion_blur_on__num__num__num, 0x0089ADF4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, motion_trail_off, 0x0089AE14){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, motion_trail_on__entity__entity__vector3d__num__num__num__num, 0x0089AE04){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, motion_trail_on__entity__str__num__num__vector3d__num__num__num__num, 0x0089AE0C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, neutral__entity, 0x0089B52C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, operator_not_equals__entity, 0x0089AD3C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, operator_equals_equals__entity, 0x0089AD34){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_add_particle__str, 0x0089B4A4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_apply_force__vector3d__num, 0x0089B354){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_cancel_all_velocity, 0x0089B36C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_clear_pendulum, 0x0089B3A4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_get_attached_particle_name, 0x0089B4BC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_get_bounce_particle_name, 0x0089B4AC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_is_biped_physics_running, 0x0089B374){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_is_effectively_standing, 0x0089B35C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_is_prop_physics_at_rest, 0x0089B4CC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_is_prop_physics_running, 0x0089B4D4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_manage_standing__num, 0x0089B364){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_set_allow_biped_physics__num, 0x0089B38C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_set_attached_particle_name__str, 0x0089B4C4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_set_bounce_particle_name__str, 0x0089B4B4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_set_pendulum__entity__num, 0x0089B39C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_set_pendulum__vector3d__num, 0x0089B394){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_start_biped_physics, 0x0089B37C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_start_prop_physics__vector3d__num, 0x0089B494){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_stop_biped_physics, 0x0089B384){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, physical_ifc_stop_prop_physics, 0x0089B49C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, play_anim__str, 0x0089AEA4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, play_anim__str__num__num, 0x0089AEAC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, poison__num__num, 0x0089B1DC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, pop_ai_base_machine, 0x0089B164){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, pre_roll__num, 0x0089B55C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, push_ai_base_machine__str, 0x0089B15C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, randomize_position__vector3d__num__num__num, 0x0089B4DC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, regenerate__num__num, 0x0089B1E4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, rel_angle__vector3d, 0x0089AC34){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, remove_collision_ignorance__entity, 0x0089AF9C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, remove_exclusive_interactor__string_hash__interactable_interface, 0x0089B5CC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, remove_selectable_target__entity, 0x0089B184){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, remove_vehicle_from_traffic_system, 0x0089B47C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, reset_ai, 0x0089B06C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, restart, 0x0089B564){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, seriously_kill, 0x0089ADCC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_abs_xz_facing__vector3d, 0x0089AC94){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_active__num, 0x0089AD9C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_float__str__num, 0x0089B09C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_float_variance__str__num__num, 0x0089B0A4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_hash__str__num, 0x0089B0C4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_hash__str__str, 0x0089B0BC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_hash__str__string_hash, 0x0089B0CC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_int__str__num, 0x0089B0AC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_str__str__str, 0x0089B0B4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ai_param_vector3d__str__vector3d, 0x0089B0D4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ambient_factor__vector3d, 0x0089B32C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_anchor_activated__num, 0x0089AFA4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_car_combat_info__num__num__num__num__num__num__num__num, 0x0089B1BC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_crawlable__num, 0x0089AD84){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_default_variant, 0x0089B544){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_distance_clip__num, 0x0089ADAC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_entity_blur__num, 0x0089B224){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_facing__vector3d__vector3d, 0x0089AC8C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_fade_timer__num, 0x0089B1B4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_hires_shadow__num, 0x0089AD4C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ifc_num__str__num, 0x0089B28C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ifc_str__str__str, 0x0089B2AC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ifc_vec__str__vector3d, 0x0089B29C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_ignore_limbo__num, 0x0089B4E4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_immobile__num, 0x0089B484){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_entity__str__str__entity, 0x0089B11C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_float__str__str__num, 0x0089B104){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_float_variance__str__str__num__num, 0x0089B10C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_hash__str__str__num, 0x0089B134){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_hash__str__str__str, 0x0089B12C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_int__str__str__num, 0x0089B114){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_str__str__str__str, 0x0089B124){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_inode_param_vector3d__str__str__vector3d, 0x0089B13C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_invulnerable__num, 0x0089AD44){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_kill_ent_on_destroy__num, 0x0089B48C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_member_hidden__num, 0x0089AE9C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_parent__entity, 0x0089AC3C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_parent_rel__entity, 0x0089AC5C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_path_graph__str, 0x0089B214){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_path_graph_start_node__num, 0x0089B21C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_pendulum_attach_limb__num, 0x0089B3BC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_pendulum_length__num, 0x0089B3AC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_physical__num, 0x0089ADA4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_po_facing__vector3d, 0x0089AC9C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_rel_position__vector3d, 0x0089AC64){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_render_alpha__num, 0x0089B244){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_render_color__vector3d, 0x0089B23C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_render_scale__vector3d, 0x0089B22C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_scale__num, 0x0089B274){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_scripted_target__entity, 0x0089B18C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_see_thru__num, 0x0089AD94){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_special_target__num, 0x0089B454){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_state__num__num, 0x0089B574){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_targetting__num, 0x0089AD54){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_throwable__num, 0x0089AD6C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_time_dilation__num, 0x0089B30C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_time_mode__num, 0x0089B31C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_variant__string_hash, 0x0089B53C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_velocity__vector3d, 0x0089AC74){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_visible__num, 0x0089AD7C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_visible_and_disable_fading__num, 0x0089AD8C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, set_xz_facing__vector3d, 0x0089AC84){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, setup_tether__vector3d__num, 0x0089B1CC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, snap_to__entity, 0x0089AE2C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, suspend, 0x0089AF7C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, teleport_to_point__vector3d, 0x0089AC6C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, unforce_regions, 0x0089AD2C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, unsuspend, 0x0089AFAC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, use_item__str, 0x0089B1FC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, use_item_by_id__str, 0x0089B204){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_camera_set_roll__num__num, 0x0089AE54){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_change_color__vector3d__vector3d__num, 0x0089AE7C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_change_range__num__num__num, 0x0089AE84){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_change_render_color__vector3d__num__num, 0x0089B25C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_change_render_scale__vector3d__num, 0x0089B234){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_for_not_sector__str, 0x0089AFEC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_for_pickup, 0x0089AFB4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_for_sector__str, 0x0089AFE4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_lookat__vector3d__num, 0x0089B26C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_lookat2__entity__entity__vector3d__num, 0x0089B264){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_looping_anim__str__num__num, 0x0089B1F4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_play_anim__str__num__num__num, 0x0089AEB4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_prox__entity__num, 0x0089AFBC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_prox__vector3d__num, 0x0089AFC4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_prox__vector3d__num__vector3d__num, 0x0089AFCC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_prox_maxY__vector3d__num__num, 0x0089AFDC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_prox_minY__vector3d__num__num, 0x0089AFD4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_prox_sector__vector3d__num__str, 0x0089AFF4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_rotate__vector3d__num__num, 0x0089ACAC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_rotate_WCS__vector3d__vector3d__num__num, 0x0089ACBC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_rotate_WCS_cosmetic__vector3d__vector3d__num__num, 0x0089ACCC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_rotate_WCS_with_compute_sector__vector3d__vector3d__num__num, 0x0089ACC4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_rotate_cosmetic__vector3d__num__num, 0x0089ACB4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_set_scale__num__num, 0x0089B27C){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_translate__vector3d__num, 0x0089ACD4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_translate_WCS__vector3d__num, 0x0089ACEC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_translate_WCS_cosmetic__vector3d__num, 0x0089ACFC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_translate_WCS_with_compute_sector__vector3d__num, 0x0089ACF4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_translate_cosmetic__vector3d__num, 0x0089ACE4){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, wait_translate_with_compute_sector__vector3d__num, 0x0089ACDC){
-    (void) stack;
-    (void) entry;
-}
-DECLARE_SLF_END()
-
-DECLARE_SLF_BEGIN(entity, was_occluded_last_frame, 0x0089AE24){
-    (void) stack;
-    (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, add__entity, 0x0089BFE4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, begin, 0x0089BFFC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, end, 0x0089C004){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, get_index__num, 0x0089C00C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, remove__entity, 0x0089BFEC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, remove__entity_list_iterator, 0x0089BFF4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, set_index__num__entity, 0x0089C014){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list, size, 0x0089BFDC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list_iterator, get_entity, 0x0089C03C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list_iterator, operator_not_equals__entity_list_iterator, 0x0089C034){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list_iterator, operator_plus_plus, 0x0089C01C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list_iterator, operator_minus_munus, 0x0089C024){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_list_iterator, operator_equals_equals__entity_list_iterator, 0x0089C02C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, get_entity, 0x0089C55C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, get_mini_map_active, 0x0089C56C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, get_poi_active, 0x0089C58C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, set_entity__entity, 0x0089C554){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, set_health_widget_active__num, 0x0089C584){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, set_mini_map_active__num, 0x0089C564){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, set_poi_active__num, 0x0089C57C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(entity_tracker, set_poi_icon__num, 0x0089C574){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(glamour_cam, set_angle__num__num__num__num, 0x0089B788){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(glamour_cam, set_look_at_bone__str, 0x0089B7A0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(glamour_cam, set_position_bone__str, 0x0089B798){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(glamour_cam, set_target__entity, 0x0089B790){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(gun, get_blaster_beam, 0x0089B588){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(gun, get_muzzle_pos, 0x0089B590){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(gun, set_target_info__entity__vector3d__vector3d, 0x0089B598){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, add_box_trigger__string_hash__num__vector3d__vector3d, 0x0089B61C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, add_named_box_trigger__string_hash__str, 0x0089B624){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, add_point_trigger__string_hash__num__vector3d__num, 0x0089B614){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, create_interaction__string_hash__num, 0x0089B5E4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, create_interaction__string_hash__num__str, 0x0089B5EC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, disable_interaction__string_hash, 0x0089B5DC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, enable_interaction__string_hash, 0x0089B5D4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, nondirectional__string_hash, 0x0089B604){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, one_shot__string_hash, 0x0089B5FC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, set_activation_button__string_hash__num, 0x0089B5F4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(interactable_interface, set_approach__string_hash__num, 0x0089B60C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, draw, 0x0089B6A4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_count, 0x0089B63C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_last_grenade_armed, 0x0089B674){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_last_grenade_detonated, 0x0089B67C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_last_grenade_spawned, 0x0089B66C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_launch_force, 0x0089B64C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_launch_vec, 0x0089B65C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_owner, 0x0089B684){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, get_visual_item, 0x0089B664){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, holster, 0x0089B69C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, is_a_grenade, 0x0089B6E4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, is_a_gun, 0x0089B6DC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, is_a_melee, 0x0089B6F4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, is_a_rocket, 0x0089B6EC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, set_count__num, 0x0089B634){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, set_damage__num, 0x0089B6CC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, set_drawn_limb__str, 0x0089B68C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, set_holster_limb__str, 0x0089B694){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, set_launch_force__num, 0x0089B644){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, set_launch_vec__vector3d, 0x0089B654){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, use, 0x0089B6AC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(item, yank_remove__vector3d__num, 0x0089B6D4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, check_collision__num__num, 0x0089B718){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, clear_collision, 0x0089B720){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, debug_render__num, 0x0089B768){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, did_collide, 0x0089B760){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, get_end_pos, 0x0089B740){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, get_hit_entity, 0x0089B758){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, get_hit_normal, 0x0089B750){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, get_hit_pos, 0x0089B748){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, get_start_pos, 0x0089B730){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, set_end_pos__vector3d, 0x0089B738){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(line_info, set_start_pos__vector3d, 0x0089B728){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_camera_marker, get_base_position, 0x0089C41C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_camera_marker, get_camera_position, 0x0089C424){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_camera_transform_marker, get_base_position, 0x0089C45C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_camera_transform_marker, get_camera_position, 0x0089C464){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_camera_transform_marker, get_forward, 0x0089C46C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_camera_transform_marker, get_up, 0x0089C474){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_transform_marker, get_base_position, 0x0089C43C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_transform_marker, get_forward, 0x0089C444){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(mission_transform_marker, get_up, 0x0089C44C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, add__num, 0x0089BF6C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, begin, 0x0089BF84){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, end, 0x0089BF8C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, get_index__num, 0x0089BF94){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, remove__num, 0x0089BF74){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, remove__num_list_iterator, 0x0089BF7C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, set_index__num__num, 0x0089BF9C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list, size, 0x0089BF64){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list_iterator, get_num, 0x0089BFC4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list_iterator, operator_not_equals__num_list_iterator, 0x0089BFBC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list_iterator, operator_plus_plus, 0x0089BFA4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list_iterator, operator_minus_munus, 0x0089BFAC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(num_list_iterator, operator_equals_equals__num_list_iterator, 0x0089BFB4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_abs_position, 0x0089C8A4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_parent, 0x0089C884){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_position, 0x0089C894){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_rel_position, 0x0089C8B4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_rotation, 0x0089C8C4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_scale, 0x0089C8D4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_state__num, 0x0089C8E4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, get_visible, 0x0089C8F4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_abs_position__vector3d, 0x0089C8AC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_parent__entity, 0x0089C88C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_position__vector3d, 0x0089C89C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_rel_position__vector3d, 0x0089C8BC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_rotation__vector3d, 0x0089C8CC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_scale__vector3d, 0x0089C8DC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_state__num__num, 0x0089C8EC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(pfx, set_visible__num, 0x0089C8FC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, add_control_pt__vector3d, 0x0089C108){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, build__num__num, 0x0089C140){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, clear, 0x0089C0F8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, clear_simulations, 0x0089C220){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, create_tentacle, 0x0089C240){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, destroy_tentacle, 0x0089C248){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_control_pt__num, 0x0089C118){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_curve_pt__num, 0x0089C128){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_ifl_frame, 0x0089C1A0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_max_length, 0x0089C1D8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_num_control_pts, 0x0089C130){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_num_curve_pts, 0x0089C138){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_num_sides, 0x0089C1B8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_tiles_per_meter, 0x0089C1C8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, get_tube_radius, 0x0089C1A8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, ifl_lock__num, 0x0089C190){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, ifl_play, 0x0089C198){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, kill_pt_anim__num__num, 0x0089C208){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, rebuild, 0x0089C148){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, reserve_control_pts__num, 0x0089C100){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_additive__num, 0x0089C120){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_begin_material__str__num, 0x0089C168){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_begin_material_ifl__str__num, 0x0089C180){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_blend_mode__num, 0x0089C188){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_control_pt__num__vector3d, 0x0089C110){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_end_material__str__num, 0x0089C160){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_end_material_ifl__str__num, 0x0089C178){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_force_start__num, 0x0089C150){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_material__str, 0x0089C158){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_material_ifl__str, 0x0089C170){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_max_length__num, 0x0089C1E0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_num_sides__num, 0x0089C1C0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_pt_anim__num__vector3d__num__num, 0x0089C1F8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_random_pt_anim__num__num__num__num, 0x0089C200){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_start_v__num, 0x0089C1F0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_tiles_per_meter__num, 0x0089C1D0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, set_tube_radius__num, 0x0089C1B0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, simulate_slack__vector3d__vector3d__num, 0x0089C210){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, simulate_tether__entity__entity__num, 0x0089C218){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_add_dangle_engine__num__num, 0x0089C2A8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_add_follow_engine__num__num__vector3d__num, 0x0089C2B0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_add_slack_engine__num__num, 0x0089C2B8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_add_strike_engine__vector3d__num__num, 0x0089C298){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_add_swirl_strike_engine__vector3d__num__num__num__num, 0x0089C2A0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_create_line__vector3d__num, 0x0089C280){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_engine_running__num, 0x0089C290){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_end_position, 0x0089C260){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_engine_drag__num, 0x0089C2F0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_engine_gravity__num, 0x0089C300){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_engine_length__num, 0x0089C2D0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_engine_slack_percent__num, 0x0089C2E0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_num_positions, 0x0089C268){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_get_position__num, 0x0089C278){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_kill_engine__num, 0x0089C288){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_collide__num, 0x0089C250){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_end_position__vector3d, 0x0089C258){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_engine_attach_ent__num__entity, 0x0089C2C0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_engine_drag__num__num, 0x0089C2F8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_engine_gravity__num__vector3d, 0x0089C308){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_engine_length__num__num, 0x0089C2D8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_engine_slack_percent__num__num, 0x0089C2E8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_engine_target__num__vector3d, 0x0089C2C8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, tentacle_set_position__num__vector3d, 0x0089C270){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(polytube, v_animate__num, 0x0089C1E8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, get_facing, 0x0089BA98){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, get_position, 0x0089BAA8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, get_rotation, 0x0089BAA0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, operator_not_equals__posfacing3d, 0x0089BAB8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, operator_plus__posfacing3d, 0x0089BA88){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, operator_multiply__posfacing3d, 0x0089BA90){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, operator_equals_equals__posfacing3d, 0x0089BAB0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, posfacing3d__num__num__num__num, 0x0089BA68){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, posfacing3d__num__num__num__vector3d, 0x0089BA78){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, posfacing3d__vector3d__num, 0x0089BA70){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(posfacing3d, posfacing3d__vector3d__vector3d, 0x0089BA80){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(position3d, operator_assign__vector3d, 0x0089BA60){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(position3d, position3d__num__num__num, 0x0089BA58){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_button_pressed__num, 0x0089BCD8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_down_pressed, 0x0089BCE8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_left_pressed, 0x0089BCF0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_lstick_down_pressed, 0x0089BD28){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_lstick_left_pressed, 0x0089BD30){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_lstick_right_pressed, 0x0089BD38){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_lstick_up_pressed, 0x0089BD20){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_right_pressed, 0x0089BCF8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_rstick_down_pressed, 0x0089BD08){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_rstick_left_pressed, 0x0089BD10){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_rstick_right_pressed, 0x0089BD18){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_rstick_up_pressed, 0x0089BD00){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(script_controller, is_up_pressed, 0x0089BCE0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(signaller, clear_callback__str, 0x0089B7F0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(signaller, clear_callbacks, 0x0089B7E8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, dampen_guard, 0x0089B880){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, fade_in__num__num, 0x0089B898){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, fade_out__num, 0x0089B8A0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, fade_to__num__num, 0x0089B890){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_doppler, 0x0089B878){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_entity, 0x0089B848){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_max_distance, 0x0089B870){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_min_distance, 0x0089B868){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_pitch, 0x0089B860){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_source, 0x0089B828){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_status, 0x0089B888){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, get_volume, 0x0089B858){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, is_valid, 0x0089B820){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, play__num, 0x0089B8B0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, play_3d__vector3d__num, 0x0089B8B8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, queue__num, 0x0089B8A8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, set_entity__entity, 0x0089B850){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, set_preregistered_source__str, 0x0089B830){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, set_sound_group__str, 0x0089B840){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, set_source__str, 0x0089B838){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, stop__num, 0x0089B8C8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(sound_inst, wait__num, 0x0089B8C0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, add__str, 0x0089C05C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, begin, 0x0089C074){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, end, 0x0089C07C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, get_index__num, 0x0089C084){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, remove__str, 0x0089C064){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, remove__str_list_iterator, 0x0089C06C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, set_index__num__str, 0x0089C08C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list, size, 0x0089C054){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list_iterator, get_str, 0x0089C0B4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list_iterator, operator_not_equals__str_list_iterator, 0x0089C0AC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list_iterator, operator_plus_plus, 0x0089C094){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list_iterator, operator_minus_munus, 0x0089C09C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(str_list_iterator, operator_equals_equals__str_list_iterator, 0x0089C0A4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(string_hash, operator_equals_equals__str, 0x0089C7D4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(string_hash, operator_equals_equals__string_hash, 0x0089C7CC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(string_hash, set__str, 0x0089C7C4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(string_hash, string_hash__str, 0x0089C7B4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(string_hash, to_string, 0x0089C7BC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(switch_obj, get_state, 0x0089B8DC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(switch_obj, set_alarm__num, 0x0089B904){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(switch_obj, set_single_use__num, 0x0089B90C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(switch_obj, set_state__num, 0x0089B8F4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(switch_obj, set_web_targetable__num, 0x0089B8FC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(switch_obj, who_pressed_me, 0x0089B8EC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(tam, set_entity__entity, 0x0089C6DC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(tam, set_pos__vector3d, 0x0089C6E4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(tam, set_state__num, 0x0089C6EC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(tam, set_type__num, 0x0089C6F4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_entry, get_entity, 0x0089C62C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_entry, get_flags, 0x0089C634){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_entry, get_taunt_name, 0x0089C624){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_entity_to_do_hurting, 0x0089C654){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_entity_to_hurt, 0x0089C64C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_last_hit_pt_value, 0x0089C664){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_max_times_to_play, 0x0089C684){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_min_damage, 0x0089C65C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_normalized_weight, 0x0089C6A4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_taunt_entry__num, 0x0089C694){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_times_played, 0x0089C674){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_total_taunts, 0x0089C68C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, get_weight, 0x0089C69C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, increment_times_played, 0x0089C67C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, set_last_hit_pt_value__num, 0x0089C66C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange, set_normalized_weight__num, 0x0089C6AC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange_list, add__taunt_exchange, 0x0089C0BC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange_list, clear, 0x0089C0D4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange_list, get_index__num, 0x0089C0C4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(taunt_exchange_list, size, 0x0089C0CC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, contains__entity, 0x0089B938){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, get_abs_position, 0x0089B920){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, get_radius, 0x0089B9A0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, get_triggered_ent, 0x0089B928){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, get_triggered_entity_list, 0x0089B930){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, is_point_radius_trigger, 0x0089B9B0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, set_active__num, 0x0089B940){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, set_multiple_entrance__num, 0x0089B988){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, set_position__vector3d, 0x0089B9A8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, set_radius__num, 0x0089B998){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, set_sees_dead_people__num, 0x0089B990){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(trigger, set_use_any_char__num, 0x0089B980){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, length, 0x0089B9F8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, length2, 0x0089BA00){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, operator_not_equals__vector3d, 0x0089B9F0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, operator_multiply__num, 0x0089B9D8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, operator_plus__vector3d, 0x0089B9C8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, operator_minus__vector3d, 0x0089B9D0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, operator_divide__num, 0x0089B9E0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, operator_equals_equals__vector3d, 0x0089B9E8){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, vector3d__num__num__num, 0x0089B9C0){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, x, 0x0089BA18){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, xy_norm, 0x0089BA08){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, xz_norm, 0x0089BA10){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, y, 0x0089BA20){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d, z, 0x0089BA28){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, add__vector3d, 0x0089BEEC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, begin, 0x0089BF04){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, clear, 0x0089BF1C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, end, 0x0089BF0C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, get_index__num, 0x0089BF14){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, remove__vector3d, 0x0089BEF4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, remove__vector3d_list_iterator, 0x0089BEFC){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, set_index__num__vector3d, 0x0089BF24){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list, size, 0x0089BEE4){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list_iterator, get_vector3d, 0x0089BF4C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list_iterator, operator_not_equals__vector3d_list_iterator, 0x0089BF44){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list_iterator, operator_plus_plus, 0x0089BF2C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list_iterator, operator_minus_munus, 0x0089BF34){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
 DECLARE_SLF_BEGIN(vector3d_list_iterator, operator_equals_equals__vector3d_list_iterator, 0x0089BF3C){
     (void) stack;
     (void) entry;
+	return true;
 }
 DECLARE_SLF_END()
 
@@ -7369,9 +6506,15 @@ void chuck_register_script_libs()
 
         CREATE_SLC(slc_pfx_t);
         CREATE_SLC(slc_interactable_interface_t);
-        CREATE_SLC(slc_anim_t);
+
+        slc_anim = new (mem_alloc(sizeof(slc_anim_t))) slc_anim_t {"anim", 4};
+        classes[class_idx++] = slc_anim;
+
         CREATE_SLC(slc_beam_t);
-        CREATE_SLC(slc_entity_t);
+
+        slc_entity = new (mem_alloc(sizeof(slc_entity_t))) slc_entity_t {"entity", 4, "signaller"};
+        classes[class_idx++] = slc_entity;
+
         CREATE_SLC(slc_cut_scene_t);
         CREATE_SLC(slc_debug_menu_entry_t);
         CREATE_SLC(slc_entity_list_t);
@@ -7411,6 +6554,10 @@ void chuck_register_script_libs()
         if (!g_is_the_packer() && !script_manager::using_chuck_old_fashioned()) {
             slc_manager::un_mash_all_funcs();
         }
+
+        register_anim_lib();
+
+        register_entity_lib();
 
 #undef CREATE_SLC
 
@@ -7882,16 +7029,9 @@ void chuck_register_script_libs()
 
 #define CREATE_SLF(KLASS, TYPE, NAME)                                              \
     new (mem_alloc(sizeof(BUILD_SLF_NAME(KLASS, TYPE)))) BUILD_SLF_NAME(KLASS, TYPE) {slc, NAME}
-        {
-            auto *slc = classes[2];
-            CREATE_SLF(anim, kill_anim, "kill_anim()");
-            CREATE_SLF(anim, pause, "pause()");
-            CREATE_SLF(anim, play, "play()");
-            CREATE_SLF(anim, set_fade_time__num, "set_fade_time(num)");
-            CREATE_SLF(anim, set_time__num, "set_time(num)");
-            CREATE_SLF(anim, set_timescale__num, "set_timescale(num)");
-            CREATE_SLF(anim, wait_finished, "wait_finished()");
 
+        script_library_class *slc = nullptr;
+        {
             slc = classes[3];
             CREATE_SLF(beam, add_alpha_effect__num__num__num__num__num__num, "add_alpha_effect(num,num,num,num,num,num)");
             CREATE_SLF(beam, add_color_effect__num__num__num__num__num__num__num__num__num__num, "add_color_effect(num,num,num,num,num,num,num,num,num,num)");
@@ -7963,292 +7103,6 @@ void chuck_register_script_libs()
             CREATE_SLF(district, wait_for_load, "wait_for_load()");
 
             slc = classes[4];
-            CREATE_SLF(entity, abs_snap_to__entity, "abs_snap_to(entity)");
-            CREATE_SLF(entity, add_collision_ignorance__entity, "add_collision_ignorance(entity)");
-            CREATE_SLF(entity, add_exclusive_interactor__string_hash__interactable_interface, "add_exclusive_interactor(string_hash,interactable_interface)");
-            CREATE_SLF(entity, add_item__entity, "add_item(entity)");
-            CREATE_SLF(entity, add_selectable_target__entity, "add_selectable_target(entity)");
-            CREATE_SLF(entity, add_vehicle_to_traffic_system__num, "add_vehicle_to_traffic_system(num)");
-            CREATE_SLF(entity, ai_get_viseme_morph_set__str__str, "ai_get_viseme_morph_set(str,str)");
-            CREATE_SLF(entity, ai_get_viseme_stream__str, "ai_get_viseme_stream(str)");
-            CREATE_SLF(entity, ai_is_speaking, "ai_is_speaking()");
-            CREATE_SLF(entity, ai_run_lip_sync__str, "ai_run_lip_sync(str)");
-            CREATE_SLF(entity, ai_say_file__str__num__num, "ai_say_file(str,num,num)");
-            CREATE_SLF(entity, ai_say_gab__str__num__num, "ai_say_gab(str,num,num)");
-            CREATE_SLF(entity, ai_say_sound_group__str__num__num, "ai_say_sound_group(str,num,num)");
-            CREATE_SLF(entity, ai_shut_up, "ai_shut_up()");
-            CREATE_SLF(entity, ai_traffic_come_on_camera__vector3d__num, "ai_traffic_come_on_camera(vector3d,num)");
-            CREATE_SLF(entity, ai_traffic_come_on_camera__vector3d__vector3d__num, "ai_traffic_come_on_camera(vector3d,vector3d,num)");
-            CREATE_SLF(entity, ai_traffic_follow_entity__entity__num, "ai_traffic_follow_entity(entity,num)");
-            CREATE_SLF(entity, ai_traffic_follow_vehicle__entity, "ai_traffic_follow_vehicle(entity)");
-            CREATE_SLF(entity, ai_traffic_get_value__num, "ai_traffic_get_value(num)");
-            CREATE_SLF(entity, ai_traffic_get_value__num__num, "ai_traffic_get_value(num,num)");
-            CREATE_SLF(entity, ai_traffic_goto__vector3d__num__num__num, "ai_traffic_goto(vector3d,num,num,num)");
-            CREATE_SLF(entity, ai_traffic_set_value__num__num, "ai_traffic_set_value(num,num)");
-            CREATE_SLF(entity, ai_traffic_spawn_away_from__vector3d__num, "ai_traffic_spawn_away_from(vector3d,num)");
-            CREATE_SLF(entity, ai_traffic_spawn_behind__entity, "ai_traffic_spawn_behind(entity)");
-            CREATE_SLF(entity, ai_traffic_spawn_near__vector3d, "ai_traffic_spawn_near(vector3d)");
-            CREATE_SLF(entity, ai_voice_box_set_team_respect__string_hash__num, "ai_voice_box_set_team_respect(string_hash,num)");
-            CREATE_SLF(entity, ai_wait_say_file__str__num__num, "ai_wait_say_file(str,num,num)");
-            CREATE_SLF(entity, ai_wait_say_gab__str__num__num, "ai_wait_say_gab(str,num,num)");
-            CREATE_SLF(entity, ai_wait_say_preregistered_file__str__num__num, "ai_wait_say_preregistered_file(str,num,num)");
-            CREATE_SLF(entity, ai_wait_say_sound_group__str__num__num, "ai_wait_say_sound_group(str,num,num)");
-            CREATE_SLF(entity, anim_finished, "anim_finished()");
-            CREATE_SLF(entity, anim_finished__num, "anim_finished(num)");
-            CREATE_SLF(entity, apply_continuous_rotation__vector3d__num__num, "apply_continuous_rotation(vector3d,num,num)");
-            CREATE_SLF(entity, apply_damage__num, "apply_damage(num)");
-            CREATE_SLF(entity, apply_directed_damage__num__vector3d, "apply_directed_damage(num,vector3d)");
-            CREATE_SLF(entity, apply_directed_damage_cat__num__vector3d__str__num, "apply_directed_damage_cat(num,vector3d,str,num)");
-            CREATE_SLF(entity, apply_explosive_damage__num__vector3d, "apply_explosive_damage(num,vector3d)");
-            CREATE_SLF(entity, apply_explosive_damage__num__vector3d__vector3d, "apply_explosive_damage(num,vector3d,vector3d)");
-            CREATE_SLF(entity, apply_subdue__num, "apply_subdue(num)");
-            CREATE_SLF(entity, camera_get_target, "camera_get_target()");
-            CREATE_SLF(entity, camera_orbit__vector3d__num__num__num, "camera_orbit(vector3d,num,num,num)");
-            CREATE_SLF(entity, camera_set_collide_with_world__num, "camera_set_collide_with_world(num)");
-            CREATE_SLF(entity, camera_set_roll__num, "camera_set_roll(num)");
-            CREATE_SLF(entity, camera_set_target__vector3d, "camera_set_target(vector3d)");
-            CREATE_SLF(entity, camera_slide_to__vector3d__vector3d__num__num, "camera_slide_to(vector3d,vector3d,num,num)");
-            CREATE_SLF(entity, camera_slide_to_orbit__vector3d__num__num__num__num, "camera_slide_to_orbit(vector3d,num,num,num,num)");
-            CREATE_SLF(entity, cancel_tether, "cancel_tether()");
-            CREATE_SLF(entity, car_random_body_and_color, "car_random_body_and_color()");
-            CREATE_SLF(entity, change_ai_base_machine__str, "change_ai_base_machine(str)");
-            CREATE_SLF(entity, collisions_enabled, "collisions_enabled()");
-            CREATE_SLF(entity, compute_sector, "compute_sector()");
-            CREATE_SLF(entity, create_damage_interface, "create_damage_interface()");
-            CREATE_SLF(entity, create_interactable_ifc, "create_interactable_ifc()");
-            CREATE_SLF(entity, create_physical_interface, "create_physical_interface()");
-            CREATE_SLF(entity, create_script_data_interface, "create_script_data_interface()");
-            CREATE_SLF(entity, create_web_ifc__str__num__num, "create_web_ifc(str,num,num)");
-            CREATE_SLF(entity, disable_as_target, "disable_as_target()");
-            CREATE_SLF(entity, disable_collisions, "disable_collisions()");
-            CREATE_SLF(entity, disable_fading, "disable_fading()");
-            CREATE_SLF(entity, disgorge_items, "disgorge_items()");
-            CREATE_SLF(entity, enable_as_target, "enable_as_target()");
-            CREATE_SLF(entity, enable_collisions, "enable_collisions()");
-            CREATE_SLF(entity, enable_collisions__num, "enable_collisions(num)");
-            CREATE_SLF(entity, eye_check_ent__entity, "eye_check_ent(entity)");
-            CREATE_SLF(entity, eye_check_pos__vector3d, "eye_check_pos(vector3d)");
-            CREATE_SLF(entity, force_activate_interaction__string_hash__interactable_interface, "force_activate_interaction(string_hash,interactable_interface)");
-            CREATE_SLF(entity, force_current_region, "force_current_region()");
-            CREATE_SLF(entity, force_region__entity, "force_region(entity)");
-            CREATE_SLF(entity, get_abs_position, "get_abs_position()");
-            CREATE_SLF(entity, get_ai_base_machine_name, "get_ai_base_machine_name()");
-            CREATE_SLF(entity, get_ai_param_float__str, "get_ai_param_float(str)");
-            CREATE_SLF(entity, get_ai_param_hash__str, "get_ai_param_hash(str)");
-            CREATE_SLF(entity, get_ai_param_int__str, "get_ai_param_int(str)");
-            CREATE_SLF(entity, get_ai_param_str__str, "get_ai_param_str(str)");
-            CREATE_SLF(entity, get_ai_param_vector3d__str, "get_ai_param_vector3d(str)");
-            CREATE_SLF(entity, get_ai_signaller, "get_ai_signaller()");
-            CREATE_SLF(entity, get_anchor_point, "get_anchor_point()");
-            CREATE_SLF(entity, get_carry_slave, "get_carry_slave()");
-            CREATE_SLF(entity, get_current_animation_name, "get_current_animation_name()");
-            CREATE_SLF(entity, get_damage_force, "get_damage_force()");
-            CREATE_SLF(entity, get_debug_name, "get_debug_name()");
-            CREATE_SLF(entity, get_detonate_position, "get_detonate_position()");
-            CREATE_SLF(entity, get_district, "get_district()");
-            CREATE_SLF(entity, get_facing, "get_facing()");
-            CREATE_SLF(entity, get_fade_timer, "get_fade_timer()");
-            CREATE_SLF(entity, get_first_child, "get_first_child()");
-            CREATE_SLF(entity, get_hash_name, "get_hash_name()");
-            CREATE_SLF(entity, get_hidey_pos__vector3d__num, "get_hidey_pos(vector3d,num)");
-            CREATE_SLF(entity, get_ifc_num__str, "get_ifc_num(str)");
-            CREATE_SLF(entity, get_ifc_str__str, "get_ifc_str(str)");
-            CREATE_SLF(entity, get_ifc_vec__str, "get_ifc_vec(str)");
-            CREATE_SLF(entity, get_ifl_frame, "get_ifl_frame()");
-            CREATE_SLF(entity, get_inode_param_float__str__str, "get_inode_param_float(str,str)");
-            CREATE_SLF(entity, get_inode_param_hash__str__str, "get_inode_param_hash(str,str)");
-            CREATE_SLF(entity, get_inode_param_int__str__str, "get_inode_param_int(str,str)");
-            CREATE_SLF(entity, get_inode_param_str__str__str, "get_inode_param_str(str,str)");
-            CREATE_SLF(entity, get_inode_param_vector3d__str__str, "get_inode_param_vector3d(str,str)");
-            CREATE_SLF(entity, get_interactable_ifc, "get_interactable_ifc()");
-            CREATE_SLF(entity, get_item__num, "get_item(num)");
-            CREATE_SLF(entity, get_item_by_name__str, "get_item_by_name(str)");
-            CREATE_SLF(entity, get_item_quantity__num, "get_item_quantity(num)");
-            CREATE_SLF(entity, get_last_anchor, "get_last_anchor()");
-            CREATE_SLF(entity, get_last_attacker, "get_last_attacker()");
-            CREATE_SLF(entity, get_last_item_used, "get_last_item_used()");
-            CREATE_SLF(entity, get_member__str, "get_member(str)");
-            CREATE_SLF(entity, get_next_sibling, "get_next_sibling()");
-            CREATE_SLF(entity, get_num_items, "get_num_items()");
-            CREATE_SLF(entity, get_parent, "get_parent()");
-            CREATE_SLF(entity, get_pendulum_length, "get_pendulum_length()");
-            CREATE_SLF(entity, get_rel_position, "get_rel_position()");
-            CREATE_SLF(entity, get_rel_velocity__entity, "get_rel_velocity(entity)");
-            CREATE_SLF(entity, get_render_alpha, "get_render_alpha()");
-            CREATE_SLF(entity, get_render_color, "get_render_color()");
-            CREATE_SLF(entity, get_scripted_target, "get_scripted_target()");
-            CREATE_SLF(entity, get_sector_name, "get_sector_name()");
-            CREATE_SLF(entity, get_state__num, "get_state(num)");
-            CREATE_SLF(entity, get_time_dilation, "get_time_dilation()");
-            CREATE_SLF(entity, get_time_mode, "get_time_mode()");
-            CREATE_SLF(entity, get_x_facing, "get_x_facing()");
-            CREATE_SLF(entity, get_y_facing, "get_y_facing()");
-            CREATE_SLF(entity, get_z_facing, "get_z_facing()");
-            CREATE_SLF(entity, has_carry_slave, "has_carry_slave()");
-            CREATE_SLF(entity, has_member__str, "has_member(str)");
-            CREATE_SLF(entity, has_script_data_interface, "has_script_data_interface()");
-            CREATE_SLF(entity, hates__entity, "hates(entity)");
-            CREATE_SLF(entity, ifl_damage_lock__num, "ifl_damage_lock(num)");
-            CREATE_SLF(entity, ifl_lock__num, "ifl_lock(num)");
-            CREATE_SLF(entity, ifl_pause, "ifl_pause()");
-            CREATE_SLF(entity, ifl_play, "ifl_play()");
-            CREATE_SLF(entity, in_sector__vector3d__vector3d__num, "in_sector(vector3d,vector3d,num)");
-            CREATE_SLF(entity, inhibit_universal_soldier_ability__str__num, "inhibit_universal_soldier_ability(str,num)");
-            CREATE_SLF(entity, invoke_facial_expression__num__num__num__num, "invoke_facial_expression(num,num,num,num)");
-            CREATE_SLF(entity, is_a_car, "is_a_car()");
-            CREATE_SLF(entity, is_picked_up, "is_picked_up()");
-            CREATE_SLF(entity, is_suspended, "is_suspended()");
-            CREATE_SLF(entity, is_throwable, "is_throwable()");
-            CREATE_SLF(entity, is_valid, "is_valid()");
-            CREATE_SLF(entity, is_visible, "is_visible()");
-            CREATE_SLF(entity, kill_anim_in_slot__num, "kill_anim_in_slot(num)");
-            CREATE_SLF(entity, likes__entity, "likes(entity)");
-            CREATE_SLF(entity, look_at__vector3d, "look_at(vector3d)");
-            CREATE_SLF(entity, motion_blur_off, "motion_blur_off()");
-            CREATE_SLF(entity, motion_blur_on__num__num__num, "motion_blur_on(num,num,num)");
-            CREATE_SLF(entity, motion_trail_off, "motion_trail_off()");
-            CREATE_SLF(entity, motion_trail_on__entity__entity__vector3d__num__num__num__num, "motion_trail_on(entity,entity,vector3d,num,num,num,num)");
-            CREATE_SLF(entity, motion_trail_on__entity__str__num__num__vector3d__num__num__num__num, "motion_trail_on(entity,str,num,num,vector3d,num,num,num,num)");
-            CREATE_SLF(entity, neutral__entity, "neutral(entity)");
-            CREATE_SLF(entity, operator_not_equals__entity, "operator!=(entity)");
-            CREATE_SLF(entity, operator_equals_equals__entity, "operator==(entity)");
-            CREATE_SLF(entity, physical_ifc_add_particle__str, "physical_ifc_add_particle(str)");
-            CREATE_SLF(entity, physical_ifc_apply_force__vector3d__num, "physical_ifc_apply_force(vector3d,num)");
-            CREATE_SLF(entity, physical_ifc_cancel_all_velocity, "physical_ifc_cancel_all_velocity()");
-            CREATE_SLF(entity, physical_ifc_clear_pendulum, "physical_ifc_clear_pendulum()");
-            CREATE_SLF(entity, physical_ifc_get_attached_particle_name, "physical_ifc_get_attached_particle_name()");
-            CREATE_SLF(entity, physical_ifc_get_bounce_particle_name, "physical_ifc_get_bounce_particle_name()");
-            CREATE_SLF(entity, physical_ifc_is_biped_physics_running, "physical_ifc_is_biped_physics_running()");
-            CREATE_SLF(entity, physical_ifc_is_effectively_standing, "physical_ifc_is_effectively_standing()");
-            CREATE_SLF(entity, physical_ifc_is_prop_physics_at_rest, "physical_ifc_is_prop_physics_at_rest()");
-            CREATE_SLF(entity, physical_ifc_is_prop_physics_running, "physical_ifc_is_prop_physics_running()");
-            CREATE_SLF(entity, physical_ifc_manage_standing__num, "physical_ifc_manage_standing(num)");
-            CREATE_SLF(entity, physical_ifc_set_allow_biped_physics__num, "physical_ifc_set_allow_biped_physics(num)");
-            CREATE_SLF(entity, physical_ifc_set_attached_particle_name__str, "physical_ifc_set_attached_particle_name(str)");
-            CREATE_SLF(entity, physical_ifc_set_bounce_particle_name__str, "physical_ifc_set_bounce_particle_name(str)");
-            CREATE_SLF(entity, physical_ifc_set_pendulum__entity__num, "physical_ifc_set_pendulum(entity,num)");
-            CREATE_SLF(entity, physical_ifc_set_pendulum__vector3d__num, "physical_ifc_set_pendulum(vector3d,num)");
-            CREATE_SLF(entity, physical_ifc_start_biped_physics, "physical_ifc_start_biped_physics()");
-            CREATE_SLF(entity, physical_ifc_start_prop_physics__vector3d__num, "physical_ifc_start_prop_physics(vector3d,num)");
-            CREATE_SLF(entity, physical_ifc_stop_biped_physics, "physical_ifc_stop_biped_physics()");
-            CREATE_SLF(entity, physical_ifc_stop_prop_physics, "physical_ifc_stop_prop_physics()");
-            CREATE_SLF(entity, play_anim__str, "play_anim(str)");
-            CREATE_SLF(entity, play_anim__str__num__num, "play_anim(str,num,num)");
-            CREATE_SLF(entity, poison__num__num, "poison(num,num)");
-            CREATE_SLF(entity, pop_ai_base_machine, "pop_ai_base_machine()");
-            CREATE_SLF(entity, pre_roll__num, "pre_roll(num)");
-            CREATE_SLF(entity, push_ai_base_machine__str, "push_ai_base_machine(str)");
-            CREATE_SLF(entity, randomize_position__vector3d__num__num__num, "randomize_position(vector3d,num,num,num)");
-            CREATE_SLF(entity, regenerate__num__num, "regenerate(num,num)");
-            CREATE_SLF(entity, rel_angle__vector3d, "rel_angle(vector3d)");
-            CREATE_SLF(entity, remove_collision_ignorance__entity, "remove_collision_ignorance(entity)");
-            CREATE_SLF(entity, remove_exclusive_interactor__string_hash__interactable_interface, "remove_exclusive_interactor(string_hash,interactable_interface)");
-            CREATE_SLF(entity, remove_selectable_target__entity, "remove_selectable_target(entity)");
-            CREATE_SLF(entity, remove_vehicle_from_traffic_system, "remove_vehicle_from_traffic_system()");
-            CREATE_SLF(entity, reset_ai, "reset_ai()");
-            CREATE_SLF(entity, restart, "restart()");
-            CREATE_SLF(entity, seriously_kill, "seriously_kill()");
-            CREATE_SLF(entity, set_abs_xz_facing__vector3d, "set_abs_xz_facing(vector3d)");
-            CREATE_SLF(entity, set_active__num, "set_active(num)");
-            CREATE_SLF(entity, set_ai_param_float__str__num, "set_ai_param_float(str,num)");
-            CREATE_SLF(entity, set_ai_param_float_variance__str__num__num, "set_ai_param_float_variance(str,num,num)");
-            CREATE_SLF(entity, set_ai_param_hash__str__num, "set_ai_param_hash(str,num)");
-            CREATE_SLF(entity, set_ai_param_hash__str__str, "set_ai_param_hash(str,str)");
-            CREATE_SLF(entity, set_ai_param_hash__str__string_hash, "set_ai_param_hash(str,string_hash)");
-            CREATE_SLF(entity, set_ai_param_int__str__num, "set_ai_param_int(str,num)");
-            CREATE_SLF(entity, set_ai_param_str__str__str, "set_ai_param_str(str,str)");
-            CREATE_SLF(entity, set_ai_param_vector3d__str__vector3d, "set_ai_param_vector3d(str,vector3d)");
-            CREATE_SLF(entity, set_ambient_factor__vector3d, "set_ambient_factor(vector3d)");
-            CREATE_SLF(entity, set_anchor_activated__num, "set_anchor_activated(num)");
-            CREATE_SLF(entity, set_car_combat_info__num__num__num__num__num__num__num__num, "set_car_combat_info(num,num,num,num,num,num,num,num)");
-            CREATE_SLF(entity, set_crawlable__num, "set_crawlable(num)");
-            CREATE_SLF(entity, set_default_variant, "set_default_variant()");
-            CREATE_SLF(entity, set_distance_clip__num, "set_distance_clip(num)");
-            CREATE_SLF(entity, set_entity_blur__num, "set_entity_blur(num)");
-            CREATE_SLF(entity, set_facing__vector3d__vector3d, "set_facing(vector3d,vector3d)");
-            CREATE_SLF(entity, set_fade_timer__num, "set_fade_timer(num)");
-            CREATE_SLF(entity, set_hires_shadow__num, "set_hires_shadow(num)");
-            CREATE_SLF(entity, set_ifc_num__str__num, "set_ifc_num(str,num)");
-            CREATE_SLF(entity, set_ifc_str__str__str, "set_ifc_str(str,str)");
-            CREATE_SLF(entity, set_ifc_vec__str__vector3d, "set_ifc_vec(str,vector3d)");
-            CREATE_SLF(entity, set_ignore_limbo__num, "set_ignore_limbo(num)");
-            CREATE_SLF(entity, set_immobile__num, "set_immobile(num)");
-            CREATE_SLF(entity, set_inode_param_entity__str__str__entity, "set_inode_param_entity(str,str,entity)");
-            CREATE_SLF(entity, set_inode_param_float__str__str__num, "set_inode_param_float(str,str,num)");
-            CREATE_SLF(entity, set_inode_param_float_variance__str__str__num__num, "set_inode_param_float_variance(str,str,num,num)");
-            CREATE_SLF(entity, set_inode_param_hash__str__str__num, "set_inode_param_hash(str,str,num)");
-            CREATE_SLF(entity, set_inode_param_hash__str__str__str, "set_inode_param_hash(str,str,str)");
-            CREATE_SLF(entity, set_inode_param_int__str__str__num, "set_inode_param_int(str,str,num)");
-            CREATE_SLF(entity, set_inode_param_str__str__str__str, "set_inode_param_str(str,str,str)");
-            CREATE_SLF(entity, set_inode_param_vector3d__str__str__vector3d, "set_inode_param_vector3d(str,str,vector3d)");
-            CREATE_SLF(entity, set_invulnerable__num, "set_invulnerable(num)");
-            CREATE_SLF(entity, set_kill_ent_on_destroy__num, "set_kill_ent_on_destroy(num)");
-            CREATE_SLF(entity, set_member_hidden__num, "set_member_hidden(num)");
-            CREATE_SLF(entity, set_parent__entity, "set_parent(entity)");
-            CREATE_SLF(entity, set_parent_rel__entity, "set_parent_rel(entity)");
-            CREATE_SLF(entity, set_path_graph__str, "set_path_graph(str)");
-            CREATE_SLF(entity, set_path_graph_start_node__num, "set_path_graph_start_node(num)");
-            CREATE_SLF(entity, set_pendulum_attach_limb__num, "set_pendulum_attach_limb(num)");
-            CREATE_SLF(entity, set_pendulum_length__num, "set_pendulum_length(num)");
-            CREATE_SLF(entity, set_physical__num, "set_physical(num)");
-            CREATE_SLF(entity, set_po_facing__vector3d, "set_po_facing(vector3d)");
-            CREATE_SLF(entity, set_rel_position__vector3d, "set_rel_position(vector3d)");
-            CREATE_SLF(entity, set_render_alpha__num, "set_render_alpha(num)");
-            CREATE_SLF(entity, set_render_color__vector3d, "set_render_color(vector3d)");
-            CREATE_SLF(entity, set_render_scale__vector3d, "set_render_scale(vector3d)");
-            CREATE_SLF(entity, set_scale__num, "set_scale(num)");
-            CREATE_SLF(entity, set_scripted_target__entity, "set_scripted_target(entity)");
-            CREATE_SLF(entity, set_see_thru__num, "set_see_thru(num)");
-            CREATE_SLF(entity, set_special_target__num, "set_special_target(num)");
-            CREATE_SLF(entity, set_state__num__num, "set_state(num,num)");
-            CREATE_SLF(entity, set_targetting__num, "set_targetting(num)");
-            CREATE_SLF(entity, set_throwable__num, "set_throwable(num)");
-            CREATE_SLF(entity, set_time_dilation__num, "set_time_dilation(num)");
-            CREATE_SLF(entity, set_time_mode__num, "set_time_mode(num)");
-            CREATE_SLF(entity, set_variant__string_hash, "set_variant(string_hash)");
-            CREATE_SLF(entity, set_velocity__vector3d, "set_velocity(vector3d)");
-            CREATE_SLF(entity, set_visible__num, "set_visible(num)");
-            CREATE_SLF(entity, set_visible_and_disable_fading__num, "set_visible_and_disable_fading(num)");
-            CREATE_SLF(entity, set_xz_facing__vector3d, "set_xz_facing(vector3d)");
-            CREATE_SLF(entity, setup_tether__vector3d__num, "setup_tether(vector3d,num)");
-            CREATE_SLF(entity, snap_to__entity, "snap_to(entity)");
-            CREATE_SLF(entity, suspend, "suspend()");
-            CREATE_SLF(entity, teleport_to_point__vector3d, "teleport_to_point(vector3d)");
-            CREATE_SLF(entity, unforce_regions, "unforce_regions()");
-            CREATE_SLF(entity, unsuspend, "unsuspend()");
-            CREATE_SLF(entity, use_item__str, "use_item(str)");
-            CREATE_SLF(entity, use_item_by_id__str, "use_item_by_id(str)");
-            CREATE_SLF(entity, wait_camera_set_roll__num__num, "wait_camera_set_roll(num,num)");
-            CREATE_SLF(entity, wait_change_color__vector3d__vector3d__num, "wait_change_color(vector3d,vector3d,num)");
-            CREATE_SLF(entity, wait_change_range__num__num__num, "wait_change_range(num,num,num)");
-            CREATE_SLF(entity, wait_change_render_color__vector3d__num__num, "wait_change_render_color(vector3d,num,num)");
-            CREATE_SLF(entity, wait_change_render_scale__vector3d__num, "wait_change_render_scale(vector3d,num)");
-            CREATE_SLF(entity, wait_for_not_sector__str, "wait_for_not_sector(str)");
-            CREATE_SLF(entity, wait_for_pickup, "wait_for_pickup()");
-            CREATE_SLF(entity, wait_for_sector__str, "wait_for_sector(str)");
-            CREATE_SLF(entity, wait_lookat__vector3d__num, "wait_lookat(vector3d,num)");
-            CREATE_SLF(entity, wait_lookat2__entity__entity__vector3d__num, "wait_lookat2(entity,entity,vector3d,num)");
-            CREATE_SLF(entity, wait_looping_anim__str__num__num, "wait_looping_anim(str,num,num)");
-            CREATE_SLF(entity, wait_play_anim__str__num__num__num, "wait_play_anim(str,num,num,num)");
-            CREATE_SLF(entity, wait_prox__entity__num, "wait_prox(entity,num)");
-            CREATE_SLF(entity, wait_prox__vector3d__num, "wait_prox(vector3d,num)");
-            CREATE_SLF(entity, wait_prox__vector3d__num__vector3d__num, "wait_prox(vector3d,num,vector3d,num)");
-            CREATE_SLF(entity, wait_prox_maxY__vector3d__num__num, "wait_prox_maxY(vector3d,num,num)");
-            CREATE_SLF(entity, wait_prox_minY__vector3d__num__num, "wait_prox_minY(vector3d,num,num)");
-            CREATE_SLF(entity, wait_prox_sector__vector3d__num__str, "wait_prox_sector(vector3d,num,str)");
-            CREATE_SLF(entity, wait_rotate__vector3d__num__num, "wait_rotate(vector3d,num,num)");
-            CREATE_SLF(entity, wait_rotate_WCS__vector3d__vector3d__num__num, "wait_rotate_WCS(vector3d,vector3d,num,num)");
-            CREATE_SLF(entity, wait_rotate_WCS_cosmetic__vector3d__vector3d__num__num, "wait_rotate_WCS_cosmetic(vector3d,vector3d,num,num)");
-            CREATE_SLF(entity, wait_rotate_WCS_with_compute_sector__vector3d__vector3d__num__num, "wait_rotate_WCS_with_compute_sector(vector3d,vector3d,num,num)");
-            CREATE_SLF(entity, wait_rotate_cosmetic__vector3d__num__num, "wait_rotate_cosmetic(vector3d,num,num)");
-            CREATE_SLF(entity, wait_set_scale__num__num, "wait_set_scale(num,num)");
-            CREATE_SLF(entity, wait_translate__vector3d__num, "wait_translate(vector3d,num)");
-            CREATE_SLF(entity, wait_translate_WCS__vector3d__num, "wait_translate_WCS(vector3d,num)");
-            CREATE_SLF(entity, wait_translate_WCS_cosmetic__vector3d__num, "wait_translate_WCS_cosmetic(vector3d,num)");
-            CREATE_SLF(entity, wait_translate_WCS_with_compute_sector__vector3d__num, "wait_translate_WCS_with_compute_sector(vector3d,num)");
-            CREATE_SLF(entity, wait_translate_cosmetic__vector3d__num, "wait_translate_cosmetic(vector3d,num)");
-            CREATE_SLF(entity, wait_translate_with_compute_sector__vector3d__num, "wait_translate_with_compute_sector(vector3d,num)");
-            CREATE_SLF(entity, was_occluded_last_frame, "was_occluded_last_frame()");
 
             slc = classes[7];
             CREATE_SLF(entity_list, add__entity, "add(entity)");
@@ -8776,6 +7630,13 @@ void slc_manager::un_mash_all_funcs()
 
 void slc_manager_patch()
 {
+    script_lib_entity_patch();
+
+    {
+        FUNC_ADDRESS(address, &slf__get_ini_flag__str__t::operator());
+        set_vfunc(0x0089A950, address);
+    }
+    
     SET_JUMP(0x005AD720, slc_manager::init);
 
     SET_JUMP(0x005A5200, slc_manager::kill);

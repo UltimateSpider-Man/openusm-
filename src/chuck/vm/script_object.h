@@ -98,6 +98,8 @@ struct script_object {
     //0x005AD9A0
     void destructor_common();
 
+    void release_mem();
+
     //0x005AF3E0
     void destroy();
 
@@ -141,6 +143,8 @@ struct script_object {
     //0x0058EF80
     int find_func(string_hash a2) const;
 
+    int find_function_by_address(const uint16_t *a2);
+
     static void read(chunk_file *file, script_object *so);
 
     struct function {
@@ -172,6 +176,8 @@ struct script_instance {
     script_instance(string_hash a2,
         int size,
         unsigned int a4);
+
+    ~script_instance();
 
     auto &get_name() const {
         return name;

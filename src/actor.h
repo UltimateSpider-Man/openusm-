@@ -199,6 +199,9 @@ struct actor : entity {
     //0x004E33B0
     void _render(Float a2);
 
+    //virtual
+    bool add_item(int a4, bool a6);
+
     //0x004D2060
     static void swap_all_mesh_buffers();
 

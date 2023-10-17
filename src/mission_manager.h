@@ -4,6 +4,7 @@
 #include "float.hpp"
 #include "variable.h"
 
+struct entity_base;
 struct mString;
 struct mission_manager_script_data;
 struct resource_key;
@@ -125,6 +126,14 @@ struct mission_manager {
 
     //0x005DBD00
     void unload_script_if_requested();
+
+    entity_base *get_mission_key_entity();
+
+    //0x005BB160
+    int *get_mission_nums();
+
+    //0x005BB150
+    int *get_mission_strings();
 
     static Var<mission_manager *> s_inst;
 
