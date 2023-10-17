@@ -10,6 +10,7 @@
 #include "phys_vector3d.h"
 #include "rb_ragdoll_model.h"
 #include "rigid_body.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
 #include "vector3d.h"
@@ -184,6 +185,8 @@ void physical_interface::un_mash(generic_mash_header *a2,
 }
 
 void physical_interface::frame_advance_all_phys_interfaces(Float a1) {
+    TRACE("physical_interface::frame_advance_all_phys_interfaces");
+
     CDECL_CALL(0x004FB1D0, a1);
 }
 
@@ -588,5 +591,9 @@ void physical_interface_patch() {
         FUNC_ADDRESS(address, &physical_interface::start_biped_physics);
 
         //SET_JUMP(0x004F2460, address);
+    }
+
+    {
+        REDIRECT(0x005584B2, physical_interface::frame_advance_all_phys_interfaces);
     }
 }

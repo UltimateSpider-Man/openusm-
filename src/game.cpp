@@ -823,10 +823,7 @@ void game::advance_state_paused(Float a1) {
 }
 
 void game::clear_screen() {
-    {
-        //
-        sp_log("clear_screen:");
-    }
+    TRACE("game::clear_screen");
 
     if constexpr (1) {
         world_dynamics_system *world_dyn_system = this->the_world;
@@ -2010,6 +2007,8 @@ void game::render_ui() {
 }
 
 void game::advance_state_running(Float a2) {
+    TRACE("game::advance_state_running");
+
     if constexpr (1) {
         if (!this->field_162 && !this->field_161 &&
             !os_developer_options::instance()->get_int(mString{"FORCE_WIN"})) {
@@ -2061,7 +2060,6 @@ void game::advance_state_running(Float a2) {
                 mString v7{"g_game_paused"};
 
                 auto *v5 = (int *) script_manager::get_game_var_address(v7, nullptr, nullptr);
-
                 *v5 = 0;
             }
         }
@@ -2264,16 +2262,7 @@ void game::unload_current_level() {
             this->freeze_hero(false);
         }
 
-        auto **v11 = &trigger_manager::instance()->field_4;
-        while (*v11 != nullptr) {
-            auto *v12 = *v11;
-            auto v13 = v12 == 0;
-            *v11 = v12->field_54;
-            if (!v13) {
-                auto &finalize = get_vfunc(v12->m_vtbl, 0x0);
-                finalize(v12, 1);
-            }
-        }
+        trigger_manager::instance()->purge();
 
         event_manager::clear();
         auto *v14 = this->the_world;

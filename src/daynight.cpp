@@ -6,9 +6,12 @@
 #include "trace.h"
 #include "parse_generic_mash.h"
 #include "resource_manager.h"
+#include "trace.h"
 #include "utility.h"
 
 void daynight::frame_advance(Float a1) {
+    TRACE("daynight::frame_advance");
+
     CDECL_CALL(0x00527F80, a1);
 }
 

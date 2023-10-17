@@ -62,7 +62,7 @@ bool base_tl_resource_handler::_handle(worldly_resource_handler::eBehavior a2, l
         auto &res_dir = this->my_slot->get_resource_directory();
         const auto tlres_count = res_dir.get_tlresource_count(this->field_10);
 
-        sp_log("%d %d", field_C, tlres_count);
+        //sp_log("%d %d", field_C, tlres_count);
         while (this->field_C < tlres_count)
         {
             auto *loc = res_dir.get_tlresource_location(this->field_C, this->field_10);

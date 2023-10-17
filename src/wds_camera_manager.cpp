@@ -4,6 +4,7 @@
 #include "controller.h"
 #include "func_wrapper.h"
 #include "motion_control_system.h"
+#include "trace.h"
 
 #include <cassert>
 
@@ -55,6 +56,8 @@ int wds_camera_manager::add_mcs(motion_control_system *a2) {
 }
 
 void wds_camera_manager::advance_controllers(Float a2) {
+    TRACE("wds_camera_manager::advance_controllers");
+
     if constexpr (0) {
         for (auto &cntrl : this->field_10) {
             if (cntrl->field_4) {
@@ -77,10 +80,14 @@ void wds_camera_manager::setup_cameras() {
 }
 
 void wds_camera_manager::usercam_frame_advance(Float a2) {
+    TRACE("wds_camera_manager::usercam_frame_advance");
+
     THISCALL(0x0050D480, this, a2);
 }
 
 void wds_camera_manager::scene_analyzer_frame_advance(Float a2) {
+    TRACE("wds_camera_manager::scene_analyzer_frame_advance");
+
     THISCALL(0x0051EA10, this, a2);
 }
 

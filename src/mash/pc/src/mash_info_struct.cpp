@@ -51,7 +51,7 @@ uint8_t *mash_info_struct::read_from_buffer(int size, int align)
     auto result = &this->mash_image_ptr[buffer][v4];
     this->buffer_size_used[buffer] += size;
 
-    sp_log("0x%08X", result);
+    //sp_log("0x%08X", result);
     return result;
 }
 

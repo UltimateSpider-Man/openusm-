@@ -191,7 +191,7 @@ bool string_hash_dictionary::read(const char *a1) {
 }
 
 void string_hash_dictionary::save_dictionary(const char *a1) {
-    sp_log("string_hash_dictionary::save_dictionary():");
+    TRACE("string_hash_dictionary::save_dictionary():");
 #if 0
     mString v2 = string_hash_dictionary::figure_out_filename(
         a1,
@@ -256,7 +256,7 @@ void string_hash_dictionary::write_text(const char *a1) {
 }
 
 void string_hash_dictionary::delete_inst() {
-    sp_log("string_hash_dictionary::delete_inst():");
+    TRACE("string_hash_dictionary::delete_inst():");
 
     string_hash_dictionary::is_setup() = false;
     if (g_is_the_packer() || os_developer_options::instance()->get_flag(15)) {

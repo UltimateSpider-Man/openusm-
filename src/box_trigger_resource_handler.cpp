@@ -19,7 +19,7 @@ int box_trigger_resource_handler::get_num_resources() {
     return this->my_slot->box_trigger_instances->size();
 }
 
-bool box_trigger_resource_handler::_handle(worldly_resource_handler::eBehavior behavior, int a4, limited_timer *a5)
+bool box_trigger_resource_handler::_handle(worldly_resource_handler::eBehavior behavior, int , limited_timer *a5)
 {
     TRACE("box_trigger_resource_handler::handle");
 
@@ -53,7 +53,7 @@ void sub_56FF50(_std::vector<box_trigger *> *a1) {
 }
 
 void box_trigger_resource_handler::post_handle_resources(worldly_resource_handler::eBehavior a2) {
-    if (this->my_slot->box_trigger_instances) {
+    if (this->my_slot->box_trigger_instances != nullptr) {
         sub_56FF50(this->my_slot->box_trigger_instances);
         this->my_slot->box_trigger_instances = nullptr;
     }

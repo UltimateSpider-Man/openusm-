@@ -164,7 +164,7 @@ int wds_entity_manager::add_ent_to_lists(_std::vector<entity *> *a2,
             result = this->add_entity_internal(a2, ent);
             break;
         }
-        case ITEM: {
+        case ENTITY_ITEM: {
             result = (int) this->add_item(a3, (item *) ent);
             break;
         }
@@ -374,6 +374,8 @@ void wds_entity_manager::process_time_limited_entities(Float a2) {
 void wds_entity_manager::check_water(Float) {}
 
 void wds_entity_manager::frame_advance(Float a2) {
+    TRACE("wds_entity_manager::frame_advance");
+
     this->process_time_limited_entities(a2);
 
     this->check_water(a2);

@@ -166,6 +166,8 @@ int world_dynamics_system::add_generator(force_generator *generator) {
 }
 
 void world_dynamics_system::advance_entity_animations(Float a3) {
+    TRACE("world_dynamics_system::advance_entity_animations");
+
     THISCALL(0x00537170, this, a3);
 }
 
@@ -189,7 +191,9 @@ int sub_A4B0D0() {
 }
 
 void collide_all_moved_entities(Float a1) {
-    if constexpr (1) {
+    TRACE("collide_all_moved_entities");
+
+    if constexpr (0) {
         stack_allocator allocator;
         scratchpad_stack::save_state(&allocator);
         collision_trajectory_filter_t filter{};
@@ -228,6 +232,8 @@ void collide_all_moved_entities(Float a1) {
 }
 
 void manage_standing_for_all_physical_interfaces(Float a1) {
+    TRACE("manage_standing_for_all_physical_interfaces");
+
     CDECL_CALL(0x004F28B0, a1);
 }
 
@@ -241,6 +247,8 @@ entity *world_dynamics_system::get_hero_ptr(int index) {
 }
 
 void world_dynamics_system::frame_advance(Float a2) {
+    TRACE("world_dynamics_system::frame_advance");
+
     if constexpr (0) {
         this->field_158.frame_advance(a2);
         this->field_28.frame_advance(a2);
@@ -793,14 +801,13 @@ bool world_dynamics_system::un_mash_box_triggers(
         int *a5) {
     TRACE("world_dynamics_system::un_mash_box_triggers");
 
-    if constexpr (1) {
+    if constexpr (0) {
         assert(parse_code == BOX_TRIGGERS_TAG);
 
         int buffer_index = 0;
         int v19 = *(int *)a3;
         buffer_index = 4;
-        for ( auto i = 0u; i < v19; ++i )
-        {
+        for ( auto i = 0u; i < v19; ++i ) {
             assert((buffer_index % 4) == 0);
 
             auto *v18 = (fixedstring<8> *)&a3[buffer_index];
@@ -1439,10 +1446,14 @@ int world_dynamics_system::remove_player(int player_num) {
 }
 
 void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities(Float a1) {
+    TRACE("world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities");
+
     THISCALL(0x00530100, this, a1);
 }
 
 void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(Float a1) {
+    TRACE("world_dynamics_system::update_collision_proximity_maps_for_moved_entities");
+
     THISCALL(0x0054A610, this, a1);
 }
 
@@ -1469,6 +1480,15 @@ void world_dynamics_system_patch() {
     {
         FUNC_ADDRESS(address, &world_dynamics_system::create_terrain);
         REDIRECT(0x0055BB5C, address);
+    }
+
+    REDIRECT(0x005584B8, manage_standing_for_all_physical_interfaces);
+
+    REDIRECT(0x005584C3, collide_all_moved_entities);
+
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::advance_entity_animations);
+        REDIRECT(0x00558423, address);
     }
 
     {

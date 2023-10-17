@@ -3,6 +3,7 @@
 #include "binary_search_array_cmp.h"
 #include "common.h"
 #include "debugutil.h"
+#include "error.h"
 #include "variables.h"
 #include "func_wrapper.h"
 #include "hashstring.h"
@@ -32,7 +33,7 @@ void resource_directory::un_mash_start(generic_mash_header *header,
 
     if constexpr (1)
     {
-        sp_log("0x%08X", a4->field_0);
+        //sp_log("0x%08X", a4->field_0);
         if (uint32_t v6 = 8 - ((uint32_t) a4->field_0 % 8u); v6 < 8) {
             a4->field_0 += v6;
         }
@@ -274,10 +275,9 @@ void resource_directory::constructor_common(resource_pack_slot *a2, uint8_t *a3,
             }
         }
 
-        {
+        if constexpr (0) {
             sp_log("resource_locations: size = %d", this->resource_locations.size());
-            for (auto i = 0u; i < this->resource_locations.size(); ++i)
-            {
+            for (auto i = 0u; i < this->resource_locations.size(); ++i) {
                 auto &loc = this->resource_locations.at(i);
                 sp_log("%d %s %d", i,
                         loc.field_0.get_platform_string(g_platform()).c_str(),
@@ -326,8 +326,7 @@ void resource_directory::add_parent(resource_directory *new_dir) {
         }
     }
 
-    sp_log("too many parents added to resource_directory");
-    assert(0);
+    error("too many parents added to resource_directory");
 }
 
 int compare_resource_key_resource_location_just_hash(const resource_key *a1, resource_location *a2) {
@@ -600,15 +599,13 @@ int resource_directory::get_tlresource_count(tlresource_type a2) {
 
 char *resource_directory::get_tlresource(const tlHashString &a1, tlresource_type a2) {
     auto v3 = a1.GetHash();
-    auto *v6 = this->get_tlresource(v3, a2);
-    if (v6 == nullptr && 1)
-    {
+    auto *res = this->get_tlresource(v3, a2);
+    if (res == nullptr && 1) {
         auto *v4 = a1.c_str();
-        sp_log("Failed to find resource %s.", v4);
-        assert(0);
+        debug_print_va("Failed to find resource %s.", v4);
     }
 
-    return v6;
+    return res;
 }
 
 char *resource_directory::get_tlresource(const tlFixedString &a1, tlresource_type a2)
@@ -649,7 +646,7 @@ char *resource_directory::get_tlresource(tlresource_location *loc, resource_pack
         *a3 = this->pack_slot;
     }
 
-    sp_log("0x%08X", v6);
+    //sp_log("0x%08X", v6);
 
     return v6;
 }
@@ -692,7 +689,7 @@ bool resource_directory::find_tlresource(uint32_t a1,
 {
     TRACE("resource_directory::find_tlresource");
 
-    sp_log("%d", this->resource_locations.size());
+    //sp_log("%d", this->resource_locations.size());
 
     if constexpr (1)
     {
@@ -789,7 +786,7 @@ bool resource_directory::find_tlresource(uint32_t a1,
 
             if (SHOW_RESOURCE_SPAM)
             {
-                sp_log("idx = %d", idx);
+                //sp_log("idx = %d", idx);
                 auto &v5 = this->pack_slot->get_name_key();
                 auto v6 = v5.m_hash.to_string();
                 debug_print_va("found tlresource %s 0x%08x in %s",
@@ -911,7 +908,7 @@ char *resource_directory::add_tlresource(tlFixedString *arg0,
 
             auto *v12 = v14.to_string();
             auto *v7 = arg0->to_string();
-            sp_log("added tlresource %s %s to %s", tlresource_type_str()[tlres_type], v7, v12);
+            debug_print_va("added tlresource %s %s to %s", tlresource_type_str()[tlres_type], v7, v12);
         }
 
         result = data;
@@ -922,7 +919,7 @@ char *resource_directory::add_tlresource(tlFixedString *arg0,
 
             auto *v13 = v15.to_string();
             auto *v10 = arg0->to_string();
-            sp_log("couldn't add tlresource %s %s to %s",
+            debug_print_va("couldn't add tlresource %s %s to %s",
                    tlresource_type_str()[tlres_type],
                    v10,
                    v13);

@@ -1317,8 +1317,11 @@ HRESULT nglDxUnlockTexture(nglTexture *Tex) {
     return result;
 }
 
-void nglInitWhiteTexture() {
-    if constexpr (1) {
+void nglInitWhiteTexture()
+{
+    TRACE("nglInitWhiteTexture");
+
+    if constexpr (0) {
         nglWhiteTex() = nglCreateTexture(513u, 1, 1, 0, 1);
         nglDxLockTexture(nglWhiteTex(), 0);
         nglDxSetTexel8(nglWhiteTex(), 0, 0, -1);
@@ -1484,8 +1487,15 @@ nglTexture *nglCreateTexture(uint32_t Format, int Width, int Height, int a4, boo
     }
 }
 
-void nglTextureInit() {
-    CDECL_CALL(0x00773830);
+void nglTextureInit()
+{
+    TRACE("nglTextureInit");
+
+    if constexpr (0) {
+
+    } else {
+        CDECL_CALL(0x00773830);
+    }
 }
 
 void sub_7726B0(bool a1) {
@@ -3584,8 +3594,10 @@ void nglReleaseAllTextures() {
     THISCALL(0x00560770, nglTextureDirectory(), 1, 0, 2);
 }
 
-void nglReleaseTexture(nglTexture *a1) {
-    CDECL_CALL(0x00773380, a1);
+void nglReleaseTexture(nglTexture *Tex) {
+    TRACE("nglReleaseTexture");
+
+    CDECL_CALL(0x00773380, Tex);
 }
 
 nglTexture *nglLoadTexture(const tlFixedString &a1) {
@@ -3648,7 +3660,10 @@ nglFont *create_and_parse_fdf(const tlFixedString &a1, char *a2) {
     return font;
 }
 
-bool nglCanReleaseTexture(nglTexture *tex) {
+bool nglCanReleaseTexture(nglTexture *tex)
+{
+    TRACE("nglCanReleaseTexture");
+
     auto *v1 = tex;
     if (tex->m_format == 17) {
         v1 = (nglTexture *) tex->m_num_palettes;
@@ -4083,10 +4098,12 @@ const char *GETFOURCC(uint32_t format) {
 nglTexture *nglConstructTexture(const tlFixedString &a1,
                                 nglTextureFileFormat a2,
                                 void *a3,
-                                unsigned int a4) {
-    if constexpr (1) {
-        //sp_log("%s", a1.to_string());
+                                unsigned int a4)
+{
 
+    TRACE("nglConstructTexture", a1.to_string());
+
+    if constexpr (1) {
         auto *tex = static_cast<nglTexture *>(tlMemAlloc(sizeof(nglTexture), 8, 0x1000000u));
         *tex = {};
 
@@ -4832,7 +4849,7 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 }
 
 void create_renderer(HWND hWnd) {
-    sp_log("create renderer");
+    TRACE("create renderer");
 
     WNDCLASSEXA v13;
 
@@ -5025,6 +5042,8 @@ void nglListSend(bool a3) {
 }
 
 void nglDebugInit() {
+    TRACE("nglDebugInit");
+
     std::memset(&nglDebug(), 0, sizeof(nglDebug()));
     std::memcpy(&nglSyncDebug(), &nglDebug(), sizeof(nglSyncDebug()));
     std::memset(&nglPerfInfo(), 0, sizeof(nglPerfInfo()));
@@ -5246,6 +5265,8 @@ struct Renderer {
 static Var<Renderer> struct_972688{0x00972688};
 
 void nglInit(HWND hWnd) {
+    TRACE("nglInit");
+
     if constexpr (1) {
         _controlfp(0x300u, 0x300u);
         _controlfp(0x20000u, 0x30000u);
@@ -5458,7 +5479,17 @@ void sub_76DF40() {
     nglDestroyDebugMeshes();
 }
 
-void ngl_patch() {
+void ngl_patch()
+{
+    SET_JUMP(0x00773350, nglCanReleaseTexture);
+
+    REDIRECT(0x0077392C, nglInitWhiteTexture);
+
+    REDIRECT(0x0076E598, nglTextureInit);
+
+    REDIRECT(0x005AD218, nglInit);
+
+    SET_JUMP(0x0077AB30, nglConstructTexture);
 
     SET_JUMP(0x007791A0, create_and_parse_fdf);
 
@@ -5524,7 +5555,6 @@ void ngl_patch() {
     REDIRECT(0x0076E42B, create_renderer);
 
 #if 0
-    REDIRECT(0x005AD218, nglInit);
 
     REDIRECT(0x005AD264, nglSetFrameLock);
 
@@ -5548,12 +5578,6 @@ void ngl_patch() {
     {
         REDIRECT(0x005502BE, nglGetNextMeshInFile);
         REDIRECT(0x0055034A, nglGetNextMeshInFile);
-    }
-
-    {
-        REDIRECT(0x0056BBF5, nglConstructTexture);
-        REDIRECT(0x00773322, nglConstructTexture);
-        REDIRECT(0x00773900, nglConstructTexture);
     }
 
     REDIRECT(0x0076EA59, nglRenderPerfInfo);

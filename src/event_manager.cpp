@@ -6,6 +6,7 @@
 #include "func_wrapper.h"
 #include "memory.h"
 #include "slab_allocator.h"
+#include "trace.h"
 #include "utility.h"
 
 #include <cassert>
@@ -512,6 +513,8 @@ void event_manager::raise_event(string_hash a1, entity_base_vhandle a2) {
 }
 
 void event_manager::garbage_collect() {
+    TRACE("event_manager::garbage_collect");
+
     CDECL_CALL(0x004E1B00);
 }
 
@@ -582,4 +585,7 @@ void event_manager::clear_script_callbacks(entity_base_vhandle a1, const script_
 
 void event_manager_patch() {
     SET_JUMP(0x004EE9F0, event_manager::raise_event);
+
+    REDIRECT(0x005D707A, event_manager::garbage_collect);
 }
+

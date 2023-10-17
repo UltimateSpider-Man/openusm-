@@ -207,6 +207,8 @@ void render_data::sub_56FCB0() {
 }
 
 void wds_render_manager::frame_advance(Float a2) {
+    TRACE("wds_render_manager::frame_advance");
+
     THISCALL(0x0054ADE0, this, a2);
 }
 

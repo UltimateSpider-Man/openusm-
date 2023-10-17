@@ -367,10 +367,8 @@ void resource_pack_streamer::frame_advance_idle([[maybe_unused]] Float a2)
 {
     TRACE("resource_pack_streamer::frame_advance_idle");
 
-    if constexpr (1)
-    {
-        if (!this->field_6C.empty())
-        {
+    if constexpr (1) {
+        if (!this->field_6C.empty()) {
             resource_pack_queue_entry &v3 = this->field_6C.front();
 
             auto *str = v3.field_0.to_string();
@@ -381,7 +379,19 @@ void resource_pack_streamer::frame_advance_idle([[maybe_unused]] Float a2)
 
             this->load_internal(str, idx, cb, a5);
 
-            this->field_6C.pop_front();
+            if constexpr (0) {
+                this->field_6C.pop_front();
+            } else {
+                auto *m_head = this->field_6C.m_head;
+                auto *v6 = m_head->_Next;
+                if ( m_head->_Next != m_head ) {
+                    v6->_Prev->_Next = v6->_Next;
+                    v6->_Next->_Prev = v6->_Prev;
+                    CDECL_CALL(0x0082207C);
+                    //operator delete(v6);
+                    --this->field_6C.m_size;
+                }
+            }
         }
     } else {
         THISCALL(0x0054C820, this, a2);

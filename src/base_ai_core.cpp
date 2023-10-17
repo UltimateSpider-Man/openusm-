@@ -11,6 +11,7 @@
 #include "memory.h"
 #include "mstring.h"
 #include "resource_manager.h"
+#include "trace.h"
 #include "utility.h"
 
 namespace ai {
@@ -127,6 +128,8 @@ void ai_core::post_entity_mash() {
 }
 
 void ai_core::frame_advance_all_core_ais(Float a2) {
+    TRACE("ai_core::frame_advance_all_core_ais");
+
     CDECL_CALL(0x006B4AD0, a2);
 }
 
@@ -239,5 +242,9 @@ void ai_core_patch() {
     {
         FUNC_ADDRESS(address, &ai::ai_core::get_info_node);
         REDIRECT(0x006A34BA, address);
+    }
+
+    {
+        REDIRECT(0x00558442, ai::ai_core::frame_advance_all_core_ais);
     }
 }

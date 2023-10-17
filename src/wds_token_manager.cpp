@@ -93,6 +93,8 @@ void wds_token_manager::initialize(const resource_key &a2) {
 }
 
 void wds_token_manager::frame_advance(Float a1) {
+    TRACE("wds_token_manager::frame_advance");
+
     THISCALL(0x00555B50, this, a1);
 }
 

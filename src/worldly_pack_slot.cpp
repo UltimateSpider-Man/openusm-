@@ -216,6 +216,7 @@ void worldly_pack_slot::clear_progress()
 bool worldly_pack_slot::_on_unload(limited_timer *a2)
 {
     TRACE("worldly_pack_slot::on_unload");
+    printf("%s\n", this->get_name_key().get_platform_string(3).c_str());
 
     if constexpr (0)
     {

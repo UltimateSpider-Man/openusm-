@@ -1,5 +1,6 @@
 #include "script_executable.h"
 
+#include "entity_mash.h"
 #include "func_wrapper.h"
 
 #include "filespec.h"
@@ -226,7 +227,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 rebase(a4, 4u);
                 
                 this->script_objects[i] = bit_cast<script_object *>(a4->field_0);
-                sp_log("offset = 0x%08X", a4->field_0 - start_debug);
+                //sp_log("offset = 0x%08X", a4->field_0 - start_debug);
                 a4->field_0 += sizeof(script_object);
 
                 assert(((int) header) % 4 == 0);
@@ -308,7 +309,23 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 }
 
 vm_executable *script_executable::find_function_by_address(const uint16_t *a2) const {
-    return (vm_executable *) THISCALL(0x0058F280, this, a2);
+    TRACE("script_executable::find_function_by_address");
+
+    if constexpr (1) {
+        for ( auto i = 0; i < this->total_script_objects; ++i ) {
+            auto &so = this->script_objects[i];
+            if ( so != nullptr ) {
+                auto a1 = so->find_function_by_address(a2);
+                if ( a1 != -1 ) {
+                    return so->get_func(a1);
+                }
+            }
+        }
+
+        return nullptr;
+    } else {
+        return (vm_executable *) THISCALL(0x0058F280, this, a2);
+    }
 }
 
 vm_executable *script_executable::find_function_by_name(string_hash a2) const {
@@ -581,8 +598,7 @@ void script_executable::un_load(bool a2) {
 
     if constexpr (1) {
         script_manager::run_callbacks((script_manager_callback_reason)1, this, nullptr);
-        for ( auto i = 0; i < 20; ++i )
-        {
+        for ( auto i = 0; i < 20; ++i ) {
             if ( script_object::function_cache()[i].field_0 != nullptr ) {
                 if ( script_object::function_cache()[i].field_0->get_parent() == this )
                 {
@@ -595,10 +611,9 @@ void script_executable::un_load(bool a2) {
         }
 
         if ( a2 ) {
-            for ( auto j = 0; j < this->total_script_objects; ++j )
-            {
-                auto &v13 = this->script_objects[j];
-                v13->create_destructor_instances();
+            for ( auto j = 0; j < this->total_script_objects; ++j ) {
+                auto &so = this->script_objects[j];
+                so->create_destructor_instances();
             }
 
             g_cant_create_threads = true;
@@ -649,7 +664,22 @@ void script_executable::un_load(bool a2) {
 void script_executable::release_mem() {
     TRACE("script_executable::release_mem");
 
-    THISCALL(0x005B0470, this);
+    if constexpr (1) {
+        for ( auto i = 0; i < this->total_script_objects; ++i ) {
+            this->script_objects[i]->release_mem();
+        }
+
+        if ( script_allocated_stuff_map != nullptr ) {
+            THISCALL(0x005B8460, this->script_allocated_stuff_map);
+            slab_allocator::deallocate(script_allocated_stuff_map, 0);
+            this->script_allocated_stuff_map = nullptr;
+        }
+            
+        release_generic_mash(this);
+
+    } else {
+        THISCALL(0x005B0470, this);
+    }
 }
 
 script_library_class * script_executable::find_library_class(const mString &a2) const {
@@ -676,53 +706,58 @@ const char *script_executable::get_permanent_string(unsigned int index) const {
 
 script_object *script_executable::find_object(
         const string_hash &a2,
-        int *a3) const {
-
+        int *a3) const
+{
     TRACE("script_executable::find_object", a2.to_string());
 
-    int v8 = 0;
-    int v7 = this->total_script_objects - 1;
-    int v6 = this->total_script_objects / 2;
-    script_object *v5 = nullptr;
-    while ( 1 )
-    {
-        v5 = this->script_objects_by_name[v6];
-        if ( v5->name == a2 ) {
-            break;
+    if constexpr (0) {
+        int v8 = 0;
+        int v7 = this->total_script_objects - 1;
+        int v6 = this->total_script_objects / 2;
+        script_object *v5 = nullptr;
+        while ( 1 )
+        {
+            v5 = this->script_objects_by_name[v6];
+            if ( v5->name == a2 ) {
+                break;
+            }
+
+            auto v4 = v6;
+            if ( v5->name == a2 )
+            {
+                v8 = v6 + 1;
+                if ( v8 >= this->total_script_objects ) {
+                    return nullptr;
+                }
+            }
+            else
+            {
+                v7 = v6 - 1;
+                if ( v7 < 0 ) {
+                    return nullptr;
+                }
+            }
+
+            if ( v8 <= v7 )
+            {
+                v6 = (v8 + v7) / 2;
+                if ( v4 != v6 ) {
+                    continue;
+                }
+            }
+
+            return nullptr;
         }
 
-        auto v4 = v6;
-        if ( v5->name == a2 )
-        {
-            v8 = v6 + 1;
-            if ( v8 >= this->total_script_objects ) {
-                return nullptr;
-            }
-        }
-        else
-        {
-            v7 = v6 - 1;
-            if ( v7 < 0 ) {
-                return nullptr;
-            }
+        if ( a3 != nullptr ) {
+            *a3 = v6;
         }
 
-        if ( v8 <= v7 )
-        {
-            v6 = (v8 + v7) / 2;
-            if ( v4 != v6 ) {
-                continue;
-            }
-        }
-
-        return nullptr;
+        return v5;
+    } else {
+       auto *so = (script_object *) THISCALL(0x0058F1C0, this, &a2, a3);
+       return so;
     }
-
-    if ( a3 != nullptr ) {
-        *a3 = v6;
-    }
-
-    return v5;
 }
 
 uint32_t script_executable::get_system_string_index(const std::set<string_hash> &set, const string_hash &p) {
@@ -800,7 +835,23 @@ void script_executable::dump_threads_to_file(FILE *a2) {
 void script_executable::run(Float a2, bool a3) {
     TRACE("script_executable::run");
 
-    THISCALL(0x005AF990, this, a2, a3);
+    if constexpr (1) {
+        for ( auto i = 0; i < this->total_script_objects; ++i ) {
+
+            auto &so = this->script_objects[i];
+            if (so == nullptr) {
+                sp_log("%d", i);
+                assert(0);
+            }
+
+            auto &instances = so->instances;
+            if ( instances != nullptr && instances->m_size != 0 ) {
+                so->run(a3);
+            }
+        }
+    } else {
+        THISCALL(0x005AF990, this, a2, a3);
+    }
 }
 
 void script_executable::first_run(Float a2, bool a3) {

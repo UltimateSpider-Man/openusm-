@@ -133,7 +133,10 @@ void tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Impl::Init() {
 
 //0x00773CE0
 template<>
-void *tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Add(nglTexture *tex) {
+void *tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Add(nglTexture *tex)
+{
+    TRACE("tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Add");
+
     if constexpr (1) {
         auto *v2 = &this->field_4;
         auto v3 = v2;
@@ -208,6 +211,7 @@ void *tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Add(nglTexture
             v23[v15 + 1] = v16;
         }
 
+        printf("v14 = %d\n", v14);
         auto *v17 = static_cast<Node *>(tlMemAlloc(4 * v14 + 8, 8, 0x1000000u));
         v17->field_0 = tex;
         auto *v18 = &v17->field_4[v14];
@@ -220,7 +224,7 @@ void *tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Add(nglTexture
 
         return nullptr;
     } else {
-        return (int *) THISCALL(0x00773CE0, this, tex);
+        return (void *) THISCALL(0x00773CE0, this, tex);
     }
 }
 
@@ -831,7 +835,10 @@ struct tlInitList {
     static inline Var<void *> head{0x00970D4C};
 };
 
-void tlInitListInit() {
+void tlInitListInit()
+{
+    TRACE("tlInitListInit");
+
     if constexpr (1) {
         for (auto *shader = static_cast<nglShader *>(tlInitList::head());
                 shader != nullptr;
@@ -846,6 +853,8 @@ void tlInitListInit() {
 
 void tl_patch() {
 
+    SET_JUMP(0x00749FD0, tlInitListInit);
+
     SET_JUMP(0x0074A710, tlReadFile);
 
     SET_JUMP(0x0074A5C0, tlMemAlloc);
@@ -856,7 +865,12 @@ void tl_patch() {
 
     SET_JUMP(0x0074A520, tlSetSystemCallbacks);
 
-    SET_JUMP(0x00749FD0, tlInitListInit);
+    {
+        auto func = &tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::Add;
+
+        FUNC_ADDRESS(address, func);
+        set_vfunc(0x008B8D24, address);
+    }
 
     return;
 

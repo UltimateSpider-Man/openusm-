@@ -7,6 +7,7 @@
 #include "ngl.h"
 #include "ngl_scene.h"
 #include "nglshader.h"
+#include "trace.h"
 #include "utility.h"
 #include "vector3d.h"
 #include "vtbl.h"
@@ -20,6 +21,8 @@ VALIDATE_SIZE(nglMeshParams, 0x20);
 VALIDATE_SIZE(nglMesh, 0x40);
 
 void nglMeshInit() {
+    TRACE("nglMeshInit");
+
     CDECL_CALL(0x0076F420);
 }
 

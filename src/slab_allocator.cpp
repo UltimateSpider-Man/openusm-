@@ -1,10 +1,12 @@
 #include "slab_allocator.h"
 
 #include "common.h"
+#include "debugutil.h"
 #include "func_wrapper.h"
 #include "log.h"
 #include "memory.h"
 #include "os_developer_options.h"
+#include "trace.h"
 #include "utility.h"
 
 #include <cassert>
@@ -698,7 +700,7 @@ void swap(slab_allocator::slab_t::iterator &a, slab_allocator::slab_t::iterator 
 
 void slab_allocator::dump_debug_info() {
     assert(initialized());
-    sp_log("Dumping slab info");
+    debug_print_va("Dumping slab info");
 
     int v59 = 0;
     int v58 = 0;
@@ -706,7 +708,7 @@ void slab_allocator::dump_debug_info() {
     for (int i = 0; i < 44; ++i) {
         int v56 = 0;
         int v54 = 0;
-        sp_log("Object Size: %d", 4 * i + 4);
+        debug_print_va("Object Size: %d", 4 * i + 4);
 
         for ( auto v2 : (*slab_full_list()) ) {
             ++v56;
@@ -722,7 +724,7 @@ void slab_allocator::dump_debug_info() {
             }
         }
 
-        sp_log("  Full slabs: %d", v56);
+        debug_print_va("  Full slabs: %d", v56);
 
         for ( auto v7 : (*slab_partial_list()) ) {
             ++v54;
@@ -738,7 +740,7 @@ void slab_allocator::dump_debug_info() {
             }
         }
 
-        sp_log("  Partial slabs: %d", v54);
+        debug_print_va("  Partial slabs: %d", v54);
         auto *slab = *slab_partial_list()[i].begin();
 
         if (slab != nullptr) {
@@ -751,7 +753,7 @@ void slab_allocator::dump_debug_info() {
                 float v28 = v31 / (double) v49->get_total_object_count();
                 auto v27 = v49->get_free_object_count();
                 auto v13 = v49->get_alloc_object_count();
-                sp_log(
+                debug_print_va(
                     "    Slab %d: Allocated_Objects = %d, Free_Objects = %d, Utilization = %02.02f",
                     v53,
                     v13,
@@ -777,20 +779,20 @@ void slab_allocator::dump_debug_info() {
             float v29 = v32 / (double) ((v56 + v54) * slab->get_total_object_count());
             float v30 = v52 * 100.0f;
 
-            sp_log("  Average Utilization: %02.02f ( Including full blocks: %02.02f )",
+            debug_print_va("  Average Utilization: %02.02f ( Including full blocks: %02.02f )",
                    v30 / (double) (v54 * slab->get_total_object_count()),
                    v29);
 
-            sp_log("  Total Allocated: %d ( %dbytes )", v48, v48 * slab->m_size);
+            debug_print_va("  Total Allocated: %d ( %dbytes )", v48, v48 * slab->m_size);
 
-            sp_log("  Total Free:      %d ( %dbytes )", v47, v47 * slab->m_size);
+            debug_print_va("  Total Free:      %d ( %dbytes )", v47, v47 * slab->m_size);
         }
     }
 
-    sp_log("Slabs in use: %d", v57 + v59 + v58);
-    sp_log("  Heap:       %d", v59);
-    sp_log("  Static:     %d", v58);
-    sp_log("  Aux:        %d", v57);
+    debug_print_va("Slabs in use: %d", v57 + v59 + v58);
+    debug_print_va("  Heap:       %d", v59);
+    debug_print_va("  Static:     %d", v58);
+    debug_print_va("  Aux:        %d", v57);
 
     int v46 = 0;
     int v45 = 0;
@@ -804,14 +806,15 @@ void slab_allocator::dump_debug_info() {
         }
     }
 
-    sp_log("Free Slabs: %d", v45 + v46);
-    sp_log("  Heap:     %d", v46);
-    sp_log("  Static:   %d", v45);
+    debug_print_va("Free Slabs: %d", v45 + v46);
+    debug_print_va("  Heap:     %d", v46);
+    debug_print_va("  Static:   %d", v45);
 }
 
 void slab_allocator::process_lists() {
-    //sp_log("process_lists: %d", g_dump_slab_info());
+    TRACE("slab_allocator::process_lists");
 
+    dump_debug_info();
     if (g_dump_slab_info()) {
         dump_debug_info();
 

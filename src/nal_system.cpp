@@ -99,6 +99,8 @@ static Var<nalAnimCache> nalAnimationCache{0x00977114};
 static Var<nalHeap *> nalAnimationHeap{0x00976EC0};
 
 void nalInit(nalHeap *a1) {
+    TRACE("nalInit");
+
     if constexpr (1) {
         tlStackRangeInit();
         if (tlScratchPadRefCount()++ == 0) {
@@ -471,7 +473,12 @@ void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *
 }
 
 void nalStreamInstance_patch() {
+
+    REDIRECT(0x005AD21F, nalInit);
+    return;
+
     REDIRECT(0x0055F8F4, nalConstructSkeleton);
+
 
     {
         FUNC_ADDRESS(address, &nalGeneric::nalGenericSkeleton::Process);
@@ -503,8 +510,6 @@ void nalStreamInstance_patch() {
         set_vfunc(0x00891FC8, address);
         set_vfunc(0x008AA300, address);
     }
-
-    REDIRECT(0x005AD21F, nalInit);
 
 #if 0
     {

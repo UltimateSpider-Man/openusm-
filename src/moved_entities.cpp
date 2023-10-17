@@ -3,11 +3,14 @@
 #include "func_wrapper.h"
 #include "oldmath_po.h"
 #include "conglom.h"
+#include "trace.h"
 #include "utility.h"
 
 #include <cassert>
 
 void moved_entities::reset_all_moved() {
+    TRACE("moved_entities::reset_all_moved");
+
     CDECL_CALL(0x005125D0);
 }
 

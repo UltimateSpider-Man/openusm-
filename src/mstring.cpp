@@ -419,17 +419,10 @@ void mString::destroy_guts() {
         if (v2 != mString::null()) {
             if ((int) v2 < (int) this || (int) v2 > (int) this + this->field_0) {
                 if (this->field_C == nullptr) {
-                    operator delete[](v2);
-
-                    this->guts = (char *) mString::null();
-
-                    this->field_C = nullptr;
-                    return;
+                    delete[](v2);
+                } else {
+                    slab_allocator::deallocate(v2, this->field_C);
                 }
-
-#ifndef TEST_CASE
-                slab_allocator::deallocate(v2, this->field_C);
-#endif
             }
 
             this->guts = (char *) mString::null();
@@ -573,14 +566,9 @@ void mString::update_guts(const char *from_string, int n) {
         if (n > static_cast<int>(m_size)) {
             this->destroy_guts();
 
-#ifdef TEST_CASE
-            this->guts = static_cast<char *>(operator new(n + 1));
-
-#else
             this->guts = (n < 176)
                 ? (static_cast<char *>(slab_allocator::allocate(n + 1, &this->field_C)))
-                : (static_cast<char *>(operator new(n + 1)));
-#endif
+                : (new char[n + 1]);
         }
 
         if (n > 0) {

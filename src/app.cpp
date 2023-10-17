@@ -333,7 +333,10 @@ void app::tick()
     }
 }
 
-void app::create_inst() {
+void app::create_inst()
+{
+    TRACE("app::create_inst");
+
 #if 0
     app::instance() = new app{};
 #else
@@ -347,7 +350,10 @@ void app::cleanup() {
     sp_log("app::cleanup():");
 }
 
-void app_patch() {
+void app_patch()
+{
+
+    REDIRECT(0x005AD2E9, app::create_inst);
 
     {
         FUNC_ADDRESS(address, &app::tick);
