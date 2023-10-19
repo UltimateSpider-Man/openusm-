@@ -407,7 +407,10 @@ void replace_if_find(char *begin, char *end, const char &a3, const char &a4) {
     }
 }
 
-void parse_cmd(const char *str) {
+void parse_cmd(const char *str)
+{
+    TRACE("parse_cmd");
+
     if constexpr (1) {
         char Dest[1024]{};
         strncpy(Dest, str, 1023u);
@@ -469,11 +472,10 @@ void parse_cmd(const char *str) {
                     mString v14{v22};
 
                     auto v8 = v14.find({2}, '=');
-                    auto v9 = v8;
                     if (v8 != -1) {
                         mString v19 = v14.slice(2, v8);
 
-                        mString v18 = v14.slice(v9 + 1, v14.size());
+                        mString v18 = v14.slice(v8 + 1, v14.size());
 
                         if (v19.size() && v18.size()) {
                             os_developer_options::instance()->set_string(v19, v18);
@@ -2363,6 +2365,8 @@ BOOL install_redirects() {
 
         REDIRECT(0x005AC347, hook_controlfp);
     }
+
+    REDIRECT(0x005AC52F, parse_cmd);
 
     nfl_system_patch();
 

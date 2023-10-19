@@ -139,7 +139,7 @@ void actor::unbind_from_scene_anim(string_hash a3, string_hash a4) {
 }
 
 float actor::get_floor_offset() {
-    float __fastcall (*func)(void *) = CAST(func, 0x004C0D90);
+    float __fastcall (*func)(void *) = bit_cast<decltype(func)>(0x004C0D90);
 
     return func(this);
 }
@@ -643,7 +643,7 @@ vector3d actor::_get_visual_center()
 
 bool actor::add_item(int a4, bool a6)
 {
-    THISCALL(0x004E3B80, this, a4, a6);
+    return (bool) THISCALL(0x004E3B80, this, a4, a6);
 }
 
 void actor::add_collision_ignorance(entity_base_vhandle a2)
