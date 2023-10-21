@@ -65,7 +65,10 @@ bool resource_pack_standalone::get_unloaded_resource_location(const resource_key
     return true;
 }
 
-bool resource_pack_standalone::load(const mString &str) {
+bool resource_pack_standalone::load(const mString &str)
+{
+    TRACE("resource_pack_standalone::load", str.c_str());
+
     bool result = false;
 
     if (this->m_filedID != NFL_FILE_ID_INVALID) {
@@ -78,8 +81,6 @@ bool resource_pack_standalone::load(const mString &str) {
     assert(!name.is_set());
 
     if constexpr (1) {
-        //ssp_log("%s", str.c_str());
-
         os_file file {mString{str.c_str()}, 1u};
 
         if (file.opened) {
@@ -109,22 +110,16 @@ bool resource_pack_standalone::load(const mString &str) {
                                       0,
                                       0,
                                       nullptr);
-            assert(alloced_mem && "This should NOT allocate anything!");
+            assert(!alloced_mem && "This should NOT allocate anything!");
 
             this->res_dir->constructor_common(nullptr, nullptr, nullptr, 0u, 0u);
             file.close();
 
-            mString v16{"data\\"};
+            mString v15 = mString {"data\\"} + str;
 
-            mString v15 = v16 + str;
+            this->m_filedID = nflOpenFile(1, v15.c_str());
 
-            auto v10 = nflOpenFile(1, v15.c_str());
-            this->m_filedID = v10;
-
-            result = (v10 != NFL_FILE_ID_INVALID);
-
-            //mString::finalize_0(&a1);
-            //os_file::destructor(&v17);
+            result = (this->m_filedID != NFL_FILE_ID_INVALID);
         }
     } else {
         result = THISCALL(0x0053E380, this, &str);
@@ -175,15 +170,14 @@ void sub_732D60(bool a1) {
 void resource_pack_standalone_patch() {
 
     SET_JUMP(0x00732D60, sub_732D60);
+
+    {
+        FUNC_ADDRESS(address, &resource_pack_standalone::load);
+        SET_JUMP(0x0053E380, address);
+    }
     return;
 
     {
-        {
-            FUNC_ADDRESS(address, &resource_pack_standalone::load);
-            REDIRECT(0x00543A87, address);
-            REDIRECT(0x00732D29, address);
-            set_vfunc(0x0088992C, address);
-        }
 
         {
             FUNC_ADDRESS(address, &os_file::read);
