@@ -224,14 +224,11 @@ void mString::finalize(int) {
 }
 
 mString::mString()
-    : mContainer(), guts(mString::null()),
+    : mContainer(), guts(""),
 
       field_C(nullptr) {
-    //sp_log("mString::mString():");
 
-#ifndef TEST_CASE
     ++(mString_count());
-#endif
 }
 
 mString::mString([[maybe_unused]] mString::fmtd fmt, const char *Format, ...) {
@@ -346,7 +343,7 @@ bool operator>(const mString &a1, const mString &a2) {
     return a1.compare(v2) == -1;
 }
 
-char *mString::c_str() const {
+const char *mString::c_str() const {
     return guts;
 }
 

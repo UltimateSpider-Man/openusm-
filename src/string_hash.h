@@ -21,7 +21,7 @@ struct string_hash {
     void unmash(mash_info_struct *, void *);
 
     //0x005374B0
-    char *to_string() const;
+    const char *to_string() const;
 
     //0x00542710
     void set(const char *str);

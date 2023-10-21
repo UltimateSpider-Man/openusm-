@@ -121,7 +121,7 @@ public:
     //0x00421260
     [[nodiscard]] mString substr(int a3, int Count) const;
 
-    char *c_str() const;
+    const char *c_str() const;
 
     char *data();
 

@@ -33,7 +33,7 @@ struct slf__entity__add_collision_ignorance__entity__t : script_library_class::f
 
         SLF_PARMS;
 
-        auto *eb_parms_me = (actor *) parms->me.get_volatile_ptr();
+        auto *eb_parms_me = bit_cast<actor *>(parms->me.get_volatile_ptr());
         if ( eb_parms_me != nullptr ) {
             auto *eb_parms_it = parms->it.get_volatile_ptr();
             if ( eb_parms_it != nullptr ) {

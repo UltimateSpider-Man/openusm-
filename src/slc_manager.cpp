@@ -1688,21 +1688,30 @@ DECLARE_GLOBAL_SLF_BEGIN(get_global_time_dilation, 0x0089A894)
 DECLARE_GLOBAL_SLF_END()
 
 
-DECLARE_GLOBAL_SLF_BEGIN(get_ini_flag__str, 0x0089A94C)
-{
-    TRACE("slf__get_ini_flag__str__t::operator()");
+struct slf__get_ini_flag__str__t : script_library_class::function {
+    slf__get_ini_flag__str__t(const char *a3) : function(a3) {
+        m_vtbl = 0x0089A94C;
+    }   
 
-    (void)entry;
-    auto *v3 = stack.SP - 4;
-    stack.SP = v3;
-    mString v5 {*(const char **)v3};
-    auto a1a = (float) os_developer_options::instance()->get_flag(v5);
-    *(float *)stack.SP = a1a;
-    stack.SP += 4;
+    struct parms_t {
+        const char *str;
+    };
+        
+    bool operator()(vm_stack &stack, script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_ini_flag__str__t::operator()");
 
-    SLF_DONE;
-}
-DECLARE_GLOBAL_SLF_END()
+        (void)entry;
+
+        SLF_PARMS;
+        mString v5 {parms->str};
+        auto result = (float) os_developer_options::instance()->get_flag(v5);
+
+        SLF_RETURN;
+
+        SLF_DONE;
+    }
+};
 
 DECLARE_GLOBAL_SLF_BEGIN(get_ini_num__str, 0x0089A954)
 {

@@ -441,7 +441,7 @@ void os_file::open(const mString &path, int shareMode) {
     }
 }
 
-int os_file::write(LPVOID lpBuffer, int nNumberOfBytesToWrite) {
+int os_file::write(const void *lpBuffer, int nNumberOfBytesToWrite) {
     if constexpr (1) {
         auto v3 = nNumberOfBytesToWrite;
 
@@ -449,7 +449,7 @@ int os_file::write(LPVOID lpBuffer, int nNumberOfBytesToWrite) {
             return 0;
         }
 
-        auto *buffer = static_cast<char *>(lpBuffer);
+        auto *buffer = static_cast<const char *>(lpBuffer);
         nNumberOfBytesToWrite = 0;
         if (v3 > max_size) {
             auto v7 = ((unsigned int) (v3 - (max_size + 1)) >> 21) + 1;

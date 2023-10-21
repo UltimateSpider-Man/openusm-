@@ -117,8 +117,8 @@ void FEMultiLineText::SetButtonColor(color32 a2) {
 
 mString FEMultiLineText::ReplaceEndlines(mString a2) {
     for (auto i = a2.find("\n", 0); i > 0; i = a2.find("\n", i + 2)) {
-        a2.c_str()[i] = ' ';
-        a2.c_str()[i + 1] = '\n';
+        a2.data()[i] = ' ';
+        a2.data()[i + 1] = '\n';
     }
 
     return a2;

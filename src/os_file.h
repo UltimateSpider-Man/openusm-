@@ -59,7 +59,7 @@ struct os_file {
     void open(const mString &path, int shareMode);
 
     //0x00598C30
-    int write(LPVOID lpBuffer, int nNumberOfBytesToWrite);
+    int write(const void *lpBuffer, int nNumberOfBytesToWrite);
 
     //0x00598AD0
     int read(LPVOID data, int bytes);

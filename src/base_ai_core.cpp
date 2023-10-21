@@ -171,8 +171,8 @@ info_node *ai_core::get_info_node(string_hash the_info_node, bool a3) {
     }
 
     if (a3) {
-        char *v8 = this->field_64->field_10.to_string();
-        char *v9 = the_info_node.to_string();
+        const char *v8 = this->field_64->field_10.to_string();
+        const char *v9 = the_info_node.to_string();
         mString a1{0, "unknown ai info-node name %s, for entity %s", v9, v8};
         sp_log("%s", a1.c_str());
     }

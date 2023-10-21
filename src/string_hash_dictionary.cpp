@@ -311,8 +311,8 @@ void string_hash_dictionary::create_new_dictionary() {
     }
 }
 
-char *string_hash_dictionary::lookup_string(string_hash a1) {
-    char *res = nullptr;
+const char *string_hash_dictionary::lookup_string(string_hash a1) {
+    const char *res = nullptr;
 
     if constexpr (1) {
         string_hash_entry a2{};
@@ -320,8 +320,7 @@ char *string_hash_dictionary::lookup_string(string_hash a1) {
 
         auto *v6 = string_hash_dictionary::entries()->find(&a2);
         if (v6 != nullptr) {
-            char *v7 = v6->field_4.c_str();
-            res = v7;
+            res = v6->field_4.c_str();
         }
     } else {
         res = bit_cast<char *>(CDECL_CALL(0x00531990, a1));

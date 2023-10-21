@@ -69,7 +69,7 @@ void ConsoleHeightVariable::setValue(const mString &a2) {
     auto *v7 = this;
     float v6 = 0.0;
 
-    char *v2;
+    const char *v2 = nullptr;
     if (a2.length() <= 0 || (v2 = a2.c_str(), v6 = atof(v2), v6 < 25.0) || v6 > 480.0) {
         auto v4 = v7->getName();
 

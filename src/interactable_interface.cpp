@@ -25,13 +25,29 @@ void interactable_interface::add_interface_to_list(interactable_interface *who_t
 
     assert(std::find(all_ifcs().begin(), all_ifcs().end(), who_to_add) == all_ifcs().end());
 
-    all_ifcs().push_back(who_to_add);
+    if constexpr (0) { 
+        all_ifcs().push_back(who_to_add);
+    } else {
+        void (__fastcall *sub_5E4BD0)(void *, void *, void *, int, interactable_interface **) = CAST(sub_5E4BD0, 0x005E4BD0);
+        sub_5E4BD0(
+          &all_ifcs(),
+          nullptr,
+          all_ifcs().m_last,
+          1,
+          &who_to_add);
+    }
 }
 
 void interactable_interface::frame_advance_all(Float a1) {
     TRACE("interactable_interface::frame_advance_all");
 
-    CDECL_CALL(0x004D1C10, a1);
+    if constexpr (1) {
+        for ( auto &ifc : all_ifcs() ) {
+            ifc->frame_advance(a1);
+        }
+    } else {
+        CDECL_CALL(0x004D1C10, a1);
+    }
 }
 
 void interactable_interface::frame_advance(Float a2) {
@@ -49,5 +65,5 @@ void interactable_interface_patch() {
 
     SET_JUMP(0x004DAFB0, interactable_interface::add_interface_to_list);
 
-    REDIRECT(0x00558451, interactable_interface::frame_advance_all);
+    SET_JUMP(0x004D1C10, interactable_interface::frame_advance_all);
 }

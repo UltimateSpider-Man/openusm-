@@ -42,7 +42,7 @@ struct string_hash_dictionary {
     static bool is_loaded();
 
     //0x00531990
-    static char *lookup_string(string_hash a1);
+    static const char *lookup_string(string_hash a1);
 
     //0x0053DD00
     static bool register_in_tree(mAvlTree<string_hash_entry> *a1,

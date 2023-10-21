@@ -701,6 +701,8 @@ bool game::is_paused() const
 static Var<bool> sounds_paused{0x00960044};
 
 void game::pause() {
+    TRACE("game::pause");
+
     if (!this->field_15F || !fe_controller_disconnect::get_currently_plugged_in()) {
         if (this->flag.game_paused) {
             this->unpause();

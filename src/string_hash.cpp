@@ -83,10 +83,10 @@ void string_hash::initialize(int a2, const char *a3, int hash_code) {
 void string_hash::unmash(mash_info_struct *, void *)
 {}
 
-char *string_hash::to_string() const {
+const char *string_hash::to_string() const {
     if constexpr (1) {
         if (string_hash_dictionary::is_loaded()) {
-            char *str;
+            const char *str;
 
             if ((str = string_hash_dictionary::lookup_string(*this)) != nullptr) {
                 return str;
