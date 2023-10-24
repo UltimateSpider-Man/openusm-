@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "debugutil.h"
+#include "debug_menu.h"
 #include "func_wrapper.h"
 #include "log.h"
 #include "memory.h"
@@ -556,6 +557,63 @@ slab_allocator::slab_t *slab_allocator::create_slab(int size) {
 
     } else {
         return (slab_t *) CDECL_CALL(0x0059DE20, size);
+    }
+}
+
+void slab_allocator::create_slab_debug_menu(debug_menu *parent)
+{
+    auto *slabs_menu = create_menu("Slabs", debug_menu::sort_mode_t::undefined);
+    parent->add_entry(slabs_menu);
+
+    auto *entry = create_menu_entry(mString {"Total Slabs"});
+    entry->set_p_ival(&total_slab_count);
+    entry->set_value_initialized(true);
+    slabs_menu->add_entry(entry);
+
+    entry = create_menu_entry(mString {"Free Slabs"});
+    entry->set_p_ival(&free_slab_count);
+    entry->set_value_initialized(true);
+    slabs_menu->add_entry(entry);
+
+    auto *menu = create_menu("Full Slabs", debug_menu::sort_mode_t::undefined);
+    slabs_menu->add_entry(menu);
+    for ( auto i = 0; i < 44; ++i )
+    {
+        auto *entry = create_menu_entry(mString {0, "%3d byte", 4 * i + 4});
+        entry->set_value_initialized(true);
+        entry->set_p_ival(&full_slab_count[i]);
+        menu->add_entry(entry);
+    }
+
+    menu = create_menu("Partial Slabs", debug_menu::sort_mode_t::undefined);
+    slabs_menu->add_entry(menu);
+    for ( auto j = 0; j < 44; ++j )
+    {
+        auto *entry = create_menu_entry(mString {0, "%3d byte", 4 * j + 4});
+        entry->set_value_initialized(true);
+        entry->set_p_ival(&partial_slab_count[j]);
+        menu->add_entry(entry);
+    }
+
+    menu = create_menu("Allocated Objects", debug_menu::sort_mode_t::undefined);
+    slabs_menu->add_entry(menu);
+    for ( auto k = 0; k < 44; ++k )
+    {
+        auto *entry = create_menu_entry(mString {0, "%3d byte", 4 * k + 4});
+        entry->set_value_initialized(true);
+        entry->set_p_ival(&allocated_object_count[k]);
+        menu->add_entry(entry);
+    }
+
+    menu = create_menu("Free Objects", debug_menu::sort_mode_t::undefined);
+    slabs_menu->add_entry(menu);
+
+    for ( auto m = 0; m < 44; ++m )
+    {
+        auto *entry = create_menu_entry(mString {0, "%3d byte", 4 * m + 4});
+        entry->set_value_initialized(true);
+        entry->set_p_ival(&free_object_count[m]);
+        menu->add_entry(entry);
     }
 }
 

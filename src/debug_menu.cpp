@@ -5,9 +5,11 @@
 #include "ngl_font.h"
 #include "game.h"
 #include "input_mgr.h"
+#include "memory.h"
 #include "os_developer_options.h"
 #include "spider_monkey.h"
 #include "string_hash.h"
+#include "script_memtrack.h"
 #include "script_object.h"
 #include "mission_manager.h"
 #include "mission_table_container.h"
@@ -1204,6 +1206,12 @@ bool sub_672408(const mString &a1, const mString &a2) {
     return a1.compare(v2) == -1;
 }
 
+void debug_menu::add_entry(debug_menu *a2)
+{
+    auto *v2 = create_menu_entry(a2);
+    this->add_entry(v2);
+}
+
 void debug_menu::add_entry(debug_menu_entry *e) {
     assert(e != nullptr);
 
@@ -1325,6 +1333,40 @@ void debug_menu::remove_entry(debug_menu_entry *e)
     }
 }
 
+int g_mem_checkpoint_debug_0 {-1};
+
+void set_memtrack_checkpoint(debug_menu_entry *)
+{
+    g_mem_checkpoint_debug_0 = mem_set_checkpoint();
+    debug_menu::hide();
+}
+
+void dump_memtrack_data(debug_menu_entry *)
+{
+    mem_check_leaks_since_checkpoint(g_mem_checkpoint_debug_0, 1u);
+    mem_print_stats("\nMemory log\n");
+    debug_menu::hide();
+}
+
+void create_memory_menu(debug_menu *parent)
+{
+    auto *memory_menu = create_menu("Memory", debug_menu::sort_mode_t::undefined);
+    
+    auto *v2 = create_menu_entry(memory_menu);
+    parent->add_entry(v2);
+    script_memtrack::create_debug_menu(memory_menu);
+
+    auto *entry = create_menu_entry(mString {"Dump MemTrack Data Since Last Checkpoint"});
+    entry->set_game_flags_handler(dump_memtrack_data);
+    memory_menu->add_entry(entry);
+
+    entry = create_menu_entry(mString {"Set MemTrack Checkpoint"});
+    entry->set_game_flags_handler(set_memtrack_checkpoint);
+    memory_menu->add_entry(entry);
+    
+    slab_allocator::create_slab_debug_menu(memory_menu);
+}
+
 void debug_menu::init() {
     assert(root_menu == nullptr);
 
@@ -1346,7 +1388,11 @@ void debug_menu::init() {
     sub_6A757C(debug_menu::root_menu);
     sub_6991B1(debug_menu::root_menu);
     sub_68FFCB(debug_menu::root_menu);
-    j_create_memory_menu(debug_menu::root_menu);
+    */
+
+    create_memory_menu(root_menu);
+
+    /*
     j_create_entity_variant_menu(debug_menu::root_menu);
     */
 

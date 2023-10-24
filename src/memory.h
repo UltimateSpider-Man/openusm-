@@ -13,6 +13,10 @@ void *arch_memalign(size_t Alignment, size_t Size);
 //0x0051CD10
 void mem_print_stats(const char *a1);
 
+int mem_set_checkpoint();
+
+void mem_check_leaks_since_checkpoint(int, uint32_t);
+
 //0x00535780
 extern void *arch_malloc(size_t Size);
 

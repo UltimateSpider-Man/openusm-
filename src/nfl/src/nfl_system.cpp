@@ -889,8 +889,7 @@ int nfd_win32_MediaBind(nflMediaID a1, const char *a2, char *a3, uint32_t a4)
 {
     TRACE("nfd_win32_MediaBind");
 
-    if ( a1.field_0 != 1 && a1.field_0 != 2 )
-    {
+    if ( a1.field_0 != 1 && a1.field_0 != 2 ) {
         return 4;
     }
 

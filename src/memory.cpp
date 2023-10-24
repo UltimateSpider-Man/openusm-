@@ -17,6 +17,16 @@ Var<bool> mem_first_allocation{0x009224E8};
 
 static Var<int> dword_965EC0{0x00965EC0};
 
+int mem_set_checkpoint()
+{
+    return 0;
+}
+
+void mem_check_leaks_since_checkpoint(int, uint32_t)
+{
+  ;
+}
+
 void *mem_alloc(size_t Size) {
     void *mem;
 

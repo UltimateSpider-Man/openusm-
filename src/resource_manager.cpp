@@ -949,6 +949,7 @@ resource_partition *get_partition_pointer(int which_type) {
 }
 
 nflFileID open_pack(const char *name) {
+    TRACE("resource_manager::open_pack", name);
     const char *ext = packfile_ext()[g_platform()];
 
     //sp_log("open pack %s%s", name, ext);

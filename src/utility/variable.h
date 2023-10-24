@@ -8,6 +8,7 @@
 template<typename T>
 struct Var {
     using value_type = T;
+    using pointer_type = T *;
 
     Var() = delete;
 

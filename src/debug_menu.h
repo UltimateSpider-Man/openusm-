@@ -39,6 +39,8 @@ struct debug_menu
 
     void do_frame_advance(Float a2);
 
+    void add_entry(debug_menu *a2);
+
     void add_entry(debug_menu_entry *e);
 
     void remove_entry(debug_menu_entry *e);
@@ -138,6 +140,16 @@ struct debug_menu_entry {
         return value_type;
     }
 
+    void *get_data()
+    {
+        return this->m_data;
+    }
+
+    void set_data(void *a1)
+    {
+        this->m_data = a1;
+    }
+
     unsigned get_id() const
     {
         return this->m_id;
@@ -163,6 +175,10 @@ struct debug_menu_entry {
     void set_id(short a2);
 
     bool is_value_initialized() const;
+
+    void set_value_initialized(bool a2) {
+        m_value_initialized = a2;
+    }
 
     void set_min_value(float a2);
 

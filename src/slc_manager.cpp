@@ -7497,6 +7497,25 @@ void chuck_register_script_libs()
         for (auto &slc : classes) {
             slc->add_functions_complete();
         }
+        
+        if constexpr (0) {
+            for (auto class_idx {0u}; class_idx < classes.size(); ++class_idx) {
+                auto &slc = classes[class_idx];
+
+                printf("funcs = [");
+                for (auto func_idx {0u}; func_idx < slc->total_funcs; ++func_idx) {
+                    auto &func = slc->funcs[func_idx];
+                    printf("\"%s\", ", func->m_name);
+                }
+
+                printf("]\n");
+
+                printf("slc = script_library_class(\"%s\", funcs)\nclasses.append(slc)\n", slc->name);
+            }
+
+            assert(0);
+        }
+
     } else {
         CDECL_CALL(0x0064EB60);
     }

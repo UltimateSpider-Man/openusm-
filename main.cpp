@@ -170,6 +170,7 @@
 #include "script_executable.h"
 #include "script_controller.h"
 #include "script_manager.h"
+#include "script_memtrack.h"
 #include "script_var_container.h"
 #include "settings.h"
 #include "sin_container.h"
@@ -2635,6 +2636,8 @@ BOOL install_redirects() {
     variant_interface_patch();
 
     nalStreamInstance_patch();
+
+    script_memtrack_patch();
 
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;

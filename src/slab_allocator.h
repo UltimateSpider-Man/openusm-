@@ -3,6 +3,8 @@
 #include <config.h>
 #include <variable.h>
 
+struct debug_menu;
+
 namespace slab_allocator {
     struct slab_list_t;
 
@@ -70,6 +72,8 @@ namespace slab_allocator {
 
     //0x0059DE20
     slab_allocator::slab_t *create_slab(int size);
+
+    void create_slab_debug_menu(debug_menu *);
 
     //0x0059DCA0
     void deallocate(void *a1, slab_t *a2);
