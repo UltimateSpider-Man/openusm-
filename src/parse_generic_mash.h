@@ -37,6 +37,20 @@ struct generic_mash_header {
 struct generic_mash_data_ptrs {
     uint8_t *field_0;
     uint8_t *field_4;
+
+    template<typename T>
+    T *get(uint32_t num = 1) {
+        auto *res = bit_cast<T *>(this->field_0);
+        this->field_0 += sizeof(T) * num;
+        return res;
+    }
+
+    template<typename T>
+    T *get_from_shared(uint32_t num = 1) {
+        auto *res = bit_cast<T *>(this->field_4);
+        this->field_4 += sizeof(T) * num;
+        return res;
+    }
 };
 
 //0x004C1FA0

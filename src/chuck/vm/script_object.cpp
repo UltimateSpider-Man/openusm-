@@ -4,6 +4,7 @@
 
 #include "func_wrapper.h"
 #include "memory.h"
+#include "parse_generic_mash.h"
 #include "script_executable.h"
 #include "vm_executable.h"
 #include "vm_thread.h"
@@ -32,7 +33,12 @@ void script_object::constructor_common() {
 
     assert(instances == nullptr);
 
-    THISCALL(0x005A0750, this);
+    if constexpr (1) {
+        auto *mem = mem_alloc(sizeof(*this->instances));
+        this->instances = new (mem) simple_list<script_instance> {};
+    } else {
+        THISCALL(0x005A0750, this);
+    }
 
     assert(instances != nullptr);
 }
@@ -323,19 +329,83 @@ void script_object::link(const script_executable *a2) {
     }
 }
 
-void script_object::un_mash(generic_mash_header *a2, void *a3, void *a4, generic_mash_data_ptrs *a5) {
+void script_object::un_mash(generic_mash_header *header, void *a3, void *a4, generic_mash_data_ptrs *a5) {
     TRACE("script_object::un_mash");
 
-    THISCALL(0x005AB350, this, a2, a3, a4, a5);
+    if constexpr (1) {
+        this->parent = static_cast<script_executable *>(a3);
+        assert(((int)header) % 4 == 0);
+
+        this->static_data.un_mash(header, &this->static_data, a5);
+        auto v7 = 4 - (unsigned int)a5->field_0 % 4;
+        if ( v7 < 4 ) {
+            a5->field_0 += v7;
+        }
+
+        this->funcs = a5->get<vm_executable *>(this->total_funcs);
+        for ( auto i = 0; i < this->total_funcs; ++i ) {
+            auto v5 = 4 - (unsigned int)a5->field_0 % 4;
+            if ( v5 < 4 ) {
+                a5->field_0 += v5;
+            }
+
+            this->funcs[i] = a5->get<vm_executable>();
+
+            assert(((int)header) % 4 == 0);
+            this->funcs[i]->un_mash(header, this, this->funcs[i], a5);
+        }
+
+        this->constructor_common();
+        if ( this->is_global_object() ) {
+            this->create_auto_instance(Float{0.0});
+        }
+
+    } else {
+        THISCALL(0x005AB350, this, header, a3, a4, a5);
+    }
 
     sp_log("flags = 0x%08X", this->flags);
     //assert(this->debug_info == nullptr);
 }
 
-void script_object::create_auto_instance(Float arg0) {
+void script_object::create_auto_instance(Float a2) {
     TRACE("script_object::create_auto_instance");
 
-    THISCALL(0x005AAEF0, this, arg0);
+    if constexpr (1) {
+        assert(this->instances != nullptr);
+
+        auto &con = *this->get_func(0);
+        assert(con.get_name() == name);
+
+        if ( con.get_parms_stacksize() == 4 ) {
+            static string_hash auto_inst_name {int(to_hash("__auto"))};
+
+            auto *mem = mem_alloc(sizeof(script_instance));
+            auto *inst = new (mem) script_instance{auto_inst_name, this->data_blocksize, 0};
+
+            assert(inst != nullptr);
+            inst->parent = this;
+
+            if ( this->is_global_object() ) {
+                assert(global_instance == nullptr);
+                this->instances->emplace_back(inst);
+                this->global_instance = inst;
+            } else {
+                this->instances->push_back(inst);
+            }
+
+            auto *new_thread = inst->add_thread(&con);
+            if ( this->is_global_object() ) {
+                auto &stack = new_thread->get_data_stack();
+                stack.push(a2);
+            } else {
+                auto &stack = new_thread->get_data_stack();
+                stack.push((const char *)&inst, 4);
+            }
+        }
+    } else {
+        THISCALL(0x005AAEF0, this, a2);
+    }
 }
 
 vm_executable *script_object::get_func(int i)
@@ -350,7 +420,62 @@ vm_executable *script_object::get_func(int i)
 }
 
 int script_object::find_func(string_hash a2) const {
-    return THISCALL(0x0058EF80, this, a2);
+    TRACE("script_object::find_func", a2.to_string());
+
+    if constexpr (1) {
+        const auto v14 = a2.source_hash_code % 20;
+
+        auto idx = v14;
+        auto v12 = 0x7FFFFFFF;
+        auto lru_index = -1;
+        while ( function_cache()[idx].field_8 != -1 ) {
+            if ( function_cache()[idx].field_0 == this 
+                && function_cache()[idx].field_4 == a2 )
+            {
+                static int dword_1597B60 {0};
+                ++dword_1597B60;
+                function_cache()[idx].field_C = usage_counter()++;
+                auto v4 = function_cache()[idx].field_8;
+                return v4;
+            }
+
+            if ( v12 > function_cache()[idx].field_C ) {
+                v12 = function_cache()[idx].field_C;
+                lru_index = idx;
+            }
+
+            if ( (int)++idx >= 20 ) {
+                idx = 0;
+            }
+
+            if ( idx == v14 ) {
+                goto LABEL_12;
+            }
+        }
+
+        lru_index = idx;
+        LABEL_12:
+
+        static int dword_1597B64 {0};
+        ++dword_1597B64;
+        for ( auto i = 0; i < this->total_funcs; ++i ) {
+            auto &v9 = this->funcs[i];
+            auto v3 = v9->get_fullname();
+            if ( v3 == a2 ) {
+                assert(lru_index != -1);
+                function_cache()[lru_index].field_0 = this;
+                function_cache()[lru_index].field_8 = i;
+                function_cache()[lru_index].field_4 = a2;
+                function_cache()[lru_index].field_C = usage_counter()++;
+                return i;
+            }
+        }
+
+        return -1;
+
+    } else {
+        return THISCALL(0x0058EF80, this, a2);
+    }
 }
 
 int script_object::find_function_by_address(const uint16_t *a2)
@@ -615,5 +740,15 @@ void script_instance_patch() {
     {
         FUNC_ADDRESS(address, &script_instance::run);
         SET_JUMP(0x005AF660, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &script_object::create_auto_instance);
+        SET_JUMP(0x005AAEF0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &script_object::find_func);
+        SET_JUMP(0x0058EF80, address);
     }
 }

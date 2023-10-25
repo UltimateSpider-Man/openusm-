@@ -37,27 +37,26 @@ void mashable_vector<resource_directory *>::custom_un_mash([[maybe_unused]] gene
 
     assert(from_mash());
 
-    if (this->m_shared)
-    {
-        rebase(a4->field_4, 4u);
+    if (this->m_shared) {
+        auto &buffer = a4->field_4;
 
-        rebase(a4->field_4, 4u);
+        rebase(buffer, 4u);
 
-        this->m_data = CAST(m_data, a4->field_4);
-        a4->field_4 += 4 * this->m_size;
+        rebase(buffer, 4u);
 
-        rebase(a4->field_4, 4u);
-    }
-    else
-    {
-        rebase(a4->field_0, 4u);
+        this->m_data = a4->get_from_shared<resource_directory *>(this->m_size);
 
-        rebase(a4->field_0, 4u);
+        rebase(buffer, 4u);
+    } else {
+        auto &buffer = a4->field_0;
 
-        this->m_data = CAST(m_data, a4->field_0);
-        a4->field_0 += 4 * this->m_size;
+        rebase(buffer, 4u);
 
-        rebase(a4->field_0, 4u);
+        rebase(buffer, 4u);
+
+        this->m_data = a4->get<resource_directory *>(this->m_size);
+
+        rebase(buffer, 4u);
     }
 }
 
@@ -71,28 +70,17 @@ void mashable_vector<dsg_region_container>::custom_un_mash(generic_mash_header *
         sp_log("dsg_region_container's cannot be shared!");
         assert(0);
     } else {
-        uint32_t v6 = 4 - ((uint32_t) a4->field_0 % 4);
-        if (v6 < 4) {
-            a4->field_0 += v6;
-        }
+        rebase(a4->field_0, 4);
 
-        uint32_t v7 = 4 - ((uint32_t) a4->field_0 % 4);
-        if (v7 < 4) {
-            a4->field_0 += v7;
-        }
+        rebase(a4->field_0, 4);
 
-        this->m_data = (dsg_region_container *) a4->field_0;
-        a4->field_0 += 84 * this->m_size;
+        this->m_data = a4->get<dsg_region_container>(this->m_size);
         
-        for (auto i = 0u; i < this->m_size; ++i)
-        {
+        for (auto i = 0u; i < this->m_size; ++i) {
             this->m_data[i].un_mash(a2, &this->m_data[i], a4);
         }
 
-        uint32_t v11 = 4 - ((uint32_t) a4->field_0 % 4);
-        if (v11 < 4) {
-            a4->field_0 += v11;
-        }
+        rebase(a4->field_0, 4);
     }
 }
 
@@ -106,33 +94,20 @@ void mashable_vector<dsg_box_container>::custom_un_mash(generic_mash_header *a2,
         sp_log("dsg_box_container's cannot be shared!");
         assert(0);
     } else {
-        uint32_t v6 = 4 - ((uint32_t) a4->field_0 % 4);
-        if (v6 < 4) {
-            a4->field_0 += v6;
+
+        rebase(a4->field_0, 4);
+
+        rebase(a4->field_0, 4);
+
+        this->m_data = a4->get<dsg_box_container>(this->m_size);
+
+        if (this->m_size != 0) {
+            for (auto i = 0; i < this->m_size; ++i) {
+                this->m_data[i].un_mash(a2, &this->m_data[i], a4);
+            }
         }
 
-        uint32_t v7 = 4 - ((uint32_t) a4->field_0 % 4);
-        if (v7 < 4) {
-            a4->field_0 += v7;
-        }
-
-        auto v8 = 52 * this->m_size;
-        this->m_data = (dsg_box_container *) a4->field_0;
-        size_t v9 = 0;
-        a4->field_0 += v8;
-        if (this->m_size) {
-            size_t v10 = 0;
-            do {
-                this->m_data[v10].un_mash(a2, &this->m_data[v10], a4);
-                ++v9;
-                ++v10;
-            } while (v9 < this->m_size);
-        }
-
-        uint32_t v11 = 4 - ((uint32_t) a4->field_0 % 4);
-        if (v11 < 4) {
-            a4->field_0 += v11;
-        }
+        rebase(a4->field_0, 4);
     }
 }
 
@@ -149,22 +124,19 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
     {
         rebase(a4->field_4, 8u);
 
-        auto v24 = bit_cast<uint32_t *>(a4->field_4)[0];
+        auto v24 = *a4->get_from_shared<uint32_t>();
+
+        auto v11 = *a4->get_from_shared<uint32_t>();
         a4->field_4 += 4;
 
-        auto v11 = bit_cast<uint32_t *>(a4->field_4)[0];
-        a4->field_4 += 4;
-        a4->field_4 += 4;
-
-        auto *v9 = bit_cast<uint32_t *>(a4->field_4);
-        a4->field_4 += 4;
+        auto *v9 = a4->get_from_shared<uint32_t>();
 
         rebase(a4->field_4, 8u);
 
         rebase(a4->field_4, 4u);
 
-        this->m_data = (value_t *) a4->field_4;
-        a4->field_4 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get_from_shared<value_t>(this->m_size);
+
         if (v9[0] != 0)
         {
             a4->field_0 += v24;
@@ -172,8 +144,7 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
         }
         else
         {
-            for (auto i = 0u; i < this->m_size; ++i)
-            {
+            for (auto i = 0u; i < this->m_size; ++i) {
                 assert(((int)header) % 4 == 0);
                 this->m_data[i].un_mash(header, &this->m_data[i], a4);
             }
@@ -189,11 +160,9 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
 
         rebase(a4->field_0, 4u);
 
-        this->m_data = (value_t *) a4->field_0;
-        a4->field_0 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get<value_t>(this->m_size);
 
-        for (auto i = 0u; i < this->m_size; ++i)
-        {
+        for (auto i = 0u; i < this->m_size; ++i) {
             assert(((int)header) % 4 == 0);
             this->m_data[i].un_mash(header, &this->m_data[i], a4);
         }
@@ -215,22 +184,18 @@ void mashable_vector<tlresource_location>::custom_un_mash(generic_mash_header *h
     {
         rebase(a4->field_4, 8u);
 
-        auto offset = *bit_cast<uint32_t *>(a4->field_4);
+        auto offset = *a4->get_from_shared<uint32_t>();
+        auto offset1 = *a4->get_from_shared<uint32_t>();
+
         a4->field_4 += 4;
 
-        auto offset1 = *bit_cast<uint32_t *>(a4->field_4);
-        a4->field_4 += 4;
-        a4->field_4 += 4;
-
-        auto *v9 = bit_cast<int *>(a4->field_4);
-        a4->field_4 += 4;
+        auto *v9 = a4->get_from_shared<int>();
 
         rebase(a4->field_4, 8u);
 
         rebase(a4->field_4, 4u);
 
-        this->m_data = CAST(m_data, a4->field_4);
-        a4->field_4 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
         if (v9[0] != 0)
         {
@@ -255,8 +220,7 @@ void mashable_vector<tlresource_location>::custom_un_mash(generic_mash_header *h
 
         rebase(a4->field_0, 4u);
 
-        this->m_data = CAST(m_data, a4->field_0);
-        a4->field_0 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get<value_t>(this->m_size);
 
         for (int i = 0; i < this->m_size; ++i)
         {
@@ -310,8 +274,7 @@ void mashable_vector<resource_pack_group>::custom_un_mash(generic_mash_header *h
 
         rebase(a4->field_4, 4u);
 
-        this->m_data = CAST(m_data, a4->field_4);
-        a4->field_4 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
         if (v9[0]) {
             a4->field_0 += offset;
@@ -333,10 +296,9 @@ void mashable_vector<resource_pack_group>::custom_un_mash(generic_mash_header *h
 
         rebase(a4->field_0, 4u);
 
-        this->m_data = CAST(m_data, a4->field_0);
-        a4->field_0 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get<value_t>(this->m_size);
 
-        if (this->m_size) {
+        if (this->m_size != 0) {
             for (int i = 0; i < this->m_size; ++i) {
                 assert(((int) header) % 4 == 0);
                 this->m_data[i].un_mash(header, &this->m_data[i], a4);
@@ -357,21 +319,17 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
     if (this->is_shared()) {
         rebase(a4->field_4, 4u);
 
-        auto offset = *bit_cast<uint32_t *>(a4->field_4);
-        a4->field_4 += 4;
+        auto offset = *a4->get_from_shared<uint32_t>();
 
-        auto offset1 = *bit_cast<uint32_t *>(a4->field_4);
-        a4->field_4 += 4;
+        auto offset1 = *a4->get_from_shared<uint32_t>();
 
-        auto *v9 = bit_cast<int *>(a4->field_4);
-        a4->field_4 += 4;
+        auto *v9 = a4->get_from_shared<int>();
 
         rebase(a4->field_4, 4u);
 
         rebase(a4->field_4, 4u);
 
-        this->m_data = (value_t *) a4->field_4;
-        a4->field_4 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
         if (v9[0]) {
             a4->field_0 += offset;
@@ -394,8 +352,7 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
 
         rebase(a4->field_0, 4u);
 
-        this->m_data = (value_t *) a4->field_0;
-        a4->field_0 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get<value_t>(this->m_size);
 
         for (int i = 0; i < this->m_size; ++i) {
             this->m_data[i].un_mash(header, &this->m_data[i], a4);
@@ -419,8 +376,7 @@ void mashable_vector<fixedstring<4>>::custom_un_mash([[maybe_unused]] generic_ma
 
         rebase(a4->field_4, 4u);
 
-        this->m_data = CAST(m_data, a4->field_4);
-        a4->field_4 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
         rebase(a4->field_4, 4u);
 
@@ -430,8 +386,7 @@ void mashable_vector<fixedstring<4>>::custom_un_mash([[maybe_unused]] generic_ma
 
         rebase(a4->field_0, 4u);
 
-        this->m_data = CAST(m_data, a4->field_0);
-        a4->field_0 += sizeof(value_t) * this->m_size;
+        this->m_data = a4->get<value_t>(this->m_size);
 
         rebase(a4->field_0, 4u);
     }
@@ -449,8 +404,7 @@ void mashable_vector<int>::custom_un_mash([[maybe_unused]] generic_mash_header *
 
         rebase(a4->field_4, 4u);
 
-        this->m_data = bit_cast<value_t *>(a4->field_4); 
-        a4->field_4 += 4 * this->m_size;
+        this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
         rebase(a4->field_4, 4u);
 
@@ -460,8 +414,7 @@ void mashable_vector<int>::custom_un_mash([[maybe_unused]] generic_mash_header *
 
         rebase(a4->field_0, 4u);
 
-        this->m_data = bit_cast<value_t *>(a4->field_0);
-        a4->field_0 += 4 * this->m_size;
+        this->m_data = a4->get<value_t>(this->m_size);
 
         rebase(a4->field_0, 4u);
     }
@@ -474,45 +427,23 @@ void mashable_vector<po>::custom_un_mash(generic_mash_header *, void *, generic_
 
     if ( this->m_shared )
     {
-        auto v5 = 16 - ((int)a4->field_4 % 16);
-        if ( v5 < 16 )
-            a4->field_4 += v5;
+        rebase(a4->field_4, 16);
 
-        auto v6 = 4 - ((int)a4->field_4 % 4);
-        if ( v6 < 4 )
-        {
-            a4->field_4 += v6;
-        }
+        rebase(a4->field_4, 4);
 
-        this->m_data = (po *)a4->field_4;
-        a4->field_4 += this->m_size << 6u;
-        auto v8 = 4 - ( bit_cast<uint32_t>(a4->field_4) % 4u );
-        if ( v8 < 4 )
-        {
-            a4->field_4 += v8;
-        }
+        this->m_data = a4->get_from_shared<po>(this->m_size);
+
+        rebase(a4->field_4, 4);
     }
     else
     {
-        auto v9 = 16 - ((int)a4->field_0 % 16);
-        if ( v9 < 16 )
-        {
-            a4->field_0 += v9;
-        }
+        rebase(a4->field_0, 16);
+
+        rebase(a4->field_0, 4);
         
-        auto v10 = 4 - ((int)a4->field_0 % 4);
-        if ( v10 < 4 )
-        {
-            a4->field_0 += v10;
-        }
-        
-        this->m_data = (po *)a4->field_0;
-        a4->field_0 += this->m_size << 6u;
-        auto v12 = 4 - (bit_cast<uint32_t>(a4->field_0) % 4u);
-        if ( v12 < 4 )
-        {
-            a4->field_0 += v12;
-        }
+        this->m_data = a4->get<po>(this->m_size);
+
+        rebase(a4->field_0, 4);
     }
 }
 
@@ -523,47 +454,23 @@ void mashable_vector<entity_base *>::custom_un_mash(generic_mash_header *, void 
 
     if ( this->m_shared)
     {
-        auto v5 = 4 - ((int)a4->field_4 & 3);
-        if ( v5 < 4 )
-        {
-            a4->field_4 += v5;
-        }
+        rebase(a4->field_4, 4);
 
-        auto v6 = 4 - ((int)a4->field_4 & 3);
-        if ( v6 < 4 )
-        {
-            a4->field_4 += v6;
-        }
+        rebase(a4->field_4, 4);
 
-        this->m_data = (entity_base **)a4->field_4;
+        this->m_data = a4->get_from_shared<entity_base *>(this->m_size);
 
-        a4->field_4 += 4 * this->m_size;
-
-        auto v8 = 4 - (bit_cast<uint32_t>(a4->field_4) & 4u);
-        if ( v8 < 4 )
-        {
-            a4->field_4 += v8;
-        }
+        rebase(a4->field_4, 4);
     }
     else
     {
-        auto v9 = 4 - ((int)a4->field_0 & 3);
-        if ( v9 < 4 )
-            a4->field_0 += v9;
+        rebase(a4->field_0, 4);
 
-        auto v10 = 4 - ((int)a4->field_0 & 3);
-        if ( v10 < 4 )
-        {
-            a4->field_0 += v10;
-        }
+        rebase(a4->field_0, 4);
         
-        this->m_data = (entity_base **)a4->field_0;
-        a4->field_0 += 4 * this->m_size;
-        auto v12 = 4 - (bit_cast<uint32_t>(a4->field_0) % 4u);
-        if ( v12 < 4 )
-        {
-            a4->field_0 += v12;
-        }
+        this->m_data = a4->get<entity_base *>(this->m_size);
+
+        rebase(a4->field_0, 4);
     }
 }
 
@@ -572,61 +479,32 @@ void mashable_vector<int8_t>::custom_un_mash(generic_mash_header *, void *, gene
 {
     if ( this->m_shared )
     {
-        auto v5 = 4 - ((int)a4->field_4 & 3);
-        if ( v5 < 4 )
-        {
-            a4->field_4 += v5;
-        }
+        rebase(a4->field_4, 4);
 
-        auto v6 = 4 - ((int)a4->field_4 & 3);
-        if ( v6 < 4 )
-        {
-            a4->field_4 += v6;
-        }
+        rebase(a4->field_4, 4);
 
-        this->m_data = CAST(m_data, a4->field_4);
-        a4->field_4 += this->m_size;
+        this->m_data = a4->get_from_shared<int8_t>(this->m_size);
 
-        auto v8 = 4 - (bit_cast<int>(a4->field_4) % 4u);
-        if ( v8 < 4 )
-        {
-            a4->field_4 += v8;
-        }
+        rebase(a4->field_4, 4);
     }
     else
     {
-        auto v9 = 4 - ((int)a4->field_0 & 3);
-        if ( v9 < 4 )
-        {
-            a4->field_0 += v9;
-        }
+        rebase(a4->field_0, 4);
 
-        auto v10 = 4 - ((int)a4->field_0 & 3);
-        if ( v10 < 4 )
-        {
-            a4->field_0 += v10;
-        }
+        rebase(a4->field_0, 4);
         
-        this->m_data = CAST(m_data, a4->field_0);
-        a4->field_0 += this->m_size;
-        auto v12 = 4 - (bit_cast<int>(a4->field_0) % 4u);
-        if ( v12 < 4 )
-        {
-            a4->field_0 += v12;
-        }
+        this->m_data = a4->get<int8_t>(this->m_size);
+
+        rebase(a4->field_0, 4);
     }
 }
 
 template<>
-void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4, void *a5)
+void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *, generic_mash_data_ptrs *a4, void *)
 {
     if ( this->m_shared )
     {
-        auto v7 = 8 - ((int)a4->field_4 & 7);
-        if ( v7 < 8 )
-        {
-            a4->field_4 += v7;
-        }
+        rebase(a4->field_4, 8);
 
         auto v8 = (int)a4->field_4;
         auto v9 = (int *)(v8 + 4);
@@ -641,80 +519,51 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *a
             a4->field_4 = &v10[v12];
         }
 
-        auto v13 = 4 - ((int)a4->field_4 & 3);
-        if ( v13 < 4 )
-        {
-            a4->field_4 += v13;
-        }
+        rebase(a4->field_4, 4);
 
-        this->m_data = (anim_info *)a4->field_4;
-        a4->field_4 += 0x24 * this->m_size;
-        auto v14 = 0;
+        this->m_data = a4->get_from_shared<anim_info>(this->m_size);
+
         if ( v9[2] )
         {
             a4->field_0 += a4a;
             a4->field_4 += v11 - 0x24 * this->m_size;
         }
-        else if ( this->m_size )
+        else if ( this->m_size != 0 )
         {
-            auto a4b = 0;
-            do
+            for ( auto i {0u}; i < this->m_size; ++i )
             {
-                this->m_data[a4b].un_mash(a2, &this->m_data[a4b], a4);
-                ++v14;
-                ++a4b;
+                this->m_data[i].un_mash(a2, &this->m_data[i], a4);
             }
-            while ( v14 < this->m_size );
         }
 
         ++v9[2];
-        auto v15 = 4 - ((int)a4->field_4 & 3);
-        if ( v15 < 4 )
-        {
-            a4->field_4 += v15;
-        }
+
+        rebase(a4->field_4, 4);
     }
     else
     {
-        auto v16 = 8 - ((int)a4->field_0 & 7);
-        if ( v16 < 8 )
-            a4->field_0 += v16;
+        rebase(a4->field_0, 8);
 
-        auto v17 = 4 - ((int)a4->field_0 & 3);
-        if ( v17 < 4 )
-            a4->field_0 += v17;
+        rebase(a4->field_0, 4);
 
-        this->m_data = (anim_info *)a4->field_0;
-        auto v18 = 0;
-        a4->field_0 += 36 * this->m_size;
-        if ( this->m_size )
-        {
-            auto v19 = 0;
-            do
-            {
-                this->m_data[v19].un_mash(a2, &this->m_data[v19], a4);
-                ++v18;
-                ++v19;
+        this->m_data = a4->get<anim_info>(this->m_size);
+
+        if ( this->m_size != 0 ) {
+            for ( auto i {0u}; i < this->m_size; ++i ) {
+                this->m_data[i].un_mash(a2, &this->m_data[i], a4);
             }
-            while ( v18 < this->m_size );
         }
 
-        auto v20 = 4 - ((int)a4->field_0 & 3);
-        if ( v20 < 4 )
-            a4->field_0 += v20;
+        rebase(a4->field_0, 4);
     }
 }
 
 template<>
-void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4, void *)
+void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2, void *, generic_mash_data_ptrs *a4, void *)
 {
     if ( this->m_shared )
     {
-        auto v7 = 8 - ((int)a4->field_4 & 7);
-        if ( v7 < 8 )
-        {
-            a4->field_4 += v7;
-        }
+        rebase(a4->field_4, 8);
 
         auto v8 = (int)a4->field_4;
         auto v24 = *(DWORD *)v8;
@@ -730,15 +579,10 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2
             a4->field_4 = &v10[v12];
         }
 
-        auto v13 = 4 - ((int)a4->field_4 & 3);
-        if ( v13 < 4 )
-        {
-            a4->field_4 += v13;
-        }
+        rebase(a4->field_4, 4);
 
-        auto v14 = this->m_size;
-        this->m_data = (anim_map_ptr_entry *)a4->field_4;
-        a4->field_4 += 0x10 * v14;
+        this->m_data = a4->get_from_shared<anim_map_ptr_entry>(this->m_size);
+
         if ( v9[2] )
         {
             a4->field_0 += v24;
@@ -746,60 +590,34 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2
         }
         else
         {
-            auto v15 = 0;
-            if ( this->m_size )
-            {
-                auto v16 = 0;
-                do
-                {
-                    this->m_data[v16].field_8.custom_un_mash(a2, &this->m_data[v16].field_8, a4, nullptr);
-                    ++v15;
-                    ++v16;
+            if ( this->m_size ) {
+                for ( auto i = 0; i < this->m_size; ++i ) {
+                    this->m_data[i].field_8.custom_un_mash(a2, &this->m_data[i].field_8, a4, nullptr);
                 }
-                while ( v15 < this->m_size );
 
                 v9 = a4a;
             }
         }
 
         ++v9[2];
-        auto v17 = 4 - ((int)a4->field_4 & 3);
-        if ( v17 < 4 )
-        {
-            a4->field_4 += v17;
-        }
+
+        rebase(a4->field_4, 4);
     }
     else
     {
-        auto v18 = 8 - ((int)a4->field_0 & 7);
-        if ( v18 < 8 )
-            a4->field_0 += v18;
+        rebase(a4->field_0, 8);
 
-        auto v19 = 4 - ((int)a4->field_0 & 3);
-        if ( v19 < 4 )
-            a4->field_0 += v19;
+        rebase(a4->field_0, 4);
 
-        auto v20 = this->m_size;
-        this->m_data = (anim_map_ptr_entry *)a4->field_0;
-        auto v21 = 0;
-        a4->field_0 += 16 * v20;
-        if ( this->m_size )
-        {
-            auto v22 = 0;
-            do
-            {
-                this->m_data[v22].field_8.custom_un_mash(a2, &this->m_data[v22].field_8, a4, nullptr);
-                ++v21;
-                ++v22;
+        this->m_data = a4->get<anim_map_ptr_entry>(this->m_size);
+
+        if ( this->m_size != 0 ) {
+            for ( auto i = 0; i < this->m_size; ++i ) {
+                this->m_data[i].field_8.custom_un_mash(a2, &this->m_data[i].field_8, a4, nullptr);
             }
-            while ( v21 < this->m_size );
         }
 
-        auto v23 = 4 - ((int)a4->field_0 & 3);
-        if ( v23 < 4 )
-        {
-            a4->field_0 += v23;
-        }
+        rebase(a4->field_0, 4);
     }
 }
 

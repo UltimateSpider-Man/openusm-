@@ -93,63 +93,48 @@ void vm_executable::link_un_mash(const script_executable *a2) {
                 auto argtype = opcode_arg_t(opword & OP_ARGTYPE_MASK);
                 printf("argtype = %d %s\n", argtype, opcode_arg_t_str[argtype]);
 
-                if constexpr (0) {
-                    using func_t = void (*)(vm_executable &, const script_executable *, uint16_t *&);
-
-                    auto empty = [](vm_executable &, const script_executable *, uint16_t *&) {};
-
-                    auto skip_two_word = [](vm_executable &, const script_executable *, uint16_t *&buffer) {
-                        buffer += 2;
-                    };
-
-                    auto skip_one_word = [](vm_executable &, const script_executable *, uint16_t *&buffer) {
-                        ++buffer;
-                    };
-
-                    static auto set_buffer = [](uint16_t *&buffer, uint32_t addr) {
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                    };
-                     
-                    auto get_string = [](vm_executable &ex, const script_executable *, uint16_t *&buffer) -> void {
-                        uint32_t idx = *buffer;
+                if constexpr (1) {
+                    auto get_string = [](vm_executable &ex, const script_executable *,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        uint32_t idx = indices[0];
                         auto *str = ex.owner->get_parent()->get_permanent_string(idx);
-                        printf("str = %s\n", str);
                         auto addr = uint32_t(str);
-                        buffer += 2;
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
 
-                    auto get_static_data = [](vm_executable &, const script_executable *se, uint16_t *&buffer) {
-                        auto idx = *buffer++;
+                    auto get_static_data = [](vm_executable &, const script_executable *se,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        auto idx = indices[0];
                         auto *so = se->find_object(idx);
                         assert(so != nullptr);
 
-                        auto offset = *buffer++;
+                        auto offset = indices[1];
                         assert(offset < so->get_static_data_size());
 
                         auto addr = int(so->get_static_data_buffer() + offset);
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
 
-                    auto get_static_func = [](vm_executable &, const script_executable *se, uint16_t *&buffer) {
-                        auto idx = *buffer++;
-                        auto func_idx = *buffer++;
+                    auto get_static_func = [](vm_executable &, const script_executable *se,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        auto idx = indices[0];
+                        auto func_idx = indices[1];
                         auto *so = se->find_object(idx);
                         assert(so != nullptr);
 
                         auto *v8 = so->get_func(func_idx);
                         v8->link(se);
                         auto addr = int(v8);
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
 
-                    auto get_library_func = [](vm_executable &, const script_executable *, uint16_t *&buffer) {
-                        auto class_idx = *buffer++;
+                    auto get_library_func = [](vm_executable &, const script_executable *,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        auto class_idx = indices[0];
                         auto *slc = slc_manager::get_class(class_idx);
                         assert(slc != nullptr);
 
-                        auto func_idx = *buffer++;
+                        auto func_idx = indices[1];
                         auto *func = slc->get_func(func_idx);
                         if (func == nullptr) {
                             assert(0 &&
@@ -159,44 +144,45 @@ void vm_executable::link_un_mash(const script_executable *a2) {
                         }
 
                         auto addr = int(func);
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
                     
-                    auto get_class_value = [](vm_executable &ex, const script_executable *, uint16_t *&buffer) {
-                        auto idx = *buffer++;
+                    auto get_class_value = [](vm_executable &ex, const script_executable *,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        auto idx = indices[0];
                         auto *slc = slc_manager::get_class(idx);
                         assert(slc != nullptr);
 
                         assert(slc->get_size() == 4);
 
-                        auto v10 = *buffer++;
+                        auto v10 = indices[1];
                         auto *ps = ex.owner->get_parent()->get_permanent_string(v10);
                         mString v17 {ps};
 
                         uint32_t (__fastcall *find_instance)(script_library_class *, void *, mString *) = CAST(find_instance, get_vfunc(slc->m_vtbl, 4));
                         auto addr = find_instance(slc, nullptr, &v17);
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
 
-                    auto get_signal_value = [](vm_executable &ex, const script_executable *, uint16_t *&buffer) {
-                        auto idx = *buffer;
+                    auto get_signal_value = [](vm_executable &ex, const script_executable *,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        auto idx = indices[0];
                         auto *v16 = ex.owner->get_parent()->get_permanent_string(idx);
 
-                        buffer += 2;
                         mString v18 {v16};
 
                         assert(resolve_signal_callback() != nullptr);
 
-                        uint32_t v7;
-                        resolve_signal_callback()(v18.c_str(), &v7);
+                        uint32_t addr;
+                        resolve_signal_callback()(v18.c_str(), &addr);
 
-                        auto addr = v7;
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
                     
-                    auto get_var_addr = [](vm_executable &, const script_executable *, uint16_t *&buffer) {
-                        auto offset = *buffer++;
-                        auto v15 = *buffer++;
+                    auto get_var_addr = [](vm_executable &, const script_executable *,
+                            std::array<uint32_t, 2> indices) -> uint32_t {
+                        auto offset = indices[0];
+                        auto v15 = indices[1];
 
                         auto addr = (v15 == 1
                                 ? (int) script_manager::get_game_var_address(offset)
@@ -204,37 +190,68 @@ void vm_executable::link_un_mash(const script_executable *a2) {
                                 );
 
                         assert(addr != 0 && "make sure you pack after you compile a script");
-                        set_buffer(buffer, addr);
+                        return addr;
                     };
 
-                    auto get_error = [](vm_executable &, const script_executable *, uint16_t *&) {
-                        assert(0 && "found an unresolved external reference in a script executable!!!");
+                    enum cmd_e {
+                        EMPTY,
+                        SKIP,
+                        PROCESS,
+                        ERROR
                     };
 
-                    func_t funcs_table[] = {
-                        empty, // OP_ARG_NULL
-                        skip_two_word,                          // OP_ARG_NUM
-                        skip_two_word,                          // OP_ARG_NUMR
-                        get_string,                             // OP_ARG_STR
-                        skip_one_word,                          // OP_ARG_WORD
-                        skip_one_word,                          // OP_ARG_PCR
-                        skip_one_word,                          // OP_ARG_SPR
-                        skip_one_word,                          // OP_ARG_POPO
-                        get_static_data,                        // OP_ARG_SDR
-                        get_static_func,                        // OP_ARG_SFR
-                        get_library_func,                       // OP_ARG_LFR
-                        get_class_value,                        // OP_ARG_CLV
-                        empty,                                  // 12
-                        empty,                                  // 13
-                        empty,                                  // 14
-                        get_signal_value,                       // OP_ARG_SIG
-                        get_signal_value,                       // OP_ARG_PSIG
-                        get_var_addr,                           // 17
-                        get_error,                                        // 18
-                        get_error,                                        // 19
-                        get_error,                                        // 20
-                        get_error,                                        // 21
-                        get_error,                                         // 22
+                    struct {
+                        cmd_e cmd;
+                        uint8_t num_words;
+
+                        using func_t = uint32_t (*)(vm_executable &, const script_executable *, std::array<uint32_t, 2>);
+                        func_t func;
+
+                        void operator()(vm_executable &ex, const script_executable *se, uint16_t *&buffer) {
+                            switch (cmd) {
+                            case EMPTY:
+                                return;
+                            case SKIP:
+                                buffer += num_words;
+                                break;
+                            case PROCESS: {
+                                auto addr = func(ex, se, {buffer[0], buffer[1]});
+                     
+                                buffer += 2;
+                                *(buffer - 2) = addr >> 16;
+                                *(buffer - 1) = addr & 0x0000FFFF;
+                                break;
+                            }
+                            case ERROR: {
+                                assert(0 && "found an unresolved external reference in a script executable!!!");
+                                break;
+                            }
+                            }
+                        }
+                    } funcs_table[] = {
+                        {.cmd = EMPTY}, // OP_ARG_NULL
+                        {.cmd = SKIP, .num_words = 2u},                          // OP_ARG_NUM
+                        {.cmd = SKIP, .num_words = 2u},                          // OP_ARG_NUMR
+                        {.cmd = PROCESS, .func = get_string},                    // OP_ARG_STR
+                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_WORD
+                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_PCR
+                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_SPR
+                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_POPO
+                        {.cmd = PROCESS, .func = get_static_data},                        // OP_ARG_SDR
+                        {.cmd = PROCESS, .func = get_static_func},                        // OP_ARG_SFR
+                        {.cmd = PROCESS, .func = get_library_func},                       // OP_ARG_LFR
+                        {.cmd = PROCESS, .func = get_class_value},                        // OP_ARG_CLV
+                        {.cmd = EMPTY},                                  // 12
+                        {.cmd = EMPTY},                                  // 13
+                        {.cmd = EMPTY},                                  // 14
+                        {.cmd = PROCESS, .func = get_signal_value},                       // OP_ARG_SIG
+                        {.cmd = PROCESS, .func = get_signal_value},                       // OP_ARG_PSIG
+                        {.cmd = PROCESS, .func = get_var_addr},                           // 17
+                        {.cmd = ERROR},                                        // 18
+                        {.cmd = ERROR},                                        // 19
+                        {.cmd = ERROR},                                        // 20
+                        {.cmd = ERROR},                                        // 21
+                        {.cmd = ERROR},                                         // 22
                     };
 
                     funcs_table[argtype]((*this), v5, buffer);

@@ -217,8 +217,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             sp_log("0x%08X", sx_exe_image_size);
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
 
-            this->script_objects = CAST(this->script_objects, a4->field_0);
-            a4->field_0 += sizeof(script_object *) * this->total_script_objects;
+            this->script_objects = a4->get<script_object *>(this->total_script_objects);
 
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
             for ( auto i = 0; i < this->total_script_objects; ++i ) {
@@ -226,9 +225,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
                 rebase(a4, 4u);
                 
-                this->script_objects[i] = bit_cast<script_object *>(a4->field_0);
-                //sp_log("offset = 0x%08X", a4->field_0 - start_debug);
-                a4->field_0 += sizeof(script_object);
+                this->script_objects[i] = a4->get<script_object>();
 
                 assert(((int) header) % 4 == 0);
                 auto &so = this->script_objects[i];
@@ -239,22 +236,20 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
             rebase(a4, 4u);
 
-            this->script_objects_by_name = bit_cast<script_object **>(a4->field_0);
-            a4->field_0 += 4 * this->total_script_objects;
+            this->script_objects_by_name = a4->get<script_object *>(this->total_script_objects);
             for ( auto i = 0; i < this->total_script_objects; ++i ) {
                 this->script_objects_by_name[i] = this->script_objects[(int)this->script_objects_by_name[i]];
             }
 
             rebase(a4, 4u);
 
-            this->permanent_string_table = CAST(this->permanent_string_table, a4->field_0);
-            a4->field_0 += 4 * this->permanent_string_table_size;
+            this->permanent_string_table = a4->get<char *>(this->permanent_string_table_size);
+
             for ( auto i = 0; i < this->permanent_string_table_size; ++i ) {
 
                 rebase(a4, 4u);
 
-                auto v21 = *bit_cast<uint32_t *>(a4->field_0);
-                a4->field_0 += sizeof(uint32_t);
+                auto v21 = *a4->get<uint32_t>();
 
                 this->permanent_string_table[i] = (char *) a4->field_0;
                 a4->field_0 += v21;
@@ -267,8 +262,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
             rebase(a4, 4u);
 
-            this->field_54 = CAST(field_54, a4->field_0);
-            a4->field_0 += sizeof(info_t) * this->field_58;
+            this->field_54 = a4->get<info_t>(this->field_58);
 
             rebase(a4, 4u);
 
@@ -286,13 +280,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     assert(owner != nullptr);
 
                     if ( info->field_10 == -1 ) {
-                        if (auto v32 = 4 - ((int) a4->field_0 % 4);
-                                v32 < 4 ) {
-                            a4->field_0 += v32;
-                        }
+                        rebase(a4, 4u);
 
-                        info->field_8 = CAST(info->field_8, a4->field_0);
-                        a4->field_0 += sizeof(vm_executable);
+                        info->field_8 = a4->get<vm_executable>();
 
                         assert(((int) header) % 4 == 0);
                         info->field_8->un_mash(header, owner, info->field_8, a4);
@@ -600,8 +590,7 @@ void script_executable::un_load(bool a2) {
         script_manager::run_callbacks((script_manager_callback_reason)1, this, nullptr);
         for ( auto i = 0; i < 20; ++i ) {
             if ( script_object::function_cache()[i].field_0 != nullptr ) {
-                if ( script_object::function_cache()[i].field_0->get_parent() == this )
-                {
+                if ( script_object::function_cache()[i].field_0->get_parent() == this ) {
                     script_object::function_cache()[i].field_0 = nullptr;
                     script_object::function_cache()[i].field_4 = string_hash {0};
                     script_object::function_cache()[i].field_8 = -1;

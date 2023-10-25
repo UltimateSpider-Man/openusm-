@@ -74,7 +74,8 @@ struct script_object {
         return (this->flags & SCRIPT_OBJECT_FLAG_GLOBAL) != 0;
     }
 
-    auto *get_parent() {
+    auto *get_parent() const
+    {
         return parent;
     }
 
@@ -148,13 +149,15 @@ struct script_object {
     static void read(chunk_file *file, script_object *so);
 
     struct function {
-        script_object *field_0;
+        const script_object *field_0;
         string_hash field_4;
         int field_8;
         int field_C;
     };
 
     static inline Var<function[20]> function_cache {0x00966D10};
+
+    static inline Var<int> usage_counter {0x00965ED4};
 };
 
 struct script_instance_callback_reason_t {
