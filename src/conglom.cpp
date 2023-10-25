@@ -69,8 +69,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
     
     if constexpr (1)
     {
-        std::memcpy(&this->field_110, a4->field_4, 4);
-        a4->field_4 += 4;
+        this->field_110 = *a4->get_from_shared<int>();
         if ( this != (conglomerate *)-248 )
         {
             this->field_F8 = nullptr;
@@ -80,14 +79,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 #ifndef TARGET_XBOX
         if ( (a2->field_E & 0x40) != 0 )
         {
-            if ( auto v6 = 4 - ((int)a4->field_0 % 4u);
-                    v6 < 4 )
-            {
-                a4->field_0 += v6;
-            }
+            rebase(a4->field_0, 4);
 
-            this->skeleton_ifc = (skeleton_interface *)a4->field_0;
-            a4->field_0 += sizeof(skeleton_interface);
+            this->skeleton_ifc = a4->get<skeleton_interface>();
             fix_ifc_v_table((char *) this->skeleton_ifc, (eEntityMashIFCTypeEnum) 6);
 
             this->skeleton_ifc->un_mash(
@@ -127,14 +121,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 #ifndef TARGET_XBOX
         if ( (a2->field_E & 4) != 0 )
         {
-            if ( auto v7 = 4 - ((int)a4->field_0 % 4u);
-                    v7 < 4 )
-            {
-                a4->field_0 += v7;
-            }
+            rebase(a4->field_0, 4);
 
-            this->field_11C = (animation_interface *) a4->field_0;
-            a4->field_0 += sizeof(animation_interface);
+            this->field_11C = a4->get<animation_interface>();
 
             fix_ifc_v_table((char *)this->field_11C, (eEntityMashIFCTypeEnum) 0);
 
@@ -149,14 +138,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
         if ( (a2->field_E & 0x20) != 0 )
         {
-            auto v8 = 4 - ((int)a4->field_0 % 4u);
-            if ( v8 < 4 )
-            {
-                a4->field_0 += v8;
-            }
+            rebase(a4->field_0, 4);
 
-            this->script_data_ifc = (script_data_interface *)a4->field_0;
-            a4->field_0 += sizeof(script_data_interface);
+            this->script_data_ifc = a4->get<script_data_interface>();
 
             fix_ifc_v_table((char *)this->script_data_ifc, (eEntityMashIFCTypeEnum) 3);
 
@@ -173,14 +157,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
         if ( (a2->field_E & 0x2000) != 0 )
         {
-            auto v9 = 4 - ((int)a4->field_0 % 4);
-            if ( v9 < 4 )
-            {
-                a4->field_0 += v9;
-            }
+            rebase(a4->field_0, 4);
 
-            this->field_124 = (tentacle_interface *)a4->field_0;
-            a4->field_0 += sizeof(tentacle_interface);
+            this->field_124 = a4->get<tentacle_interface>();
 
             fix_ifc_v_table((char *) this->field_124, (eEntityMashIFCTypeEnum) 8);
             this->field_124->un_mash(
@@ -196,14 +175,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
         if ( (a2->field_E & 0x1000) != 0 )
         {
-            auto v10 = 4 - ((int)a4->field_0 % 4);
-            if ( v10 < 4 )
-            {
-                a4->field_0 += v10;
-            }
+            rebase(a4->field_0, 4);
 
-            this->my_decal_data_interface = (decal_data_interface *)a4->field_0;
-            a4->field_0 += sizeof(decal_data_interface);
+            this->my_decal_data_interface = a4->get<decal_data_interface>();
 
             fix_ifc_v_table((char *) this->my_decal_data_interface, (eEntityMashIFCTypeEnum) 9);
             this->my_decal_data_interface->un_mash(
@@ -223,14 +197,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
         if ( (a2->field_E & 0x4000) != 0 )
         {
-            auto v11 = 4 - ((int)a4->field_0 & 3);
-            if ( v11 < 4 )
-            {
-                a4->field_0 += v11;
-            }
+            rebase(a4->field_0, 4);
 
-            this->field_12C = (variant_interface *)a4->field_0;
-            a4->field_0 += sizeof(variant_interface);
+            this->field_12C = a4->get<variant_interface>();
 
             fix_ifc_v_table((char *) this->field_12C, (eEntityMashIFCTypeEnum) 10);
 
@@ -262,11 +231,9 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
         this->my_conglom_root = this;
 
         sp_log("members.size() = %d", this->members.size());
-        for (auto it = this->members.begin(); it != this->members.end(); ++it, ++v87)
+        for (auto &member : this->members)
         {
-            uint16_t __ENT_TYPE;
-            std::memcpy(&__ENT_TYPE, a4->field_4, 2);
-            a4->field_4 += 2;
+            uint16_t __ENT_TYPE = *a4->get_from_shared<uint16_t>();
 
             assert(__ENT_TYPE <= _ENTM_TYPE_MAX);
 
@@ -274,24 +241,14 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
             if ( __ENT_TYPE != _ENTM_TYPE_MAX )
             {
-                auto v19 = 4 - (bit_cast<uint32_t>(a4->field_4) % 4);
-                if ( v19 < 4 )
-                {
-                    a4->field_4 += v19;
-                }
+                rebase(a4->field_4, 4);
                 
-                auto *header = bit_cast<generic_mash_header *>(a4->field_4);
+                auto *header = a4->get_from_shared<generic_mash_header>();
                 assert(((int)header) % 4 == 0);
-
-                a4->field_4 += 16;
 
                 assert(__ENT_TYPE == header->get_class_id());
 
-                auto v22 = 16 - (bit_cast<uint32_t>(a4->field_0) % 16);
-                if ( v22 < 16 )
-                {
-                    a4->field_0 += v22;
-                }
+                rebase(a4->field_0, sizeof(generic_mash_header));
 
                 auto *a3 = a4->field_0;
                 entity_base *__ENT_ptr = CAST(__ENT_ptr, a4->field_0);
@@ -319,7 +276,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
             assert(!tmp_ptr->manage_abs_po());
 
-            tmp_ptr->my_abs_po = v87;
+            tmp_ptr->my_abs_po = v87++;
             if ( tmp_ptr->is_an_actor() )
             {
                 if ( tmp_ptr->get_colgeom() != nullptr )
@@ -344,24 +301,16 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                     this->field_4 |= 1;
                 }
 
-                if ( this->is_material_switching() )
-                {
-                    auto *v37 = &tmp_ptr->field_9C;
-                    auto v38 = 4;
-                    do
-                    {
-                        *v37 = v37[(char *)this - (char *)tmp_ptr];
-                        ++v37;
-                        --v38;
+                if ( this->is_material_switching() ) {
+                    for (auto i = 0; i < 4; ++i) {
+                        auto v20 = this->field_90.field_C[i];
+                        tmp_ptr->field_90.field_C[i] = v20;
                     }
-                    while ( v38 );
                 }
             }
 
-            if ( tmp_ptr->is_a_light_source() )
-            {
-                if ( this->field_100 == nullptr )
-                {
+            if ( tmp_ptr->is_a_light_source() ) {
+                if ( this->field_100 == nullptr ) {
                     auto *v39 = mem_alloc(sizeof(*this->field_100));
                     this->field_100 = new (v39) _std::list<light_source *> {};
                 }
@@ -369,7 +318,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                 this->field_100->push_back(bit_cast<light_source *>(tmp_ptr));
             }
 
-            *it = tmp_ptr;
+            member = tmp_ptr;
         }
 
         this->skin_bones.custom_un_mash(a2, &this->skin_bones, a4, nullptr);
@@ -380,36 +329,23 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
         assert(skin_bones.empty() || tmp_skeleton_ifc.exists());
 #endif
 
-        for (auto it = this->skin_bones.begin(); it != this->skin_bones.end(); ++it)
+        for (auto &bone : this->skin_bones)
         {
-            uint16_t __ENT_TYPE;
-            std::memcpy(&__ENT_TYPE, a4->field_4, 2);
-            a4->field_4 += sizeof(2);
+            uint16_t __ENT_TYPE = *a4->get_from_shared<uint16_t>();
 
             assert(__ENT_TYPE <= _ENTM_TYPE_MAX);
 
             actor *tmp_ptr = nullptr;
             if ( __ENT_TYPE != _ENTM_TYPE_MAX )
             {
-                auto v48 = 4 - ((uint32_t) a4->field_4 % 4u);
-                if ( v48 < 4 )
-                {
-                    a4->field_4 += v48;
-                }
+                rebase(a4->field_4, 4);
 
-                auto *header = (generic_mash_header *) a4->field_4;
+                auto *header = a4->get_from_shared<generic_mash_header>();
                 assert(((int)header) % 4 == 0);
-
-                a4->field_4 += 16;
 
                 assert(__ENT_TYPE == header->get_class_id());
 
-                auto v50 = (uint32_t) a4->field_0;
-                auto v51 = 16 - (v50 & 15);
-                if ( v51 < 16 )
-                {
-                    a4->field_0 += v51;
-                }
+                rebase(a4->field_0, sizeof(generic_mash_header));
                 
                 auto *__ENT_ptr = (entity_base *) a4->field_0;
                 auto *v78 = a4->field_0;
@@ -442,35 +378,20 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
             this->skeleton_ifc->connect_bone_abs_po(tmp_ptr->get_bone_idx(), tmp_ptr);
 
             tmp_ptr->field_8 |= 0x10000000u;
-            *it = tmp_ptr;
+            bone = tmp_ptr;
         }
 
-        int v59;
-        std::memcpy(&v59, a4->field_0, 4u);
-        a4->field_0 += 4;
-        if ( v59 )
-        {
-            int v61 = 0;
-            std::memcpy(&v61, a4->field_0, 4);
+        int v59 = *a4->get<int>();
+        if ( v59 != 0 ) {
+            int v61 = *a4->get<int>();
 
-            a4->field_0 += 4;
+            rebase(a4->field_0, 16);
 
-            auto v63 = 16 - (bit_cast<int>(a4->field_0) % 16);
-            if ( v63 < 16 )
-            {
-                a4->field_0 += v63;
-            }
+            rebase(a4->field_0, 4);
 
-            auto v64 = 4 - ((int)a4->field_0 % 4u);
-            if ( v64 < 4 )
-            {
-                a4->field_0 += v64;
-            }
-
-            auto *v65 = a4->field_0;
             global_transfer_variable_the_conglom() = this;
 
-            a4->field_0 += v61;
+            auto *v65 = a4->get<uint8_t>(v61);
 
 #ifdef TARGET_XBOX
             mash_info_struct v92 {mash::UNMASH_MODE, v65, v61, true};
@@ -606,7 +527,7 @@ void conglomerate::debug_render()
     auto &v138 = v1.get_z_facing();
     auto &v2 = this->get_abs_position();
     auto v139 = v2 + v138 + YVEC;
-    auto v5 = this->get_abs_position() + YVEC;
+    [[maybe_unused]] auto v5 = this->get_abs_position() + YVEC;
     //render_beam(v5, v139, color32 {33, 134, 216, 128}, 0.1, false);
 
     auto &v6 = this->get_abs_po();

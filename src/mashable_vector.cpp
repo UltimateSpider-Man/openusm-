@@ -18,14 +18,6 @@
 
 VALIDATE_SIZE(mashable_vector<int>, 8u);
 
-auto rebase(uint8_t *&ptr, uint32_t i) -> void
-{
-    uint32_t v9 = i - ((uint32_t) ptr % i);
-    if (v9 < i) {
-        ptr += v9;
-    }
-}
-
 
 //0x004C7F50
 template<>

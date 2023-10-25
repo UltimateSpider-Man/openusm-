@@ -46,7 +46,8 @@ struct actor : entity {
         uint8_t field_4;
         uint8_t field_5;
         uint16_t field_6;
-        int field_8;
+        int active_client_count;
+        uint8_t field_C[4];
     };
 
     damage_interface *m_damage_interface;
@@ -60,7 +61,6 @@ struct actor : entity {
     int field_88;
     ai_player_controller *m_player_controller;
     mesh_buffers field_90;
-    uint8_t *field_9C;
     traffic_light_interface *field_A0;
     int16_t field_A4;
     int16_t field_A6;

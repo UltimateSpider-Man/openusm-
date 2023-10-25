@@ -67,7 +67,7 @@ actor::actor(int) : entity() {
     this->field_90.field_5 = 1;
     this->field_90.field_0 = nullptr;
     this->field_90.field_6 = -1;
-    this->field_90.field_8 = 0;
+    this->field_90.active_client_count = 0;
 }
 
 actor::~actor() {
@@ -412,7 +412,7 @@ void actor::_render(Float a2)
                     USMMaterialListParam list_param{root_node->field_4};
                     ShaderParams.SetParam(list_param);
 
-                    USMMaterialIndicesParam indices_param{this->field_9C};
+                    USMMaterialIndicesParam indices_param{this->field_90.field_C};
                     ShaderParams.SetParam(indices_param);
                 }
             }

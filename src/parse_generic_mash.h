@@ -53,6 +53,15 @@ struct generic_mash_data_ptrs {
     }
 };
 
+inline void rebase(uint8_t *&ptr, uint32_t i)
+{
+    uint32_t v9 = i - ((uint32_t) ptr % i);
+    if (v9 < i) {
+        ptr += v9;
+    }
+}
+
+
 //0x004C1FA0
 extern void *parse_generic_mash_init(generic_mash_header *&header,
                                      void *cur_ptr,
