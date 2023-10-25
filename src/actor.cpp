@@ -97,6 +97,17 @@ traffic_light_interface *actor::traffic_light_ifc() {
     return this->field_A0;
 }
 
+bool actor::has_skeleton_ifc() const {
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x12C));
+    return func(this);
+}
+
+void actor::ifl_lock(int a2)
+{
+    bool (__fastcall *func)(void *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x268));
+    func(this, nullptr, a2);
+}
+
 void actor::allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3) {
     TRACE("actor::allocate_anim_controller");
 

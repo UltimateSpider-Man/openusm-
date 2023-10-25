@@ -89,6 +89,11 @@ struct actor : entity {
 
     traffic_light_interface *traffic_light_ifc();
 
+    bool has_skeleton_ifc() const;
+
+    //virtual
+    void ifl_lock(int a2);
+
     //0x004E2C10
     void add_collision_ignorance(entity_base_vhandle a2);
 

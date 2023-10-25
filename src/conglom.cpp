@@ -250,7 +250,6 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
                 rebase(a4->field_0, sizeof(generic_mash_header));
 
-                auto *a3 = a4->field_0;
                 entity_base *__ENT_ptr = CAST(__ENT_ptr, a4->field_0);
                 a4->field_0 += ent_size_lookup()[header->get_class_id()];
 
@@ -264,7 +263,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
                 __ENT_ptr->my_rel_po = &this->all_rel_po.m_data[__ENT_ptr->rel_po_idx];
                 __ENT_ptr->my_conglom_root = this;
-                __ENT_ptr->un_mash_start(header, a3, a4, nullptr);
+                __ENT_ptr->un_mash_start(header, __ENT_ptr, a4, nullptr);
 
                 __ENT_ptr->field_8 |= 0x10u;
                 __ENT_ptr->field_3E = 0;
@@ -348,7 +347,6 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                 rebase(a4->field_0, sizeof(generic_mash_header));
                 
                 auto *__ENT_ptr = (entity_base *) a4->field_0;
-                auto *v78 = a4->field_0;
                 a4->field_0 += ent_size_lookup()[header->get_class_id()];
 
                 {
@@ -362,7 +360,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                 __ENT_ptr->my_rel_po = &this->all_rel_po.m_data[__ENT_ptr->rel_po_idx];
                 __ENT_ptr->my_conglom_root = this;
 
-                __ENT_ptr->un_mash_start(header, v78, a4, nullptr);
+                __ENT_ptr->un_mash_start(header, __ENT_ptr, a4, nullptr);
 
                 __ENT_ptr->field_8 |= 0x10u;
                 __ENT_ptr->field_3E = 0;
@@ -410,13 +408,8 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
         actor::_un_mash(a2, a3, a4);
 
-        {
-            bool (__fastcall *func_12C)(void *) = CAST(func_12C, get_vfunc(this->m_vtbl, 0x12C));
-            if ( func_12C(this) )
-            {
-                void (__fastcall *func_268)(void *, int, int) = CAST(func_268, get_vfunc(this->m_vtbl, 0x268));
-                func_268(this, 0, 0);
-            }
+        if ( this->has_skeleton_ifc() ) {
+            this->ifl_lock(0);
         }
 
         nglMesh **v70;
