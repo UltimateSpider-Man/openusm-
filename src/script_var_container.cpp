@@ -31,16 +31,13 @@ void __fastcall sub_599380(
         uint8_t *field_0;
         int field_4;
     } *self = static_cast<decltype(self)>(a1);
-    auto v5 = 4 - ((int)a5->field_0 & 3);
-    if ( v5 < 4 ) {
-        a5->field_0 += v5;
-    }
 
-    int v6;
-    memcpy(&v6, a5->field_0, 4);
-    a5->field_0 += 4;
-    self->field_0 = a5->field_0;
-    a5->field_0 += v6;
+    rebase(a5->field_0, 4);
+
+    int v6 = *a5->get<int>();
+
+    self->field_0 = a5->get<uint8_t>(v6);
+
     int addr = ( ((a3->flags & 2) != 0)
             ? (int) script_manager::get_game_var_address(self->field_4)
             : (int) script_manager::get_shared_var_address(self->field_4)
@@ -53,26 +50,19 @@ void script_var_container::un_mash(generic_mash_header *header, void *a3, generi
 {
     TRACE("script_var_container::un_mash");
 
-    if constexpr(1) {
+    if constexpr (1) {
         assert(((int)header) % 4 == 0);
 
         this->script_var_block.un_mash(header, this, a4);
-        auto v7 = 4 - (unsigned int)a4->field_0 % 4;
-        if ( v7 < 4 ) {
-            a4->field_0 += v7;
-        }
 
-        auto v6 = 4 - (unsigned int)a4->field_0 % 4;
-        if ( v6 < 4 ) {
-            a4->field_0 += v6;
-        }
+        rebase(a4->field_0, 4);
+
+        rebase(a4->field_0, 4);
 
         this->script_var_to_addr = (int (*)[2])a4->field_0;
         a4->field_0 += 8 * this->field_10;
-        auto v5 = 4 - (unsigned int)a4->field_0 % 4;
-        if ( v5 < 4 ) {
-            a4->field_0 += v5;
-        }
+
+        rebase(a4->field_0, 4);
 
         for ( auto i = 0; i < this->field_10; ++i ) {
             assert(((int)header) % 4 == 0);

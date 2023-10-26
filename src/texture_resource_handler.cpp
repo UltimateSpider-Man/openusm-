@@ -26,6 +26,8 @@ bool texture_resource_handler::_handle(worldly_resource_handler::eBehavior a2, l
 
 void texture_resource_handler::handle_resource_internal(tlresource_location *loc,
                                                         nglTextureFileFormat a3) {
+    TRACE("texture_resource_handler::handle_resource_internal", loc->name.to_string());
+
     if constexpr (1) {
         assert(loc != nullptr);
 
@@ -37,7 +39,7 @@ void texture_resource_handler::handle_resource_internal(tlresource_location *loc
             Tex = nglDefaultTex();
         }
 
-        loc->field_8 = (char *) Tex;
+        loc->field_8 = bit_cast<char *>(Tex);
         if (a3 == 1) {
             if (Tex == nglDefaultTex()) {
                 error("ERROR: multipalette texture not found: %s", loc->name.to_string());
@@ -45,23 +47,23 @@ void texture_resource_handler::handle_resource_internal(tlresource_location *loc
 
             if (Tex->m_num_palettes != 0) {
                 for (auto i = 0u; i < Tex->m_num_palettes; ++i) {
-                    auto *v19 = (tlFixedString *) &Tex->field_5C[32 * i + 24];
+                    auto &v19 = Tex->Frames[i]->field_60;
 
                     tlresource_location *found_tlres_loc = nullptr;
 
                     auto &dir = this->my_slot->get_resource_directory();
 
-                    auto found = dir.find_tlresource(v19->m_hash,
+                    auto found = dir.find_tlresource(v19.m_hash,
                                                      TLRESOURCE_TYPE_TEXTURE,
                                                      nullptr,
                                                      &found_tlres_loc);
 
                     if (!found || found_tlres_loc == nullptr) {
-                        auto *v7 = v19->to_string();
+                        auto *v7 = v19.to_string();
                         error("ERROR: multipalette sub-texture not found: %s", v7);
                     }
 
-                    found_tlres_loc->field_8 = (char *) &Tex->field_5C[i * 32];
+                    found_tlres_loc->field_8 = bit_cast<char *>(&Tex->Frames[i]);
                 }
             }
         }
@@ -118,11 +120,10 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
 {
     TRACE("texture_resource_handler::handle_resource");
 
-    if constexpr (0)
-    {
+    if constexpr (1) {
         if (behavior == UNLOAD) {
             if (tlres_loc->get_type() != 15) {
-                auto *tex = (nglTexture *) tlres_loc->field_8;
+                auto *tex = bit_cast<nglTexture *>(tlres_loc->field_8);
                 if (tex != nullptr) {
                     if ((tex->field_34 & 2) == 0) {
                         if (!nglCanReleaseTexture(tex)) {
@@ -153,7 +154,7 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
             if (this->field_C >= dir->texture_locations.size()) {
                 if (auto v7 = this->field_14; v7 < 2) {
                     this->field_C = 0;
-                    this->field_14 = v7 + 1;
+                    ++this->field_14;
                 }
             }
         }

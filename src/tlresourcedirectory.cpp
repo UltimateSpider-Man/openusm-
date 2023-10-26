@@ -73,6 +73,7 @@ nglTexture *tlResourceDirectory<nglTexture, tlFixedString>::StandardLoad(const t
                     if (!tlReadFile(Str1, &v18, 4u, 0)) {
                         tex->field_0->field_4 = tex->field_4;
                         tex->field_4->field_0 = tex->field_0;
+
                         tex->field_0 = tex;
                         tex->field_4 = tex;
                         tlMemFree(tex);

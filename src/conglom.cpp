@@ -412,28 +412,22 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
             this->ifl_lock(0);
         }
 
-        nglMesh **v70;
-        if ( this->field_90.field_5 <= 1u )
-            v70 = this->field_90.field_0;
-        else
-            v70 = (nglMesh **)this->field_90.field_0[this->field_90.field_4];
+        nglMesh **v70 = ( this->field_90.field_5 <= 1u
+                            ? this->field_90.field_0
+                            : (nglMesh **)this->field_90.field_0[this->field_90.field_4]
+                        );
 
-        if ( v70 != nullptr )
-        {
-            auto **v71 = this->field_90.field_5 <= 1u ? this->field_90.field_0 : (nglMesh **) this->field_90.field_0[this->field_90.field_4];
-            if ( v71[4] != nullptr )
+        if ( v70 != nullptr ) {
+            if ( v70[4] != nullptr )
             {
                 auto *v72 = mem_alloc(sizeof(light_manager));
                 auto *v74 = new (v72) light_manager {0};
 
                 auto *v75 = this->field_F8;
-                if ( v75 != v74 )
-                {
-                    if ( v75 != nullptr )
-                    {
-                        auto v17 = v75->field_0-- == 1;
-                        if ( v17 )
-                        {
+                if ( v75 != v74 ) {
+                    if ( v75 != nullptr ) {
+                        auto v17 = (v75->field_0-- == 1);
+                        if ( v17 ) {
                             auto *v76 = this->field_F8;
                             if ( v76 != nullptr )
                             {
@@ -445,8 +439,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
                     this->field_F8 = v74;
 
-                    if ( v74 != nullptr )
-                    {
+                    if ( v74 != nullptr ) {
                         ++v74->field_0;
                     }
                 }

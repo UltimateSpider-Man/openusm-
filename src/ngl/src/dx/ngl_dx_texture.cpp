@@ -35,7 +35,7 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
                 v7 = nglTextureAnimFrame() % v6;
             }
 
-            v5 = Tex->field_5C[v7];
+            v5 = Tex->Frames[v7];
         }
 
         assert(v5 != nullptr && "encountered invalid IFL data.\n");
@@ -66,14 +66,10 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
         if (palette != nullptr) {
             if (g_valid_texture_format() && (Tex->field_34 & 8) != 0 &&
                 static_cast<uint8_t>(v5->m_format) == 7) {
-                if (v5->m_num_palettes) {
-                    uint32_t v11 = 0;
-                    int v12 = 0;
-                    do {
-                        v5->field_5C[v12 + 13] = (nglTexture *) ((int) v5->field_5C[v12 + 13] | 8);
-                        ++v11;
-                        v12 += 32;
-                    } while (v11 < v5->m_num_palettes);
+                if (v5->m_num_palettes != 0) {
+                    for (auto v11 = 0u; v11 < v5->m_num_palettes; ++v11) {
+                        v5->Frames[v11]->field_34 |= 8u;
+                    }
                 }
 
                 v5->DXTexture->lpVtbl->LockRect(v5->DXTexture, 0, &v5->field_24, 0, 0);

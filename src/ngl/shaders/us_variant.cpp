@@ -68,7 +68,7 @@ nglTexture *USVariantShaderNode::sub_41BE30(nglTexture *a2) {
         }
 
         if (idx != static_cast<uint32_t>(-1)) {
-            return a2->field_5C[idx % a2->m_num_palettes];
+            return a2->Frames[idx % a2->m_num_palettes];
         }
 
         if (param_set->IsSetParam<nglTextureFrameParam>()) {
@@ -79,7 +79,7 @@ nglTexture *USVariantShaderNode::sub_41BE30(nglTexture *a2) {
             idx = nglCurScene()->field_400;
         }
 
-        return a2->field_5C[idx % a2->m_num_palettes];
+        return a2->Frames[idx % a2->m_num_palettes];
 
     } else {
         return (nglTexture *) THISCALL(0x0041BE30, this, a2);

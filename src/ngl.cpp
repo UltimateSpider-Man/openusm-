@@ -1438,8 +1438,8 @@ nglTexture *nglCreateTexture(uint32_t Format, int Width, int Height, int a4, boo
             tex->field_4 = stru_975AC0().field_4;
             tex->field_0 = &stru_975AC0();
             stru_975AC0().field_4 = tex;
-
             tex->field_4->field_0 = tex;
+
             auto v7 = 2 * a5;
             int v8 = (Format & 0xFFFFFEFF) | 0x200;
             tex->field_34 = (v7 | tex->field_34) & 0xFFFFFFFD;
@@ -3876,13 +3876,13 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
             num_palettes = *(uint16_t *) v5;
 
             a3 = &TexInfo->field_88[32 * v6 + 128 - ((32 * (BYTE) v6 - 120) & 0x7F)];
-            Tex->field_5C = static_cast<nglTexture **>(tlMemAlloc(num_palettes << 7, 8, 0x1000000u));
+            Tex->Frames = static_cast<nglTexture **>(tlMemAlloc(num_palettes << 7, 8, 0x1000000u));
             int v28 = 0;
             if (num_palettes) {
                 auto v29 = 0u;
                 auto *v8 = TexInfo + 0x90;
                 for (auto *i = TexInfo + 0x90; v28 < num_palettes; v8 = i, ++v28) {
-                    nglTexture *v9 = CAST(v9, &Tex->field_5C[v29 / 4]);
+                    nglTexture *v9 = CAST(v9, &Tex->Frames[v29 / 4]);
                     *v9 = {};
                     v9->m_format = 17;
                     v9->field_60 = *bit_cast<tlFixedString *>((uint32_t *) v8 - 2);
@@ -3890,7 +3890,7 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
                     nglTexture **v10 = CAST(v10, v28);
 
                     v9->m_num_palettes = (int) Tex;
-                    v9->field_5C = v10;
+                    v9->Frames = v10;
                     v9->field_34 |= 8u;
                     v9->field_48 = nglCreatePalette(0, 0x100u, a3);
 
@@ -3909,7 +3909,7 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
             }
         } else {
             Tex->m_num_palettes = 0;
-            Tex->field_5C = nullptr;
+            Tex->Frames = nullptr;
         }
 
         Tex->m_width = TexInfo->Header.Width;

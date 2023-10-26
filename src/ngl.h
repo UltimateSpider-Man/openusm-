@@ -93,7 +93,7 @@ struct nglTexture {
     int field_50;
     int field_54;
     uint32_t m_num_palettes;
-    nglTexture **field_5C;
+    nglTexture **Frames;
     tlFixedString field_60;
 
     //0x00775000
