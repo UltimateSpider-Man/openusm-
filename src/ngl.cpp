@@ -176,7 +176,7 @@ Var<nglTexture> stru_975AC0{0x00975AC0};
 
 Var<nglMesh *> nglDebugMesh_Sphere{0x00975998};
 
-static Var<float> flt_93A294 {0x0093A294};
+static Var<const float> PCFreq {0x0093A294};
 
 static Var<nglLightContext *> nglDefaultLightContext {0x00973B70};
 
@@ -5107,10 +5107,12 @@ void sub_76DE60()
     nglPerfInfo().field_28 = query_perf_counter();
 }
 
+static Var<float> g_renderTime {0x00972664};
+
 void sub_76DE80()
 {
     nglPerfInfo().field_30 = query_perf_counter();
-    flt_972664() = (nglPerfInfo().field_30.QuadPart - nglPerfInfo().field_28.QuadPart) / flt_93A294();
+    g_renderTime() = (nglPerfInfo().field_30.QuadPart - nglPerfInfo().field_28.QuadPart) / PCFreq();
     if ( !nglFrameLock()
         || nglFrameLockImmediate() && nglVBlankCount() - nglLastFlipVBlank() >= (unsigned int)nglFrameLock() )
     {
@@ -5152,7 +5154,7 @@ void nglListSend(bool Flip)
             return v3;
         }();
         nglPerfInfo().field_38 = v3;
-        nglPerfInfo().field_74 = v3.QuadPart / flt_93A294();
+        nglPerfInfo().field_74 = v3.QuadPart / PCFreq();
         nglPerfInfo().field_40 = query_perf_counter();
         nglScratchBuffer().field_44 ^= 1u;
         nglScratchBuffer().field_28 = 0;
@@ -5171,7 +5173,7 @@ void nglListSend(bool Flip)
 
         sub_76DE80();
 
-        auto v5 = 1.f / flt_93A294();
+        auto v5 = 1.f / PCFreq();
         nglPerfInfo().field_40.QuadPart = query_perf_counter().QuadPart - nglPerfInfo().field_40.QuadPart;
         nglPerfInfo().field_70 = nglPerfInfo().field_40.QuadPart * v5;
         auto v6 = dword_975308();
@@ -5202,7 +5204,7 @@ void nglListSend(bool Flip)
             return *(uint64_t *)&perf_counter - nglPerfInfo().field_20.QuadPart;
         }();
         
-        nglPerfInfo().m_cpu_time = v8 / flt_93A294();
+        nglPerfInfo().m_cpu_time = v8 / PCFreq();
 
 #if 0
         if ( dword_971F1C() != nullptr )
@@ -5214,15 +5216,15 @@ void nglListSend(bool Flip)
         }
 
         nglPerfInfo().field_20 = query_perf_counter();
-        auto v9 = (double)(nglFlipCycle() - nglLastFlipCycle());
-        nglPerfInfo().m_render_time = flt_972664();
+        float v9 = nglFlipCycle() - nglLastFlipCycle();
+        nglPerfInfo().m_render_time = g_renderTime();
         sp_log("m_render_time = %f", nglPerfInfo().m_render_time);
 
-        if ( nglFlipCycle() - nglLastFlipCycle() < 0 ) {
-            v9 = v9 + flt_86F860();
+        if ( v9 < 0 ) {
+            v9 += flt_86F860();
         }
 
-        nglPerfInfo().field_6C = v9 / flt_93A294();
+        nglPerfInfo().field_6C = v9 / PCFreq();
         nglPerfInfo().field_5C = nglPerfInfo().field_5C + nglPerfInfo().field_6C;
         nglPerfInfo().m_fps = 1000.f / nglPerfInfo().field_6C;
         nglPerfInfo().field_60 = nglPerfInfo().field_5C * 0.001f;
@@ -5231,7 +5233,8 @@ void nglListSend(bool Flip)
             nglDebug().ScreenShot = 0;
         }
 
-        memcpy(&nglSyncPerfInfo(), &nglPerfInfo(), sizeof(nglSyncPerfInfo()));
+        nglSyncPerfInfo() = nglPerfInfo();
+
         nglPerfInfo().field_80 = 0;
         nglPerfInfo().field_18 = 0.0;
         nglPerfInfo().field_1C = 0.0;
@@ -5291,7 +5294,7 @@ void nglListInit() {
             nglDebug().DumpTextures = 0;
         }
 
-        memcpy(&nglSyncDebug(), &nglDebug(), sizeof(nglSyncDebug()));
+        nglSyncDebug() = nglDebug();
         nglCurScene() = nullptr;
         nglListBeginScene(nglSceneParamType {0});
         nglSceneDumpStart();
