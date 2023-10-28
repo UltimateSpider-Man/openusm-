@@ -6,6 +6,7 @@
 
 #include "float.hpp"
 #include "spline.h"
+#include "variable.h"
 
 #include <list>
 
@@ -37,6 +38,7 @@ struct base_ai_data;
 struct nalBaseSkeleton;
 struct lego_map_root_node;
 struct movement_info;
+struct nalBaseSkeleton;
 
 struct actor : entity {
     using base_type = vhandle_type<entity>;
@@ -48,11 +50,13 @@ struct actor : entity {
         uint16_t field_6;
         int active_client_count;
         uint8_t field_C[4];
+
+        void set_mesh(nglMesh *);
     };
 
     damage_interface *m_damage_interface;
     physical_interface *m_physical_interface;
-    int field_70;
+    nalBaseSkeleton *m_skeleton;
     generic_anim_controller *anim_ctrl;
     advanced_entity_ptrs *adv_ptrs;
     base_ai_data *field_7C;
@@ -61,7 +65,7 @@ struct actor : entity {
     int field_88;
     ai_player_controller *m_player_controller;
     mesh_buffers field_90;
-    traffic_light_interface *field_A0;
+    traffic_light_interface *m_traffic_light_interface;
     int16_t field_A4;
     int16_t field_A6;
     int16_t field_A8[1];
@@ -78,6 +82,10 @@ struct actor : entity {
     actor(int);
 
     ~actor();
+
+    void common_construct();
+
+    void set_colgeom(collision_geometry *a2);
 
     int get_entity_size();
 
@@ -215,6 +223,8 @@ struct actor : entity {
 
     static void get_animations(actor *a1, std::list<nalAnimClass<nalAnyPose> *> &a2);
 };
+
+inline Var<actor *> global_transfer_variable_the_actor {0x0096C978};
 
 namespace ai {
 

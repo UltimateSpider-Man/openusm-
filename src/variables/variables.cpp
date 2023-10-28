@@ -9,6 +9,14 @@ Var<float> flt_87EBD4 = {0x87EBD4};
 
 Var<float> flt_86F860 = {0x86F860};
 
+Var<int> dword_975308 = {0x00975308};
+
+Var<int> dword_975314 = {0x00975314};
+
+Var<int> dword_97530C = {0x0097530C};
+
+Var<float> flt_972664 = {0x00972664};
+
 Var<bool> s_freeze_game_time = {0x009680AC};
 
 Var<bool> g_generating_vtables = {0x0095A6F1};

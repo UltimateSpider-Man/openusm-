@@ -13,6 +13,14 @@ extern Var<float> flt_87EBD4;
 
 extern Var<float> flt_86F860;
 
+extern Var<int> dword_975308;
+
+extern Var<int> dword_975314;
+
+extern Var<int> dword_97530C;
+
+extern Var<float> flt_972664;
+
 extern Var<bool> s_freeze_game_time;
 
 extern Var<bool> g_generating_vtables;

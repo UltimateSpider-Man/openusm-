@@ -9,6 +9,7 @@
 #include "func_wrapper.h"
 #include "log.h"
 #include "mash_info_struct.h"
+#include "matrix4x3.h"
 #include "memory.h"
 #include "ngl_dx_scene.h"
 #include "ngl_font.h"
@@ -81,6 +82,14 @@ VALIDATE_OFFSET(nglMeshSection, m_vertices, 0x3C);
 VALIDATE_OFFSET(nglMesh, NextMesh, 0x38);
 
 VALIDATE_SIZE(nglDirectoryEntry, 12);
+
+VALIDATE_SIZE(nglPerfomanceInfo, 0x88);
+
+VALIDATE_SIZE(nglScratchBuffer_t, 0x58);
+
+VALIDATE_SIZE(nglLightContext, 0x70);
+
+Var<char *> nglListWork {0x00971F08};
 
 Var<char[256]> nglMeshPath{0x00972710};
 
@@ -167,6 +176,10 @@ Var<nglTexture> stru_975AC0{0x00975AC0};
 
 Var<nglMesh *> nglDebugMesh_Sphere{0x00975998};
 
+static Var<float> flt_93A294 {0x0093A294};
+
+static Var<nglLightContext *> nglDefaultLightContext {0x00973B70};
+
 int __stdcall hookD3DXAssembleShader(const char *data,
                                      UINT data_len,
                                      const D3DXMACRO *defines,
@@ -175,84 +188,75 @@ int __stdcall hookD3DXAssembleShader(const char *data,
                                      ID3DXBuffer **shader,
                                      ID3DXBuffer **error_messages);
 
+LARGE_INTEGER query_perf_counter()
+{
+    LARGE_INTEGER PerformanceCount;
+
+    QueryPerformanceCounter(&PerformanceCount);
+    return PerformanceCount;
+}
+
 bool *nglGetDebugFlagPtr(const char *Flag)
 {
-    /*
-    if ( strcmpi(Flag, "ShowPerfInfo") == 0 )
-    {
+    if ( strcmpi(Flag, "ShowPerfInfo") == 0 ) {
         return &nglDebug().ShowPerfInfo;
     }
 
-    if ( strcmpi(Flag, "ShowPerfBar") == 0 )
-    {
+    if ( strcmpi(Flag, "ShowPerfBar") == 0 ) {
         return &nglDebug().ShowPerfBar;
     }
 
-    if ( !strcmpi(Flag, "ScreenShot") )
-    {
+    if ( strcmpi(Flag, "ScreenShot") == 0 ) {
         return &nglDebug().ScreenShot;
     }
 
-    if ( !strcmpi(Flag, "DisableQuads") )
-    {
+    if ( strcmpi(Flag, "DisableQuads") == 0 ) {
         return &nglDebug().DisableQuads;
     }
 
-    if ( !strcmpi(Flag, "DisableVSync") )
-    {
+    if ( strcmpi(Flag, "DisableVSync") == 0 ) {
         return &nglDebug().DisableVSync;
     }
 
-    if ( strcmpi(Flag, "DisableScratch") == 0 )
-    {
+    if ( strcmpi(Flag, "DisableScratch") == 0 ) {
         return &nglDebug().DisableScratch;
     }
 
-    if ( strcmpi(Flag, "DebugPrints") == 0 )
-    {
+    if ( strcmpi(Flag, "DebugPrints") == 0 ) {
         return &nglDebug().DebugPrints;
     }
 
-    if ( strcmpi(Flag, "DumpFrameLog") == 0 )
-    {
+    if ( strcmpi(Flag, "DumpFrameLog") == 0 ) {
         return &nglDebug().DumpFrameLog;
     }
 
-    if ( strcmpi(Flag, "DumpSceneFile") == 0 )
-    {
+    if ( strcmpi(Flag, "DumpSceneFile") == 0 ) {
         return &nglDebug().DumpMesh;
     }
 
-    if ( strcmpi(Flag, "DumpTextures") == 0 )
-    {
+    if ( strcmpi(Flag, "DumpTextures") == 0 ) {
         return &nglDebug().DumpTextures;
     }
 
-    if ( strcmpi(Flag, "DrawLightSpheres") == 0 )
-    {
+    if ( strcmpi(Flag, "DrawLightSpheres") == 0 ) {
         return &nglDebug().DrawLightSpheres;
     }
 
-    if ( strcmpi(Flag, "DrawMeshSpheres") == 0 )
-    {
+    if ( strcmpi(Flag, "DrawMeshSpheres") == 0 ) {
         return &nglDebug().DrawMeshSpheres;
     }
 
-    if ( strcmpi(Flag, "DisableDuplicateMaterialWarning") == 0 )
-    {
+    if ( strcmpi(Flag, "DisableDuplicateMaterialWarning") == 0 ) {
         return &nglDebug().DisableDuplicateMaterialWarning;
     }
 
-    if ( strcmpi(Flag, "DisableMissingTextureWarning") == 0 )
-    {
+    if ( strcmpi(Flag, "DisableMissingTextureWarning") == 0 ) {
         return &nglDebug().DisableMissingTextureWarning;
     }
 
-    if ( strcmpi(Flag, "RenderSingleNode") == 0 )
-    {
+    if ( strcmpi(Flag, "RenderSingleNode") == 0 ) {
         return &nglDebug().RenderSingleNode;
     }
-    */
 
     return nullptr;
 }
@@ -431,6 +435,8 @@ HRESULT nglVertexBuffer::createIndexOrVertexBuffer(nglVertexBuffer *a1,
                                                             uint32_t usage,
                                                             int fvf,
                                                             D3DPOOL pool) {
+    TRACE("nglVertexBuffer::createIndexOrVertexBuffer");
+
     if (resource_type == ResourceType::VertexBuffer && pool == D3DPOOL_DEFAULT) {
         sub_781F80(bit_cast<int>(a1), size, usage);
     }
@@ -570,9 +576,32 @@ HRESULT STDMETHODCALLTYPE HookCreateVertexBuffer(IDirect3DDevice9 *This,
                                                  D3DPOOL Pool,
                                                  IDirect3DVertexBuffer9 **ppVertexBuffer,
                                                  HANDLE *pSharedHandle) {
-    //sp_log("CreateVertexBuffer %u 0x%X, return to 0x%08X", Length, Usage, getReturnAddress());
+    TRACE("HookCreateVertexBuffer");
 
-    return origCreateVertexBuffer(This, Length, Usage, FVF, Pool, ppVertexBuffer, pSharedHandle);
+    auto result = origCreateVertexBuffer(This, Length, Usage, FVF, Pool, ppVertexBuffer, pSharedHandle);
+    //printf("0x%08X\n", (*ppVertexBuffer)->lpVtbl);
+
+    return result;
+}
+
+
+using CreateIndexBuffer_t = decltype(g_Direct3DDevice()->lpVtbl->CreateIndexBuffer);
+
+CreateIndexBuffer_t origCreateIndexBuffer;
+
+HRESULT STDMETHODCALLTYPE HookCreateIndexBuffer(IDirect3DDevice9 *This,
+                                                 UINT Length,
+                                                 DWORD Usage,
+                                                 D3DFORMAT Format,
+                                                 D3DPOOL Pool,
+                                                 IDirect3DIndexBuffer9 **ppIndexBuffer,
+                                                 HANDLE *pSharedHandle) {
+    TRACE("HookCreateIndexBuffer");
+
+    auto result = origCreateIndexBuffer(This, Length, Usage, Format, Pool, ppIndexBuffer, pSharedHandle);
+    //printf("0x%08X\n", (*ppIndexBuffer)->lpVtbl);
+
+    return result;
 }
 
 using DrawPrimitive_t = decltype(g_Direct3DDevice()->lpVtbl->DrawPrimitive);
@@ -792,6 +821,9 @@ void hook_directx() {
 
     origCreateVertexBuffer = vtbl->CreateVertexBuffer;
     vtbl->CreateVertexBuffer = &HookCreateVertexBuffer;
+
+    origCreateIndexBuffer = vtbl->CreateIndexBuffer;
+    vtbl->CreateIndexBuffer = &HookCreateIndexBuffer;
 
     origDrawPrimitive = vtbl->DrawPrimitive;
     vtbl->DrawPrimitive = &HookDrawPrimitive;
@@ -1955,34 +1987,36 @@ void nglProcessMorph(nglMeshFile *MeshFile, nglDirectoryEntry *a2, int base) {
     }
 }
 
-float *sub_4135B0(float *out, const matrix4x4 *a2) {
-    return (float *) CDECL_CALL(0x004135B0, out, a2);
+matrix4x3 sub_4135B0(const matrix4x3 &a2) {
+    matrix4x3 result;
+    CDECL_CALL(0x004135B0, &result, &a2);
+
+    return result;
 }
 
-vector4d sub_4139A0(const vector4d *a2, const matrix4x4 *a3) {
+vector4d sub_4139A0(const vector4d *a2, const matrix4x3 &a3) {
     vector4d result;
-    CDECL_CALL(0x004139A0, &result, a2, a3);
+    CDECL_CALL(0x004139A0, &result, a2, &a3);
 
     return result;
 }
 
 matrix4x4 sub_4150E0(const matrix4x4 &a2) {
     if constexpr (0) {
-        matrix4x4 a3;
+        matrix4x3 a3;
+        memcpy(&a3, &a2, sizeof(a3));
 
-        std::memcpy(&a3, &a2, 48u);
-
-        auto *v2 = sub_4135B0(&a3[3][0], &a3);
+        auto v2 = sub_4135B0(a3);
 
         matrix4x4 v7;
-        std::memcpy(&v7, v2, 48u);
+        memcpy(&v7, &v2, sizeof(v2));
 
         vector4d v5 = -a2[3];
 
-        std::memcpy(&a3, v2, 48u);
+        a3 = v2;
         auto v6 = v5;
-        v5 = sub_4139A0(&v6, &a3);
-        v7.arr[3] = v5;
+        v5 = sub_4139A0(&v6, a3);
+        v7[3] = v5;
 
         return v7;
 
@@ -3632,7 +3666,7 @@ nglTexture *nglLoadTexture(const tlFixedString &a1) {
 
 nglTexture *nglLoadTexture(const tlHashString &a1)
 {
-    TRACE("nglLoadTexture", string_hash {a1.GetHash()}.to_string());
+    TRACE("nglLoadTexture", string_hash {int(a1.GetHash())}.to_string());
 
     auto v1 = a1.GetHash();
 
@@ -4024,6 +4058,8 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
                 Tex->m_d3d_format = D3DFMT_DXT5;
                 Tex->m_format |= 1;
                 goto LABEL_57;
+            default:
+                break;
             }
 
             goto LABEL_32;
@@ -4324,7 +4360,8 @@ void nglListAddString(nglFont *a1, Float a3, Float a4, Float a5, int a6, const c
     va_end(Args);
 }
 
-void nglRenderPerfInfo() {
+void nglRenderPerfInfo()
+{
     nglSyncDebug().ShowPerfInfo = true;
 
     char Dest[2048];
@@ -4338,22 +4375,22 @@ void nglRenderPerfInfo() {
         sprintf(Dest,
                 byte_8B7DF8(),
                 "FINAL",
-                nglSyncPerfInfo().field_0[22], //FPS
-                nglSyncPerfInfo().field_0[25], //RENDER
-                nglSyncPerfInfo().field_0[26], //CPU
-                nglSyncPerfInfo().field_0[28],
-                nglSyncPerfInfo().field_0[29],
-                nglSyncPerfInfo().field_0[6],
-                nglSyncPerfInfo().field_0[7],
+                nglSyncPerfInfo().m_fps, //FPS
+                nglSyncPerfInfo().m_render_time, //RENDER
+                nglSyncPerfInfo().m_cpu_time, //CPU
+                nglSyncPerfInfo().field_70,
+                nglSyncPerfInfo().field_74,
+                nglSyncPerfInfo().field_18,
+                nglSyncPerfInfo().field_1C,
                 nglSyncPerfInfo().field_7C,
                 nglSyncPerfInfo().field_78,
                 nglSyncPerfInfo().field_80,
-                nglSyncPerfInfo().field_0[0],
+                nglSyncPerfInfo().field_0,
                 nglVif1WorkSize(),
-                nglSyncPerfInfo().field_0[2],
-                nglSyncPerfInfo().field_0[3],
-                nglSyncPerfInfo().field_0[4],
-                nglSyncPerfInfo().field_0[5],
+                nglSyncPerfInfo().field_8,
+                nglSyncPerfInfo().field_C,
+                nglSyncPerfInfo().field_10,
+                nglSyncPerfInfo().field_14,
                 nglDebug().field_8,
                 nglDebug().field_C,
                 nglDebug().field_10,
@@ -4361,8 +4398,8 @@ void nglRenderPerfInfo() {
     } else {
         sprintf(Dest,
                 "%.2f FPS\n%.2fms\n",
-                static_cast<float>(nglSyncPerfInfo().field_0[22]),
-                static_cast<float>(nglSyncPerfInfo().field_0[25]));
+                nglSyncPerfInfo().m_fps,
+                nglSyncPerfInfo().m_render_time);
     }
 
     uint32_t a3;
@@ -4381,6 +4418,11 @@ void nglRenderPerfInfo() {
     nglListAddQuad(&a1);
     float v3 = (630 - a3);
     nglListAddString(nglSysFont(), Dest, v3, 20.0, -9999.0, -1, 1.0, 1.0);
+}
+
+void nglRenderPerfBar()
+{
+    CDECL_CALL(0x0077ECF0);
 }
 
 nglMesh *nglGetMesh(const tlFixedString &Name, bool Warn)
@@ -5005,6 +5047,8 @@ void create_renderer(HWND hWnd) {
 }
 
 void nglListBeginScene(nglSceneParamType a2) {
+    TRACE("nglListBeginScene");
+
     if constexpr (0) {
         nglScene *v2 = static_cast<nglScene *>(nglListAlloc(sizeof(nglScene), 64));
 
@@ -5037,8 +5081,177 @@ void nglSetClearFlags(unsigned int a1) {
     nglCurScene()->field_39C = a1;
 }
 
-void nglListSend(bool a3) {
-    CDECL_CALL(0x0076EA10, a3);
+void nglRenderDebug()
+{
+    if ( nglSyncDebug().ShowPerfInfo ) {
+        nglRenderPerfInfo();
+    }
+
+    if ( nglSyncDebug().ShowPerfBar ) {
+        nglRenderPerfBar();
+    }
+}
+
+void nglVif1RenderScene()
+{
+    CDECL_CALL(0x0077D060);
+}
+
+void sub_781A30()
+{
+    ;
+}
+
+void sub_76DE60()
+{
+    nglPerfInfo().field_28 = query_perf_counter();
+}
+
+void sub_76DE80()
+{
+    nglPerfInfo().field_30 = query_perf_counter();
+    flt_972664() = (nglPerfInfo().field_30.QuadPart - nglPerfInfo().field_28.QuadPart) / flt_93A294();
+    if ( !nglFrameLock()
+        || nglFrameLockImmediate() && nglVBlankCount() - nglLastFlipVBlank() >= (unsigned int)nglFrameLock() )
+    {
+        nglLastFlipCycle() = nglFlipCycle();
+        nglFlipCycle() = query_perf_counter().LowPart;
+        nglLastFlipVBlank() = nglVBlankCount();
+        nglFlipQueued() = false;
+    }
+    else
+    {
+        nglFlipQueued() = true;
+    }
+}
+
+void nglListSend(bool Flip)
+{
+    TRACE("nglListSend");
+
+    if constexpr (1) {
+        if ( EnableShader() ) {
+            float v10[4] {0, 0, 1, 1};
+            g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 90, v10, 1);
+        }
+
+        nglRenderDebug();
+
+        sub_76DE60();
+#if 0
+        if (nglCurScene() != nglRootScene()) {
+            error("nglListSend called while one or more scenes were still active (need to call nglListEndScene).\n");
+        }
+#endif
+
+        nglPerfInfo().field_28 = query_perf_counter();
+
+        auto v3 = []() {
+            auto perf_counter = query_perf_counter();
+            LARGE_INTEGER v3 = bit_cast<LARGE_INTEGER>(*(uint64_t *)&perf_counter - nglPerfInfo().field_38.QuadPart);
+            return v3;
+        }();
+        nglPerfInfo().field_38 = v3;
+        nglPerfInfo().field_74 = v3.QuadPart / flt_93A294();
+        nglPerfInfo().field_40 = query_perf_counter();
+        nglScratchBuffer().field_44 ^= 1u;
+        nglScratchBuffer().field_28 = 0;
+        nglScratchBuffer().field_2C = 0;
+        nglScratchBuffer().field_24 = 0;
+        nglScratchBuffer().field_30 = 0;
+
+        nglScratchBuffer().field_4C.m_vertexBuffer->lpVtbl->Unlock(nglScratchBuffer().field_4C.m_vertexBuffer);
+        nglScratchBuffer().field_48->lpVtbl->Unlock(nglScratchBuffer().field_48);
+        
+        nglCurScene() = nglRootScene();
+        g_Direct3DDevice()->lpVtbl->BeginScene(g_Direct3DDevice());
+        nglVif1RenderScene();
+        g_Direct3DDevice()->lpVtbl->EndScene(g_Direct3DDevice());
+        sub_781A30();
+
+        sub_76DE80();
+
+        auto v5 = 1.f / flt_93A294();
+        nglPerfInfo().field_40.QuadPart = query_perf_counter().QuadPart - nglPerfInfo().field_40.QuadPart;
+        nglPerfInfo().field_70 = nglPerfInfo().field_40.QuadPart * v5;
+        auto v6 = dword_975308();
+        nglPerfInfo().field_18 = nglPerfInfo().field_48 * v5;
+        nglPerfInfo().field_1C = nglPerfInfo().field_50 * v5;
+        if ( dword_975314() == dword_975308() ) {
+            v6 = dword_97530C();
+        }
+
+        dword_975314() = v6;
+        nglScratchMeshPos() = v6;
+
+        //dword_972AB4 = 0;
+        //dword_972ABC = 0;
+        
+        g_Direct3DDevice()->lpVtbl->SetStreamSource(g_Direct3DDevice(), 0, nullptr, 0, 0);
+        g_Direct3DDevice()->lpVtbl->SetVertexShader(g_Direct3DDevice(), nullptr);
+        g_Direct3DDevice()->lpVtbl->SetPixelShader(g_Direct3DDevice(), nullptr);
+
+#if 0
+        if ( dword_971F24() != nullptr ) {
+            dword_971F24()(dword_971F28());
+        }
+#endif
+
+        float v8 = []() -> double {
+            auto perf_counter = query_perf_counter();
+            return *(uint64_t *)&perf_counter - nglPerfInfo().field_20.QuadPart;
+        }();
+        
+        nglPerfInfo().m_cpu_time = v8 / flt_93A294();
+
+#if 0
+        if ( dword_971F1C() != nullptr )
+            dword_971F1C()(dword_971F20());
+#endif
+
+        if ( Flip ) {
+            nglFlip(0);
+        }
+
+        nglPerfInfo().field_20 = query_perf_counter();
+        auto v9 = (double)(nglFlipCycle() - nglLastFlipCycle());
+        nglPerfInfo().m_render_time = flt_972664();
+        sp_log("m_render_time = %f", nglPerfInfo().m_render_time);
+
+        if ( nglFlipCycle() - nglLastFlipCycle() < 0 ) {
+            v9 = v9 + flt_86F860();
+        }
+
+        nglPerfInfo().field_6C = v9 / flt_93A294();
+        nglPerfInfo().field_5C = nglPerfInfo().field_5C + nglPerfInfo().field_6C;
+        nglPerfInfo().m_fps = 1000.f / nglPerfInfo().field_6C;
+        nglPerfInfo().field_60 = nglPerfInfo().field_5C * 0.001f;
+        if ( nglDebug().ScreenShot ) {
+            nglScreenShot(nullptr);
+            nglDebug().ScreenShot = 0;
+        }
+
+        memcpy(&nglSyncPerfInfo(), &nglPerfInfo(), sizeof(nglSyncPerfInfo()));
+        nglPerfInfo().field_80 = 0;
+        nglPerfInfo().field_18 = 0.0;
+        nglPerfInfo().field_1C = 0.0;
+        nglPerfInfo().field_7C = 0;
+        nglPerfInfo().field_78 = 0;
+        nglPerfInfo().field_48 = 0;
+        nglPerfInfo().field_4C = 0;
+        nglPerfInfo().field_50 = 0;
+        nglPerfInfo().field_54 = 0;
+
+#if 0
+        if ( dword_971F2C() ) {
+            dword_971F2C()(dword_971F30());
+        }
+#endif
+
+        nglCurScene() = nullptr;
+    } else {
+        CDECL_CALL(0x0076EA10, Flip);
+    }
 }
 
 void nglDebugInit() {
@@ -5051,8 +5264,55 @@ void nglDebugInit() {
     nglDebug().field_4 = 65280;
 }
 
+nglLightContext *nglCreateLightContext()
+{
+    return (nglLightContext *) CDECL_CALL(0x00775EC0);
+}
+
+void nglSceneDumpStart();
+
 void nglListInit() {
-    CDECL_CALL(0x0076E050);
+    TRACE("nglListInit");
+
+    if constexpr (1) {
+        nglFrameVBlankCount() = nglVBlankCount();
+        nglPerfInfo().field_38 = query_perf_counter();
+        nglListWorkPos() = CAST(nglListWorkPos(), nglListWork());
+        nglDefaultLightContext() = nglCreateLightContext();
+        if ( nglSyncDebug().DumpFrameLog ) {
+            nglDebug().DumpFrameLog = 0;
+        }
+
+        if ( nglSyncDebug().DumpMesh ) {
+            nglDebug().DumpMesh = 0;
+        }
+
+        if ( nglSyncDebug().DumpTextures ) {
+            nglDebug().DumpTextures = 0;
+        }
+
+        memcpy(&nglSyncDebug(), &nglDebug(), sizeof(nglSyncDebug()));
+        nglCurScene() = nullptr;
+        nglListBeginScene(nglSceneParamType {0});
+        nglSceneDumpStart();
+        auto *v3 = (int16_t *)&nglScratchBuffer().field_0[0].pad;
+        auto v0 = nglScratchBuffer().field_44;
+        nglScratchBuffer().field_4C = nglScratchBuffer().field_0[v0];
+
+        nglScratchBuffer().field_48 = (IDirect3DIndexBuffer9 *)nglScratchBuffer().field_18[v0];
+        if ( nglScratchBuffer().field_4C.m_vertexBuffer != nullptr ) {
+            nglScratchBuffer().field_4C.m_vertexBuffer->lpVtbl->Lock(nglScratchBuffer().field_4C.m_vertexBuffer, 0, 0, (void **)&v3, D3DLOCK_DISCARD);
+            nglScratchBuffer().field_4C.pad = (int)v3;
+        }
+
+        auto *v2 = nglScratchBuffer().field_48;
+        if ( v2 != nullptr ) {
+            v2->lpVtbl->Lock(v2, 0, 0, (void **)&v3, 0);
+            nglScratchBuffer().field_20 = v3;
+        }
+    } else {
+        CDECL_CALL(0x0076E050);
+    }
 }
 
 //0x00783A90
@@ -5481,6 +5741,10 @@ void sub_76DF40() {
 
 void ngl_patch()
 {
+    SET_JUMP(0x0076E050, nglListInit);
+
+    SET_JUMP(0x0076EA10, nglListSend);
+
     SET_JUMP(0x00773350, nglCanReleaseTexture);
 
     REDIRECT(0x0077392C, nglInitWhiteTexture);

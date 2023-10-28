@@ -78,6 +78,17 @@ bool animation_controller::anim_ctrl_handle::is_anim_active()
     return this->field_8 != nullptr && this->field_8->is_anim_active(this->field_4);
 }
 
+int animation_controller::anim_ctrl_handle::sub_4AD230()
+{
+    return THISCALL(0x004AD230, this);
+}
+
+float animation_controller::anim_ctrl_handle::sub_4AD210()
+{
+    float (__fastcall *func)(void *) = CAST(func, 0x004AD210);
+    return func(this);
+}
+
 bool animation_controller::is_anim_active(float a1) 
 {
     auto func = get_vfunc(m_vtbl, 0x2C);

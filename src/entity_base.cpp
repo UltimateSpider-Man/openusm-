@@ -231,12 +231,21 @@ void entity_base::set_flag_recursive(entity_flag_t a2, bool a3) {
     }
 }
 
-void entity_base::set_ext_flag_recursive(entity_ext_flag_t a2, bool a3) {
-    if (a3) {
-        this->field_8 |= a2;
+static constexpr auto EFLAG_EXT_SYSTEM_ONLY_FLAGS = 0x80020410;
+
+void entity_base::set_ext_flag_recursive_internal(entity_ext_flag_t f, bool a3)
+{
+    assert((f & EFLAG_EXT_SYSTEM_ONLY_FLAGS) == 0);
+
+    if ( a3 ) {
+        this->field_8 |= f;
     } else {
-        this->field_8 &= ~a2;
+        this->field_8 &= ~f;
     }
+}
+
+void entity_base::set_ext_flag_recursive(entity_ext_flag_t a2, bool a3) {
+    this->set_ext_flag_recursive_internal(a2, a3);
 }
 
 void entity_base::set_active(bool a2) {

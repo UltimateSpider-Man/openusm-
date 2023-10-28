@@ -61,6 +61,13 @@ void conglomerate::init_member_data() {
     this->field_110 = 3;
 }
 
+void conglomerate::create_parentage_tree()
+{
+    TRACE("conglomerate::create_parentage_tree");
+
+    THISCALL(0x004E55E0, this);
+}
+
 constexpr auto _ENTM_TYPE_MAX = 28u;
 
 void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4)

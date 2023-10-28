@@ -27,6 +27,10 @@ struct interactable_interface {
     //0x004CAC60
     void frame_advance(Float a2);
 
+    void update_registrations();
+
+    void sub_4DAE90(actor *a2);
+
     //0x004D1C10
     static void frame_advance_all(Float a1);
 

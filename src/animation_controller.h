@@ -24,6 +24,10 @@ struct animation_controller {
         void set_anim_speed(Float a2);
 
         bool is_anim_active();
+
+        int sub_4AD230();
+
+        float sub_4AD210();
     };
 
     std::intptr_t m_vtbl;

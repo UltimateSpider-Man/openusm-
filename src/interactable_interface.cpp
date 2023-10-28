@@ -61,6 +61,19 @@ void interactable_interface::frame_advance(Float a2) {
     }
 }
 
+void interactable_interface::update_registrations()
+{
+    TRACE("interactable_interface::update_registrations");
+
+    THISCALL(0x004D5BE0, this);
+}
+
+void interactable_interface::sub_4DAE90(actor *a2)
+{
+    this->field_0 = a2;
+    this->update_registrations();
+}
+
 void interactable_interface_patch() {
 
     SET_JUMP(0x004DAFB0, interactable_interface::add_interface_to_list);

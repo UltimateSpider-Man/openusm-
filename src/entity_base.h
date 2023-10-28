@@ -119,6 +119,8 @@ struct entity_base : entity_base_vtable {
     //0x004C0000
     void po_changed();
 
+    void set_ext_flag_recursive_internal(entity_ext_flag_t f, bool a3);
+
     void set_flag_recursive(entity_flag_t a2, bool a3);
 
     void set_ext_flag_recursive(entity_ext_flag_t a2, bool a3);

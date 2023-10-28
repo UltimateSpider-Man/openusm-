@@ -279,8 +279,31 @@ struct nglDirectoryEntry {
 };
 
 struct nglPerfomanceInfo {
-    int field_0[30];
-
+    int field_0;
+    int field_4;
+    int field_8;
+    int field_C;
+    int field_10;
+    int field_14;
+    int field_18;
+    int field_1C;
+    LARGE_INTEGER field_20;
+    LARGE_INTEGER field_28;
+    LARGE_INTEGER field_30;
+    LARGE_INTEGER field_38;
+    LARGE_INTEGER field_40;
+    int field_48;
+    int field_4C;
+    int field_50;
+    int field_54;
+    float m_fps;
+    int field_5C;
+    int field_60;
+    float m_render_time;
+    float m_cpu_time;
+    int field_6C;
+    int field_70;
+    int field_74;
     int field_78;
     int field_7C;
     int field_80;
@@ -514,12 +537,26 @@ extern Var<nglTexture *> nglWhiteTex;
 
 extern Var<int> nglScratchMeshPos;
 
+struct nglLightContext
+{
+    nglLightContext *field_0[8];
+    int field_20;
+    int field_24;
+    int field_28;
+    int field_2C;
+    int field_30[8];
+    int field_50;
+    int field_54;
+    int field_58;
+    int field_5C;
+    vector4d field_60;
+};
+
 struct nglScratchBuffer_t
 {
-    nglVertexBuffer field_0;
+    nglVertexBuffer field_0[1];
     nglVertexBuffer field_C;
-    int field_18[1];
-    nglVertexBuffer *field_1C;
+    int field_18[2];
     int16_t *field_20;
     int field_24;
     int field_28;
@@ -530,8 +567,8 @@ struct nglScratchBuffer_t
     int field_3C;
     int field_40;
     int field_44;
-    int field_48;
-    int field_4C[3];
+    IDirect3DIndexBuffer9 *field_48;
+    nglVertexBuffer field_4C;
 };
 
 extern Var<nglScratchBuffer_t> nglScratchBuffer;

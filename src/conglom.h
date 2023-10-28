@@ -46,6 +46,8 @@ struct conglomerate : actor {
 
     void debug_render();
 
+    void create_parentage_tree();
+
     //0x004D0590
     entity_base *get_member(const string_hash &a2, bool a3);
 

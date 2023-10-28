@@ -39,6 +39,10 @@ struct state_machine {
 
     bool did_do_transition() const;
 
+    auto &get_anim_handle() {
+        return field_48;
+    }
+
     state *get_curr_state();
 
     /* virtual */ string_hash get_category_id();

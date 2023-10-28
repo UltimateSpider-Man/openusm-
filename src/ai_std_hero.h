@@ -56,7 +56,8 @@ struct hero_inode : info_node {
 
     float field_70;
     float field_74;
-    int field_78[2];
+    int field_78;
+    bool field_7C;
 
     local_collision::primitive_list_t *field_80;
     local_collision::primitive_list_t *field_84;

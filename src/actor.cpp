@@ -8,20 +8,25 @@
 #include "base_ai_data.h"
 #include "colgeom_alter_sys.h"
 #include "collision_capsule.h"
+#include "colmesh.h"
 #include "color.h"
 #include "common.h"
 #include "conglom.h"
 #include "custom_math.h"
 #include "damage_interface.h"
+#include "entity_mash.h"
+#include "facial_expression_interface.h"
 #include "func_wrapper.h"
 #include "generic_anim_controller.h"
 #include "item.h"
+#include "interactable_interface.h"
 #include "lego_map.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
 #include "ngl_support.h"
 #include "oldmath_po.h"
 #include "physical_interface.h"
+#include "resource_manager.h"
 #include "string_hash.h"
 #include "utility.h"
 #include "variables.h"
@@ -31,7 +36,8 @@
 
 VALIDATE_SIZE(actor, 0xC0u);
 
-actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3) {
+actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3)
+{
     this->field_64 = 0;
     this->field_60 = 0;
     this->field_5C = 0;
@@ -42,25 +48,14 @@ actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3) {
     this->field_7C = nullptr;
 
     this->colgeom = nullptr;
-
-    this->m_damage_interface = nullptr;
-    this->m_physical_interface = nullptr;
-
-    this->field_A0 = nullptr;
-    this->field_88 = 0;
-    this->adv_ptrs = nullptr;
-    this->anim_ctrl = nullptr;
-    this->field_70 = 0;
-    this->field_A4 = 0;
-    this->field_BC = nullptr;
-    this->field_A8[0] = 0;
-    this->field_AC = {};
-    this->field_B8 = 0;
-
     this->field_4 &= 0xFFFFFFFD;
+
+    this->common_construct();
+
 }
 
-actor::actor(int) : entity() {
+actor::actor(int) : entity()
+{
     this->field_10 = {};
 
     this->field_90.field_4 = 1;
@@ -72,6 +67,29 @@ actor::actor(int) : entity() {
 
 actor::~actor() {
     THISCALL(0x004F93A0, this);
+}
+
+void actor::common_construct()
+{
+    this->m_facial_expression_interface = nullptr;
+    this->m_damage_interface = nullptr;
+    this->m_physical_interface = nullptr;
+    this->m_traffic_light_interface = nullptr;
+    this->field_88 = 0;
+    this->adv_ptrs = nullptr;
+    this->anim_ctrl = nullptr;
+    this->m_skeleton= nullptr;
+    this->field_A4 = 0;
+    this->field_BC = nullptr;
+    this->field_A8[0] = 0;
+    this->field_AC = {};
+    this->field_B8 = 0;
+}
+
+void actor::set_colgeom(collision_geometry *a2)
+{
+    this->colgeom = a2;
+    this->set_flag_recursive(entity_flag_t {2}, this->colgeom != nullptr);
 }
 
 int actor::get_entity_size() {
@@ -90,11 +108,11 @@ vector3d actor::get_velocity() {
 }
 
 bool actor::has_traffic_light_ifc() {
-    return this->field_A0 != nullptr;
+    return this->m_traffic_light_interface != nullptr;
 }
 
 traffic_light_interface *actor::traffic_light_ifc() {
-    return this->field_A0;
+    return this->m_traffic_light_interface;
 }
 
 bool actor::has_skeleton_ifc() const {
@@ -362,11 +380,398 @@ void actor::destroy_player_controller() {
     }
 }
 
+constexpr auto MASH_SYNC_TEST_VAL5 = 0x5BADF00D;
+
 void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *a5)
 {
     TRACE("actor::un_mash");
 
-    THISCALL(0x004FBD40, this, a3, a4, a5);
+    if constexpr (0) {
+        auto &v4 = a5;
+        auto &v5 = a3;
+        entity::un_mash(a3, a4, a5);
+        this->common_construct();
+
+        if ( this->is_a_conglomerate() ) {
+            bit_cast<conglomerate *>(this)->create_parentage_tree();
+        }
+
+        if ( a3->is_flagged(1) ) {
+            this->adv_ptrs = v4->get<advanced_entity_ptrs>();
+            this->adv_ptrs->un_mash(a3, this, this->adv_ptrs, v4);
+        } else {
+            this->adv_ptrs = nullptr;
+        }
+
+        this->field_A4 = 0;
+
+        this->set_ext_flag_recursive_internal(entity_ext_flag_t {0x2000000u}, false);
+        this->set_ext_flag_recursive_internal(entity_ext_flag_t {0x800000u}, false);
+
+        rebase(v4->field_4, 8u);
+
+        auto *skel_name_id_ptr = (resource_key *)v4->field_4;
+        resource_key skel_name_id {};
+        skel_name_id = *v4->get_from_shared<resource_key>();
+
+        assert(*skel_name_id_ptr == skel_name_id);
+
+        if ( skel_name_id.is_set() ) {
+            auto *context = resource_manager::get_resource_context();
+            assert(context != nullptr);
+
+            auto v12 = skel_name_id.m_hash;
+            auto &res_dir = context->get_resource_directory();
+            auto *resource = res_dir.get_tlresource(
+               v12.source_hash_code,
+               TLRESOURCE_TYPE_SKELETON);
+            this->m_skeleton = bit_cast<nalBaseSkeleton *>(resource);
+        } else {
+            this->m_skeleton = nullptr;
+        }
+
+        if ( v5->is_flagged(2u) ) {
+            rebase(v4->field_0, 4u);
+
+            auto *v15 = v4->get<collision_capsule>();
+
+            v15->m_vtbl = collision_capsule_v_table();
+            assert(((int)a3) % 4 == 0);
+
+            v15->un_mash(a3, v15, v4);
+            this->set_colgeom(v15);
+        } else if ( v5->is_flagged(4u) ) {
+            rebase(v4->field_0, 4u);
+
+            auto *v19 = v4->get<cg_mesh>();
+            v19->m_vtbl = collision_mesh_v_table();
+            assert(((int)a3) % 4 == 0);
+
+            v19->un_mash(a3, v19, v4);
+
+            this->set_colgeom(v19);
+        } else {
+            this->set_colgeom(nullptr);
+        }
+
+        if ( colgeom != nullptr ) {
+            colgeom->owner = this;
+        }
+
+        if ( v5->is_flagged(8u) ) {
+            tlFixedString a1 {};
+
+            rebase(v4->field_4, 8u);
+
+            a1 = *v4->get_from_shared<tlFixedString>();
+            auto &v28 = this->field_90;
+            auto *Mesh = nglGetMesh(a1, false);
+            v28.set_mesh(Mesh);
+
+            auto func = [](auto &v28) -> nglMesh ** {
+
+                if ( v28.field_5 <= 1u ) {
+                    return v28.field_0;
+                }
+
+                return (nglMesh **)v28->field_0[v28.field_4];
+            };
+
+            if ( func(v28) == nullptr ) {
+                auto *__old_context = resource_manager::get_and_push_resource_context(RESOURCE_PARTITION_HERO);
+                auto *v32 = nglGetMesh(a1, false);
+                this->field_90.set_mesh(v32);
+                resource_manager::pop_resource_context();
+
+                assert(resource_manager::get_resource_context() == __old_context);
+
+                if ( func(v28) == nullptr ) {
+                    auto *v10 = a1.to_string();
+                    printf("Mesh '%s' not found in packfile!", v10);
+                }
+            }
+        } else {
+            this->field_90.set_mesh(nullptr);
+        }
+
+        this->get_lego_map_root();
+
+        auto sync_check = *v4->get<uint32_t>();
+        assert(sync_check == MASH_SYNC_TEST_VAL5);
+
+        auto v34 = *v4->get<bool>();
+        rebase(v4->field_0, 4u);
+
+        if ( v34 ) {
+            auto v38 = *v4->get<int>();
+
+            rebase(v4->field_0, 16u);
+
+            rebase(v4->field_0, 4u);
+
+            auto *v42 = v4->field_0;
+            v4->field_0 += v38;
+
+            global_transfer_variable_the_actor() = this;
+
+#if XBOX_RELEASE
+            mash_info_struct a1 {2, v42, v38, true};
+#else
+            mash_info_struct a1 {v42, v38};
+#endif
+            a1.unmash_class(this->field_7C, nullptr);
+            a1.construct_class(this->field_7C);
+        }
+
+        auto v61 = *v4->get<bool>();
+        rebase(v4->field_0, 4u);
+
+        if ( v61 ) {
+            auto v44 = *v4->get<int>();
+
+            rebase(v4->field_0, 16u);
+
+            rebase(v4->field_0, 4u);
+
+            auto *v48 = v4->field_0;
+            v4->field_0 += v44;
+
+            mash_info_struct a1 {v48, v44};
+
+            a1.unmash_class(this->m_interactable_ifc, nullptr);
+            a1.construct_class(this->m_interactable_ifc);
+
+        }
+
+        if (this->m_interactable_ifc != nullptr) {
+            auto &v50 = this->m_interactable_ifc;
+            v50->field_0 = this;
+            v50->update_registrations();
+        }
+
+        auto a4a = *v4->get<bool>();
+        rebase(v4->field_4, 4u);
+
+        if ( a4a ) {
+            rebase(v4->field_4, 4u);
+
+            if ( (a3->field_E & 0x8000) != 0 ) {
+                rebase(v4->field_4, 4u);
+
+                this->m_facial_expression_interface = v4->get<facial_expression_interface>();
+                this->m_facial_expression_interface->m_vtbl = ifc_v_table_lookup()[4];
+                this->m_facial_expression_interface->un_mash(
+                    a3,
+                    this,
+                    this->m_facial_expression_interface,
+                    v4);
+            } else {
+                this->m_facial_expression_interface = nullptr;
+            }
+        }
+#if 0
+
+        v53 = *v4->field_0;
+        v54 = v4->field_0 + 1;
+        v55 = 4 - ((LOBYTE(v4->field_0) + 1) & 3);
+        v4->field_0 = v54;
+
+        if ( v55 < 4 )
+            v4->field_0 = &v54[v55];
+
+        if ( v53 )
+        {
+            if ( !this->base.base.base.m_vtbl->field_20C(this) )
+                sub_4C0BA0(this);
+
+            v56 = *(_DWORD *)v4->field_0;
+            v4->field_0 += 4;
+            this->base.base.base.m_vtbl->traffic_light_ifc(this)->field_C = v56;
+        }
+
+        v57 = 16 - ((int)v4->field_0 & 0xF);
+        if ( v57 < 0x10 )
+            v4->field_0 += v57;
+
+        if ( v93 )
+        {
+            v58 = *(_DWORD *)v4->field_0;
+            v59 = (int)(v4->field_0 + 4);
+            v60 = 16 - ((LOBYTE(v4->field_0) + 4) & 0xF);
+            v4->field_0 = (unsigned __int8 *)v59;
+            if ( v60 < 0x10 )
+                v4->field_0 = (unsigned __int8 *)(v60 + v59);
+
+            v61 = 4 - ((int)v4->field_0 & 3);
+            if ( v61 < 4 )
+                v4->field_0 += v61;
+
+            v62 = &v4->field_0[v58];
+            a1.m_hash = (unsigned int)v4->field_0;
+            v4->field_0 = v62;
+            *(_DWORD *)a1.field_4 = 0;
+            *(_DWORD *)&a1.field_4[4] = v58;
+            *(_DWORD *)&a1.field_4[8] = 0;
+            v63 = mash_info_struct::read_from_buffer((mash_info_struct *)&a1, 32, 4);
+            this->field_88 = (web_interface *)v63;
+            nullsub_1((mAvlTree__string_hash_entry *)v63, (mash_info_struct *)&a1, (int)v63);
+            sub_5073A0(v63, (mash_info_struct *)&a1, (int)v63);
+            sub_508320((int *)&this->field_88);
+            v64 = this->field_88;
+            v65 = v64->field_8;
+            v64->field_14 = (int *)this;
+            if ( v65 )
+                v66 = &v65[v64->field_4];
+            else
+                v66 = 0;
+
+            for ( ; v65 != v66; *v67 = this )
+                v67 = (actor **)*v65++;
+
+            v68 = this->field_88;
+            mVector<interaction>::push_back((mVector__interaction *)&web_interface::m_all_web_interfaces, (trigger_region *)v68);
+            if ( (v68->field_1C & 4) != 0 )
+            {
+                ai::player_web_target_inode::add_to_web_targets_list(v68->field_14[7]);
+                LOBYTE(v68->field_1C) |= 2u;
+            }
+        }
+
+        v69 = (int)(v4->field_0 + 4);
+        v4->field_0 = (unsigned __int8 *)v69;
+        v70 = a3->field_E;
+        if ( (v70 & 0x1B) != 0 )
+        {
+            if ( (v70 & 0x10) != 0 )
+            {
+                v71 = 4 - (v69 & 3);
+                if ( v71 < 4 )
+                    v4->field_0 = (unsigned __int8 *)(v71 + v69);
+
+                this->my_physical_interface = (physical_interface *)v4->field_0;
+                v4->field_0 += 432;
+                this->my_physical_interface->m_vtbl = (physical_interface__vtbl *)ifc_v_table_lookup[2];
+                ((void (__stdcall *)(generic_mash_header *, actor *, physical_interface *, generic_mash_data_ptrs *))this->my_physical_interface->m_vtbl->field_1C)(
+                a3,
+                this,
+                this->m_physical_interface,
+                v4);
+            }
+            else
+            {
+                this->m_physical_interface = nullptr;
+            }
+
+            rebase(v4->field_0, 8u);
+
+            if ( (a3->field_E & 8) != 0 ) {
+
+                rebase(v4->field_0, 4u);
+
+                this->m_damage_interface = (damage_interface *)v4->field_0;
+                v4->field_0 += 572;
+                this->m_damage_interface->base.m_vtbl = ifc_v_table_lookup[1];
+                (*(void (__stdcall **)(generic_mash_header *, actor *, damage_interface *, generic_mash_data_ptrs *))(this->m_damage_interface->base.m_vtbl + 28))(
+                    a3,
+                    this,
+                    this->m_damage_interface,
+                    v4);
+            }
+            else
+            {
+                this->m_damage_interface = nullptr;
+            }
+        }
+
+        if ( this->base.base.base.m_vtbl->has_physical_ifc(this) )
+            this->base.base.base.field_4 |= 0x40u;
+
+        v7 = this->base.base.base.m_vtbl->get_ai_core(this) == 0;
+        v74 = this->base.base.base.field_4;
+        if ( v7 )
+            v75 = v74 & 0xFFFFFFFE;
+        else
+            v75 = v74 | 1;
+
+        this->base.base.base.field_4 = v75;
+        if ( this->base.colgeom )
+            this->base.base.base.m_vtbl->set_collisions_active(this, 1, 1);
+
+        if ( ((unsigned __int8 (__thiscall *)(actor *))this->base.base.base.m_vtbl->field_134)(this) )
+            ((void (__thiscall *)(actor *, _DWORD, _DWORD))this->base.base.base.m_vtbl->field_214)(this, 0, 0);
+
+        if ( resource_context_stack.m_first && resource_context_stack.m_last - resource_context_stack.m_first )
+            v76 = (resource_pack_slot *)*((_DWORD *)resource_context_stack.m_last - 1);
+        else
+            v76 = 0;
+        v77 = this->field_7C;
+        this->field_BC = v76;
+        if ( v77 && (this->base.base.base.field_4 & 4) == 0 ) {
+            base_ai_data::post_entity_mash(v77);
+        }
+
+        if ( this->base.base.base.m_vtbl->field_20C(this) )
+        {
+            v78 = this->base.base.base.m_vtbl->traffic_light_ifc(this);
+            traffic_signal_mgr::add_traffic_light(&this->base, v78->field_C != 0);
+        }
+
+        if ( this->base.base.base.m_vtbl->is_renderable(this) && (this->base.base.base.field_4 & 0x208000) == 0 )
+        {
+            a3a = this->base.base.base.m_vtbl->get_visual_radius(this);
+            v79 = distance_fader::estimate_fade_index_for_bounding_sphere(a3a);
+            entity_base::on_fade_distance_changed(&this->base.base.base, v79);
+        }
+
+        this->field_A8[0] = *(_WORD *)v4->field_0;
+        v80 = (__int16 *)(v4->field_0 + 2);
+        v4->field_0 = (unsigned __int8 *)v80;
+        if ( this->field_A8[0] )
+        {
+            this->field_A8[1] = *v80;
+            v81 = v4->field_0 + 2;
+            v4->field_0 = v81;
+            LOWORD(this->field_AC.arr[0]) = *(_WORD *)v81;
+            v82 = v4->field_0 + 2;
+            v4->field_0 = v82;
+            HIWORD(this->field_AC.arr[0]) = *(_WORD *)v82;
+            v83 = v4->field_0 + 2;
+            v4->field_0 = v83;
+            LOWORD(this->field_AC.arr[1]) = *(_WORD *)v83;
+            v84 = v4->field_0 + 2;
+            v4->field_0 = v84;
+            HIWORD(this->field_AC.arr[1]) = *(_WORD *)v84;
+            v85 = v4->field_0 + 2;
+            v4->field_0 = v85;
+            LOWORD(this->field_AC.arr[2]) = *(_WORD *)v85;
+            v86 = v4->field_0 + 2;
+            v4->field_0 = v86;
+            HIWORD(this->field_AC.arr[2]) = *(_WORD *)v86;
+            v87 = v4->field_0 + 2;
+            v4->field_0 = v87;
+            LOWORD(this->field_B8) = *(_WORD *)v87;
+            v88 = (int)(v4->field_0 + 2);
+        }
+        else
+        {
+            this->field_AC.arr[0] = *(float *)v80;
+            v89 = (float *)(v4->field_0 + 4);
+            v4->field_0 = (unsigned __int8 *)v89;
+            this->field_AC.arr[1] = *v89;
+            v90 = (float *)(v4->field_0 + 4);
+            v4->field_0 = (unsigned __int8 *)v90;
+            this->field_AC.arr[2] = *v90;
+            v91 = (int *)(v4->field_0 + 4);
+            v4->field_0 = (unsigned __int8 *)v91;
+            this->field_B8 = *v91;
+            v88 = (int)(v4->field_0 + 4);
+        }
+
+        v4->field_0 = (unsigned __int8 *)v88;
+#endif
+    } else {
+        THISCALL(0x004FBD40, this, a3, a4, a5);
+    }
 }
 
 void actor::create_player_controller(int a2) {
@@ -715,6 +1120,13 @@ void actor::get_animations(actor *a1, std::list<nalAnimClass<nalAnyPose> *> &a2)
             }
         }
     }
+}
+
+void actor::mesh_buffers::set_mesh(nglMesh *Mesh)
+{
+    TRACE("actor::mesh_buffers::set_mesh");
+
+    THISCALL(0x004D6980, this, Mesh);
 }
 
 namespace ai {

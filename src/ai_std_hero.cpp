@@ -4,6 +4,8 @@
 
 #include "actor.h"
 #include "ai_player_controller.h"
+#include "ai_state_swing.h"
+#include "ai_state_web_zip.h"
 #include "als_animation_logic_system.h"
 #include "als_inode.h"
 #include "base_ai_core.h"
@@ -25,9 +27,12 @@
 #include "physics_inode.h"
 #include "plr_loco_crawl_state.h"
 #include "plr_loco_crawl_transition_state.h"
+#include "put_down_state.h"
 #include "throw_state.h"
 #include "utility.h"
 #include "vtbl.h"
+
+#include <cmath>
 
 namespace ai {
 
@@ -39,8 +44,95 @@ hero_inode::hero_inode(from_mash_in_place_constructor *a2) {
     THISCALL(0x006A1B10, this, a2);
 }
 
+bool sub_68A0B0(int a1)
+{
+    bool result;
+    switch ( a1 )
+    {
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+        result = true;
+        break;
+    default:
+        result = false;
+        break;
+    }
+
+    return result;
+}
+
 bool hero_inode::jump_can_go_to(string_hash a2) {
-    return THISCALL(0x006A6E70, this, a2);
+    TRACE("ai::hero_inode::jump_can_go_to", a2.to_string());
+
+    if constexpr (1) {
+        auto *v4 = this->field_8;
+        auto *info_node = (ai::als_inode *)v4->get_info_node(als_inode::default_id, true);
+        if ( this->field_7C ) {
+            return false;
+        }
+
+        if ( a2 == web_zip_state::default_id ) {
+            auto v7 = this->field_50;
+            if ( v7 != 13 && v7 != 12 ) {
+                return true;
+            }
+
+            auto *v8 = this->field_8;
+            auto *v9 = bit_cast<ai::physics_inode *>(v8->get_info_node(physics_inode::default_id, true));
+            auto a3 = v9->field_1C->get_velocity();
+            auto len = std::sqrt(a3[2] * a3[2] + a3[0] * a3[0]);
+            return len * 0.2f < -a3[1];
+        }
+
+        if ( (a2 == plr_loco_crawl_transition_state::default_id
+            || a2 == plr_loco_crawl_state::default_id)
+            && sub_68A0B0(this->field_50) )
+        {
+            auto v2 = this->field_70;
+            if ( v2 < 0.30000001f ) {
+                return false;
+            }
+        }
+
+        static string_hash loco_allow_aerial_hit_react_id {int(to_hash("loco_allow_aerial_hit_react"))};
+
+        auto v19 = 0;
+        auto *v11 = this->field_8;
+        auto optional_pb_int = v11->field_50.get_optional_pb_int(
+                  loco_allow_aerial_hit_react_id,
+                  v19,
+                  nullptr);
+
+        if ( a2 == hit_react_state::default_id && !optional_pb_int ) {
+            return false;
+        }
+
+        if ( a2 == put_down_state::default_id ) {
+            return false;
+        }
+
+        if ( a2 == swing_state::default_id ) {
+            static string_hash cat_id_jump_to_swing {int(to_hash("Jump_To_Swing"))};
+
+            auto v15 = 0.0f;
+            auto cat_id = info_node->get_category_id(als::layer_types {0});
+            auto *v13 = bit_cast<als::state_machine *>(info_node->field_1C->get_als_layer(als::layer_types {0}));
+            auto &anim_handle = v13->get_anim_handle();
+            if ( anim_handle.sub_4AD230() ) {
+                auto &v14 = v13->get_anim_handle();
+                v15 = v14.sub_4AD210();
+            }
+
+            return cat_id != cat_id_jump_to_swing || v15 >= 1.0f;
+        } else {
+            auto *v16 = info_node->field_1C->get_als_layer(als::layer_types {0});
+            return v16->is_interruptable();
+        }
+    } else {
+        return THISCALL(0x006A6E70, this, a2);
+    }
 }
 
 void hero_inode::frame_advance(Float a2) {
@@ -430,5 +522,10 @@ void hero_inode_patch() {
     {
         FUNC_ADDRESS(address, &ai::hero_inode::frame_advance);
         //set_vfunc(0x0087DAC0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::hero_inode::jump_can_go_to);
+        SET_JUMP(0x006A6E70, address);
     }
 }

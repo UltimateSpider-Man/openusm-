@@ -291,7 +291,7 @@ nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedS
 template<>
 nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2)
 {
-    TRACE("tlresource_directory<nglTexture,tlFixedString>::Find", string_hash {a2}.to_string());
+    TRACE("tlresource_directory<nglTexture,tlFixedString>::Find", string_hash {int(a2)}.to_string());
 
     nglTexture *v3 = nullptr;
     if ( this->field_4 != nullptr )

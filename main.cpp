@@ -2639,6 +2639,8 @@ BOOL install_redirects() {
 
     script_memtrack_patch();
 
+    hero_inode_patch();
+
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
         REDIRECT(0x008218B0, hookDirectInputAddress);
@@ -2833,8 +2835,6 @@ BOOL install_redirects() {
         nfl_driver_patch();
 
         memory_patch();
-
-        hero_inode_patch();
 
         ai_state_machine_patch();
 
