@@ -110,24 +110,26 @@ void nglListInit()
 
 void nglSetFrameLock(nglFrameLockType a2)
 {
+    TRACE("nglSetFrameLock");
+
     if constexpr (1) {
         static Var<int> dword_93AED4 = {0x0093AED4};
 
         int v1 = 1;
         if (a2) {
             if (a2 == 1) {
-                nglFrameLock() = 1;
+                nglFrameLock() = static_cast<nglFrameLockType>(1);
                 nglFrameLockImmediate() = 0;
                 v1 = 1;
 
             } else if (a2 == 2) {
-                nglFrameLock() = 2;
+                nglFrameLock() = static_cast<nglFrameLockType>(2);
                 nglFrameLockImmediate() = 0;
                 v1 = 2;
             }
 
         } else {
-            nglFrameLock() = 0;
+            nglFrameLock() = static_cast<nglFrameLockType>(0);
             nglFrameLockImmediate() = 0;
             v1 = 0x80000000;
             assert(0);
@@ -139,8 +141,8 @@ void nglSetFrameLock(nglFrameLockType a2)
                 operator delete(v2);
             }
 
-            float v4 = (double) nglFrameLock().field_0;
-            if (nglFrameLock().field_0 < 0) {
+            float v4 = nglFrameLock();
+            if (nglFrameLock() < 0) {
                 v4 += 4.2949673e9;
             }
 
@@ -155,7 +157,6 @@ void nglSetFrameLock(nglFrameLockType a2)
         CDECL_CALL(0x0076E750, a2);
     }
 }
-
 
 static Var<float> g_renderTime {0x00972664};
 
@@ -217,9 +218,9 @@ void nglRenderPerfInfo()
         sprintf(Dest,
                 byte_8B7DF8(),
                 "FINAL",
-                nglSyncPerfInfo().m_fps, //FPS
-                nglSyncPerfInfo().m_render_time, //RENDER
-                nglSyncPerfInfo().m_cpu_time, //CPU
+                nglSyncPerfInfo().m_fps,
+                nglSyncPerfInfo().m_render_time,
+                nglSyncPerfInfo().m_cpu_time,
                 nglSyncPerfInfo().field_70,
                 nglSyncPerfInfo().field_74,
                 nglSyncPerfInfo().field_18,
@@ -271,6 +272,82 @@ void nglRenderDebug()
 
     if ( nglSyncDebug().ShowPerfBar ) {
         nglRenderPerfBar();
+    }
+}
+
+void sub_76DD70()
+{
+    nglLastFlipCycle() = nglFlipCycle();
+    nglFlipCycle() = query_perf_counter().LowPart;
+    nglLastFlipVBlank() = nglVBlankCount();
+    nglFlipQueued() = false;
+}
+
+int __fastcall sub_781EA0(void *a1)
+{
+    int (__fastcall *func)(void *) = CAST(func, 0x00781EA0);
+    return func(a1);
+}
+
+void nglQueueFlip()
+{
+    if ( nglFrameLock()
+        && (!nglFrameLockImmediate() || nglVBlankCount() - nglLastFlipVBlank() < (unsigned int)nglFrameLock() ) )
+    {
+        nglFlipQueued() = true;
+    }
+    else
+    {
+        sub_76DD70();
+    }
+}
+
+void sub_76E800()
+{
+    CDECL_CALL(0x0076E800);
+}
+
+void PumpMessages()
+{
+    TRACE("PumpMessages");
+
+    struct tagMSG Msg;
+
+    while ( PeekMessageA(&Msg, nullptr, 0, 0, PM_REMOVE) != 0 ) {
+        TranslateMessage(&Msg);
+        DispatchMessageA(&Msg);
+    }
+}
+
+void nglFlip(bool a1)
+{
+    TRACE("nglFlip");
+
+    if constexpr (1) {
+        ++nglVBlankCount();
+        g_Direct3DDevice()->lpVtbl->BeginScene(g_Direct3DDevice());
+        sub_781EA0(nullptr);
+        g_Direct3DDevice()->lpVtbl->EndScene(g_Direct3DDevice());
+
+        static_assert(D3DERR_DEVICELOST == (HRESULT) 0x88760868);
+        static_assert(D3DERR_DEVICENOTRESET == (HRESULT) 0x88760869);
+        
+        if ( !byte_971F9C()
+                && g_Direct3DDevice()->lpVtbl->Present(g_Direct3DDevice(), nullptr, nullptr, nullptr, nullptr) == D3DERR_DEVICELOST )
+        {
+            Sleep(100u);
+            if ( g_Direct3DDevice()->lpVtbl->TestCooperativeLevel(g_Direct3DDevice()) == D3DERR_DEVICENOTRESET ) {
+                sub_76E800();
+            }
+        }
+
+        PumpMessages();
+        ++nglFrame();
+        if ( a1 ) {                                             
+            nglQueueFlip();
+        }
+    } else {
+        CDECL_CALL(0x0076E980, a1);
     }
 }
 

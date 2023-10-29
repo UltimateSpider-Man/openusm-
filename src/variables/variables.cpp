@@ -15,6 +15,8 @@ Var<int> dword_975314 = {0x00975314};
 
 Var<int> dword_97530C = {0x0097530C};
 
+Var<bool> byte_971F9C = {0x00971F9C};
+
 Var<bool> s_freeze_game_time = {0x009680AC};
 
 Var<bool> g_generating_vtables = {0x0095A6F1};

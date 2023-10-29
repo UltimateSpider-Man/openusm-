@@ -30,17 +30,7 @@ extern bool nglGetDebugFlag(const char *Flag);
 
 extern void nglSetDebugFlag(const char *Flag, bool Set);
 
-struct nglFrameLockType {
-    int field_0;
-
-    nglFrameLockType() = default;
-
-    nglFrameLockType(int a1) : field_0(a1) {}
-
-    operator int() {
-        return field_0;
-    }
-};
+enum nglFrameLockType {};
 
 struct nglBlendModeType {
     int field_0;
@@ -888,6 +878,8 @@ extern Var<uint8_t *> nglListWorkPos;
 extern void sub_76DF40();
 
 extern void sub_57F3C0();
+
+extern void sub_76E800();
 
 extern nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base> *sub_507920(
     nglMaterialBase *a1, int a2, int a3, int a4, const void *a5, int a6, bool a7);

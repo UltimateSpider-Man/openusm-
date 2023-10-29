@@ -19,6 +19,8 @@ extern Var<int> dword_975314;
 
 extern Var<int> dword_97530C;
 
+extern Var<bool> byte_971F9C;
+
 extern Var<bool> s_freeze_game_time;
 
 extern Var<bool> g_generating_vtables;

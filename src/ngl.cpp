@@ -4450,10 +4450,6 @@ void sub_77B2F0(bool a1) {
     CDECL_CALL(0x0077B2F0, a1);
 }
 
-void nglFlip(bool a1) {
-    CDECL_CALL(0x0076E980, a1);
-}
-
 void ngl_releasefile_callback(tlFileBuf *) {
     ;
 }
@@ -4520,21 +4516,20 @@ void sub_77EB40() {
 
 static Var<BOOL> dword_93AE80 = {0x0093AE80};
 
-static Var<bool> byte_971F9C{0x00971F9C};
-
 static Var<D3DPRESENT_PARAMETERS> s_d3dpresent_params{0x009720D0};
-
-void sub_76E800() {}
 
 LSTATUS sub_77EBD0() {
     return {};
 }
 
-void sub_76D230(BOOL a1) {
-    if (!byte_971F9C() && s_d3dpresent_params().Windowed != a1) {
-        s_d3dpresent_params().Windowed = a1;
+void ToggleFullScreen(BOOL isFullscreen)
+{
+    TRACE("ToggleFullScreen");
+
+    if (!byte_971F9C() && s_d3dpresent_params().Windowed != isFullscreen) {
+        s_d3dpresent_params().Windowed = isFullscreen;
         sub_76E800();
-        if (a1) {
+        if (isFullscreen) {
             SetWindowPlacement(g_hWnd(), &wndpl());
         } else {
             auto v2 = GetSystemMetrics(1);
@@ -4543,8 +4538,8 @@ void sub_76D230(BOOL a1) {
             SetWindowPos(g_hWnd(), nullptr, 0, 0, v1, v2, SWP_NOACTIVATE);
         }
 
-        SetWindowPos(g_hWnd(), (HWND) (-a1 - 1), 0, 0, 0, 0, 3u);
-        ShowCursor(a1);
+        SetWindowPos(g_hWnd(), (HWND) (-isFullscreen - 1), 0, 0, 0, 0, 3u);
+        ShowCursor(isFullscreen);
     }
 }
 
@@ -4557,21 +4552,24 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
         if (Msg > WM_GETMINMAXINFO) {
             switch (Msg) {
             case WM_NCHITTEST: {
-                goto LABEL_27;
+                if (!g_Windowed()) {
+                    return 1;
+                }
             }
             case WM_KEYDOWN: {
                 if (wParam != VK_ESCAPE) {
-                    goto LABEL_34;
+                    result = DefWindowProcA(hWnd, Msg, wParam, lParam);
+                    break;
                 }
 
                 SendMessageA(g_hWnd(), WM_CLOSE, 0, 0);
                 return DefWindowProcA(hWnd, Msg, VK_ESCAPE, lParam);
             }
             case WM_SYSKEYDOWN:
-                if (wParam == VK_RETURN) {
+                if (wParam == VK_RETURN) { // Alt + Enter - switch to fullscreen or window
                     g_Windowed() = !g_Windowed();
 
-                    sub_76D230(g_Windowed());
+                    ToggleFullScreen(g_Windowed());
                 }
 
                 result = DefWindowProcA(hWnd, Msg, wParam, lParam);
@@ -4580,17 +4578,18 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
             case WM_SYSCOMMAND:
                 if (wParam > SC_MAXIMIZE) {
                     if (wParam != SC_KEYMENU && wParam != SC_MONITORPOWER) {
-                        goto LABEL_34;
+                        result = DefWindowProcA(hWnd, Msg, wParam, lParam);
+                        break;
                     }
                 } else if (wParam != SC_MAXIMIZE && wParam != SC_SIZE && wParam != SC_MOVE) {
-                    goto LABEL_34;
+                    result = DefWindowProcA(hWnd, Msg, wParam, lParam);
+                    break;
                 }
 
-            LABEL_27:
                 if (!g_Windowed()) {
                     return 1;
                 }
-            LABEL_34:
+
                 result = DefWindowProcA(hWnd, Msg, wParam, lParam);
                 break;
             default:
@@ -4602,7 +4601,7 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
                 switch (Msg) {
                 case WM_MOVE:
                     if (!g_Windowed() || !g_hWnd()) {
-                        goto LABEL_34;
+                        return DefWindowProcA(hWnd, Msg, wParam, lParam);
                     }
 
                     GetWindowPlacement(hWnd, &wndpl());
@@ -4610,50 +4609,50 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
                 case WM_PAINT:
                     if (!g_Windowed() || !g_hWnd() || !byte_971F9C()) {
-                        goto LABEL_34;
+                        return DefWindowProcA(hWnd, Msg, wParam, lParam);
                     }
+
                     sub_76DF00();
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
                 case WM_CLOSE:
                     g_Windowed() = dword_93AE80();
-                    sub_76D230(dword_93AE80());
+                    ToggleFullScreen(dword_93AE80());
                     DestroyWindow(g_hWnd());
                     PostQuitMessage(0);
                     g_hWnd() = 0;
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
-                case WM_ACTIVATEAPP:
-                    if (!wParam) {
-                        goto LABEL_34;
+                case WM_ACTIVATEAPP: {
+                    if (wParam == 0) {
+                        return DefWindowProcA(hWnd, Msg, wParam, lParam);
                     }
 
                     byte_971F9C() = false;
                     if (!g_hWnd() || g_Windowed()) {
-                        goto LABEL_34;
+                        return DefWindowProcA(hWnd, Msg, wParam, lParam);
                     }
 
                     s_d3dpresent_params().Windowed = true;
 
-                    sub_76D230(false);
+                    ToggleFullScreen(false);
 
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
-
+                }
                 case WM_CANCELMODE:
                     if (g_Windowed()) {
-                        result = DefWindowProcA(hWnd, Msg, wParam, lParam);
-                        break;
+                        return DefWindowProcA(hWnd, Msg, wParam, lParam);
                     }
 
                     ShowCursor(TRUE);
                     byte_971F9C() = true;
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
                 default:
-                    result = DefWindowProcA(hWnd, Msg, wParam, lParam);
-                    break;
+                    return DefWindowProcA(hWnd, Msg, wParam, lParam);
                 }
+            } else { // WM_GETMINMAXINFO
+                bit_cast<MINMAXINFO *>(lParam)->ptMinTrackSize.x = 100;
+                bit_cast<MINMAXINFO *>(lParam)->ptMinTrackSize.y = 100;
+                result = DefWindowProcA(hWnd, WM_GETMINMAXINFO, wParam, lParam);
             }
-            *(uint32_t *) (lParam + 24) = 100;
-            *(uint32_t *) (lParam + 28) = 100;
-            result = DefWindowProcA(hWnd, WM_GETMINMAXINFO, wParam, lParam);
         }
         return result;
     } else {
@@ -4666,15 +4665,14 @@ void create_renderer(HWND hWnd) {
 
     WNDCLASSEXA v13;
 
-    Var<IDirect3D9 *> g_pD3D = {0x00971FA4};
+    static Var<IDirect3D9 *> g_pD3D {0x00971FA4};
 
-    memset(&(s_d3dpresent_params()), 0, sizeof(s_d3dpresent_params()));
+    s_d3dpresent_params() = {};
     HWND v1 = hWnd;
-    if (hWnd == nullptr)
-    {
+    if (hWnd == nullptr) {
         sub_77EB40();
         dword_93AE80() = g_Windowed();
-        memset(&v13, 0, sizeof(v13));
+        v13 = {};
         v13.cbSize = 48;
         v13.style = 0x2000;
         v13.lpfnWndProc = bit_cast<WNDPROC>(&WndProcEx);
@@ -4861,8 +4859,6 @@ void nglDebugInit() {
     std::memset(&nglSyncPerfInfo(), 0, sizeof(nglSyncPerfInfo()));
     nglDebug().field_4 = 65280;
 }
-
-void nglSceneDumpStart();
 
 //0x00783A90
 int nglHostPrintf(HANDLE hObject, const char *a2, ...) {
@@ -5261,11 +5257,15 @@ void sub_76DF40() {
 
 void ngl_patch()
 {
+    SET_JUMP(0x0076E750, nglSetFrameLock);
+
     SET_JUMP(0x00773350, nglCanReleaseTexture);
 
     SET_JUMP(0x0076E050, nglListInit);
 
     SET_JUMP(0x0076EA10, nglListSend);
+
+    SET_JUMP(0x0076E980, nglFlip);
 
 
     REDIRECT(0x0077392C, nglInitWhiteTexture);
@@ -5337,11 +5337,9 @@ void ngl_patch()
 
     SET_JUMP(0x007724A0, CreateVertexDeclarationAndShader);
 
-    REDIRECT(0x0076E42B, create_renderer);
+    SET_JUMP(0x0076D680, create_renderer);
 
 #if 0
-
-    REDIRECT(0x005AD264, nglSetFrameLock);
 
     REDIRECT(0x004E35A6, FastListAddMesh);
 
@@ -5366,8 +5364,6 @@ void ngl_patch()
     }
 
     REDIRECT(0x0076EA59, nglRenderPerfInfo);
-
-    REDIRECT(0x0076ECF3, nglFlip);
 
     
 
