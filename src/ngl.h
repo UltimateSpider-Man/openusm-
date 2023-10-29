@@ -14,6 +14,8 @@
 
 #include <d3d9.h>
 
+#include <windows.h>
+
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
 struct nglScene;
@@ -726,9 +728,6 @@ extern void nglSetClearFlags(unsigned int a1);
 //0x0076A380
 extern void nglSetClearColor(Float a1, Float a2, Float a3, Float a4);
 
-//0x0076C700
-extern void nglSetupScene(nglScene *a1, nglSceneParamType a2);
-
 //0x0076C970
 extern void nglListBeginScene(nglSceneParamType a2);
 
@@ -783,6 +782,8 @@ inline constexpr auto NGLTEX_ANIMATED = 15;
 
 inline constexpr auto NGLTEX_SWIZZLED = 0x100;
 inline constexpr auto NGLTEX_LINEAR = 0x200;
+
+inline Var<HANDLE> h_sceneDump {0x00976E20};
 
 //0x0077BC90
 extern nglTexture *nglCreateTexture(uint32_t Format, int Width, int Height, int a4, bool a5);

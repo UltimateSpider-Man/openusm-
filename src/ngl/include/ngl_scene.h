@@ -65,6 +65,11 @@ struct nglScene {
     int field_43C;
 };
 
+//0x0076C700
+extern void nglSetupScene(nglScene *a1, nglSceneParamType a2);
+
+extern void nglSceneDumpStart();
+
 extern Var<nglScene *> nglCurScene;
 extern Var<nglScene *> nglRootScene;
 
