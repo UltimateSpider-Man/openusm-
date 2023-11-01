@@ -202,14 +202,25 @@ int sub_76F3E0(Float a1, Float a2, Float a3, Float a4, Float a5, char a6) {
 void nglListAddMesh(nglMesh *Mesh,
                     const math::MatClass<4, 3> &a2,
                     nglMeshParams *a3,
-                    nglParamSet<nglShaderParamSet_Pool> *a4) {
-    if (Mesh != nullptr) {
-        assert(((Mesh->Flags & NGLMESH_PROCESSED) || (Mesh->Flags & NGLMESH_SCRATCH_MESH)) &&
-               "Mesh missing NGLMESH_PROCESSED flag.");
-    }
+                    nglParamSet<nglShaderParamSet_Pool> *a4)
+{
 
     if constexpr (0) {
         if (Mesh != nullptr) {
+
+            assert(((Mesh->Flags & NGLMESH_PROCESSED) || (Mesh->Flags & NGLMESH_SCRATCH_MESH)) &&
+               "Mesh missing NGLMESH_PROCESSED flag.");
+
+            if ( nglSyncDebug().DisableScratch
+                    || (Mesh->Flags & NGLMESH_SCRATCH_MESH) == 0 )
+            {
+                return;
+            }
+
+            if ( nglSyncDebug().DumpMesh ) {
+                nglDumpMesh(Mesh, a2, a3);
+            }
+
             int v20 = 0;
             if (a3 != nullptr) {
                 v20 = a3->Flags;
@@ -285,7 +296,7 @@ void nglListAddMesh(nglMesh *Mesh,
                 for (auto i = 0u; i < Mesh->NSections; ++i)
                 {
                     auto *MeshSection = Mesh->Sections[i].Section;
-                    nglPerfInfo().field_7C += MeshSection->NVertices;
+                    nglPerfInfo().m_num_verts += MeshSection->NVertices;
 
                     auto &AddNode = get_vfunc(MeshSection->Material->field_4->m_vtbl, 0x8);
 
@@ -295,13 +306,14 @@ void nglListAddMesh(nglMesh *Mesh,
                             MeshSection->Material);
                 }
 
-                nglPerfInfo().field_78 += Mesh->field_3C;
+                nglPerfInfo().m_num_polys += Mesh->field_3C;
                 auto *v13 = Mesh->File;
                 if (v13 != nullptr) {
                     v13->field_144 = nglFrame();
                 }
             }
         }
+
     } else {
         CDECL_CALL(0x00770360, Mesh, &a2, a3, a4);
     }

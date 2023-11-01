@@ -109,6 +109,8 @@ struct RenderState_t {
     //0x00774E40
     void Init();
 
+    void Clear();
+
     //0x00401BF0
     void setAplhaFunction(uint32_t a2);
 

@@ -208,11 +208,6 @@ void RenderLoadMeter() {
     }
 }
 
-bool sub_581C30() {
-    auto *v0 = g_femanager().IGO->field_44;
-    return v0->field_5C4 || v0->field_5C3;
-}
-
 void FEManager_patch() {
     {
         FUNC_ADDRESS(address, &FEManager::LoadFonts);

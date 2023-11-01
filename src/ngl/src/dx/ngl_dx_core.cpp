@@ -3,6 +3,7 @@
 #include "ngl.h"
 #include "ngl_font.h"
 #include "ngl_scene.h"
+#include "ngl_dx_state.h"
 #include "timer.h"
 #include "trace.h"
 #include "variable.h"
@@ -29,11 +30,13 @@ Var<int> nglFrameVBlankCount = (0x0097290C);
 
 static Var<int> nglFlipCycle{0x00972674};
 
-static Var<nglLightContext *> nglDefaultLightContext {0x00973B70};
+Var<nglLightContext *> nglDefaultLightContext {0x00973B70};
 
 static Var<BOOL> nglFlipQueued = {0x00972668};
 
 static Var<char *> nglListWork {0x00971F08};
+
+static Var<int> dword_93AED4 {0x0093AED4};
 
 void nglVif1RenderScene() {
     CDECL_CALL(0x0077D060);
@@ -44,7 +47,7 @@ void sub_781A30()
     ;
 }
 
-static LARGE_INTEGER query_perf_counter()
+LARGE_INTEGER query_perf_counter()
 {
     LARGE_INTEGER PerformanceCount;
 
@@ -113,8 +116,6 @@ void nglSetFrameLock(nglFrameLockType a2)
     TRACE("nglSetFrameLock");
 
     if constexpr (1) {
-        static Var<int> dword_93AED4 = {0x0093AED4};
-
         int v1 = 1;
         if (a2) {
             if (a2 == 1) {
@@ -223,10 +224,10 @@ void nglRenderPerfInfo()
                 nglSyncPerfInfo().m_cpu_time,
                 nglSyncPerfInfo().field_70,
                 nglSyncPerfInfo().field_74,
-                nglSyncPerfInfo().field_18,
-                nglSyncPerfInfo().field_1C,
-                nglSyncPerfInfo().field_7C,
-                nglSyncPerfInfo().field_78,
+                nglSyncPerfInfo().m_quads_time,
+                nglSyncPerfInfo().m_fonts_time,
+                nglSyncPerfInfo().m_num_verts,
+                nglSyncPerfInfo().m_num_polys,
                 nglSyncPerfInfo().field_80,
                 nglSyncPerfInfo().field_0,
                 nglVif1WorkSize(),
@@ -302,9 +303,64 @@ void nglQueueFlip()
     }
 }
 
-void sub_76E800()
+void sub_781B60()
 {
-    CDECL_CALL(0x0076E800);
+    CDECL_CALL(0x00781B60);
+}
+
+void sub_782060()
+{
+    CDECL_CALL(0x00782060);
+}
+
+void sub_781B20()
+{
+    CDECL_CALL(0x00781B20);
+}
+
+void Reset3DDevice()
+{
+    if constexpr (0) {
+        sub_782030();
+        sub_77B2F0(1);
+        if ( !EnableShader() ) {
+            sub_81E910();
+        }
+
+        sub_781B60();
+        if ( g_Windowed() )
+        {
+            s_d3dpresent_params().FullScreen_RefreshRateInHz = 0;
+        }
+        else if ( s_d3dpresent_params().PresentationInterval == 1 )
+        {
+            s_d3dpresent_params().FullScreen_RefreshRateInHz = 60;
+        }
+
+        if ( g_occlusionQueryTest() ) {
+            g_occlusionQueryTest()->lpVtbl->Release(g_occlusionQueryTest());
+        }
+
+        g_Direct3DDevice()->lpVtbl->Reset(g_Direct3DDevice(), &s_d3dpresent_params());
+        if ( !g_Direct3DDevice()->lpVtbl->CreateQuery(g_Direct3DDevice(), D3DQUERYTYPE_OCCLUSION, nullptr) ) {
+            g_Direct3DDevice()->lpVtbl->CreateQuery(g_Direct3DDevice(), D3DQUERYTYPE_OCCLUSION, &g_occlusionQueryTest());
+        }
+
+        sub_782060();
+        if ( !EnableShader() ) {
+            sub_81E8E0(0x25A000);
+        }
+
+        ++dword_91E1D8();
+        sub_781B20();
+        g_renderState().Clear();
+        g_renderTextureState().clear();
+        sub_7726B0(0);
+        dword_93AED4() = -1;
+        nglSetFrameLock(nglFrameLock());
+    } else {
+        CDECL_CALL(0x0076E800);
+    }
 }
 
 void PumpMessages()
@@ -313,7 +369,7 @@ void PumpMessages()
 
     struct tagMSG Msg;
 
-    while ( PeekMessageA(&Msg, nullptr, 0, 0, PM_REMOVE) != 0 ) {
+    while ( PeekMessageA(&Msg, nullptr, 0, 0, PM_REMOVE) ) {
         TranslateMessage(&Msg);
         DispatchMessageA(&Msg);
     }
@@ -337,7 +393,7 @@ void nglFlip(bool a1)
         {
             Sleep(100u);
             if ( g_Direct3DDevice()->lpVtbl->TestCooperativeLevel(g_Direct3DDevice()) == D3DERR_DEVICENOTRESET ) {
-                sub_76E800();
+                Reset3DDevice();
             }
         }
 
@@ -350,6 +406,8 @@ void nglFlip(bool a1)
         CDECL_CALL(0x0076E980, a1);
     }
 }
+
+#include <bitset>
 
 void nglListSend(bool Flip)
 {
@@ -398,12 +456,16 @@ void nglListSend(bool Flip)
 
         sub_76DE80();
 
-        auto v5 = 1.f / PCFreq();
+        float v5 = 1.0 / PCFreq();
         nglPerfInfo().field_40.QuadPart = query_perf_counter().QuadPart - nglPerfInfo().field_40.QuadPart;
+
         nglPerfInfo().field_70 = nglPerfInfo().field_40.QuadPart * v5;
+
         auto v6 = dword_975308();
-        nglPerfInfo().field_18 = nglPerfInfo().field_48 * v5;
-        nglPerfInfo().field_1C = nglPerfInfo().field_50 * v5;
+        nglPerfInfo().m_quads_time = nglPerfInfo().m_counterQuads.QuadPart * v5;
+
+        nglPerfInfo().m_fonts_time = nglPerfInfo().field_50.QuadPart * v5;
+
         if ( dword_975314() == dword_975308() ) {
             v6 = dword_97530C();
         }
@@ -448,11 +510,11 @@ void nglListSend(bool Flip)
             v9 += flt_86F860();
         }
 
-        //sp_log("v9 = %f, PCFreq = %f", v9, PCFreq());
+        sp_log("v9 = %f, PCFreq = %f", v9, PCFreq());
         nglPerfInfo().field_6C = v9 / PCFreq();
         nglPerfInfo().field_5C = nglPerfInfo().field_5C + nglPerfInfo().field_6C;
         nglPerfInfo().m_fps = 1000.f / nglPerfInfo().field_6C;
-        //sp_log("nglPerfInfo.m_fps == %f", nglPerfInfo().m_fps);
+        sp_log("nglPerfInfo.m_fps == %f", nglPerfInfo().m_fps);
 
         nglPerfInfo().field_60 = nglPerfInfo().field_5C * 0.001f;
         if ( nglDebug().ScreenShot ) {
@@ -463,14 +525,12 @@ void nglListSend(bool Flip)
         nglSyncPerfInfo() = nglPerfInfo();
 
         nglPerfInfo().field_80 = 0;
-        nglPerfInfo().field_18 = 0.0;
-        nglPerfInfo().field_1C = 0.0;
-        nglPerfInfo().field_7C = 0;
-        nglPerfInfo().field_78 = 0;
-        nglPerfInfo().field_48 = 0;
-        nglPerfInfo().field_4C = 0;
-        nglPerfInfo().field_50 = 0;
-        nglPerfInfo().field_54 = 0;
+        nglPerfInfo().m_quads_time = 0.0;
+        nglPerfInfo().m_fonts_time = 0.0;
+        nglPerfInfo().m_num_verts = 0;
+        nglPerfInfo().m_num_polys = 0;
+        nglPerfInfo().m_counterQuads.QuadPart = 0;
+        nglPerfInfo().field_50.QuadPart = 0;
 
 #if 0
         if ( dword_971F2C() ) {

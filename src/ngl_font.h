@@ -1,17 +1,16 @@
 #pragma once
 
 #include "fixedstring.h"
+#include "float.hpp"
 #include "variable.h"
 
 struct nglTexture;
 
 struct nglGlyphInfo {
-    int field_0;
-    int field_4;
-    int GlyphSize[2];
-    int field_10;
-    int field_14;
-    int field_18;
+    uint32_t TexOfs[2];
+    uint32_t GlyphSize[2];
+    int32_t GlyphOrigin[2];
+    uint32_t CellWidth;
 };
 
 struct nglGlyphSize {
@@ -44,7 +43,21 @@ struct nglFont {
     char field_50;
     char empty0[3];
 
+    int GetFontCellWidth(uint8_t a2)
+    {
+        return this->GetGlyphInfo(a2)->CellWidth;
+    }
+
     nglGlyphInfo *GetGlyphInfo(unsigned char Character);
+
+    void sub_77E2F0(
+        uint8_t a2,
+        float *a3,
+        float *a4,
+        float *a5,
+        float *a6,
+        Float a7,
+        Float a8);
 };
 
 extern Var<nglFont *> nglSysFont;

@@ -47,3 +47,5 @@ struct nglShaderNode : nglRenderNode {
 
     void Render();
 };
+
+extern float *sub_413F80(float *a1, int a2, uint32_t *a3, uint32_t a4);

@@ -106,7 +106,7 @@ void FastListAddMesh(nglMesh *Mesh,
         for (auto i = 0u; i < Mesh->NSections; ++i) {
             auto *MeshSection = Mesh->Sections[i].Section;
 
-            nglPerfInfo().field_7C += MeshSection->NVertices;
+            nglPerfInfo().m_num_verts += MeshSection->NVertices;
 
             nglMaterialBase *v15 = sub_8EA2E0(&v12->field_8C, MeshSection->Material);
 
@@ -114,7 +114,7 @@ void FastListAddMesh(nglMesh *Mesh,
             AddNode(MeshSection->Material->field_4, v12, MeshSection, v15);
         }
 
-        nglPerfInfo().field_78 += Mesh->field_3C;
+        nglPerfInfo().m_num_polys += Mesh->field_3C;
 
         if (Mesh->File != nullptr) {
             Mesh->File->field_144 = nglFrame();

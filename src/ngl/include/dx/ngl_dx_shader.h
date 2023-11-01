@@ -14,6 +14,8 @@ struct VShader {
     IDirect3DVertexDeclaration9 *field_4;
 };
 
+inline Var<VShader> stru_975780 {0x00975780};
+
 extern Var<IDirect3DVertexDeclaration9 *[1]> dword_9738E0;
 
 extern void log_codes(const DWORD *code);

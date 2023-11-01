@@ -675,11 +675,13 @@ LABEL_34:
             sub_76DC30(1u, D3DSAMP_ADDRESSU, 3u);
             sub_76DC30(1u, D3DSAMP_ADDRESSV, 3u);
         }
+
         sub_774A90(byte_9739A0, *(_DWORD *) (this->field_18 + 76), 0, 0);
         if (dword_973A4C != 2) {
             g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_CULLMODE, 2);
             dword_973A4C = 2;
         }
+
         if (v43) {
             v13 = (po *) sub_41D840(v63);
             v14 = sub_413770((vector4d *) v64, v13);
@@ -747,6 +749,7 @@ LABEL_34:
                                                                1);
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 7, v50, 1);
         }
+
         sub_772270((int *) (8 * (v42 + 2 * v43) + 0x9707F4));
         sub_772250((IDirect3DPixelShader9 **) (4 *
                                                    (v42 +
@@ -769,6 +772,7 @@ LABEL_34:
             a1[1] = a3.arr[1];
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(g_Direct3DDevice(), 2, a1, 1);
         }
+
         a3.arr[2] = 0.0;
         a3.arr[0] = 0.0;
         a1[0] = 0.0;
@@ -786,6 +790,7 @@ LABEL_34:
             g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_CULLMODE, 2);
             dword_973A4C = 2;
         }
+
         sub_774A90(byte_9739A0, 0, 0, 0);
         a1[0] = 0.0;
         a1[1] = 0.0;
@@ -801,10 +806,11 @@ LABEL_34:
         a1[3] = v4->field_2C;
         a1[2] = v35;
         g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(g_Direct3DDevice(), 0, a1, 1);
-        dword_93BD50[0] = 0;
+        g_renderTextureState().field_0[0] = nullptr;
         g_Direct3DDevice()->lpVtbl->SetTexture(g_Direct3DDevice(), 0, 0);
         sub_771AF0(this->field_10);
     }
+
     if (v48) {
         v36 = sub_41DE40(this);
         v52 = v36;
@@ -1273,9 +1279,7 @@ void USPersonNode::Render() {
 
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(g_Direct3DDevice(), 0, &a1[0], 1);
 
-            static Var<IDirect3DBaseTexture9 *[1]> dword_93BD50 { 0x0093BD50 };
-
-            dword_93BD50()[0] = nullptr;
+            g_renderTextureState().field_0[0] = nullptr;
             g_Direct3DDevice()->lpVtbl->SetTexture(g_Direct3DDevice(), 0, nullptr);
 
             SetStreamSourceAndDrawPrimitive(this->field_10);

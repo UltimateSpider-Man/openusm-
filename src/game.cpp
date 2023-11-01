@@ -470,8 +470,8 @@ void game::render_world()
                 if ((!v6 || (v6->field_0 & 0x40) != 0) && !g_indoors() && byte_922558()) {
                     nglListBeginScene(nglSceneParamType{1});
                     nglCurScene()->field_408 = true;
-                    nglSetSceneCallBack(nglSceneCallbackType{0}, UploadLightConsts, nullptr);
-                    nglSetSceneCallBack(nglSceneCallbackType{2}, sub_510770, nullptr);
+                    nglSetSceneCallBack(static_cast<nglSceneCallbackType>(0), UploadLightConsts, nullptr);
+                    nglSetSceneCallBack(static_cast<nglSceneCallbackType>(2), sub_510770, nullptr);
                     v3->adjust_geometry_pipe(false);
                     geometry_manager::set_far_plane(12000.0);
                     nglCalculateMatrices(0);

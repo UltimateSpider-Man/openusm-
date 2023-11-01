@@ -24,11 +24,11 @@ struct nglMesh;
 struct nglVertexDef;
 struct mash_info_struct;
 
-extern bool *nglGetDebugFlagPtr(const char *Flag);
+extern uint8_t *nglGetDebugFlagPtr(const char *Flag);
 
-extern bool nglGetDebugFlag(const char *Flag);
+extern uint8_t nglGetDebugFlag(const char *Flag);
 
-extern void nglSetDebugFlag(const char *Flag, bool Set);
+extern void nglSetDebugFlag(const char *Flag, uint8_t Set);
 
 enum nglFrameLockType {};
 
@@ -139,7 +139,7 @@ struct nglMaterialBase
     nglTexture *field_20;
     nglTexture *field_24;
     vector4d field_28;
-    int field_38;
+    float field_38;
     int field_3C;
     int field_40;
     int field_44;
@@ -169,7 +169,8 @@ struct nglMatrix {
 
 struct nglFont;
 
-struct nglStringNode {
+struct nglStringNode
+{
     std::intptr_t m_vtbl;
     int field_4;
     float field_8;
@@ -180,9 +181,11 @@ struct nglStringNode {
     float field_1C;
     float field_20;
     float field_24;
-    int field_28;
+    uint32_t m_color;
 
     nglStringNode();
+
+    void Render();
 };
 
 struct tlHashString;
@@ -277,29 +280,27 @@ struct nglPerfomanceInfo {
     int field_C;
     int field_10;
     int field_14;
-    int field_18;
-    int field_1C;
+    float m_quads_time;
+    float m_fonts_time;
     LARGE_INTEGER field_20;
     LARGE_INTEGER field_28;
     LARGE_INTEGER field_30;
     LARGE_INTEGER field_38;
     LARGE_INTEGER field_40;
-    int field_48;
-    int field_4C;
-    int field_50;
-    int field_54;
+    LARGE_INTEGER m_counterQuads;
+    LARGE_INTEGER field_50;
     float m_fps;
-    int field_5C;
-    int field_60;
+    float field_5C;
+    float field_60;
     float m_render_time;
     float m_cpu_time;
-    int field_6C;
-    int field_70;
-    int field_74;
-    int field_78;
-    int field_7C;
-    int field_80;
-    int field_84;
+    float field_6C;
+    float field_70;
+    float field_74;
+    float m_num_polys;
+    float m_num_verts;
+    float field_80;
+    float field_84;
 };
 
 struct nglMorphFile {
@@ -425,7 +426,7 @@ extern bool nglCanReleaseMorphFile(nglMorphFile *a1);
 nglMesh *nglGetMeshInFile(const tlFixedString &a1, nglMeshFile *a2);
 
 struct nglQuad {
-    struct {
+    struct Quad {
         struct {
             float field_0;
             float field_4;
@@ -436,7 +437,8 @@ struct nglQuad {
         } uv;
         uint32_t m_color;
 
-    } field_0[4];
+    };
+    Quad field_0[4];
     float field_50;
     int field_54;
     nglBlendModeType field_58;
@@ -473,6 +475,10 @@ struct nglQuadNode {
     nglQuadNode *field_4;
     nglTexture *field_8;
     nglQuad field_C;
+
+    //virtual
+    //0x00783670
+    void Render();
 };
 
 struct nglMeshNode {
@@ -492,27 +498,28 @@ struct nglMeshNode {
 };
 
 struct nglDebugStruct {
-    bool RenderSingleNode;
+    uint8_t RenderSingleNode;
     int field_4;
     int field_8;
     int field_C;
     int field_10;
     int field_14;
-    bool ShowPerfInfo;
-    bool ShowPerfBar;
-    bool ScreenShot;
-    bool DisableQuads;
-    bool field_1C[2];
-    bool DisableVSync;
-    bool DisableScratch;
-    bool DebugPrints;
-    bool DumpFrameLog;
-    bool DumpMesh;
-    bool DumpTextures;
-    bool DrawLightSpheres;
-    bool DrawMeshSpheres;
-    bool DisableDuplicateMaterialWarning;
-    bool DisableMissingTextureWarning;
+    uint8_t ShowPerfInfo;
+    uint8_t ShowPerfBar;
+    uint8_t ScreenShot;
+    uint8_t DisableQuads;
+    uint8_t DisableFonts;
+    uint8_t field_1D;
+    uint8_t DisableVSync;
+    uint8_t DisableScratch;
+    uint8_t DebugPrints;
+    uint8_t DumpFrameLog;
+    uint8_t DumpMesh;
+    uint8_t DumpTextures;
+    uint8_t DrawLightSpheres;
+    uint8_t DrawMeshSpheres;
+    uint8_t DisableDuplicateMaterialWarning;
+    uint8_t DisableMissingTextureWarning;
 };
 
 
@@ -875,11 +882,73 @@ extern Var<char[256]> nglTexturePath;
 
 extern Var<uint8_t *> nglListWorkPos;
 
+extern LARGE_INTEGER query_perf_counter();
+
+inline Var<IDirect3DPixelShader9 *> dword_9757A0 {0x009757A0};
+
+inline Var<IDirect3DPixelShader9 *> dword_975794 {0x00975794};
+
+struct nglRenderTextureState 
+{
+    static constexpr auto MAX_SIZE = 4u;
+    IDirect3DTexture9 *field_0[MAX_SIZE];
+    int field_10[MAX_SIZE];
+    int field_20[3][MAX_SIZE];
+    int field_50[MAX_SIZE];
+
+    void clear()
+    {
+        for ( auto i = 0u; i < MAX_SIZE; ++i ) {
+            this->field_0[i] = nullptr;
+            this->field_10[i] = -1;
+            this->field_20[0][i] = -1;
+            this->field_20[1][i] = -1;
+            this->field_20[2][i] = -1;
+            this->field_50[i] = -1;
+        }
+    }
+
+    void setSamplerState(
+        int stage,
+        uint8_t a3,
+        uint32_t a4);
+};
+
+inline Var<nglRenderTextureState> g_renderTextureState {0x0093BD50};
+
+inline Var<IDirect3DQuery9 *> g_occlusionQueryTest {0x00972660};
+
+inline Var<D3DPRESENT_PARAMETERS> s_d3dpresent_params{0x009720D0};
+
+extern void sub_782030();
+
+extern void sub_81E910();
+
 extern void sub_76DF40();
 
 extern void sub_57F3C0();
 
-extern void sub_76E800();
+extern void sub_81E8E0(int a1);
+
+extern double sub_77E820(Float a1);
+
+extern double sub_77E940(Float a1);
+
+extern double sub_77EA00(Float a1);
+
+extern bool sub_581C30();
+
+extern matrix4x4 sub_4150E0(const matrix4x4 &a2);
+
+extern void Reset3DDevice();
+
+extern void SetRenderTarget(nglTexture *Tex, nglTexture *a2, int a3, int a4);
+
+extern nglTexture *nglGetBackBufferTex();
+
+extern void nglSetRenderTarget(nglTexture *a1);
+
+extern Var<nglLightContext *> nglDefaultLightContext;
 
 extern nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base> *sub_507920(
     nglMaterialBase *a1, int a2, int a3, int a4, const void *a5, int a6, bool a7);

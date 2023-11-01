@@ -3,15 +3,19 @@
 #include "color32.h"
 #include "common.h"
 #include "damage_morphs.h"
+#include "femanager.h"
 #include "filespec.h"
 #include "fileusm.h"
 #include "fixedstring.h"
 #include "func_wrapper.h"
+#include "igofrontend.h"
+#include "igozoomoutmap.h"
 #include "log.h"
 #include "mash_info_struct.h"
 #include "matrix4x3.h"
 #include "memory.h"
 #include "ngl_dx_scene.h"
+#include "ngl_dx_texture.h"
 #include "ngl_font.h"
 #include "ngl_mesh.h"
 #include "ngl_params.h"
@@ -88,6 +92,8 @@ VALIDATE_SIZE(nglScratchBuffer_t, 0x58);
 
 VALIDATE_SIZE(nglLightContext, 0x70);
 
+VALIDATE_SIZE(nglRenderTextureState, 0x60);
+
 Var<char[256]> nglMeshPath{0x00972710};
 
 Var<nglTexture *> nglWhiteTex{0x00973840};
@@ -156,6 +162,22 @@ Var<nglTexture> stru_975AC0{0x00975AC0};
 
 Var<nglMesh *> nglDebugMesh_Sphere{0x00975998};
 
+struct Renderer {
+    int m_width;
+    int m_height;
+    char field_8;
+    char field_9;
+    char field_A;
+    char field_B;
+    tlFixedString field_C;
+    int field_2C;
+    char field_30;
+    float field_34;
+    float field_38;
+};
+
+static Var<Renderer> struct_972688{0x00972688};
+
 int __stdcall hookD3DXAssembleShader(const char *data,
                                      UINT data_len,
                                      const D3DXMACRO *defines,
@@ -164,7 +186,7 @@ int __stdcall hookD3DXAssembleShader(const char *data,
                                      ID3DXBuffer **shader,
                                      ID3DXBuffer **error_messages);
 
-bool *nglGetDebugFlagPtr(const char *Flag)
+uint8_t *nglGetDebugFlagPtr(const char *Flag)
 {
     if ( strcmpi(Flag, "ShowPerfInfo") == 0 ) {
         return &nglDebug().ShowPerfInfo;
@@ -229,13 +251,12 @@ bool *nglGetDebugFlagPtr(const char *Flag)
     return nullptr;
 }
 
-bool nglGetDebugFlag(const char *Flag)
+uint8_t nglGetDebugFlag(const char *Flag)
 {
     auto *Ptr = nglGetDebugFlagPtr(Flag);
 
-    auto result = false;
-    if ( Ptr != nullptr )
-    {
+    uint8_t result = 0;
+    if ( Ptr != nullptr ) {
         result = *Ptr;
     }
 
@@ -243,11 +264,10 @@ bool nglGetDebugFlag(const char *Flag)
 
 }
 
-void nglSetDebugFlag(const char *Flag, bool Set)
+void nglSetDebugFlag(const char *Flag, uint8_t Set)
 {
     auto *Ptr = nglGetDebugFlagPtr(Flag);
-    if ( Ptr != nullptr )
-    {
+    if ( Ptr != nullptr ) {
         *Ptr = Set;
     }
 
@@ -3126,24 +3146,21 @@ nglTexture *nglGetTexture(const tlFixedString &a1) {
 }
 
 void nglGetStringDimensions(
-    nglFont *Font, const char *a2, uint32_t *a3, uint32_t *a4, Float a5, Float a6)
+    nglFont *Font, const char *a2, uint32_t *Width, uint32_t *Height, Float a5, Float a6)
 {
     TRACE("nglGetStringDimensions", a2);
-    if constexpr (0)
-    {
+
+    if constexpr (0) {
         auto v37 = a6;
         auto *v6 = a2;
-        uint8_t v7 = 0;
+        char v7 = '\0';
         float v38 = 0.0;
         float v36 = 0.0;
         float v39 = 0.0;
         if (*a2) {
-            double v23;
 
-            do {
-                auto v8 = *v6;
-                int v9 = *(uint8_t *) (v6++);
-                a2 = v6;
+            while (*v6) {
+                uint8_t v9 = (*v6++);
                 switch (v9) {
                 case 1:
                     a2 = v6 + 1;
@@ -3171,20 +3188,20 @@ void nglGetStringDimensions(
                     }
                 } break;
                 case 9: {
-                    auto v21 = Font->GlyphInfo[32 - Font->Header.FirstGlyph].field_18;
+                    auto v21 = Font->GlyphInfo[32 - Font->Header.FirstGlyph].CellWidth;
                     auto v22 = v21;
                     if (v21 < 0) {
-                        v22 = v22 + 4.2949673e9;
+                        v22 += 4.2949673e9;
                     }
 
-                    v7 = 32;
-                    v23 = v22 * a5 * 4.0f;
+                    v7 = ' ';
+                    auto v23 = v22 * a5 * 4.0f;
 
-                    v36 = v23 + v36;
+                    v36 += v23;
                     break;
                 }
                 case 10: {
-                    if (v7) {
+                    if (v7 != '\0') {
                         auto v10 = Font->Header.FirstGlyph;
                         auto v11 = v7;
                         int v12;
@@ -3206,9 +3223,9 @@ void nglGetStringDimensions(
 
                         auto v17 = v11 - v10;
                         auto v18 = v14->GlyphSize[0];
-                        auto v19 = v16->field_10;
+                        auto v19 = v16->GlyphOrigin[0];
                         v6 = a2;
-                        v36 = (v19 + v18 - v13[v17].field_18) * a5 + v36;
+                        v36 += (v19 + v18 - v13[v17].CellWidth) * a5;
                     }
 
                     if (v36 > v38) {
@@ -3216,69 +3233,54 @@ void nglGetStringDimensions(
                     }
 
                     v36 = 0.0;
-                    v7 = 0;
+                    v7 = '\0';
                     auto v20 = Font->Header.CellHeight * v37;
                     v37 = a6;
                     v39 = v20 + v39;
-                } break;
-                default:
+                    break;
+                };
+                default: {
                     auto v24 = Font->Header.FirstGlyph;
                     if (v9 < v24 || v9 >= v24 + Font->Header.NumGlyphs) {
                         v9 = 32;
                     }
 
                     auto v25 = v9 - v24;
-                    auto *v26 = (char *) Font->GlyphInfo;
+                    auto *v26 = Font->GlyphInfo;
                     v25 *= 28;
-                    double v27 = *(int *) (&v26[v25 + 24]);
+                    auto v27 = (double)*(int *)((char *)&v26->GlyphOrigin[2] + v25);
                     if (v27 < 0) {
-                        v27 = v27 + 4.2949673e9;
+                        v27 += 4.2949673e9;
                     }
 
-                    v23 = v27 * a5;
-                    v7 = v8;
+                    auto v23 = v27 * a5;
+                    v7 = v9;
 
-                    v36 = v23 + v36;
+                    v36 += v23;
                     break;
                 }
+                }
 
-            } while (*v6);
+            }
 
             if (v7) {
-                auto v28 = Font->Header.FirstGlyph;
-                auto v29 = v7;
-                int v30;
-                if (v7 < v28 || (v30 = v7, v7 >= v28 + Font->Header.NumGlyphs)) {
-                    v30 = 32;
-                }
-
-                auto *v31 = Font->GlyphInfo;
-                auto *v32 = &v31[v30 - v28];
-                int v33;
-                if (v29 < v28 || (v33 = v29, v29 >= v28 + Font->Header.NumGlyphs)) {
-                    v33 = 32;
-                }
-
-                auto *v34 = &v31[v33 - v28];
-                if (v29 < v28 || v29 >= v28 + Font->Header.NumGlyphs) {
-                    v29 = 32;
-                }
-
-                int tmp = v32->GlyphSize[0] + v34->field_10 - v31[v29 - v28].field_18;
-                v36 = (double) tmp * a5 + v36;
+                auto v9 = Font->GetGlyphInfo(v7);
+                auto v10 = Font->GetGlyphInfo(v7)->GlyphOrigin[0] + v9->GlyphSize[0];
+                auto v11 = Font->GetFontCellWidth(v7);
+                v36 += (v10 - v11) * a5;
             }
         }
 
-        if (a3 != nullptr) {
-            *a3 = (v36 <= v38 ? v38 : v36);
+        if (Width != nullptr) {
+            *Width = (v36 <= v38 ? v38 : v36);
         }
 
-        if (a4 != nullptr) {
-            *a4 = Font->Header.CellHeight * v37 + v39;
+        if (Height != nullptr) {
+            *Height = Font->Header.CellHeight * v37 + v39;
         }
 
     } else {
-        CDECL_CALL(0x007798E0, Font, a2, a3, a4, a5, a6);
+        CDECL_CALL(0x007798E0, Font, a2, Width, Height, a5, a6);
     }
 }
 
@@ -3308,14 +3310,14 @@ nglMesh *nglCreateMeshClone(nglMesh *a1) {
         return nullptr;
     }
 
-    auto *newMesh = static_cast<nglMesh *>(tlMemAlloc(0x40, 8, 0x1000000u));
-    memset(newMesh, 0, sizeof(nglMesh));
+    auto *mem = static_cast<nglMesh *>(tlMemAlloc(0x40, 8, 0x1000000u));
+    auto *newMesh = new (mem) nglMesh {};
     newMesh->Flags = a1->Flags;
     newMesh->NSections = a1->NSections;
     newMesh->Sections = static_cast<decltype(newMesh->Sections)>(
         tlMemAlloc(8 * newMesh->NSections, 8, 0x1000000u));
 
-    if (newMesh->NSections) {
+    if (newMesh->NSections != 0) {
         for (auto i = 0u; i < newMesh->NSections; ++i) {
             newMesh->Sections[i].field_0 = 0;
             newMesh->Sections[i].Section = a1->Sections[i].Section;
@@ -3326,7 +3328,7 @@ nglMesh *nglCreateMeshClone(nglMesh *a1) {
     if (newMesh->NBones != 0) {
         newMesh->Bones = static_cast<decltype(newMesh->Bones)>(
             tlMemAlloc(newMesh->NBones << 6, 64, 0x1000000u));
-        memcpy(newMesh->Bones, a1->Bones, newMesh->NBones << 6);
+        std::copy(a1->Bones, a1->Bones + (newMesh->NBones << 6), newMesh->Bones);
     } else {
         newMesh->Bones = nullptr;
     }
@@ -4136,6 +4138,141 @@ void nglListAddCustomNode(void (*a1)(unsigned int *&, void *), void *a2, const n
     CDECL_CALL(0x0076C3A0, a1, a2, a3);
 }
 
+void nglRenderQuad(nglQuad *a2)
+{
+    if (nglSyncDebug().DisableQuads) {
+        return;
+    }
+
+    auto perf_counter = query_perf_counter();
+
+    if ( g_renderState().m_cullingMode != D3DCULL_NONE ) {
+        g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_CULLMODE, 1);
+        g_renderState().m_cullingMode = D3DCULL_NONE;
+    }
+
+    if ( g_renderState().field_78 ) {
+        g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_ZENABLE, 0);
+        g_renderState().field_78 = 0;
+    }
+
+    g_renderState().setBlending(a2->field_58.field_0, a2->field_5C, 128);
+
+    if ( EnableShader() ) {
+        SetVertexDeclarationAndShader(&stru_975780());
+    } else {
+        g_Direct3DDevice()->lpVtbl->SetVertexDeclaration(g_Direct3DDevice(), dword_9738E0()[28]);
+        g_Direct3DDevice()->lpVtbl->SetTransform(
+            g_Direct3DDevice(),
+            (D3DTRANSFORMSTATETYPE)256,
+            (const D3DMATRIX *)nglCurScene()->field_24C);
+    }
+    
+    if ( struct_972688().field_30 && (nglCurScene()->field_334->field_34 & 4) != 0 ) {
+        a2->field_0[0].pos.field_0 = struct_972688().field_34 * a2->field_0[0].pos.field_0;
+        a2->field_0[0].pos.field_4 = struct_972688().field_38 * a2->field_0[0].pos.field_4;
+        a2->field_0[1].pos.field_0 = struct_972688().field_34 * a2->field_0[1].pos.field_0;
+        a2->field_0[1].pos.field_4 = struct_972688().field_38 * a2->field_0[1].pos.field_4;
+        a2->field_0[2].pos.field_0 = struct_972688().field_34 * a2->field_0[2].pos.field_0;
+        a2->field_0[2].pos.field_4 = struct_972688().field_38 * a2->field_0[2].pos.field_4;
+        a2->field_0[3].pos.field_0 = struct_972688().field_34 * a2->field_0[3].pos.field_0;
+        a2->field_0[3].pos.field_4 = struct_972688().field_38 * a2->field_0[3].pos.field_4;
+    }
+
+    auto m_tex = a2->m_tex;
+    if ( m_tex != nullptr ) {
+        SetSamplerState(0, D3DSAMP_ADDRESSU, (a2->field_54 & 0x40 | 0x20u) >> 5);
+        SetSamplerState(0, D3DSAMP_ADDRESSV, (a2->field_54 & 0x80 | 0x40u) >> 6);
+
+        nglTextureAnimFrame() = nglCurScene()->field_400;
+        nglDxSetTexture(0, m_tex, a2->field_54, 3);
+
+        if ( EnableShader() ) {
+            SetPixelShader(&dword_9757A0());
+        } else {
+            SetTextureStageState(0, D3DTSS_COLOROP, 4u);
+            SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+            SetTextureStageState(0, D3DTSS_COLORARG2, 0);
+            SetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
+            SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+            SetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
+            SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+            SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+            g_renderState().setLighting(0);
+        }
+    }
+    else
+    {
+        if ( EnableShader() ) {
+            SetPixelShader(&dword_975794());
+        } else {
+            SetTextureStageState(0, D3DTSS_COLOROP, 2u);
+            SetTextureStageState(0, D3DTSS_COLORARG1, 0);
+            SetTextureStageState(0, D3DTSS_ALPHAOP, 2u);
+            SetTextureStageState(0, D3DTSS_ALPHAARG1, 0);
+            SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+            SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+            g_renderState().setLighting(0);
+        }
+
+        g_renderTextureState().field_0[0] = nullptr;
+        g_Direct3DDevice()->lpVtbl->SetTexture(g_Direct3DDevice(), 0, nullptr);
+    }
+
+    if ( g_renderState().field_88 ) {
+        g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_FOGENABLE, 0);
+        g_renderState().field_88 = 0;
+    }
+
+    auto v8 = sub_77E820(a2->field_50);
+    struct {
+        struct {
+            float x, y;
+        } pos;
+        float field_8;
+        uint32_t m_color;
+        struct {
+            float x, y;
+        } uv;
+    } v9[4] {};
+
+    auto *quads = &a2->field_0[0];
+    for ( auto &v2 : v9 ) {
+        v2.pos.x = sub_77E940(quads->pos.field_0);
+        v2.pos.y = sub_77EA00(quads->pos.field_4);
+        v2.field_8 = v8;
+        v2.m_color = quads->m_color;
+        v2.uv.x = quads->uv.field_0;
+        v2.uv.y = quads->uv.field_4;
+        ++quads;
+    }
+
+    g_Direct3DDevice()->lpVtbl->DrawPrimitiveUP(g_Direct3DDevice(), D3DPT_TRIANGLESTRIP, 2, v9, 24);
+    if ( g_distance_clipping_enabled()
+            && !sub_581C30()
+            && !g_renderState().field_88 )
+    {
+        g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_FOGENABLE, 1);
+        g_renderState().field_88 = 1;
+    }
+
+    if ( g_renderState().field_78 != 1 ) {
+        g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_ZENABLE, 1);
+        g_renderState().field_78 = 1;
+    }
+
+    nglPerfInfo().m_counterQuads.QuadPart += query_perf_counter().QuadPart - perf_counter.QuadPart;
+}
+
+void nglQuadNode::Render()
+{
+    TRACE("nglQuadNode::Render");
+
+    if ( !nglSyncDebug().DisableQuads ) {
+        nglRenderQuad(&this->field_C);
+    }
+}
+
 void nglListAddQuad(nglQuad *Quad) {
     if constexpr (1) {
         if (Quad != nullptr) {
@@ -4184,12 +4321,57 @@ void sub_754640(void *a1) {
     CDECL_CALL(0x00754640, a1);
 }
 
+double sub_77E940(Float a1)
+{
+    auto v2 = a1 * nglCurScene()->field_20C;
+    return (float)(v2 + nglCurScene()->field_23C);
+}
+
+double sub_77EA00(Float a1)
+{
+    auto v2 = a1 * nglCurScene()->field_220;
+    return (float)(v2 + nglCurScene()->field_240);
+}
+
+double sub_77E820(Float a1)
+{
+    auto m_nearz = a1;
+    if ( a1 < (double)nglCurScene()->m_nearz ) {
+        m_nearz = nglCurScene()->m_nearz;
+    }
+
+    if ( m_nearz > nglCurScene()->m_farz ) {
+        m_nearz = nglCurScene()->m_farz;
+    }
+
+    auto v3 = m_nearz * nglCurScene()->field_10C[10];
+    auto v5 = m_nearz * nglCurScene()->field_10C[11];
+    auto v4 = v3 + nglCurScene()->field_10C[14];
+    auto v6 = v5 + nglCurScene()->field_10C[15];
+    auto result = v4 / v6;
+    if ( result < 0.0 ) {
+        return 0.0;
+    }
+
+    if ( result > 1.0f ) {
+        return 1.0f;
+    }
+
+    return result;
+}
+
+bool sub_581C30()
+{
+    auto *v0 = g_femanager().IGO->field_44;
+    return v0->field_5C4 || v0->field_5C3;
+}
+
 void nglListAddString(nglFont *font,
                       const char *a2,
                       Float a3,
                       Float a4,
                       Float z_value,
-                      uint32_t a6,
+                      uint32_t color,
                       Float a7,
                       Float a8) {
     //sp_log("%s %f %f", a2, float{a3}, float{a4});
@@ -4209,7 +4391,7 @@ void nglListAddString(nglFont *font,
                 auto v9 = strlen(a2) + 1;
                 v8->field_C = static_cast<char *>(nglListAlloc(v9, 16));
                 memcpy(v8->field_C, a2, v9);
-                v8->field_28 = a6;
+                v8->m_color = color;
                 v8->field_14 = a3;
                 v8->field_18 = a4;
                 v8->field_10 = font;
@@ -4221,7 +4403,7 @@ void nglListAddString(nglFont *font,
             }
         }
     } else {
-        CDECL_CALL(0x00779C40, font, a2, a3, a4, z_value, a6, a7, a8);
+        CDECL_CALL(0x00779C40, font, a2, a3, a4, z_value, color, a7, a8);
     }
 }
 
@@ -4382,10 +4564,6 @@ void nglInitQuad(nglQuad *a1) {
     a1->field_58 = nglBlendModeType{2};
 }
 
-void sub_771970(nglTexture *tex, int a2, int a3, int a4) {
-    CDECL_CALL(0x00771970, tex, a2, a3, a4);
-}
-
 void sub_781980(int width, int height) {
     CDECL_CALL(0x00781980, width, height);
 }
@@ -4431,7 +4609,7 @@ void create_front_and_back_buffer_tex() {
     struct {
         int m_width;
         int m_height;
-    } *v1 = CAST(v1, 0x00972688);
+    } *v1 = bit_cast<decltype(v1)>(0x00972688);
 
     nglFrontBufferTex() = nglCreateTexture(4609u, v1->m_width, v1->m_height, 0, 1);
     nglFrontBufferTex()->field_60 = tlFixedString{"nglFrontBuffer"};
@@ -4516,8 +4694,6 @@ void sub_77EB40() {
 
 static Var<BOOL> dword_93AE80 = {0x0093AE80};
 
-static Var<D3DPRESENT_PARAMETERS> s_d3dpresent_params{0x009720D0};
-
 LSTATUS sub_77EBD0() {
     return {};
 }
@@ -4528,7 +4704,7 @@ void ToggleFullScreen(BOOL isFullscreen)
 
     if (!byte_971F9C() && s_d3dpresent_params().Windowed != isFullscreen) {
         s_d3dpresent_params().Windowed = isFullscreen;
-        sub_76E800();
+        Reset3DDevice();
         if (isFullscreen) {
             SetWindowPlacement(g_hWnd(), &wndpl());
         } else {
@@ -4720,9 +4896,7 @@ void create_renderer(HWND hWnd) {
                          Rect.bottom - Rect.top + 1,
                          0);
         }
-    }
-    else
-    {
+    } else {
         int v3 = GetSystemMetrics(SM_CYSCREEN);
         int v4 = GetSystemMetrics(SM_CXSCREEN);
         SetWindowPos(g_hWnd(), nullptr, 0, 0, v4, v3, 0);
@@ -4853,10 +5027,10 @@ void nglSetClearFlags(unsigned int a1) {
 void nglDebugInit() {
     TRACE("nglDebugInit");
 
-    std::memset(&nglDebug(), 0, sizeof(nglDebug()));
-    std::memcpy(&nglSyncDebug(), &nglDebug(), sizeof(nglSyncDebug()));
-    std::memset(&nglPerfInfo(), 0, sizeof(nglPerfInfo()));
-    std::memset(&nglSyncPerfInfo(), 0, sizeof(nglSyncPerfInfo()));
+    nglDebug() = {};
+    nglSyncDebug() = nglDebug();
+    nglPerfInfo() = {};
+    nglSyncPerfInfo() = {};
     nglDebug().field_4 = 65280;
 }
 
@@ -4998,6 +5172,12 @@ void nglDestroyDebugMeshes() {
 #endif
 }
 
+void nglSetRenderTarget(nglTexture *a1)
+{
+    nglCurScene()->field_334 = a1;
+    nglCurScene()->field_8 = 6;
+}
+
 nglTexture *nglGetBackBufferTex() {
     return nglBackBufferTex();
 }
@@ -5023,22 +5203,6 @@ void sub_81E8E0(int Length) {
 }
 
 #include "float.h"
-
-struct Renderer {
-    int m_width;
-    int m_height;
-    char field_8;
-    char field_9;
-    char field_A;
-    char field_B;
-    tlFixedString field_C;
-    int field_2C;
-    char field_30;
-    float field_34;
-    float field_38;
-};
-
-static Var<Renderer> struct_972688{0x00972688};
 
 void nglInit(HWND hWnd) {
     TRACE("nglInit");
@@ -5153,7 +5317,7 @@ void nglInit(HWND hWnd) {
         if (s_d3dpresent_params().BackBufferCount != static_cast<uint32_t>(-1)) {
             for (auto v7 = 0u; v7 < s_d3dpresent_params().BackBufferCount + 1; ++v7) {
                 auto *v8 = nglGetBackBufferTex();
-                sub_771970(v8, 0, 0, 6);
+                SetRenderTarget(v8, nullptr, 0, 6);
                 g_Direct3DDevice()->lpVtbl->Clear(g_Direct3DDevice(), 0, nullptr, 7u, 0, 1.0, 0);
                 g_Direct3DDevice()->lpVtbl->Present(g_Direct3DDevice(),
                                                     nullptr,
@@ -5255,8 +5419,36 @@ void sub_76DF40() {
     nglDestroyDebugMeshes();
 }
 
+void sub_782030()
+{
+    CDECL_CALL(0x00782030);
+}
+
+void sub_81E910()
+{
+    CDECL_CALL(0x0081E910);
+}
+
+void nglRenderTextureState::setSamplerState(
+        int stage,
+        uint8_t a3,
+        uint32_t a4)
+{
+    THISCALL(0x00401E00, this, stage, a3, a4);
+}
+
 void ngl_patch()
 {
+    {
+        FUNC_ADDRESS(address, &nglQuadNode::Render);
+        set_vfunc(0x008B9FB4, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &nglStringNode::Render);
+        set_vfunc(0x0088EBB4, address);
+    }
+
     SET_JUMP(0x0076E750, nglSetFrameLock);
 
     SET_JUMP(0x00773350, nglCanReleaseTexture);
@@ -5266,7 +5458,6 @@ void ngl_patch()
     SET_JUMP(0x0076EA10, nglListSend);
 
     SET_JUMP(0x0076E980, nglFlip);
-
 
     REDIRECT(0x0077392C, nglInitWhiteTexture);
 
@@ -5330,6 +5521,8 @@ void ngl_patch()
         REDIRECT(0x0076F9B0, address);
         REDIRECT(0x0076F9E9, address);
     }
+
+    us_outline_patch();
 
     return;
 
@@ -5437,8 +5630,6 @@ void ngl_patch()
     us_street_patch();
 
     us_person_patch();
-
-    us_outline_patch();
 
     us_pcuv_patch();
 #endif

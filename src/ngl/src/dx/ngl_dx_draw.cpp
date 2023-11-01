@@ -1,5 +1,6 @@
 #include "ngl_dx_draw.h"
 
+#include "func_wrapper.h"
 #include <ngl.h>
 #include <variables.h>
 
@@ -112,5 +113,10 @@ HRESULT SetStreamSourceAndDrawPrimitive(nglMeshSection *MeshSection) {
     }
 
     return result;
+}
+
+void SetRenderTarget(nglTexture *Tex, nglTexture *a2, int a3, int a4)
+{
+    CDECL_CALL(0x00771970, Tex, a2, a3, a4);
 }
 

@@ -50,17 +50,11 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
         auto *v10 = v5->DXTexture;
         v5->field_38 = nglFrame();
 
-        struct {
-            IDirect3DTexture9 *field_0[1];
-        } tmp;
-
-        static Var<decltype(tmp)> stru_93BD50{0x0093BD50};
-
-        if (stru_93BD50().field_0[a1] != v10) {
+        if (g_renderTextureState().field_0[a1] != v10) {
             g_Direct3DDevice()->lpVtbl->SetTexture(g_Direct3DDevice(),
                                                    a1,
                                                    (IDirect3DBaseTexture9 *) v10);
-            stru_93BD50().field_0[a1] = v5->DXTexture;
+            g_renderTextureState().field_0[a1] = v5->DXTexture;
         }
 
         if (palette != nullptr) {
@@ -109,7 +103,7 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
             sub_782AC0(v9, palette);
         }
 
-        THISCALL(0x00401E00, &stru_93BD50(), v9, a3, a4);
+        g_renderTextureState().setSamplerState(v9, a3, a4);
     } else {
         CDECL_CALL(0x007754B0, a1, Tex, a3, a4);
     }

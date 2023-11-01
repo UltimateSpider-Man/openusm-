@@ -14,8 +14,7 @@ Var<nglFont *> nglSysFont = {0x00975208};
 int nglGetTokenU32(char *&a1, const char *Token, uint32_t Base)
 {
     auto TokenLength = strlen(Token);
-    while ( *a1 != '\0' )
-    {
+    while ( *a1 != '\0' ) {
         int i;
         for ( i = 0; i < TokenLength && (a1)[i] && (a1)[i] == Token[i]; ++i )
         {
@@ -85,17 +84,17 @@ void nglParseFDF(char *a3, nglFont *font)
         assert(n == i + font->Header.FirstGlyph && "Character out of sequence in FDF file.\n");
 
         auto *v8 = &font->GlyphInfo[(n - font->Header.FirstGlyph)];
-        v8->field_0 = nglGetTokenU32(a3, "x", 10);
-        v8->field_4 = nglGetTokenU32(a3, "y", 10);
-        v8->field_18 = nglGetTokenU32(a3, "w", 10);
-        v8->field_10 = nglGetTokenU32(a3, "gx", 10);
-        v8->field_14 = nglGetTokenU32(a3, "gy", 10);
+        v8->TexOfs[0] = nglGetTokenU32(a3, "x", 10);
+        v8->TexOfs[1] = nglGetTokenU32(a3, "y", 10);
+        v8->CellWidth = nglGetTokenU32(a3, "w", 10);
+        v8->GlyphOrigin[0] = nglGetTokenU32(a3, "gx", 10);
+        v8->GlyphOrigin[1] = nglGetTokenU32(a3, "gy", 10);
         v8->GlyphSize[0] = nglGetTokenU32(a3, "gw", 10);
         v8->GlyphSize[1] = nglGetTokenU32(a3, "gh", 10);
 
         auto &v11 = font->field_4C[i];
-        v11.field_0 = (v8->field_0 - 1) * width;
-        v11.field_4 = (v8->field_4 - 1) * height;
+        v11.field_0 = (v8->TexOfs[0] - 1) * width;
+        v11.field_4 = (v8->TexOfs[1] - 1) * height;
         v11.field_8 = v8->GlyphSize[0] * width + v11.field_0;
         v11.field_C = v8->GlyphSize[1] * height + v11.field_4;
     }
@@ -114,4 +113,34 @@ nglGlyphInfo *nglFont::GetGlyphInfo(unsigned char Character) {
            "Trying to render a glyph that has 0 width.");
 
     return &this->GlyphInfo[Character - this->Header.FirstGlyph];
+}
+
+void nglFont::sub_77E2F0(
+        uint8_t a2,
+        float *a3,
+        float *a4,
+        float *a5,
+        float *a6,
+        Float a7,
+        Float a8)
+{
+    auto FirstGlyph = this->Header.FirstGlyph;
+    auto v10 = a2;
+    if ( a2 < FirstGlyph || a2 >= FirstGlyph + this->Header.NumGlyphs ) {
+        v10 = 32;
+    }
+
+    nglGlyphInfo v12 = this->GlyphInfo[v10 - FirstGlyph];
+    a3[0] = (double)v12.GlyphOrigin[0] * a7;
+    a3[1] = (double)v12.GlyphOrigin[1] * a8;
+
+    a4[0] = (double)v12.GlyphSize[0] * a7;
+    a4[1] = (double)v12.GlyphSize[1] * a8;
+
+    auto v11 = (uint8_t)(a2 - static_cast<uint8_t>(this->Header.FirstGlyph));
+    a5[0] = this->field_4C[v11].field_0;
+    a5[1] = this->field_4C[v11].field_4;
+
+    a6[0] = this->field_4C[v11].field_8 - this->field_4C[v11].field_0;
+    a6[1] = this->field_4C[v11].field_C - this->field_4C[v11].field_4;
 }

@@ -7,6 +7,7 @@
 #include "ngl_dx_scene.h"
 #include "ngl_dx_core.h"
 #include "ngl_params.h"
+#include "trace.h"
 #include "variables.h"
 
 #include <cassert>
@@ -14,7 +15,8 @@
 #include <windows.h>
 
 VALIDATE_SIZE(nglScene, 1088u);
-VALIDATE_OFFSET(nglScene, field_2AC, 0x2AC);
+VALIDATE_OFFSET(nglScene, field_1CC, 0x1CC);
+VALIDATE_OFFSET(nglScene, field_24C, 0x24C);
 
 Var<nglScene *> nglCurScene{0x00971F00};
 Var<nglScene *> nglRootScene{0x00971F04};
@@ -54,8 +56,68 @@ void nglSetSceneCallBack(nglSceneCallbackType a1, void (*Fn)(unsigned int *&, vo
     }
 }
 
-void nglSetDefaultSceneParams() {
-    CDECL_CALL(0x0076C400);
+void sub_77C9B0(int a1)
+{
+    nglCurScene()->field_4 = a1;
+}
+
+void nglSetLightContext(nglLightContext *a1)
+{
+    nglCurScene()->field_350 = a1;
+}
+
+void nglSetDefaultSceneParams()
+{
+    TRACE("nglSetDefaultSceneParams");
+    
+    if constexpr (1) {
+        auto *BackBufferTex = nglGetBackBufferTex();
+        nglSetRenderTarget(BackBufferTex);
+        auto v4 = (float)(nglGetScreenHeight() - 1);
+        auto v6 = nglGetScreenWidth() - 1;
+        auto v3 = (float)v6;
+        nglSetViewport(0.0, 0.0, v3, v4);
+        nglCurScene()->field_3E8 = 1.3333334;
+        nglCurScene()->field_3E4 = 1;
+        if ( g_distance_clipping_enabled() ) {
+            auto v1 = (double)g_distance_clipping() * LARGE_EPSILON * (2000.0 - 100.0) + 100.0;
+            if ( v1 < 100.0 ) {
+                v1 = 100.0;
+            }
+
+            nglSetPerspectiveMatrix(50.0, 0.1, v1);
+        } else {
+            nglSetPerspectiveMatrix(50.0, 0.1, 10000.0);
+        }
+
+        char v5;
+        math::MatClass<4,3> a2;
+        a2.sub_415740(&v5);
+        
+        static Var<vector4d> stru_8B7964 {0x008B7964};
+        a2[3] = stru_8B7964();
+        nglCurScene()->field_14C = sub_4150E0(a2);
+        nglCurScene()->field_3E4 = 1;
+        nglCurScene()->field_39C = 6;
+        float *v2 = nglCurScene()->field_3A4;
+        nglCurScene()->field_3A4[0] = 0.0;
+        v2[1] = 0.0;
+        v2[2] = 0.0;
+        v2[3] = 0.0;
+        nglCurScene()->field_3A0 = 1.0;
+        sub_77C9B0(0);
+        nglCurScene()->field_3B4 = 15;
+        nglCurScene()->field_3B8 = 1;
+        nglCurScene()->field_3B9 = 1;
+        nglCurScene()->field_3DC = 0;
+        nglCurScene()->field_3E0 = 0;
+        nglCurScene()->field_3F8 = 0.0;
+        nglSetLightContext(nglDefaultLightContext());
+        nglCurScene()->field_408 = 0;
+        nglCalculateMatrices(1);
+    } else {
+        CDECL_CALL(0x0076C400);
+    }
 }
 
 void nglSetupScene(nglScene *a1, nglSceneParamType a2)
@@ -117,11 +179,7 @@ void nglSetupScene(nglScene *a1, nglSceneParamType a2)
 
 void nglSceneDumpStart()
 {
-    //if (nglSyncDebug()[0x12])
-    static auto cond = true;
-
-    if (cond) {
-        cond = !cond;
+    if (nglSyncDebug().DumpMesh) {
 
         auto nglHostOpen = [](const char *a1) -> HANDLE {
             CHAR FileName[512];

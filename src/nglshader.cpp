@@ -111,3 +111,8 @@ void nglShaderNode::Render() {
 void nglShaderNode::sub_413AF0() {
     THISCALL(0x00413AF0, this);
 }
+
+
+float *sub_413F80(float *a1, int a2, uint32_t *a3, uint32_t a4) {
+    return (float *) CDECL_CALL(0x00413F80, a1, a2, a3, a4);
+}

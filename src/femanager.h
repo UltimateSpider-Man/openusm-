@@ -60,8 +60,6 @@ struct FEManager {
     static const char *font_name_array[5];
 };
 
-extern bool sub_581C30();
-
 //0x006299B0
 extern void RenderLoadMeter();
 

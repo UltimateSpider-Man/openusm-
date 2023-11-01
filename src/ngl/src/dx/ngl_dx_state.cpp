@@ -13,6 +13,11 @@ void RenderState_t::Init() {
     THISCALL(0x00774E40, this);
 }
 
+void RenderState_t::Clear()
+{
+    THISCALL(0x00774610, this);
+}
+
 void RenderState_t::setStencilCheckEnabled(bool enabled) {
     if (g_renderState().m_stencilCheckEnabled != enabled) {
         g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_STENCILENABLE, enabled);
