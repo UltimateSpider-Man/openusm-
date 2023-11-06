@@ -6,6 +6,7 @@
 #include "ngl_scene.h"
 #include "nglshader.h"
 #include "oldmath_po.h"
+#include "trace.h"
 #include "vtbl.h"
 
 #include <cmath>
@@ -14,7 +15,10 @@
 void FastListAddMesh(nglMesh *Mesh,
                      const math::MatClass<4, 3> &LocalToWorld,
                      nglMeshParams *MeshParams,
-                     nglParamSet<nglShaderParamSet_Pool> *ShaderParams) {
+                     nglParamSet<nglShaderParamSet_Pool> *ShaderParams)
+{
+    TRACE("FastListAddMesh");
+
     if constexpr (1) {
         assert(Mesh != nullptr && "NULL mesh passed to FastListAddMesh.\n");
 
@@ -47,10 +51,10 @@ void FastListAddMesh(nglMesh *Mesh,
             }
 
             math::VecClass<3, 1> a2a;
-            a2a.field_0[0] = v5[0];
-            a2a.field_0[1] = v5[1];
-            a2a.field_0[2] = v5[2];
-            a2a.field_0[3] = v5[3];
+            a2a[0] = v5[0];
+            a2a[1] = v5[1];
+            a2a[2] = v5[2];
+            a2a[3] = v5[3];
 
             v18 = sub_414360(a2a, nglCurScene()->field_14C);
             auto v9 = Mesh->NLODs - 1;
@@ -80,8 +84,7 @@ void FastListAddMesh(nglMesh *Mesh,
         a2a.m_rel_po = CAST(a2a.m_rel_po, &LocalToWorld);
         a2a.m_abs_po = CAST(a2a.m_abs_po, nglCurScene()->field_18C);
 
-        matrix4x4 v19 = sub_507130(&a2a);
-        v12->field_40 = v19;
+        v12->field_40 = sub_507130(&a2a);
 
         v12->field_84 = 0;
         v12->field_80 = 0;
@@ -101,7 +104,10 @@ void FastListAddMesh(nglMesh *Mesh,
 
         assert(ShaderParams != nullptr && "NULL ShaderParams in FastListAddMesh.\n");
 
-        v12->field_8C = *ShaderParams;
+        sp_log("Debug");
+        auto tmp = *ShaderParams;
+        sp_log("Debug");
+        v12->field_8C = tmp;
 
         for (auto i = 0u; i < Mesh->NSections; ++i) {
             auto *MeshSection = Mesh->Sections[i].Section;

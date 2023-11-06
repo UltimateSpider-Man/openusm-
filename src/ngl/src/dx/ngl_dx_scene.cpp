@@ -32,23 +32,18 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3) {
             }
         };
 
-        sub_FE1420(list, (nglShaderNode *) node);
+        sub_FE1420(list, node);
 
         sub_77DFB0(list, list + 8 * count, (8 * count) >> 3, a3);
 
-        auto sub_FE1480 = [](void *a1, nglRenderNode **a2, int a3) -> void {
-            struct {
-                nglShaderNode *field_0;
-                int field_4;
-            } *v1 = static_cast<decltype(v1)>(a1);
-
-            auto *v4 = &v1[a3 - 1];
+        auto sub_FE1480 = [](auto *a1, nglRenderNode **a2, int count) -> void {
+            auto *last = a1 + (count - 1);
             nglShaderNode *v3 = nullptr;
-            while (a3) {
-                v4->field_0->field_4 = v3;
-                v3 = v4->field_0;
-                --v4;
-                --a3;
+            while (count != 0) {
+                last->field_0->field_4 = v3;
+                v3 = last->field_0;
+                --last;
+                --count;
             }
 
             *a2 = v3;
@@ -61,13 +56,7 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3) {
         auto *v9 = node;
 
         for (; v9 != nullptr; v9 = v9->field_4) {
-            struct Vtbl {
-                void __thiscall (*Render)(void *);
-            };
-
-            void *vtbl = get_vtbl(v9);
-
-            static_cast<Vtbl *>(vtbl)->Render(v9);
+            v9->Render();
 
             nglPrevNode() = v9;
         }

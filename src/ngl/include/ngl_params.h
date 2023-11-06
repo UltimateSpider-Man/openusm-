@@ -93,7 +93,7 @@ public:
     }
 
     void operator=(const nglParamSet &params) {
-        memcpy(this->field_0, params.field_0, 4 * T::NextID() + 8);
+        this->field_0 = params.field_0;
     }
 
     template<typename Param>

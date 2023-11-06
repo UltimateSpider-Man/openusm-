@@ -7,6 +7,7 @@
 #include "ngl.h"
 #include "ngl_scene.h"
 #include "nglshader.h"
+#include "oldmath_po.h"
 #include "trace.h"
 #include "utility.h"
 #include "vector3d.h"
@@ -182,11 +183,11 @@ matrix4x4 sub_507130(void *arg4) {
     return result;
 }
 
-bool sub_755520(Float a1, Float a2, Float a3, Float, Float a5) {
+bool sub_755520(math::VecClass<3, 1> a1, Float radius) {
     for (auto i = 0u; i < 6u; ++i) {
         auto &v = nglCurScene()->field_2AC[i];
 
-        if (a3 * v[2] + a1 * v[0] + a2 * v[1] - v[3] + a5 < 0.0f) {
+        if ( a1[0] * v[0] + a1[1] * v[1] + a1[2] * v[2] - v[3] + radius < 0.0f ) {
             return false;
         }
     }
@@ -194,16 +195,16 @@ bool sub_755520(Float a1, Float a2, Float a3, Float, Float a5) {
     return true;
 }
 
-int sub_76F3E0(Float a1, Float a2, Float a3, Float a4, Float a5, char a6) {
+int sub_76F3E0(math::VecClass<3, 1> a1, Float radius, char a6) {
     if constexpr (1) {
-        if ((a6 & 0x40) != 0 || sub_755520(a1, a2, a3, a4, a5)) {
+        if ((a6 & 0x40) != 0 || sub_755520(a1, radius)) {
             return 0;
         }
 
         return -1;
 
     } else {
-        return CDECL_CALL(0x0076F3E0, a1, a2, a3, a4, a5, a6);
+        return CDECL_CALL(0x0076F3E0, a1, radius, a6);
     }
 }
 
@@ -233,11 +234,11 @@ void nglListAddMesh(nglMesh *Mesh,
             int v20 = (a3 != nullptr ? a3->Flags : 0);
 
             auto *v5 = &a2;
-            auto a5 = Mesh->SphereRadius;
+            auto Radius = Mesh->SphereRadius;
             float v15 = 1.0;
             if ((v20 & NGLP_SCALE) != 0) {
                 v5 = nglListAddMesh_GetScaledMatrix(a2, a3, &v15);
-                a5 *= v15;
+                Radius *= v15;
             }
 
             math::VecClass<3, 1> v18 = sub_414360(Mesh->field_20, *v5);
@@ -258,10 +259,7 @@ void nglListAddMesh(nglMesh *Mesh,
             meshNode->field_88 = Mesh;
             meshNode->field_0 = {};
 
-            struct {
-                const po *m_rel_po;
-                po *m_abs_po;
-            } v14 = {(const po *) v6, (po *) &nglCurScene()->field_18C};
+            ptr_to_po v14 = {(const po *) v6, (po *) &nglCurScene()->field_18C};
 
             auto v8 = sub_507130(&v14);
             auto v9 = v15;
@@ -291,12 +289,14 @@ void nglListAddMesh(nglMesh *Mesh,
                 meshNode->field_8C = {0};
             }
 
-            if (sub_76F3E0(v18.field_0[0], v18.field_0[1], v18.field_0[2], v18.field_0[3], a5, v20) ==
-                -1) {
+            if (sub_76F3E0(v18,
+                        Radius,
+                        v20) == -1)
+            {
                 nglListWorkPos() = v17;
-            } else {
-                for (auto i = 0u; i < Mesh->NSections; ++i)
-                {
+            } else
+            {
+                for (auto i = 0u; i < Mesh->NSections; ++i) {
                     auto *MeshSection = Mesh->Sections[i].Section;
                     nglPerfInfo().m_num_verts += MeshSection->NVertices;
 

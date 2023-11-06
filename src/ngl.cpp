@@ -292,9 +292,52 @@ nglMesh *nglGetFirstMeshInFile(const tlFixedString &a1) {
     }
 }
 
-math::VecClass<3, 1> sub_414360(const math::VecClass<3, 1> &a2, const math::MatClass<4, 3> &a3) {
+math::VecClass<3, 1> sub_413E90(
+        const math::VecClass<3, 0> &arg4,
+        const float &arg8,
+        const math::VecClass<3, 0> &a2,
+        const math::VecClass<3, 0> &a3,
+        const math::VecClass<3, 0> &a6,
+        const float *a7,
+        const math::VecClass<3, 0> &a8)
+{
+    math::VecClass<3, 0> v14;
+    v14[0] = a8[0];
+    v14[1] = a8[1];
+    v14[2] = a8[2];
+    v14[3] = a8[3];
+    v14.sub_413530(arg4, arg8);
+    v14.sub_411A50(a2, a3);
+    auto v11 = a6[0] * a7[2];
+    auto v12 = a6[1] * a7[2];
+    auto v15 = a6[2] * a7[2];
+    auto v16 = a6[3] * a7[2];
+    
     math::VecClass<3, 1> result;
-    CDECL_CALL(0x00414360, &result, &a2, a3);
+    result[0] = v14[0] + v11;
+    result[1] = v14[1] + v12;
+    result[2] = v14[2] + v15;
+    result[3] = v14[3] + v16;
+    return result;
+}
+
+math::VecClass<3, 1> sub_414360(const math::VecClass<3, 1> &a2, const math::MatClass<4, 3> &a3) {
+
+    math::VecClass<3, 1> result;
+    if constexpr (1) {
+        math::VecClass<3, 0> a2a, a3a, a4, a5;
+        a3.sub_4134B0(a2a, a3a, a4, a5);
+        result = sub_413E90(
+                a2a,
+                a2.field_0[0],
+                a3a,
+                *(const math::VecClass<3, 0> *)&a2,
+                a4,
+                a2.field_0,
+                a5);
+    } else {
+        CDECL_CALL(0x00414360, &result, &a2, a3);
+    }
 
     return result;
 }
@@ -5439,6 +5482,8 @@ void nglRenderTextureState::setSamplerState(
 
 void ngl_patch()
 {
+    SET_JUMP(0x00507690, FastListAddMesh);
+
     SET_JUMP(0x0076C970, nglListBeginScene);
 
     //SET_JUMP(0x0076C400, nglSetDefaultSceneParams);
@@ -5539,8 +5584,6 @@ void ngl_patch()
     SET_JUMP(0x0076D680, create_renderer);
 
 #if 0
-
-    REDIRECT(0x004E35A6, FastListAddMesh);
 
     REDIRECT(0x0076E0CC, nglSceneDumpStart);
 
