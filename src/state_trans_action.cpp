@@ -8,8 +8,8 @@
 namespace ai {
 VALIDATE_SIZE(state_trans_action, 0x10);
 
-state_trans_action::state_trans_action(int action, string_hash a2, int message, param_block *a4) {
-    this->the_action = action;
+state_trans_action::state_trans_action(int action, string_hash a2, state_trans_messages message, param_block *a4) {
+    this->the_action = static_cast<decltype(this->the_action)>(action);
     this->field_4 = a2;
     this->the_message = message;
     this->field_C = a4;

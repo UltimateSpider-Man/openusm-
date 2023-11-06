@@ -1143,7 +1143,7 @@ void setup_hero_capsule(actor *act) {
         if (ctrl != nullptr && ctrl->field_420 == 2) {
             capsule_alter->set_avoid_floor(false);
             capsule_alter->set_avg_radius(0.64999998);
-            capsule_alter->set_mode(capsule_alter_sys::eAlterMode{3});
+            capsule_alter->set_mode((capsule_alter_sys::eAlterMode) 3);
 
             auto *v4 = cngl->get_bone(bip01_l_calf(), true);
             capsule_alter->set_base_avg_node(0, v4, 0.5);

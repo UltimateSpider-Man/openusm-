@@ -1076,7 +1076,7 @@ void USPersonNode::Render() {
 
         g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(),
                                                              0,
-                                                             this->field_C->field_40,
+                                                             &this->field_C->field_40[0][0],
                                                              4);
         nglSetupVShaderBonesDX(11, this->field_C, this->field_10);
 

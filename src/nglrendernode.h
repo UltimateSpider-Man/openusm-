@@ -3,11 +3,12 @@
 #include <cstdint>
 
 struct nglSortInfo;
+struct nglTexture;
 
 struct nglRenderNode {
     std::intptr_t m_vtbl;
     nglRenderNode *field_4;
-    int field_8;
+    nglTexture *field_8;
 
     /* virtual */ void Render() /* = 0 */;
 

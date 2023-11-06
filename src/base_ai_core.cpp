@@ -134,6 +134,8 @@ void ai_core::frame_advance_all_core_ais(Float a2) {
 }
 
 void ai_core::frame_advance(Float a2) {
+    TRACE("ai_core::frame_advance");
+
     THISCALL(0x006B48A0, this, a2);
 }
 
@@ -236,12 +238,44 @@ void ai_core::spawn_state_machine_internal(ai_state_machine *a2,
     }
 }
 
+void ai_core::advance_info_nodes(Float a2)
+{
+    TRACE("ai::ai_core::advance_info_nodes");
+
+    THISCALL(0x0068FCA0, this, a2);
+}
+
+void ai_core::advance_machine_recursive(ai_state_machine *a1, Float a2, bool a3)
+{
+    TRACE("ai::ai_core::advance_machine_recursive");
+
+    THISCALL(0x006AF100, this, a1, a2, a3);
+}
+
 } // namespace ai
 
 void ai_core_patch() {
     {
         FUNC_ADDRESS(address, &ai::ai_core::get_info_node);
         REDIRECT(0x006A34BA, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::ai_core::advance_machine_recursive);
+        REDIRECT(0x006AF13E, address);
+        REDIRECT(0x006B4964, address);
+        REDIRECT(0x006B4979, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::ai_core::advance_info_nodes);
+        REDIRECT(0x006B4920, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::ai_core::frame_advance);
+        REDIRECT(0x006B4B1A, address);
+        REDIRECT(0x006B4C7A, address);
     }
 
     {

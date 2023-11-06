@@ -328,16 +328,18 @@ bool vector3d::is_colinear(vector3d a1, vector3d a4, Float epsilon) {
 
 #endif
 
-vector3d *orthogonal_projection_onto_plane(vector3d *out, const vector3d &a2, const vector3d &a3) {
+vector3d orthogonal_projection_onto_plane(const vector3d &a2, const vector3d &a3) {
     if constexpr (1) {
         auto v3 = dot(a2, a3);
 
         vector3d v6 = a2 - v3 * a3;
 
-        *out = v6;
-        return out;
+        return v6;
     } else {
-        return (vector3d *) CDECL_CALL(0x0058FFE0, out, &a2, &a3);
+        vector3d out;
+        CDECL_CALL(0x0058FFE0, &out, &a2, &a3);
+
+        return out;
     }
 }
 

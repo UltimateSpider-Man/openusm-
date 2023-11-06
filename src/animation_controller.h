@@ -14,6 +14,11 @@ namespace als {
 struct als_meta_anim_table_shared;
 }
 
+struct nalAnyPose;
+
+template<typename T>
+struct nalAnimClass;
+
 struct animation_controller {
 
     struct anim_ctrl_handle {
@@ -37,6 +42,8 @@ struct animation_controller {
 
     void get_camera_root_abs_po(po &arg0);
 
+    anim_ctrl_handle get_base_anim_handle();
+
     anim_ctrl_handle play_layer_anim(
             const string_hash &a3,
             unsigned int a4,
@@ -45,11 +52,27 @@ struct animation_controller {
             bool a7,
             als::layer_types);
 
+    anim_ctrl_handle *_play_base_layer_anim(
+        anim_ctrl_handle *,
+        const string_hash &a3,
+        Float a4,
+        uint32_t a5,
+        bool a6);
+
     anim_ctrl_handle play_base_layer_anim(
         const string_hash &a3,
         Float a4,
         uint32_t a5,
         bool a6);
+
+    //virtual
+    void play_base_layer_anim(
+        nalAnimClass<nalAnyPose> *a2,
+        Float a3,
+        Float a4,
+        bool a5,
+        bool a6,
+        void *a7);
 
     //virtual
     bool is_anim_active(float a1);

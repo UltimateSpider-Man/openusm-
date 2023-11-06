@@ -91,3 +91,5 @@ struct ai_player_controller {
     //virtual
     float get_motion_force();
 };
+
+extern void ai_player_controller_patch();

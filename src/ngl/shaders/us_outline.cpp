@@ -111,7 +111,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    this->field_C->field_40,
+                    &this->field_C->field_40[0][0],
                     4);
         }
         else
@@ -208,7 +208,10 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
 
             SetVertexDeclarationAndShader(&stru_970768());
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
-                    g_Direct3DDevice(), 0, this->field_C->field_40, 4);
+                    g_Direct3DDevice(),
+                    0,
+                    &this->field_C->field_40[0][0],
+                    4);
 
             v17.field_0[3] = v13;
             memset(&v17, 0, 12);
@@ -288,7 +291,10 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
         if ( EnableShader() ) {
             SetVertexDeclarationAndShader(&stru_970760());
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
-                    g_Direct3DDevice(), 0, this->field_C->field_40, 4);
+                    g_Direct3DDevice(),
+                    0,
+                    &this->field_C->field_40[0][0],
+                    4);
         } else {
             g_Direct3DDevice()->lpVtbl->SetTransform(
                 g_Direct3DDevice(),
@@ -366,7 +372,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    this->field_C->field_40,
+                    &this->field_C->field_40[0][0],
                     4);
             v17.field_0[3] = v13;
             memset(&v17, 0, 12);

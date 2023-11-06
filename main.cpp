@@ -5,6 +5,7 @@
 #include "ai_interact_resource_handler.h"
 #include "ai_interaction_data.h"
 #include "ai_path.h"
+#include "ai_player_controller.h"
 #include "ai_state_graph_resource_handler.h"
 #include "ai_state_jump.h"
 #include "ai_state_run.h"
@@ -148,6 +149,8 @@
 #include "physics_inode.h"
 #include "physics_system.h"
 #include "pick_up_state.h"
+#include "plr_loco_crawl_state.h"
+#include "plr_loco_crawl_transition_state.h"
 #include "pole_swing_state.h"
 #include "polytube.h"
 #include "quaternion.h"
@@ -2641,6 +2644,14 @@ BOOL install_redirects() {
 
     hero_inode_patch();
 
+    plr_loco_crawl_state_patch();
+
+    plr_loco_crawl_transition_state_patch();
+
+    ai_player_controller_patch();
+
+    ai_state_machine_patch();
+
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
         REDIRECT(0x008218B0, hookDirectInputAddress);
@@ -2835,8 +2846,6 @@ BOOL install_redirects() {
         nfl_driver_patch();
 
         memory_patch();
-
-        ai_state_machine_patch();
 
 #endif
 

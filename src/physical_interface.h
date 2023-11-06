@@ -121,6 +121,8 @@ struct physical_interface {
     //0x004BDE00
     bool is_effectively_standing();
 
+    void manage_standing(bool a2);
+
     //0x004C9500
     bool set_ifc_num(const resource_key &a2, Float a3, bool a4);
 

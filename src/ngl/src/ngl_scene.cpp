@@ -14,7 +14,7 @@
 
 #include <windows.h>
 
-VALIDATE_SIZE(nglScene, 1088u);
+VALIDATE_SIZE(nglScene, 0x440u);
 VALIDATE_OFFSET(nglScene, field_1CC, 0x1CC);
 VALIDATE_OFFSET(nglScene, field_24C, 0x24C);
 
@@ -97,19 +97,20 @@ void nglSetDefaultSceneParams()
         static Var<vector4d> stru_8B7964 {0x008B7964};
         a2[3] = stru_8B7964();
         nglCurScene()->field_14C = sub_4150E0(a2);
-        nglCurScene()->field_3E4 = 1;
+        nglCurScene()->field_3E4 = true;
         nglCurScene()->field_39C = 6;
         float *v2 = nglCurScene()->field_3A4;
-        nglCurScene()->field_3A4[0] = 0.0;
+        v2[0] = 0.0;
         v2[1] = 0.0;
         v2[2] = 0.0;
         v2[3] = 0.0;
+
         nglCurScene()->field_3A0 = 1.0;
         sub_77C9B0(0);
         nglCurScene()->field_3B4 = 15;
-        nglCurScene()->field_3B8 = 1;
-        nglCurScene()->field_3B9 = 1;
-        nglCurScene()->field_3DC = 0;
+        nglCurScene()->field_3B8 = true;
+        nglCurScene()->field_3B9 = true;
+        nglCurScene()->field_3DC = false;
         nglCurScene()->field_3E0 = 0;
         nglCurScene()->field_3F8 = 0.0;
         nglSetLightContext(nglDefaultLightContext());
@@ -122,64 +123,78 @@ void nglSetDefaultSceneParams()
 
 void nglSetupScene(nglScene *a1, nglSceneParamType a2)
 {
-    nglScene *v2 = nglCurScene();
-    nglCurScene() = a1;
+    TRACE("nglSetupScene", std::to_string(a2).c_str());
 
-    switch (a2) {
-    case 0: {
-        *a1 = {};
+    if constexpr (0) {
+        nglScene *v2 = nglCurScene();
+        nglCurScene() = a1;
 
-        nglSetDefaultSceneParams();
-    } break;
-    case 1:
-        a1 = v2;
-        break;
-    case 2:
-        a1 = nglRootScene();
-        break;
-    default:
-        break;
-    }
+        switch (a2) {
+        case 0: {
+            new (a1) nglScene {};
 
-    a1->field_404 = {1};
+            nglSetDefaultSceneParams();
+        } break;
+        case 1:
+            a1 = v2;
+            break;
+        case 2:
+            a1 = nglRootScene();
+            break;
+        default:
+            break;
+        }
 
-    if (a2 == 1) {
-        a1->field_404 = v2->field_404;
-    } else if (a2 == 2) {
-        a1->field_404 = nglRootScene()->field_404;
-    }
+#if 0
+        a1->field_404 = {1};
+#else
+        auto *v5 = bit_cast<nglParam *>((unsigned int)(nglListWorkPos() + 7) & 0xFFFFFFF8);
+        nglListWorkPos() = bit_cast<uint8_t *>(&v5[1].field_0 + nglSceneParamSet_Pool::NextID());
+        v5->field_0 = 0;
+        v5->field_4 = 0;
+        a1->field_404.field_0 = v5;
+#endif
 
-    a1->field_30C = v2;
-    a1->field_310 = nullptr;
-    a1->field_314 = nullptr;
-    a1->field_318 = nullptr;
-    a1->field_0 = 0;
-    a1->field_31C = nullptr;
-    a1->field_320 = nullptr;
-    a1->field_324 = nullptr;
-    a1->field_328 = nullptr;
-    a1->field_32C = nullptr;
-    a1->field_330 = nullptr;
-    if (equal(nglCurScene()->field_3F8, 0.0f)) {
-        float v7 = (nglIsFBPAL() ? 20.0f : 16.666666f);
+        if (a2 == 1) {
+            a1->field_404 = v2->field_404;
+        } else if (a2 == 2) {
+            a1->field_404 = nglRootScene()->field_404;
+        }
 
-        nglCurScene()->field_3FC = static_cast<float>(nglFrameVBlankCount()) * v7 * 0.001f;
+        a1->field_30C = v2;
+        a1->field_310 = nullptr;
+        a1->field_314 = nullptr;
+        a1->field_318 = nullptr;
+        a1->field_0 = 0;
+        a1->field_31C = nullptr;
+        a1->field_320 = nullptr;
+        a1->field_324 = nullptr;
+        a1->field_328 = nullptr;
+        a1->field_32C = nullptr;
+        a1->field_330 = nullptr;
+        if (equal(nglCurScene()->field_3F8, 0.0f)) {
+            float v7 = (nglIsFBPAL() ? 20.0f : 16.666666f);
+
+            nglCurScene()->field_3FC = static_cast<float>(nglFrameVBlankCount()) * v7 * 0.001f;
+        } else {
+            nglCurScene()->field_3FC = nglCurScene()->field_3F8;
+        }
+
+        auto a2a = flt_93BC78() * nglCurScene()->field_3FC;
+
+        nglCurScene()->field_400 = static_cast<int>(a2a);
+        a1->field_340 = 0;
+        a1->field_344 = 0;
+        a1->OpaqueListCount = 0;
+        a1->TransListCount = 0;
     } else {
-        nglCurScene()->field_3FC = nglCurScene()->field_3F8;
+        CDECL_CALL(0x0076C700, a1, a2);
     }
-
-    auto a2a = flt_93BC78() * nglCurScene()->field_3FC;
-
-    nglCurScene()->field_400 = static_cast<int>(a2a);
-    a1->field_340 = 0;
-    a1->field_344 = 0;
-    a1->OpaqueListCount = 0;
-    a1->TransListCount = 0;
 }
 
 void nglSceneDumpStart()
 {
-    if (nglSyncDebug().DumpMesh) {
+    if (nglSyncDebug().DumpSceneFile) {
 
         auto nglHostOpen = [](const char *a1) -> HANDLE {
             CHAR FileName[512];

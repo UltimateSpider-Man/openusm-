@@ -218,7 +218,7 @@ template<class _Ty,
 
 template<class _Ty,
 	class _Alloc> inline
-	void _Destroy_range(_Ty *_First, _Ty *_Last, _Alloc& _Al,
+	void _Destroy_range(_Ty *, _Ty *, _Alloc& ,
 		_Scalar_ptr_iterator_tag)
 	{	// destroy [_First, _Last), scalar type (do nothing)
 	}

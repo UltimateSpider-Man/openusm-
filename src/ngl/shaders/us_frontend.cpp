@@ -144,7 +144,7 @@ void FrontEnd_ShaderNode::Render() {
             if (EnableShader()) {
                 g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(),
                                                                      0,
-                                                                     this->field_C->field_40,
+                                                                     &this->field_C->field_40[0][0],
                                                                      4);
 
                 SetVertexDeclarationAndShader(&stru_970610());

@@ -20,7 +20,10 @@ struct ai_core;
 inline constexpr auto PROCESSING_EXIT_REQUEST = 4;
 
 struct ai_state_machine {
-    int my_curr_mode;
+    enum {
+        PRE_TEST = 0,
+        PROCESSING_EXIT_REQUEST = 4,
+    } my_curr_mode;
     ai_core *my_core;
     actor *field_8;
     const state_graph *field_C;
@@ -39,7 +42,8 @@ struct ai_state_machine {
     //0x0069EB60
     ai_state_machine(ai::ai_core *a2, const ai::state_graph *a3, string_hash a4);
 
-    void sub_69BCE0(int a2);
+    //0x0069BCE0
+    void process_machine_exit(ai::state_trans_messages a2);
 
     [[nodiscard]] state_trans_action sub_697AC0(Float a3, const state_trans_action &a4);
 
@@ -60,6 +64,13 @@ struct ai_state_machine {
 
     //0x0069BA60
     void request_exit();
+
+    void sub_69BAA0();
+
+    state_trans_action sub_697A00(
+        Float a3,
+        int a4,
+        const ai::state_trans_action &a5);
 
     //0x0069BAC0
     bool transition_state(string_hash arg0, const param_block *a3);

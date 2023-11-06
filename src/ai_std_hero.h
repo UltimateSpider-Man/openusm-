@@ -2,6 +2,7 @@
 
 #include "info_node.h"
 
+#include "ai_crawl_params_record.h"
 #include "corner_info.h"
 #include "crawl_request_type.h"
 #include "float.hpp"
@@ -12,6 +13,8 @@ struct from_mash_in_place_constructor;
 namespace local_collision {
 struct primitive_list_t;
 }
+
+enum force_recompute_enum {};
 
 namespace ai {
 
@@ -30,7 +33,11 @@ struct pole_swing_inode;
 struct hero_inode : info_node {
     struct internal {
         int field_0;
-        int field_4[7];
+        int field_4;
+        int field_8;
+        int field_C;
+        vector3d field_10;
+        int field_1C;
         line_info field_20;
         corner_info field_7C;
     };
@@ -63,12 +70,9 @@ struct hero_inode : info_node {
     local_collision::primitive_list_t *field_84;
 
     ai::hero_inode::internal field_88;
-
     int field_1AC;
-
     line_info field_1B0;
-    int field_20C[11];
-
+    crawl_params_record field_20C;
     float field_238;
     entity_base_vhandle field_23C;
     int field_240;
@@ -79,6 +83,9 @@ struct hero_inode : info_node {
     hero_inode(from_mash_in_place_constructor *a2);
 
     void sub_68A7F0(int a2, bool a3);
+
+    //0x00698970
+    bool compute_curr_ground_plane(force_recompute_enum a2, Float a3);
 
     //0x006942A0
     void cleanup_collision_lists();
@@ -113,6 +120,8 @@ struct hero_inode : info_node {
     //0x006A7770
     bool run_is_eligible(string_hash a2);
 
+    void set_surface_info(const line_info &a2);
+
     //0x006B0EB0
     bool crawl_is_eligible(string_hash a2, bool a3);
 
@@ -124,6 +133,9 @@ struct hero_inode : info_node {
 
     //0x006A67E0
     void update_wall_run_als_params();
+
+    //0x006A63D0
+    void update_crawl_als_params();
 
     //0x006A6E70
     bool jump_can_go_to(string_hash a2);

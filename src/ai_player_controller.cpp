@@ -162,3 +162,11 @@ float ai_player_controller::get_motion_force() {
 
     return func(this);
 }
+
+void ai_player_controller_patch()
+{
+    {
+        FUNC_ADDRESS(address, &ai_player_controller::frame_advance);
+        SET_JUMP(0x00468E80, address);
+    }
+}

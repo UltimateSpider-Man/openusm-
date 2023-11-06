@@ -221,7 +221,7 @@ uint8_t *nglGetDebugFlagPtr(const char *Flag)
     }
 
     if ( strcmpi(Flag, "DumpSceneFile") == 0 ) {
-        return &nglDebug().DumpMesh;
+        return &nglDebug().DumpSceneFile;
     }
 
     if ( strcmpi(Flag, "DumpTextures") == 0 ) {
@@ -4992,7 +4992,7 @@ void create_renderer(HWND hWnd) {
 void nglListBeginScene(nglSceneParamType a2) {
     TRACE("nglListBeginScene");
 
-    if constexpr (0) {
+    if constexpr (1) {
         nglScene *v2 = static_cast<nglScene *>(nglListAlloc(sizeof(nglScene), 64));
 
         if (v2 != nullptr) {
@@ -5005,11 +5005,11 @@ void nglListBeginScene(nglSceneParamType a2) {
                 }
 
                 nglCurScene()->field_318 = v2;
-                nglSetupScene(v2, a2);
             } else {
                 nglRootScene() = v2;
-                nglSetupScene(v2, a2);
             }
+
+            nglSetupScene(v2, a2);
         }
     } else {
         CDECL_CALL(0x0076C970, a2);
@@ -5439,6 +5439,12 @@ void nglRenderTextureState::setSamplerState(
 
 void ngl_patch()
 {
+    SET_JUMP(0x0076C970, nglListBeginScene);
+
+    //SET_JUMP(0x0076C400, nglSetDefaultSceneParams);
+
+    //SET_JUMP(0x0076C700, nglSetupScene);
+
     {
         FUNC_ADDRESS(address, &nglQuadNode::Render);
         set_vfunc(0x008B9FB4, address);

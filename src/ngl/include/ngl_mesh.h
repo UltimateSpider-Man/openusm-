@@ -65,7 +65,7 @@ extern nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
                                       nglMeshParams *a3,
                                       math::VecClass<3, 1> a4);
 
-extern float *sub_507130(float *a1, void *arg4);
+extern matrix4x4 sub_507130(void *arg4);
 
 //0x00770360
 extern void nglListAddMesh(nglMesh *Mesh,

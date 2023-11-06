@@ -350,6 +350,11 @@ bool hero_inode::oldcrawl_is_eligible(string_hash a2, bool a3) {
     return (bool) THISCALL(0x006B0E60, this, a2, a3);
 }
 
+void hero_inode::set_surface_info(const line_info &a2)
+{
+    this->field_1B0.copy(a2);
+}
+
 void hero_inode::update_wall_run_als_params() {
     if constexpr (1) {
         auto *v2 = this->field_8;
@@ -383,6 +388,13 @@ void hero_inode::update_wall_run_als_params() {
     } else {
         THISCALL(0x006A67E0, this);
     }
+}
+
+void hero_inode::update_crawl_als_params()
+{
+    TRACE("hero_inode::update_crawl_als_params");
+
+    THISCALL(0x006A63D0, this);
 }
 
 bool hero_inode::run_can_go_to(string_hash arg0) {
@@ -457,6 +469,13 @@ bool hero_inode::crawl_is_eligible_internals(string_hash a2, bool a3) {
     return (bool) THISCALL(0x006A6900, this, a2, a3);
 }
 
+bool hero_inode::compute_curr_ground_plane(force_recompute_enum a2, Float a3)
+{
+    TRACE("hero_inode::compute_curr_ground_plane");
+
+    return (bool) THISCALL(0x00698970, this, a2, a3);
+}
+
 Var<string_hash> bip01_pelvis{0x0095AAFC};
 
 void shrink_capsule_for_slanted_surfaces(actor *act) {
@@ -468,7 +487,7 @@ void shrink_capsule_for_slanted_surfaces(actor *act) {
         auto *capsule_alter = act->get_ai_core()->field_70;
         assert(capsule_alter != nullptr);
 
-        capsule_alter->set_mode(capsule_alter_sys::eAlterMode{3});
+        capsule_alter->set_mode((capsule_alter_sys::eAlterMode) 3);
 
         conglomerate *conglm_ptr = CAST(conglm_ptr, act);
         auto *v3 = conglm_ptr->get_bone(bip01_pelvis(), true);
@@ -495,7 +514,7 @@ void extend_capsule_for_jump(actor *act) {
     ai_core *v1 = act->get_ai_core();
     v1->create_capsule_alter();
     auto *capsule_alter = act->get_ai_core()->field_70;
-    capsule_alter->set_mode(capsule_alter_sys::eAlterMode{3});
+    capsule_alter->set_mode((capsule_alter_sys::eAlterMode) 3);
 
     Var<string_hash> bip01_l_foot{0x0095A860};
     Var<string_hash> bip01_r_foot{0x0095B970};

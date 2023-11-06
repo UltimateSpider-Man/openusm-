@@ -16,8 +16,6 @@ struct nglSceneParamType {
 struct nglParam {
     uint32_t field_0;
     uint32_t field_4;
-
-    void *field_8[1];
 };
 
 extern Var<nglParam> EmptyParam;
@@ -67,7 +65,7 @@ struct USMMaterialIndicesParam {
 };
 
 template<typename T>
-class nglParamSet
+struct nglParamSet
 {
     nglParam *field_0;
 
@@ -81,7 +79,7 @@ public:
     nglParamSet() = default;
 
     nglParamSet(int a2) {
-        if (a2) {
+        if (a2 != 0) {
             if (a2 == 1) {
                 auto v2 = 4 * T::NextID() + 8;
                 this->field_0 = static_cast<decltype(field_0)>(nglListAlloc(v2, 8));

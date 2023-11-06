@@ -27,8 +27,10 @@ struct enhanced_state : base_state {
         return this->my_mashed_state == nullptr;
     }
 
+    bool can_handle_message(ai::state_trans_messages a2, bool a3);
+
     //0x006BD5A0
-    /* virtual */ int frame_advance(Float dt);
+    /* virtual */ ai::state_trans_messages frame_advance(Float dt);
 
     //0x006CE1D0
     /* virtual */ void activate(ai_state_machine *a2,

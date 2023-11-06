@@ -37,6 +37,10 @@ struct game_settings {
     //0x005799E0
     void init_script_buffer();
 
+    void update_miles_crawled_venom(Float a2);
+
+    void update_miles_crawled_spidey(Float a2);
+
     //0x0057EAB0
     void start_new_game();
 

@@ -116,9 +116,10 @@ struct vector3d
     }
 
     void operator/=(float a1) {
-        x *= (1.0 / a1);
-        y *= (1.0 / a1);
-        z *= (1.0 / a1);
+        auto v1 = (1.0 / a1);
+        x *= v1;
+        y *= v1;
+        z *= v1;
     }
 
     mString to_string() const;
@@ -181,7 +182,7 @@ extern float Abs(const vector3d &a1);
 [[nodiscard]] extern vector3d make_vector3d(const euler_direction &a2);
 
 //0x0058FFE0
-extern vector3d *orthogonal_projection_onto_plane(vector3d *out,
+extern vector3d orthogonal_projection_onto_plane(
                                                   const vector3d &a2,
                                                   const vector3d &a3);
 

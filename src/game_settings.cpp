@@ -88,7 +88,8 @@ void game_settings::Callback(MemoryUnitManager::eOperation a2) {
     THISCALL(0x0057C0B0, this, a2);
 }
 
-void game_settings::init_script_buffer() {
+void game_settings::init_script_buffer()
+{
     if constexpr (1) {
         this->sub_579990();
         script_manager::save_game_var_buffer(this->field_494);
@@ -97,6 +98,16 @@ void game_settings::init_script_buffer() {
     } else {
         THISCALL(0x005799E0, this);
     }
+}
+
+void game_settings::update_miles_crawled_venom(Float a2)
+{
+    this->field_340.field_C0 += a2 * 0.0006213712;
+}
+
+void game_settings::update_miles_crawled_spidey(Float a2)
+{
+    this->field_340.field_98 += a2 * 0.0006213712;
 }
 
 void game_settings::start_new_game() {

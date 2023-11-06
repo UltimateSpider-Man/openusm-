@@ -97,6 +97,8 @@ struct nglScene {
 //0x0076C700
 extern void nglSetupScene(nglScene *a1, nglSceneParamType a2);
 
+extern void nglSetDefaultSceneParams();
+
 extern void nglSceneDumpStart();
 
 extern Var<nglScene *> nglCurScene;

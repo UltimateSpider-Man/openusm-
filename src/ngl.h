@@ -483,8 +483,7 @@ struct nglQuadNode {
 
 struct nglMeshNode {
     matrix4x4 field_0;
-    float field_40[16];
-
+    matrix4x4 field_40;
     int field_80;
     int field_84;
     nglMesh *field_88;
@@ -514,7 +513,7 @@ struct nglDebugStruct {
     uint8_t DisableScratch;
     uint8_t DebugPrints;
     uint8_t DumpFrameLog;
-    uint8_t DumpMesh;
+    uint8_t DumpSceneFile;
     uint8_t DumpTextures;
     uint8_t DrawLightSpheres;
     uint8_t DrawMeshSpheres;

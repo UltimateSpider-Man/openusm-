@@ -74,7 +74,10 @@ matrix4x3 sub_771210(void *a2) {
 
 math::MatClass<4, 3> *nglListAddMesh_GetScaledMatrix(const math::MatClass<4, 3> &a1,
                                                      nglMeshParams *a2,
-                                                     float *a3) {
+                                                     float *a3)
+{
+    TRACE("nglListAddMesh_GetScaledMatrix");
+
     if constexpr (1) {
         auto v3 = a2->Scale.field_0[0];
         auto v4 = a2->Scale.field_0[1];
@@ -129,7 +132,10 @@ math::MatClass<4, 3> *nglListAddMesh_GetScaledMatrix(const math::MatClass<4, 3> 
 nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
                                unsigned int a2,
                                nglMeshParams *a3,
-                               math::VecClass<3, 1> a4) {
+                               math::VecClass<3, 1> a4)
+{
+    TRACE("nglListAddMesh_GetLOD");
+
     if constexpr (1) {
         nglMesh *result;
         if ((a2 & 0x80u) == 0) {
@@ -170,8 +176,10 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
     }
 }
 
-float *sub_507130(float *a1, void *arg4) {
-    return (float *) CDECL_CALL(0x00507130, a1, arg4);
+matrix4x4 sub_507130(void *arg4) {
+    matrix4x4 result;
+    CDECL_CALL(0x00507130, &result, arg4);
+    return result;
 }
 
 bool sub_755520(Float a1, Float a2, Float a3, Float, Float a5) {
@@ -204,8 +212,9 @@ void nglListAddMesh(nglMesh *Mesh,
                     nglMeshParams *a3,
                     nglParamSet<nglShaderParamSet_Pool> *a4)
 {
+    TRACE("nglListAddMesh");
 
-    if constexpr (0) {
+    if constexpr (1) {
         if (Mesh != nullptr) {
 
             assert(((Mesh->Flags & NGLMESH_PROCESSED) || (Mesh->Flags & NGLMESH_SCRATCH_MESH)) &&
@@ -217,19 +226,16 @@ void nglListAddMesh(nglMesh *Mesh,
                 return;
             }
 
-            if ( nglSyncDebug().DumpMesh ) {
+            if ( nglSyncDebug().DumpSceneFile ) {
                 nglDumpMesh(Mesh, a2, a3);
             }
 
-            int v20 = 0;
-            if (a3 != nullptr) {
-                v20 = a3->Flags;
-            }
+            int v20 = (a3 != nullptr ? a3->Flags : 0);
 
             auto *v5 = &a2;
             auto a5 = Mesh->SphereRadius;
             float v15 = 1.0;
-            if ((v20 & 2) != 0) {
+            if ((v20 & NGLP_SCALE) != 0) {
                 v5 = nglListAddMesh_GetScaledMatrix(a2, a3, &v15);
                 a5 *= v15;
             }
@@ -239,7 +245,7 @@ void nglListAddMesh(nglMesh *Mesh,
                 nglCalculateMatrices(false);
             }
 
-            if (Mesh->NLODs) {
+            if ( Mesh->NLODs != 0 ) {
                 Mesh = nglListAddMesh_GetLOD(Mesh, v20, a3, v18);
             }
 
@@ -253,18 +259,14 @@ void nglListAddMesh(nglMesh *Mesh,
             meshNode->field_0 = {};
 
             struct {
-                const void *field_0;
-                void *field_4;
-            } v14;
+                const po *m_rel_po;
+                po *m_abs_po;
+            } v14 = {(const po *) v6, (po *) &nglCurScene()->field_18C};
 
-            v14.field_0 = v6;
-            v14.field_4 = &nglCurScene()->field_18C;
-
-            float v19[16];
-            auto *v8 = sub_507130(v19, &v14);
+            auto v8 = sub_507130(&v14);
             auto v9 = v15;
 
-            std::memcpy(meshNode->field_40, v8, sizeof(meshNode->field_40));
+            meshNode->field_40 = v8;
             meshNode->field_84 = 0;
             meshNode->field_80 = 0;
             meshNode->field_94 = v9;

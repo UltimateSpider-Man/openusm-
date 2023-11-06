@@ -80,8 +80,8 @@ void FastListAddMesh(nglMesh *Mesh,
         a2a.m_rel_po = CAST(a2a.m_rel_po, &LocalToWorld);
         a2a.m_abs_po = CAST(a2a.m_abs_po, nglCurScene()->field_18C);
 
-        matrix4x4 v19;
-        std::memcpy(v12->field_40, sub_507130(&v19[0][0], &a2a), sizeof(v12->field_40));
+        matrix4x4 v19 = sub_507130(&a2a);
+        v12->field_40 = v19;
 
         v12->field_84 = 0;
         v12->field_80 = 0;

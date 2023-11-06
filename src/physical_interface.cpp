@@ -586,6 +586,13 @@ void physical_interface::apply_force_increment(const vector3d &a2,
     THISCALL(0x004ECFF0, this, &a2, arg4, &a4, a5);
 }
 
+void physical_interface::manage_standing(bool a2)
+{
+    TRACE("physical_interface::manage_standing");
+
+    THISCALL(0x004F8580, this, a2);
+}
+
 void physical_interface_patch() {
     {
         FUNC_ADDRESS(address, &physical_interface::start_biped_physics);

@@ -78,8 +78,8 @@ void nglListInit()
             nglDebug().DumpFrameLog = 0;
         }
 
-        if ( nglSyncDebug().DumpMesh ) {
-            nglDebug().DumpMesh = 0;
+        if ( nglSyncDebug().DumpSceneFile ) {
+            nglDebug().DumpSceneFile = 0;
         }
 
         if ( nglSyncDebug().DumpTextures ) {

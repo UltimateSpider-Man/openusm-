@@ -56,9 +56,9 @@ state_trans_action base_state::check_transition(Float a3) {
     return action;
 }
 
-int base_state::frame_advance(Float a2) {
-    auto &func = get_vfunc(m_vtbl, 0x20);
-    return func(this, a2);
+state_trans_messages base_state::frame_advance(Float a2) {
+    state_trans_messages (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x20));
+    return func(this, nullptr, a2);
 }
 
 void base_state::get_info_node_list(info_node_desc_list &) {}
@@ -121,8 +121,9 @@ void base_state::activate(ai_state_machine *the_state_machine,
     }
 }
 
-void base_state::deactivate(const mashed_state *) {
-    ;
+void base_state::deactivate(const mashed_state *a2) {
+    auto func = get_vfunc(m_vtbl, 0x1C);
+    func(this, a2);
 }
 
 uint32_t base_state::get_virtual_type_enum() {

@@ -5,6 +5,8 @@
 #include "mashed_state.h"
 #include "param_block.h"
 #include "state_trans_action.h"
+#include "trace.h"
+#include "vtbl.h"
 
 #include <cassert>
 
@@ -31,6 +33,13 @@ float enhanced_state::get_timeout_timer() {
     return this->field_24;
 }
 
+bool enhanced_state::can_handle_message(ai::state_trans_messages a2, bool a3)
+{
+    TRACE("enhanced_state::can_handle_message");
+
+    return (bool) THISCALL(0x006CE3D0, this, a2, a3);
+}
+
 void enhanced_state::activate(ai_state_machine *a2,
                               const mashed_state *a3,
                               const mashed_state *a4,
@@ -42,7 +51,7 @@ void enhanced_state::activate(ai_state_machine *a2,
         this->field_1C = 0.0;
         this->field_28 = 0;
         auto *state = this->my_mashed_state;
-        this->field_20 = 75;
+        this->field_20 = TRANS_TOTAL_MSGS;
         this->field_24 = -1.0;
         this->field_2C = 3;
 
@@ -57,7 +66,7 @@ void enhanced_state::activate(ai_state_machine *a2,
                 this->field_24 = p_block->get_optional_pb_float(timeout_hashes()[i], -1.0, &v10);
 
                 if (v10) {
-                    this->field_20 = i;
+                    this->field_20 = static_cast<state_trans_messages>(i);
                 }
             }
 
@@ -75,7 +84,7 @@ void enhanced_state::activate(ai_state_machine *a2,
 state_trans_action enhanced_state::check_transition(Float a3) {
     if (!this->is_default_transition_state()) {
         if (this->field_28 && this->field_4 == 2) {
-            state_trans_action trans_action = this->process_message(a3, state_trans_messages{3});
+            state_trans_action trans_action = this->process_message(a3, static_cast<state_trans_messages>(3));
             return trans_action;
         }
 
@@ -97,9 +106,11 @@ static Var<string_hash> to_state_always_hash{0x0096CE5C};
 static Var<string_hash> exit_layer_always_hash{0x0096CD00};
 
 state_trans_action enhanced_state::process_message(Float a3, state_trans_messages a4) {
+    TRACE("enhanced_state::process_message");
+
     state_trans_action result;
 
-    if constexpr (1) {
+    if constexpr (0) {
         auto default_return_code = this->get_default_return_code();
 
         if (this->is_default_transition_state()) {
@@ -124,11 +135,18 @@ state_trans_action enhanced_state::process_message(Float a3, state_trans_message
                 }
             }
         } else {
-            result = this->process_exit_message(a3, state_trans_messages{0});
+            result = this->process_exit_message(a3, TRANS_MACHINE_EXIT_REQUEST_MSG);
         }
 
     } else {
-        THISCALL(0x006D34F0, this, &result, a3, a4);
+        void (__fastcall *func)(
+            ai::enhanced_state *,
+            void *,
+            state_trans_action *out,
+            Float a3,
+            state_trans_messages a5) = CAST(func, get_vfunc(m_vtbl, 0x30));
+
+        func(this, nullptr, &result, a3, a4);
     }
 
     return result;
@@ -144,15 +162,15 @@ state_trans_action enhanced_state::process_exit_message([[maybe_unused]] Float a
                                                         state_trans_messages the_msg) {
     assert(the_msg == TRANS_MACHINE_EXIT_REQUEST_MSG);
 
-    state_trans_action action{2, {0}, 1, nullptr};
+    state_trans_action action {2, string_hash {0}, TRANS_SUCCESS_MSG, nullptr};
     return action;
 }
 
-int enhanced_state::frame_advance([[maybe_unused]] Float dt) {
+ai::state_trans_messages enhanced_state::frame_advance([[maybe_unused]] Float dt) {
     assert(!is_default_transition_state());
 
     this->field_1C += dt;
-    return 75;
+    return TRANS_TOTAL_MSGS;
 }
 
 state_trans_action enhanced_state::state_exit(string_hash a3,

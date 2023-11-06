@@ -49,7 +49,7 @@ capsule_alter_sys::capsule_alter_sys(actor *a2) {
         this->compute_avg_values();
         this->field_A2 = 0;
         this->dynamic = true;
-        this->field_4.field_0 = 0;
+        this->field_4 = (eAlterMode) 0;
 
     } else {
         THISCALL(0x005C51D0, this, a2);
@@ -83,11 +83,23 @@ void capsule_alter_sys::adjust_colgeom(bool a2) {
 }
 
 void capsule_alter_sys::set_mode(eAlterMode a2) {
-    auto v2 = this->field_4.field_0;
+    auto v2 = this->field_4;
     this->field_4 = a2;
-    if (a2.field_0 != v2) {
+    if (a2 != v2) {
         this->adjust_colgeom(true);
     }
+}
+
+void capsule_alter_sys::set_static_capsule(
+        const vector3d &a2,
+        const vector3d &a3,
+        Float a4)
+{
+    this->field_28.base = a2;
+    this->field_28.end = a3;
+    this->field_28.radius = a4;
+    auto v4 = (this->field_4 == 1);
+    this->adjust_colgeom(v4);
 }
 
 void capsule_alter_sys::set_end_avg_node(int index, entity_base *a3, Float a4) {

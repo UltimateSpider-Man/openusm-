@@ -3,6 +3,7 @@
 #include "float.hpp"
 #include "mash_virtual_base.h"
 #include "state_trans_action.h"
+#include "state_trans_messages.h"
 
 #include <cstdint>
 
@@ -20,12 +21,8 @@ struct info_node_desc_list;
 struct state_graph_list;
 
 struct base_state : mash_virtual_base {
-    struct activate_flag_e {
-        int value;
-
-        operator int() const {
-            return value;
-        }
+    enum activate_flag_e {
+        ACTIVATE_FLAG_FROM_INTERUPT = 2,
     };
 
     activate_flag_e field_4;
@@ -60,7 +57,7 @@ struct base_state : mash_virtual_base {
 
     /* virtual */ void deactivate(const mashed_state *);
 
-    /* virtual */ int frame_advance(Float a2) /* = 0 */;
+    /* virtual */ state_trans_messages frame_advance(Float a2) /* = 0 */;
 
     /* virtual */ void get_info_node_list(info_node_desc_list &);
 

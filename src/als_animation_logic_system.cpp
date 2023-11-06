@@ -114,33 +114,27 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
     TRACE("animation_logic_system::frame_advance_play_new_animations");
 
     if constexpr (0) {
-        if ( !this->field_7C )
-        {
+        if ( !this->field_7C ) {
             if ( this->field_6C->has_time_ifc() ) {
                 this->field_6C->time_ifc();
             }
 
             auto *old_context = resource_manager::push_resource_context(this->field_6C->field_BC);
-            for ( auto i = -1; ; ++i )
-            {
-                auto v5 = this->field_8.size();
-                if ( i >= v5 ) {
-                    break;
-                }
+            auto v5 = this->field_8.size();
+            for ( auto i = -1; i < v5; ++i ) {
+                state_machine *the_state_machine = (i == -1 ? &this->field_18 : this->field_8[i]);
 
-                als::state_machine *state_machine = (i == -1 ? &this->field_18 : this->field_8[i]);
-
-                if ( state_machine->is_active() ) {
+                if ( the_state_machine->is_active() ) {
                     bool v19 = true;
-                    if (!state_machine->did_do_transition()) {
+                    if (!the_state_machine->did_do_transition()) {
                         if (i != -1
-                            || state_machine->field_48.is_anim_active()) {
+                            || the_state_machine->field_48.is_anim_active()) {
                             v19 = false;
                         }
                     }
 
                     if (v19 || this->field_7D) {
-                        auto *curr_state = state_machine->get_curr_state();
+                        auto *curr_state = the_state_machine->get_curr_state();
                         assert(curr_state != nullptr);
 
                         auto v20 = curr_state->get_nal_anim_name();
@@ -162,13 +156,13 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
                         {
                             auto v10 = this->field_8[i]->field_4->field_40;
                             auto v11 = curr_state->field_C;
-                            auto v19 = state_machine->get_layer_id();
-                            auto v12 = state_machine->get_layer_id();
+                            auto v19 = the_state_machine->get_layer_id();
+                            auto v12 = the_state_machine->get_layer_id();
                             auto a5 = this->convert_layer_id_to_priority(v12);
                             v9 = this->the_controller->play_layer_anim(v20, v11, a5, v10, true, v19);
                         }
 
-                        state_machine->field_48 = v9;
+                        the_state_machine->field_48 = v9;
                         this->field_7D = false;
                     }
 

@@ -5,6 +5,7 @@
 #include "nglshader.h"
 
 #include <func_wrapper.h>
+#include <trace.h>
 #include <utility.h>
 #include <vtbl.h>
 
@@ -78,12 +79,18 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3) {
 } // namespace nglRenderList
 
 void *nglListAlloc(int size, int align) {
-    auto *v3 = (uint8_t *) (~(align - 1) & ((int) nglListWorkPos() + align - 1));
+    TRACE("nglListAlloc");
 
-    nglListWorkPos() = &v3[size];
-    void *result = v3;
+    if constexpr (0) {
+        auto *v3 = (uint8_t *) (~(align - 1) & ((int) nglListWorkPos() + align - 1));
 
-    return result;
+        nglListWorkPos() = &v3[size];
+        void *result = v3;
+
+        return result;
+    } else {
+        return (void *) CDECL_CALL(0x00401A20, size, align);
+    }
 }
 
 void nglRenderList_patch() {

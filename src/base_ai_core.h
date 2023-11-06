@@ -81,10 +81,15 @@ struct ai_core {
     //0x0069B8F0
     ai_state_machine *find_machine(resource_key a2);
 
+    //0x0068FCA0
+    void advance_info_nodes(Float a2);
+
     void spawn_state_machine_internal(ai_state_machine *a2,
                                       resource_key graph_name,
                                       ai_state_machine **base_machine_ptr,
                                       string_hash a5);
+
+    void advance_machine_recursive(ai_state_machine *a1, Float a2, bool a3);
 
     static inline Var<_std::list<ai_core> *> the_ai_core_list_high{0x0096BE24};
 
