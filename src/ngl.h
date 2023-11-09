@@ -174,7 +174,7 @@ struct nglStringNode
     std::intptr_t m_vtbl;
     int field_4;
     float field_8;
-    char *field_C;
+    unsigned char *field_C;
     nglFont *field_10;
     float field_14;
     float field_18;
@@ -470,6 +470,8 @@ struct mNglQuad {
     void custom_unmash(mash_info_struct *, void *);
 };
 
+enum nglLightType {};
+
 struct nglQuadNode {
     std::intptr_t m_vtbl;
     nglQuadNode *field_4;
@@ -642,7 +644,7 @@ extern void nglListAddQuad(nglQuad *Quad);
 
 //0x007798E0
 extern void nglGetStringDimensions(
-    nglFont *Font, const char *a2, uint32_t *a3, uint32_t *a4, Float a5, Float a6);
+    nglFont *Font, char *a2, uint32_t *a3, uint32_t *a4, Float a5, Float a6);
 
 extern void nglGetStringDimensions(
     nglFont *arg0, unsigned int *arg4, unsigned int *a3, const char *a2, ...);
@@ -936,6 +938,8 @@ extern double sub_77E940(Float a1);
 extern double sub_77EA00(Float a1);
 
 extern bool sub_581C30();
+
+extern bool sub_755520(math::VecClass<3, 1> a1, Float radius);
 
 extern matrix4x4 sub_4150E0(const matrix4x4 &a2);
 

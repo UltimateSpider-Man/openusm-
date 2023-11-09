@@ -302,7 +302,7 @@ double MultiLineString::GetWidth(MultiLineString::string a1, Float a5, font_inde
 
             int tmp;
             uint32_t a4;
-            nglGetStringDimensions(v4, str.c_str(), (uint32_t *) &tmp, &a4, a5, a5);
+            nglGetStringDimensions(v4, (char *) str.c_str(), (uint32_t *) &tmp, &a4, a5, a5);
 
             if (v3 == 3 && (str == "6" || str == "7" || str == "8")) {
                 float v5 = (double) tmp;

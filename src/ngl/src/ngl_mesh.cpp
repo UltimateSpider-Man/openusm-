@@ -183,7 +183,8 @@ matrix4x4 sub_507130(void *arg4) {
     return result;
 }
 
-bool sub_755520(math::VecClass<3, 1> a1, Float radius) {
+bool sub_755520(math::VecClass<3, 1> a1, Float radius)
+{
     for (auto i = 0u; i < 6u; ++i) {
         auto &v = nglCurScene()->field_2AC[i];
 

@@ -10,18 +10,28 @@
 #include "trace.h"
 #include "variables.h"
 
-int sub_779570(
-        nglFont *a1,
-        void *a2,
+struct nglStringSection {
+    nglStringSection *field_0;
+    char *field_4;
+    int field_8;
+    int field_C;
+    float field_10[4];
+    uint32_t m_color;
+};
+VALIDATE_SIZE(nglStringSection, 0x24);
+
+int BuildStringList(
+        nglFont *Font,
+        nglStringSection *a2,
         Float a3,
         Float a4,
         Float a5,
         Float a6,
-        uint32_t color,
-        char *a8,
-        DWORD *a9)
+        uint32_t Color,
+        unsigned char *a8,
+        uint32_t &a9)
 {
-    return CDECL_CALL(0x00779570, a1, a2, a3, a4, a5, a6, color, a8, a9);
+    return (int) CDECL_CALL(0x00779570, Font, a2, a3, a4, a5, a6, Color, a8, &a9);
 }
 
 void nglStringNode::Render()
@@ -88,21 +98,9 @@ void nglStringNode::Render()
                 auto a4 = v4;
                 auto v27 = sub_77E820(v20);
 
-                struct temp_struct
-                {
-                    temp_struct *field_0;
-                    char *field_4;
-                    int field_8;
-                    int field_C;
-                    float field_10[4];
-                    float field_20;
-                };
-
-                VALIDATE_SIZE(temp_struct, 0x24);
-
-                static Var<temp_struct> dword_975690 {0x00975690};
-                DWORD a9;
-                sub_779570(
+                static Var<nglStringSection> dword_975690 {0x00975690};
+                uint32_t a9;
+                BuildStringList(
                     this->field_10,
                     &dword_975690(),
                     v25,
@@ -111,7 +109,7 @@ void nglStringNode::Render()
                     this->field_24,
                     this->m_color,
                     this->field_C,
-                    &a9);
+                    a9);
 
                 for ( auto *i = dword_975690().field_0;
                       i != nullptr;
@@ -120,7 +118,7 @@ void nglStringNode::Render()
                 {
                     auto v6 = i->field_10[2];
                     auto v7 = i->field_10[3];
-                    auto v8 = i->field_20;
+                    auto v8 = i->m_color;
                     auto v25 = i->field_10[0];
                     auto v9 = i->field_8;
                     auto a7 = v6;
@@ -175,9 +173,13 @@ void nglStringNode::Render()
                         v35[22] = v31[0];
                         v35[23] = v31[1];
 
-                        g_Direct3DDevice()->lpVtbl->DrawPrimitiveUP(g_Direct3DDevice(),D3DPT_TRIANGLESTRIP, 2, v35, 24);
-                        auto v13 = this->field_10;
-                        auto v18 = v13->GetFontCellWidth(v11);
+                        g_Direct3DDevice()->lpVtbl->DrawPrimitiveUP(
+                                g_Direct3DDevice(),
+                                D3DPT_TRIANGLESTRIP,
+                                2,
+                                v35,
+                                24);
+                        double v18 = this->field_10->GetFontCellWidth(v11);
                         if ( v18 < 0 ) {
                             v18 += flt_86F860();
                         }
@@ -193,10 +195,7 @@ void nglStringNode::Render()
                     g_renderState().setFogEnable(true);
                 }
 
-                nglPerfInfo().field_50.QuadPart += [](auto perf_counter) {
-                    auto counter = query_perf_counter();
-                    return *(uint64_t *)&counter - perf_counter.QuadPart;
-                }(perf_counter);
+                nglPerfInfo().field_50.QuadPart += query_perf_counter().QuadPart - perf_counter.QuadPart;
             }
         }
     } else {

@@ -4,6 +4,9 @@
 
 namespace math {
 
+template<uint32_t>
+struct VecUnit {};
+
 template<bool>
 struct Rep_Std {};
 

@@ -3188,142 +3188,199 @@ nglTexture *nglGetTexture(const tlFixedString &a1) {
     return (nglTexture *) Find(nglTextureDirectory(), a1.m_hash);
 }
 
+static constexpr auto NGLFONT_TOKEN_COLOR = '\1';
+static constexpr auto NGLFONT_TOKEN_SCALE = '\2';
+static constexpr auto NGLFONT_TOKEN_SCALEXY = '\3';
+
+uint32_t RGBA2ARGB(uint32_t c) {
+    return (((c >> 8) & 0xFFFFFF) | ((c & 0xFF) << 24));
+}
+
 void nglGetStringDimensions(
-    nglFont *Font, const char *a2, uint32_t *Width, uint32_t *Height, Float a5, Float a6)
+    nglFont *Font,
+    char *Text,
+    uint32_t *Width,
+    uint32_t *Height,
+    Float a5,
+    Float a6)
 {
-    TRACE("nglGetStringDimensions", a2);
+    TRACE("nglGetStringDimensions", Text);
 
-    if constexpr (0) {
-        auto v37 = a6;
-        auto *v6 = a2;
+    if constexpr (1) {
+        float CurMaxScaleY = a6;
+        auto *TextPtr = Text;
         char v7 = '\0';
-        float v38 = 0.0;
-        float v36 = 0.0;
-        float v39 = 0.0;
-        if (*a2) {
+        float CurMaxWidth = 0.0;
+        float fWidth = 0.0;
+        float fHeight = 0.0;
+        for (char c = *TextPtr; c != '\0'; ++TextPtr) {
+            switch (c) {
+            case NGLFONT_TOKEN_COLOR:
+                if constexpr (0) {
+                    Text = TextPtr + 1;
+                    strtoul(TextPtr + 1, (char **) &Text, 16);
+                    TextPtr = ++Text;
+                } else {
+                    static auto sub_FDBBE0 = [](char *&Text, uint32_t &color)
+                    {
+                        assert( *Text != '[' && "Invalid character found in Token.  Should be '['.\n" );
 
-            while (*v6) {
-                uint8_t v9 = (*v6++);
-                switch (v9) {
-                case 1:
-                    a2 = v6 + 1;
-                    strtoul(v6 + 1, (char **) &a2, 16);
-                    v6 = ++a2;
-                    break;
-                case 2:
-                    a2 = v6 + 1;
-                    a5 = strtod(v6 + 1, (char **) &a2);
+                        color = strtoul(Text + 1, &Text, 16u);
+                        ++Text;
+                        assert( *Text != ']' && "Invalid character found in Token.  Should be ']'.\n" );
+
+                        ++Text;
+                    };
+
+                    uint32_t v18;
+                    [](char *&a1, uint32_t &c)
+                    {
+                          sub_FDBBE0(a1, c);
+                          c = RGBA2ARGB(c);
+                    }(TextPtr, v18);
+                }
+                break;
+            case NGLFONT_TOKEN_SCALE:
+
+                if constexpr (0) {
+                    Text = TextPtr + 1;
+                    a5 = strtod(TextPtr + 1, (char **) &Text);
                     a6 = a5;
-                    v6 = ++a2;
-                    if (v37 < a5) {
-                        v37 = a5;
+                    TextPtr = ++Text;
+                    if (CurMaxScaleY < a5) {
+                        CurMaxScaleY = a5;
                     }
+                } else {
+                    static auto sub_FDBD50 = [](char *&Text, float &a2)
+                    {
+                        assert(*Text == '[' && "Invalid character found in Token.  Should be '['.\n" );
 
-                    break;
-                case 3: {
-                    a2 = v6 + 1;
-                    a5 = strtod(v6 + 1, (char **) &a2);
-                    ++a2;
-                    a6 = strtod(a2, (char **) &a2);
-                    v6 = ++a2;
-                    if (v37 < a6) {
-                        v37 = a6;
-                    }
-                } break;
-                case 9: {
-                    auto v21 = Font->GlyphInfo[32 - Font->Header.FirstGlyph].CellWidth;
-                    auto v22 = v21;
-                    if (v21 < 0) {
-                        v22 += 4.2949673e9;
-                    }
+                        a2 = strtod(Text + 1, &Text);
+                        ++Text;
 
-                    v7 = ' ';
-                    auto v23 = v22 * a5 * 4.0f;
-
-                    v36 += v23;
-                    break;
-                }
-                case 10: {
-                    if (v7 != '\0') {
-                        auto v10 = Font->Header.FirstGlyph;
-                        auto v11 = v7;
-                        int v12;
-                        if (v7 < v10 || (v12 = v7, v7 >= v10 + Font->Header.NumGlyphs)) {
-                            v12 = 32;
+                        assert(*Text == ']' && "Invalid character found in Token.  Should be ']'.\n" );
+                        ++Text;
+                    };
+                    [](char *&Text, float &ScaleX, float &ScaleY, float &CurMaxScaleY) {
+                        sub_FDBD50(Text, ScaleX);
+                        ScaleY = ScaleX;
+                        if ( ScaleY > CurMaxScaleY ) {
+                            CurMaxScaleY = ScaleY;
                         }
-
-                        auto *v13 = Font->GlyphInfo;
-                        auto *v14 = &v13[v12 - v10];
-                        int v15;
-                        if (v11 < v10 || (v15 = v11, v11 >= v10 + Font->Header.NumGlyphs)) {
-                            v15 = 32;
-                        }
-
-                        auto *v16 = &v13[v15 - v10];
-                        if (v11 < v10 || v11 >= v10 + Font->Header.NumGlyphs) {
-                            v11 = 32;
-                        }
-
-                        auto v17 = v11 - v10;
-                        auto v18 = v14->GlyphSize[0];
-                        auto v19 = v16->GlyphOrigin[0];
-                        v6 = a2;
-                        v36 += (v19 + v18 - v13[v17].CellWidth) * a5;
-                    }
-
-                    if (v36 > v38) {
-                        v38 = v36;
-                    }
-
-                    v36 = 0.0;
-                    v7 = '\0';
-                    auto v20 = Font->Header.CellHeight * v37;
-                    v37 = a6;
-                    v39 = v20 + v39;
-                    break;
-                };
-                default: {
-                    auto v24 = Font->Header.FirstGlyph;
-                    if (v9 < v24 || v9 >= v24 + Font->Header.NumGlyphs) {
-                        v9 = 32;
-                    }
-
-                    auto v25 = v9 - v24;
-                    auto *v26 = Font->GlyphInfo;
-                    v25 *= 28;
-                    auto v27 = (double)*(int *)((char *)&v26->GlyphOrigin[2] + v25);
-                    if (v27 < 0) {
-                        v27 += 4.2949673e9;
-                    }
-
-                    auto v23 = v27 * a5;
-                    v7 = v9;
-
-                    v36 += v23;
-                    break;
-                }
+                    }(TextPtr, a5.value, a6.value, CurMaxScaleY);
                 }
 
+                break;
+            case NGLFONT_TOKEN_SCALEXY: {
+                if constexpr (0) {
+                    Text = TextPtr + 1;
+                    a5 = strtod(TextPtr + 1, (char **) &Text);
+                    ++Text;
+                    a6 = strtod(Text, (char **) &Text);
+                    TextPtr = ++Text;
+                    if (CurMaxScaleY < a6) {
+                        CurMaxScaleY = a6;
+                    }
+                } else {
+                    static auto sub_FDBEA0 = [](char *&Text, float &ScaleX, float &ScaleY)
+                    {
+                        assert( *Text != '[' && "Invalid character found in Token.  Should be '['.\n" );
+                        ScaleX = strtod(Text + 1, &Text);
+                        ++Text;
+
+                        assert( *Text != ',' && "Invalid character found in Token.  Should be ','.\n" );
+                        ScaleY = strtod(Text + 1, &Text);
+                        ++Text;
+
+                        assert( *Text != ']' && "Invalid character found in Token.  Should be ']'.\n" );
+                        ++Text;
+                    };
+
+                    [](char *&Text, float &ScaleX, float &ScaleY, float &CurMaxScaleY)
+                    {
+                        sub_FDBEA0(Text, ScaleX, ScaleY);
+                        if ( ScaleY > CurMaxScaleY ) {
+                            CurMaxScaleY = ScaleY;
+                        }
+                    }(TextPtr, a5.value, a6.value, CurMaxScaleY);
+                }
+            } break;
+            case '\t': {
+                int CellWidth = Font->GlyphInfo[' ' - Font->Header.FirstGlyph].CellWidth;
+                double v22 = (CellWidth < 0
+                                ? CellWidth + 4.2949673e9
+                                : CellWidth
+                                );
+
+                v7 = ' ';
+                fWidth += v22 * a5 * 4.0f;
+                break;
+            }
+            case '\n': {
+                if (v7 != '\0') {
+                    auto v10 = Font->Header.FirstGlyph;
+                    auto v11 = v7;
+                    int v12;
+                    if (v7 < v10 || (v12 = v7, v7 >= v10 + Font->Header.NumGlyphs)) {
+                        v12 = 32;
+                    }
+
+                    auto *v13 = Font->GlyphInfo;
+                    auto *v14 = &v13[v12 - v10];
+                    int v15;
+                    if (v11 < v10 || (v15 = v11, v11 >= v10 + Font->Header.NumGlyphs)) {
+                        v15 = 32;
+                    }
+
+                    auto *v16 = &v13[v15 - v10];
+                    if (v11 < v10 || v11 >= v10 + Font->Header.NumGlyphs) {
+                        v11 = 32;
+                    }
+
+                    auto v17 = v11 - v10;
+                    auto v18 = v14->GlyphSize[0];
+                    auto v19 = v16->GlyphOrigin[0];
+                    TextPtr = Text;
+                    fWidth += (v19 + v18 - v13[v17].CellWidth) * a5;
+                }
+
+                if ( fWidth > CurMaxWidth ) {
+                    CurMaxWidth = fWidth;
+                }
+
+                fWidth = 0.0;
+                v7 = '\0';
+                fHeight += Font->Header.CellHeight * CurMaxScaleY;
+                CurMaxScaleY= a6;
+                break;
+            };
+            default: {
+                int v27 = Font->GetFontCellWidth(c);
+                fWidth += v27 * a5;
+                v7 = c;
+                break;
+            }
             }
 
-            if (v7) {
-                auto v9 = Font->GetGlyphInfo(v7);
-                auto v10 = Font->GetGlyphInfo(v7)->GlyphOrigin[0] + v9->GlyphSize[0];
-                auto v11 = Font->GetFontCellWidth(v7);
-                v36 += (v10 - v11) * a5;
-            }
+        }
+
+        if (v7) {
+            auto v9 = Font->GetGlyphInfo(v7);
+            auto v10 = Font->GetGlyphInfo(v7)->GlyphOrigin[0] + v9->GlyphSize[0];
+            auto v11 = Font->GetFontCellWidth(v7);
+            fWidth += (v10 - v11) * a5;
         }
 
         if (Width != nullptr) {
-            *Width = (v36 <= v38 ? v38 : v36);
+            *Width = (fWidth <= CurMaxWidth ? CurMaxWidth : fWidth);
         }
 
         if (Height != nullptr) {
-            *Height = Font->Header.CellHeight * v37 + v39;
+            *Height = Font->Header.CellHeight * CurMaxScaleY + fHeight;
         }
 
     } else {
-        CDECL_CALL(0x007798E0, Font, a2, Width, Height, a5, a6);
+        CDECL_CALL(0x007798E0, Font, Text, Width, Height, a5, a6);
     }
 }
 
@@ -3798,7 +3855,10 @@ struct nglTextureInfo {
     char field_88[4];
 };
 
-bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
+bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo)
+{
+    TRACE("nglLoadTextureTM2_internal");
+
     if constexpr (1) {
         assert(Tex != nullptr && "Cannot load a NULL texture !");
 
@@ -3885,10 +3945,14 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
         Tex->m_num_palettes = num_palettes;
 
         Tex->m_format |= 0x200u;
-        auto v18 = (Tex->field_34 ^ (16 * TexInfo->Header.field_1C)) & 16 ^ Tex->field_34;
-        Tex->field_34 = v18;
 
-        Tex->field_34 = v18 ^ ((uint8_t) v18 ^ (uint8_t) (16 * TexInfo->Header.field_1C)) & 0x20;
+        auto func = [](const auto &header, uint32_t a2, uint32_t a3) -> uint32_t {
+            auto v1 = a3 * 16u;
+            return (v1 * ((header.field_1C & a3) != 0)) | (a2 & (~v1));
+        };
+
+        Tex->field_34 = func(TexInfo->Header, Tex->field_34, 1u);
+        Tex->field_34 = func(TexInfo->Header, Tex->field_34, 2u);
 
         if (!tlIsPow2(Tex->m_width) || !tlIsPow2(Tex->m_height)) {
             sp_log("Loaded textures (DDS) must have power of 2 dimensions !\n");
@@ -4025,10 +4089,13 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo) {
     }
 }
 
-bool nglLoadTextureTM2(nglTexture *tex, uint8_t *a2) {
+bool nglLoadTextureTM2(nglTexture *tex, uint8_t *a2)
+{
+    TRACE("nglLoadTextureTM2");
+
     if constexpr (1) {
         bool result = false;
-        if (nglLoadTextureTM2_internal(tex, (nglTextureInfo *) a2)) {
+        if ( nglLoadTextureTM2_internal(tex, bit_cast<nglTextureInfo *>(a2)) ) {
             tex->sub_774F20();
             tex->field_38 = -1;
             result = true;
@@ -4224,8 +4291,8 @@ void nglRenderQuad(nglQuad *a2)
 
     auto m_tex = a2->m_tex;
     if ( m_tex != nullptr ) {
-        SetSamplerState(0, D3DSAMP_ADDRESSU, (a2->field_54 & 0x40 | 0x20u) >> 5);
-        SetSamplerState(0, D3DSAMP_ADDRESSV, (a2->field_54 & 0x80 | 0x40u) >> 6);
+        SetSamplerState(0, D3DSAMP_ADDRESSU, ((a2->field_54 & 0x40) | 0x20u) >> 5);
+        SetSamplerState(0, D3DSAMP_ADDRESSV, ((a2->field_54 & 0x80) | 0x40u) >> 6);
 
         nglTextureAnimFrame() = nglCurScene()->field_400;
         nglDxSetTexture(0, m_tex, a2->field_54, 3);
@@ -4432,7 +4499,7 @@ void nglListAddString(nglFont *font,
                 new (v8) nglStringNode{};
 
                 auto v9 = strlen(a2) + 1;
-                v8->field_C = static_cast<char *>(nglListAlloc(v9, 16));
+                v8->field_C = static_cast<unsigned char *>(nglListAlloc(v9, 16));
                 memcpy(v8->field_C, a2, v9);
                 v8->m_color = color;
                 v8->field_14 = a3;
@@ -5472,6 +5539,76 @@ void sub_81E910()
     CDECL_CALL(0x0081E910);
 }
 
+void sub_775C80(nglLightType a1, void *a2, int a3)
+{
+    CDECL_CALL(0x00775C80, a1, a2, a3);
+}
+
+void nglDumpDirLight(unsigned int a1, vector4d a2, vector4d a4)
+{
+    nglHostPrintf(h_sceneDump(), "\n");
+    nglHostPrintf(h_sceneDump(), "DIRLIGHT\n");
+    nglHostPrintf(h_sceneDump(), "  LIGHTCAT 0x%8X\n", a1);
+    nglHostPrintf(h_sceneDump(), "  DIR %f %f %f\n", a2[0], a2[1], a2[2]);
+    nglHostPrintf(h_sceneDump(), "  COLOR %f %f %f %f\n", a4[0], a4[1], a4[2], a4[3]);
+    nglHostPrintf(h_sceneDump(), "ENDLIGHT\n");
+}
+
+void nglListAddDirLight(unsigned int a2, math::VecClass<3, 0> a3, math::VecClass<4, -1> a4)
+{
+    TRACE("nglListAddDirLight");
+
+    struct stru {
+        math::VecClass<3, 0> field_0;
+        math::VecClass<4, -1> field_10;
+    };
+    VALIDATE_SIZE(stru, 0x20);
+
+    auto *v3 = static_cast<stru *>(nglListAlloc(sizeof(stru), 16));
+    if ( v3 != nullptr ) {
+        v3->field_0 = a3;
+        v3->field_10[0] = a4[0];
+        v3->field_10[1] = a4[1];
+        v3->field_10[2] = a4[2];
+        v3->field_10[3] = 1.0;
+        sub_775C80((nglLightType) 1, v3, a2);
+    }
+
+    if ( nglSyncDebug().DumpSceneFile )
+    {
+        vector4d v8 = *bit_cast<vector4d *>(&a3);
+        vector4d v9 = *bit_cast<vector4d *>(&a4);
+        nglDumpDirLight(a2, v8, v9);
+    }
+}
+
+void nglListAddPointLight(uint32_t a1, math::VecClass<3, 1> a2, Float a6, Float radius, math::VecClass<4, -1> a8)
+{
+    TRACE("nglListAddPointLight");
+
+    if ( sub_755520(a2, radius) ) {
+        struct stru {
+            math::VecClass<3, 1> field_0;
+            math::VecClass<3, 1> field_10;
+            float field_20;
+            float field_24;
+        };
+        VALIDATE_SIZE(stru, 0x28);
+
+        auto *v5 = static_cast<stru*>(nglListAlloc(sizeof(stru), 16));
+        if ( v5 != nullptr ) {
+            v5->field_0 = a2;
+            v5->field_10[0] = a8[0];
+            v5->field_10[1] = a8[1];
+            v5->field_10[2] = a8[2];
+            v5->field_10[3] = 1.0;
+            v5->field_20 = a6;
+            v5->field_24 = radius;
+            sub_775C80((nglLightType)0, v5, a1);
+        }
+    }
+}
+
 void nglRenderTextureState::setSamplerState(
         int stage,
         uint8_t a3,
@@ -5482,6 +5619,12 @@ void nglRenderTextureState::setSamplerState(
 
 void ngl_patch()
 {
+    SET_JUMP(0x0077A870, nglLoadTextureTM2);
+
+    SET_JUMP(0x00776140, nglListAddPointLight);
+
+    SET_JUMP(0x007760C0, nglListAddDirLight);
+
     SET_JUMP(0x00507690, FastListAddMesh);
 
     SET_JUMP(0x0076C970, nglListBeginScene);
@@ -5521,8 +5664,8 @@ void ngl_patch()
     SET_JUMP(0x007791A0, create_and_parse_fdf);
 
     {
-        void (*func)(nglFont *Font, const char *, uint32_t *, uint32_t *a4, Float a5, Float a6) = nglGetStringDimensions;
-        REDIRECT(0x00617C3E, func);
+        void (*func)(nglFont *Font, char *, uint32_t *, uint32_t *a4, Float a5, Float a6) = nglGetStringDimensions;
+        //SET_JUMP(0x007798E0, func);
     }
 
     {

@@ -185,7 +185,7 @@ void FEText::AdjustForJustification(float *a2, float *a3) {
         nglFont *font = g_femanager().GetFont(this->field_18);
 
         uint32_t v13, v14;
-        nglGetStringDimensions(font, str, &v14, &v13, this->field_3C, this->field_40);
+        nglGetStringDimensions(font, (char *) str, &v14, &v13, this->field_3C, this->field_40);
         float v8 = v13;
         float v7 = v14;
 
