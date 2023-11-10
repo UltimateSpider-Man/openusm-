@@ -16,11 +16,14 @@ void sub_77DFB0(void *begin, void *end, int a3, int a4) {
 }
 
 template<>
-void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3) {
-    if constexpr (0) {
+void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3)
+{
+    TRACE("nglRenderList::nglOpaqueCompare<nglRenderNode>");
+
+    if constexpr (1) {
         struct {
             nglRenderNode *field_0;
-            int field_4;
+            nglTexture *field_4;
         } *list = static_cast<decltype(list)>(nglListAlloc(8 * count, 16));
 
         auto sub_FE1420 = [](auto *a1, nglRenderNode *a2) -> void {
@@ -36,26 +39,26 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3) {
 
         sub_77DFB0(list, list + 8 * count, (8 * count) >> 3, a3);
 
-        auto sub_FE1480 = [](auto *a1, nglRenderNode **a2, int count) -> void {
-            auto *last = a1 + (count - 1);
-            nglShaderNode *v3 = nullptr;
-            while (count != 0) {
-                last->field_0->field_4 = v3;
-                v3 = last->field_0;
-                --last;
-                --count;
-            }
+        auto sub_FE1480 = [](auto *begin, nglRenderNode *&a2, int count) -> void {
+            auto end = begin + count;
 
-            *a2 = v3;
+            nglRenderNode *v3 = nullptr;
+            std::for_each(
+                    std::make_reverse_iterator(end),
+                    std::make_reverse_iterator(begin),
+                    [&v3](auto &n) {
+                        n.field_0->field_4 = v3;
+                        v3 = n.field_0;
+                    });
+
+            a2 = v3;
         };
 
-        sub_FE1480(list, &node, count);
+        sub_FE1480(list, node, count);
 
         static Var<nglRenderNode *> nglPrevNode{0x00971F18};
 
-        auto *v9 = node;
-
-        for (; v9 != nullptr; v9 = v9->field_4) {
+        for ( auto *v9 = node; v9 != nullptr; v9 = v9->field_4 ) {
             v9->Render();
 
             nglPrevNode() = v9;

@@ -42,7 +42,7 @@ void nglStringNode::Render()
         return;
     }
 
-    if constexpr (1) {
+    if constexpr (0) {
         if ( this->field_C != nullptr ) {
             nglFont *v2 = this->field_10;
             auto v3 = v2->field_40;
