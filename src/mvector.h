@@ -34,6 +34,11 @@ struct mVector {
         {
             ++this->_Ptr;
         }
+
+        auto &operator*()
+        {
+            return (*this->_Ptr);
+        }
     };
 
     mVector() = default;

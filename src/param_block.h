@@ -65,6 +65,8 @@ struct param_block {
         void sub_6C8750();
 
         void sub_6C8700(int a2);
+
+        bool deep_compare(const param_block::param_data *a2) const;
     };
 
     struct param_data_array {
@@ -93,6 +95,8 @@ struct param_block {
 
     //0x006CE130
     bool does_parameter_exist(string_hash a2) const;
+
+    bool does_parameter_match(const param_block::param_data *a2) const;
 
     void sub_6D6EB0();
 

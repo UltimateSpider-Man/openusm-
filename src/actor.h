@@ -194,7 +194,7 @@ struct actor : entity {
 
     //0x0x004B8FC0
     //virtual
-    bool is_frame_delta_valid();
+    bool is_frame_delta_valid() const;
 
     //0x004B9000
     //virtual

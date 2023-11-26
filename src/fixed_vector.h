@@ -56,8 +56,3 @@ struct fixed_vector {
                       line_marker_base *a7,
                       entity_base *a8);
 };
-
-struct vector4d;
-struct region;
-
-extern void sub_565BF0(const vector4d &a1, fixed_vector<region *, 15> *output_array);

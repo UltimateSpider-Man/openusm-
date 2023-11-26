@@ -178,3 +178,5 @@ extern void closest_point_line_segment_point(const vector3d &a1,
                                              float *a4);
 
 extern bool sub_50D220(const vector3d &a1, const vector3d &a2, entity *a3);
+
+extern void local_collision_patch();

@@ -900,10 +900,10 @@ void swing_inode::clip_web(Float a2) {
                 v19.check_collision(*local_collision::entfilter_entity_no_capsules(),
                                     *local_collision::obbfilter_lineseg_test(),
                                     nullptr);
-                if (v19.field_58) {
-                    if (v19.field_48.get_volatile_ptr() != nullptr) {
+                if ( v19.collision ) {
+                    if (v19.hit_entity.get_volatile_ptr() != nullptr) {
                         event_manager::raise_event(event::COLLIDED_WITH_SWING_WEB,
-                                                   v19.field_48.field_0);
+                                                   v19.hit_entity.field_0);
                     }
 
                     auto v7 = v3->get_abs_position();
@@ -1603,7 +1603,7 @@ void sub_44C3B0(line_info *a1) {
 
         vector3d arg4 = v1 + a1->hit_pos;
 
-        auto *v4 = a1->field_48.get_volatile_ptr();
+        auto *v4 = a1->hit_entity.get_volatile_ptr();
         v3.spawn(false, arg4, a1->hit_norm, nullptr, nullptr, v4, ZEROVEC, false, true);
 
     } else {
@@ -1622,7 +1622,7 @@ void sub_44C430(line_info *a1) {
         arg4[0] = v1 + a1->hit_pos[0];
         arg4[1] = v2 + a1->hit_pos[1];
         arg4[2] = v6 + a1->hit_pos[2];
-        auto *v4 = a1->field_48.get_volatile_ptr();
+        auto *v4 = a1->hit_entity.get_volatile_ptr();
         v3->spawn(false, arg4, a1->hit_norm, nullptr, nullptr, v4, ZEROVEC, false, true);
 
     } else {

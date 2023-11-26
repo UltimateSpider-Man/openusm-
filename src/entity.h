@@ -171,6 +171,10 @@ struct entity : signaller {
     //0x004D67D0
     static int find_entities(int a1);
 
+    static inline Var<int> visit_key {0x0095A6E4};
+
+    static inline Var<int> visit_key2 {0x0095A6E8};
+
     static Var<int> visit_key3;
 
     static inline Var<_std::list<entity *> *> found_entities {0x0095A6E0};

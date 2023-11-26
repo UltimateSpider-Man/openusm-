@@ -41,10 +41,10 @@ bool base_state::is_subclass_of(mash::virtual_types_enum a1) {
     return mash_virtual_base::get_virtual_type_enum() == a1.field_0;
 }
 
-bool base_state::is_flag_set(int a2) {
+bool base_state::is_flag_set(int a2) const {
     auto *mashed_state = this->my_mashed_state;
 
-    return (mashed_state->field_10 & (1 << a2)) != 0;
+    return mashed_state->is_flag_set(a2);
 }
 
 state_trans_action base_state::check_transition(Float a3) {

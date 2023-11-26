@@ -30,6 +30,13 @@ struct fixed_bitvector {
         sub_A62040(this);  
     }
 
+    void clear()
+    {
+        for ( auto i = 0u; i < num; ++i ) {
+            this->field_4[i] = 0;
+        }
+    }
+
     int get_index(int a1)
     {
         return a1 >> 5;

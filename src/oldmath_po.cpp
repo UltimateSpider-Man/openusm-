@@ -657,6 +657,17 @@ mString po::to_string() const {
     return result;
 }
 
+po sub_48F770(const po &arg4, const po &a3)
+{
+    ptr_to_po a2;
+    a2.m_abs_po = &a3;
+    a2.m_rel_po = &arg4;
+
+    po res;
+    res.sub_415A30(a2);
+    return res;
+}
+
 void po_patch() {
     if constexpr (0) {
         {

@@ -4,6 +4,7 @@
 #include "als_inode.h"
 #include "common.h"
 #include "param_list.h"
+#include "trace.h"
 
 namespace ai {
 
@@ -12,6 +13,8 @@ VALIDATE_SIZE(crawl_params_record, 0x2C);
 void crawl_params_record::update_crawl_transition_als_params(
         ai::als_inode *a2)
 {
+    TRACE("crawl_params_record::update_crawl_transition_als_params");
+
     als::param_list v10 {};
     auto v3 = !this->field_4;
 

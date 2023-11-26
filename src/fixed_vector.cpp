@@ -75,7 +75,3 @@ void fixed_vector<quick_anchor_info, 100>::emplace_back(Grid *grid,
         }
     }
 }
-
-void sub_565BF0(const vector4d &a1, fixed_vector<region *, 15> *output_array) {
-    CDECL_CALL(0x00565BF0, &a1, output_array);
-}

@@ -11,6 +11,8 @@
 #include "loaded_regions_cache.h"
 #include "oldmath_po.h"
 #include "subdivision_node_obb_base.h"
+#include "trace.h"
+#include "utility.h"
 #include "vtbl.h"
 
 #include <cmath>
@@ -24,15 +26,18 @@ bool find_intersection(const vector3d &a1,
                        region **a7,
                        entity **a8,
                        subdivision_node_obb_base **hit_obb,
-                       bool a10) {
-    if constexpr (1) {
+                       bool a10)
+{
+    TRACE("find_intersection");
+    
+    if constexpr (0) {
         local_collision::query_args_t v23{};
 
         auto *v10 = local_collision::query_line_segment(a1, a2, a3, a4, v23);
 
         local_collision::intersection_list_t intersection_record{};
 
-        line_segment_t a2a{a1, a2};
+        line_segment_t a2a {a1, a2};
 
         auto v16 = local_collision::get_closest_line_intersection(v10,
                                                                   &a2a,
@@ -147,7 +152,10 @@ bool get_closest_line_intersection(local_collision::primitive_list_t *a1,
                                    bool a3,
                                    float *a4,
                                    const float *a5,
-                                   local_collision::intersection_list_t *a6) {
+                                   local_collision::intersection_list_t *a6)
+{
+    TRACE("local_collision::get_closest_line_intersection");
+
     return (bool) CDECL_CALL(0x0053EE60, a1, lif, a3, a4, a5, a6);
 }
 
@@ -296,7 +304,10 @@ primitive_list_t *query_line_segment(const vector3d &a1,
                                      const vector3d &a2,
                                      const local_collision::entfilter_base &a3,
                                      const local_collision::obbfilter_base &a4,
-                                     local_collision::query_args_t a5) {
+                                     local_collision::query_args_t a5)
+{
+    TRACE("local_collision::query_line_segment");
+
     return (primitive_list_t *) CDECL_CALL(0x00533260, &a1, &a2, &a3, &a4, a5);
 }
 
@@ -320,5 +331,10 @@ bool sub_50D220(const vector3d &a1, const vector3d &a2, entity *a3)
         nullptr,
         false)
         || a3 && a3 == a8;
+}
+
+void local_collision_patch()
+{
+    REDIRECT(0x0052F009, find_intersection);
 }
 

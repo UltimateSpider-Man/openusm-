@@ -16,6 +16,12 @@ struct primitive_list_t;
 
 enum force_recompute_enum {};
 
+enum hero_type_enum {
+    UNDEFINED = 0,
+    SPIDEY = 1,
+    VENOM = 2
+};
+
 namespace ai {
 
 struct physics_inode;
@@ -144,7 +150,7 @@ struct hero_inode : info_node {
     //virtual
     void frame_advance(Float a2);
 
-    static int get_hero_type();
+    static hero_type_enum get_hero_type();
 
     static const inline string_hash default_id{to_hash("hero")};
 };

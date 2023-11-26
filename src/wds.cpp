@@ -281,15 +281,15 @@ void world_dynamics_system::frame_advance(Float a2) {
         for (auto &generator : this->field_260) {
             struct Vtbl {
                 int field_0;
-                bool __thiscall (*is_active)(void *);
+                bool __fastcall (*is_active)(const void *);
                 int field_8;
-                void __thiscall (*frame_advance)(void *, Float);
+                void __fastcall (*frame_advance)(void *, void *, Float);
             };
 
             Vtbl *vtbl = CAST(vtbl, generator->m_vtbl);
 
             if (vtbl->is_active(generator)) {
-                vtbl->frame_advance(generator, a2);
+                vtbl->frame_advance(generator, nullptr, a2);
             }
         }
 
@@ -341,7 +341,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             brew.field_0.start();
             brew.field_8 = slot_ptr;
             brew.field_C = 0;
-            brew.field_10 = 0;
+            brew.field_10 = nullptr;
             brew.buffer_index = 0;
             brew.field_1C = 0;
             if (!resource_manager::get_resource_if_exists(a2, reg, &brew.field_10, brew.field_8, &brew.field_C)) {
@@ -1413,9 +1413,9 @@ int world_dynamics_system::remove_player(int player_num) {
 
     struct Vtbl {
         int empty0[29];
-        bool __thiscall (*is_a_game_camera)(void *);
+        bool __fastcall (*is_a_game_camera)(const void *);
         int empty1[135];
-        int __thiscall (*sync)(void *, void *);
+        int __fastcall (*sync)(void *, void *, void *);
     };
 
     cut_scene_player *v3 = g_cut_scene_player();
@@ -1424,7 +1424,7 @@ int world_dynamics_system::remove_player(int player_num) {
     if (v4) {
         void *vtbl = get_vtbl(this->field_28.field_44);
 
-        bit_cast<Vtbl *>(vtbl)->sync(this->field_28.field_44, this->field_234[0]);
+        bit_cast<Vtbl *>(vtbl)->sync(this->field_28.field_44, nullptr, this->field_234[0]);
     }
 
     g_world_ptr()->ent_mgr.destroy_entity(this->field_234[this->num_players]);

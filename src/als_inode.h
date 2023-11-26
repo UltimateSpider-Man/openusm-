@@ -30,7 +30,13 @@ struct als_inode : info_node {
         return this->field_1C;
     }
 
+    bool is_layer_interruptable(als::layer_types a1);
+
     string_hash sub_48B100(als::layer_types a3);
+
+    bool sub_48B140(string_hash a2, als::layer_types a3);
+
+    bool anim_finished(string_hash a2, als::layer_types a3);
 
     //0x00689BA0
     als::state_machine *get_als_layer(als::layer_types a2);
@@ -55,6 +61,7 @@ struct als_inode : info_node {
     //virtual
     float get_eta_of_combat_signal(als::layer_types a2);
 };
+
 } // namespace ai
 
 extern void als_inode_patch();

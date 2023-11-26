@@ -43,6 +43,24 @@ bool state_machine::is_active() const
     }
 }
 
+double state_machine::get_time_to_end_of_anim()
+{
+    double (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x50));
+    return func(this);
+}
+
+bool state_machine::is_cat_our_prev_cat(string_hash a2) const
+{
+    bool (__fastcall *func)(const void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x58));
+    return func(this, nullptr, a2);
+}
+
+bool state_machine::is_requesting_category(string_hash a2) const
+{
+    bool (__fastcall *func)(const void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x5C));
+    return func(this, nullptr, a2);
+}
+
 string_hash state_machine::get_category_id() {
     auto &func = get_vfunc(m_vtbl, 0x0);
 
@@ -53,9 +71,9 @@ string_hash state_machine::get_category_id() {
 }
 
 float als::state_machine::get_time_to_signal(string_hash a2) {
-    float __thiscall (*func)(void *, string_hash) = CAST(func, 0x0049F4E0);
+    float (__fastcall *func)(void *, void *, string_hash) = CAST(func, 0x0049F4E0);
 
-    return func(this, a2);
+    return func(this, nullptr, a2);
 }
 
 void state_machine::set_desired_params(param_list &a2) {

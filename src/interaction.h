@@ -15,7 +15,7 @@ struct interaction {
 
     int field_18[4];
 
-    int field_28;
+    interaction_type_enum field_28;
     string_hash field_2C;
     int field_30;
     int field_34;
@@ -23,6 +23,7 @@ struct interaction {
     int field_3C;
     int field_40;
     bool field_44;
+    bool field_45;
 
     //0x004D5A30
     interaction(from_mash_in_place_constructor *a2);

@@ -624,7 +624,7 @@ void debug_render_line_info(line_info *a1, [[maybe_unused]] char a2, int a3)
             print_3d_text(v6, v8, "%c%d", a2, v11);
         }
 
-        if (a1[i].field_58) {
+        if ( a1[i].collision ) {
             const color32 black {255, 255, 255, 128};
             render_debug_hemisphere(a1[i].hit_pos, 0.1, black);
             const color32 white {0, 0, 0, 128};

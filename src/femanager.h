@@ -52,6 +52,9 @@ struct FEManager {
     //0x00648AB0
     void LoadFrontEnd();
 
+    //0x00642E40
+    void ReleaseIGO();
+
     //0x00618D10
     void ReleaseFonts();
 

@@ -414,10 +414,13 @@ void physical_interface::set_current_gravity_vector(const vector3d &a2) {
     this->field_74 = a2;
 }
 
-float physical_interface::get_floor_offset() {
+float physical_interface::get_floor_offset()
+{
+    TRACE("physical_interface::get_floor_offset");
+
     if constexpr (1) {
         if (this->field_CC <= 0.0f) {
-            if ((this->field_C & 0x80000) != 0 || this->field_174 != nullptr) {
+            if ( this->is_biped_physics_running() || this->is_prop_physics_running() ) {
                 this->field_10C = 0.25f;
             } else {
                 this->field_10C = this->field_4->get_floor_offset();
@@ -428,8 +431,9 @@ float physical_interface::get_floor_offset() {
         }
 
         if (this->field_17D) {
-            this->field_10C = this->field_4->get_render_scale()[1] * this->field_10C;
+            this->field_10C *= this->field_4->get_render_scale()[1];
         }
+
         return this->field_10C;
 
     } else {

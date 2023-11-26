@@ -201,7 +201,7 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
                                            v29,
                                            false,
                                            false);
-                    if ( v20->field_58 ) {
+                    if ( v20->collision ) {
                         hero_inode_ptr->set_surface_info(*v20);
                         result = ai::TRANS_TRANSITION_MSG;
                     }
@@ -209,17 +209,20 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
 
                 if ( result == ai::TRANS_TOTAL_MSGS && do_external_transitions )
                 {
-                    auto v21 = ai::hero_inode::get_hero_type();
-                    auto v30 = v21 != 2;
+                    auto v30 = (ai::hero_inode::get_hero_type() != 2);
                     auto *v22 = this->get_actor();
                     auto *v20 = check_exterior_transition(v22,
                                                         hero_inode_ptr->field_20C,
                                                         als_inode_ptr,
-                                                        v30, false, false);
-                    if ( v20->field_58 ) {
+                                                        v30,
+                                                        false,
+                                                        false);
+                    if ( v20->collision ) {
                         hero_inode_ptr->set_surface_info(*v20);
                         result = ai::TRANS_TRANSITION_MSG;
                     }
+
+                    sp_log("%d", hero_inode_ptr->field_20C.field_5);
                 }
             }
         }
@@ -229,9 +232,10 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
         sp_log("%s", v26.to_string().c_str());
 
         if ( v26.length2() < 0.000099999997 ) {
-            return static_cast<ai::state_trans_messages>(72);
+            result = static_cast<ai::state_trans_messages>(72);
         }
 
+        printf("result = %s\n", ai::state_trans_messages_str[result]);
         return result;
     } else {
         ai::state_trans_messages (__fastcall *func)(void *, void *, Float) = CAST(func, 0x0047D710);

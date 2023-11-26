@@ -16,13 +16,13 @@ struct line_info {
     vector3d hit_norm;
     vector3d field_30;
     vector3d field_3C;
-    vhandle_type<entity> field_48;
+    vhandle_type<entity> hit_entity;
     subdivision_node_obb_base *field_4C;
-    local_collision::entfilter_base *ent_filter;
-    local_collision::obbfilter_base *obb_filter;
-    bool field_58;
+    const local_collision::entfilter_base *ent_filter;
+    const local_collision::obbfilter_base *obb_filter;
+    bool collision;
     bool field_59;
-    bool field_5A;
+    bool queued_for_collision_check;
     bool field_5C;
 
     //0x0052EDD0

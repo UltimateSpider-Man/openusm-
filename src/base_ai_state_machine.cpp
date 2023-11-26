@@ -384,12 +384,12 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
         if (the_state != nullptr) {
             auto *v13 = bit_cast<ai::base_state *>(this->my_curr_state);
             auto *v14 = v13->my_mashed_state;
-            if ((v14->field_10 & 1) != 0) {
-                if ((the_state->field_10 & 1) == 0) {
+            if (v14->is_flag_set(0)) {
+                if (!the_state->is_flag_set(0)) {
                     this->field_3C = nullptr;
                     this->field_40 = nullptr;
                 }
-            } else if ((the_state->field_10 & 1) != 0) {
+            } else if (the_state->is_flag_set(0)) {
                 this->field_3C = v14;
                 this->field_40 = v13->field_10;
             }

@@ -131,6 +131,11 @@ struct physical_interface {
 
     bool is_biped_physics_running() const;
 
+    bool is_prop_physics_running() const
+    {
+        return this->field_174 != nullptr;
+    }
+
     biped_system *get_biped_system();
 
     //0x004DA210

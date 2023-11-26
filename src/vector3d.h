@@ -53,6 +53,24 @@ struct vector3d
         *this = *this + v;
     }
 
+    vector3d operator+(float f) const {
+        vector3d result = (*this);
+        result[0] = result[0] + f; 
+        result[1] = result[1] + f; 
+        result[2] = result[2] + f; 
+
+        return result;
+    }
+
+    vector3d operator-(float f) const {
+        vector3d result = (*this);
+        result[0] = result[0] - f; 
+        result[1] = result[1] - f; 
+        result[2] = result[2] - f; 
+
+        return result;
+    }
+
     vector3d operator+(const vector3d &v) const {
         vector3d result;
 

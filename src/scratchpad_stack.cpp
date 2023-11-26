@@ -60,8 +60,14 @@ void *scratchpad_stack::alloc(int n_bytes) {
 }
 
 void scratchpad_stack::initialize() {
-    auto status = scratchpad_stack::stk().allocate(16384u, 16, 16);
+    auto status = stk().allocate(16384u, 16, 16);
     assert(status);
+}
+
+void scratchpad_stack::term()
+{
+    stk().free();
+    stk().segment = nullptr;
 }
 
 bool sub_512730(void *a1) {

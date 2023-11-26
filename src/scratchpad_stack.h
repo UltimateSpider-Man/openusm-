@@ -28,6 +28,8 @@ extern void *alloc(int n_bytes);
 
 extern void initialize();
 
+extern void term();
+
 }; // namespace scratchpad_stack
 
 extern bool sub_512730(void *a1);

@@ -7,6 +7,7 @@
 struct vector3d;
 struct subdivision_visitor;
 struct proximity_map;
+struct region;
 
 struct oriented_bounding_box_root_node {
     int field_0;

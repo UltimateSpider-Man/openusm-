@@ -17,6 +17,7 @@ struct region_mash_info;
 struct light_source;
 struct subdivision_node_obb_base;
 struct dynamic_proximity_map_stack;
+struct hierarchical_entity_proximity_map;
 struct entity;
 struct traffic_path_graph;
 struct ai_region_paths;
@@ -28,10 +29,10 @@ struct texture_to_frame_map;
 struct region
 {
     dynamic_rtree_root_t *collision_proximity_map;
-    void *ai_proximity_map;
-    void *visibility_map;
-    void *light_proximity_map;
-    void *parking_proximity_map;
+    hierarchical_entity_proximity_map *ai_proximity_map;
+    hierarchical_entity_proximity_map *visibility_map;
+    hierarchical_entity_proximity_map *light_proximity_map;
+    hierarchical_entity_proximity_map *parking_proximity_map;
 
     int empty14[2];
 

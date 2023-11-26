@@ -14,9 +14,9 @@ anim_record::anim_record()
 void anim_record::_unmash(mash_info_struct *a2, void *a3)
 {
     a2->unmash_class_in_place(this->field_8, this);
-    if ( this->field_4 != nullptr )
+    if ( this->my_key != nullptr )
     {
-        a2->unmash_class(this->field_4, this
+        a2->unmash_class(this->my_key, this
 #ifdef TARGET_XBOX
             , mash::NORMAL_BUFFER
 #endif

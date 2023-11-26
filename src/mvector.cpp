@@ -925,7 +925,7 @@ void mVector<als::category>::custom_unmash(mash_info_struct *a2, [[maybe_unused]
 }
 
 template<>
-void mVector<als::transition_group_base>::custom_unmash(mash_info_struct *a2, void *a3)
+void mVector<als::transition_group_base>::custom_unmash(mash_info_struct *a2, void *)
 {
     TRACE("mVector<als::transition_group_base>::custom_unmash");
 #ifdef TARGET_XBOX
@@ -1007,7 +1007,7 @@ void mVector<ai::param_block::param_data>::custom_unmash(mash_info_struct *a2, v
 }
 
 template<>
-void mVector<als::implicit_transition_rule>::custom_unmash(mash_info_struct *a2, void *a3)
+void mVector<als::implicit_transition_rule>::custom_unmash(mash_info_struct *a2, void *)
 {
 #ifdef TARGET_XBOX
     this->field_C = this->m_size;
@@ -1075,7 +1075,7 @@ void mVector<als::layer_transition_rule>::custom_unmash(mash_info_struct *a1, vo
 }
 
 template<>
-void mVector<als::dest_weight_data>::custom_unmash(mash_info_struct *a1, void *a3)
+void mVector<als::dest_weight_data>::custom_unmash(mash_info_struct *a1, void *)
 {
 #ifdef TARGET_XBOX
     this->field_C = this->m_size;
@@ -1110,7 +1110,7 @@ void mVector<als::dest_weight_data>::custom_unmash(mash_info_struct *a1, void *a
 }
 
 template<>
-void mVector<als::explicit_transition_rule>::custom_unmash(mash_info_struct *a1, void *a3)
+void mVector<als::explicit_transition_rule>::custom_unmash(mash_info_struct *a1, void *)
 {
 #ifdef TARGET_XBOX
     this->field_C = this->m_size;
@@ -1179,7 +1179,7 @@ void mVector<als::alter_conditions>::custom_unmash(mash_info_struct *a1, void *a
 }
 
 template<>
-void mVector<als::incoming_transition_rule>::custom_unmash(mash_info_struct *a1, void *a3)
+void mVector<als::incoming_transition_rule>::custom_unmash(mash_info_struct *a1, void *)
 {
 #ifdef TARGET_XBOX
     this->field_C = this->m_size;
@@ -1278,7 +1278,7 @@ void mVector<als::post_layer_alter>::custom_unmash(mash_info_struct *a1, void *a
 }
 
 template<>
-void mVector<als::filter_data>::custom_unmash(mash_info_struct *a2, void *a3)
+void mVector<als::filter_data>::custom_unmash(mash_info_struct *a2, void *)
 {
 #ifdef TARGET_XBOX
     this->field_C = this->m_size;
@@ -1529,7 +1529,7 @@ void mVector<attach_node>::custom_unmash(mash_info_struct *a1, void *a3)
 }
 
 template<>
-void mVectorBasic<attach_action_trigger_enum>::custom_unmash(mash_info_struct *a1, void *a2)
+void mVectorBasic<attach_action_trigger_enum>::custom_unmash(mash_info_struct *a1, void *)
 {
     TRACE("mVectorBasic<attach_action_trigger_enum>::custom_unmash");
 
@@ -1568,7 +1568,7 @@ void mVectorBasic<attach_action_trigger_enum>::unmash(mash_info_struct *a1, void
 }
 
 template<>
-void mVectorBasic<int>::custom_unmash(mash_info_struct *a1, void *a2)
+void mVectorBasic<int>::custom_unmash(mash_info_struct *a1, void *)
 {
     TRACE("mVectorBasic<int>::custom_unmash");
 
@@ -1607,7 +1607,7 @@ void mVectorBasic<int>::unmash(mash_info_struct *a1, void *a2)
 }
 
 template<>
-void mVectorBasic<vhandle_type<actor>>::custom_unmash(mash_info_struct *a1, void *a2)
+void mVectorBasic<vhandle_type<actor>>::custom_unmash(mash_info_struct *a1, void *)
 {
     TRACE("mVectorBasic<int>::custom_unmash");
 

@@ -9,21 +9,23 @@
 struct ai_interaction_data;
 struct interaction;
 struct from_mash_in_place_constructor;
-struct attach_trigger_anim_key;
+struct anim_key;
 struct generic_interaction;
 
 namespace ai {
 
 struct als_inode;
 
+enum interaction_result_enum {};
+
 struct interaction_inode : info_node {
-    vhandle_type<actor> field_1C;
-    als_inode *field_20;
-    int field_24;
+    vhandle_type<actor> target_handle;
+    als_inode *target_als;
+    int curr_status;
     int field_28;
     ai_interaction_data *field_2C;
     interaction *field_30;
-    attach_trigger_anim_key *field_34;
+    anim_key *field_34;
     int field_38;
     int field_3C;
     int field_40;
@@ -43,11 +45,28 @@ struct interaction_inode : info_node {
     //0x004514B0
     bool is_in_master_mode();
 
+    bool is_interacting() const
+    {
+        return this->curr_status == 1;
+    }
+
+    void init_interaction();
+
+    void set_interaction(
+        const ai_interaction_data *a2,
+        actor *a3,
+        interaction_type_enum a4,
+        interaction *a5);
+
+    void clear_interaction(interaction_result_enum a2);
+
     //0x004639E0
     [[nodiscard]] string_hash get_chosen_interact_state_id();
 
     //0x00451340
     void set_curr_anim(enum_anim_key::key_enum a2);
+
+    void set_curr_anim(anim_key *the_anim_key);
 
     //0x00451500
     actor *get_target();

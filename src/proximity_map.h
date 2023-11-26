@@ -10,6 +10,13 @@ struct subdivision_visitor;
 struct sector2d;
 struct dynamic_proximity_map_stack;
 
+inline constexpr auto STOP_VISITING_FARTHER_CELLS = 2;
+inline constexpr auto STOP_VISITING_WITHIN_THIS_CELL = 3;
+
+struct cell_index {
+    int16_t x, y;
+};
+
 struct proximity_map {
 
     enum proximity_map_type_t
@@ -30,8 +37,22 @@ struct proximity_map {
     int log_number_of_cells;
     bool initialized;
 
+    void map_vector3d_range_to_cell_range_with_swapping(
+        const vector3d &a2,
+        const vector3d &a3,
+        cell_index &start_index,
+        cell_index &end_index);
+
+    void map_vector3d_to_cell_index(const vector3d &a2, cell_index *a3);
+
     //0x005115E0
     int traverse_point(const vector3d &a2, subdivision_visitor &a3);
+
+    //0x005229B0
+    int traverse_sphere(
+        const vector3d &a2,
+        Float a3,
+        subdivision_visitor *a4);
 
     //0x00522680
     void traverse_sector_raster(const sector2d &sec,

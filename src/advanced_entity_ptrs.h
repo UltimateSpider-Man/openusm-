@@ -12,14 +12,11 @@ struct generic_mash_data_ptrs;
 
 struct movement_info {
     po field_0;
-    vector3d field_30;
-    int field_3C;
     float field_40;
-    int field_44;
-    int field_48;
-    int field_4C;
+    vector3d field_44;
     int field_50;
     bool field_54;
+    bool field_55;
 };
 
 struct coninfo_t;
@@ -28,7 +25,7 @@ struct advanced_entity_ptrs {
     coninfo_t *coninfo;
     _std::vector<vhandle_type<actor>> *ignore_col_ents;
     void *field_8;
-    movement_info *field_C;
+    movement_info *mi;
     script_instance *my_script;
 
     advanced_entity_ptrs();

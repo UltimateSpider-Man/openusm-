@@ -3,15 +3,21 @@
 #include "GL/gl.h"
 
 #include "beam.h"
+#include "bitvector.h"
 #include "camera.h"
+#include "camera_teleport_update_visitor.h"
 #include "city_lod.h"
+#include "culling_params.h"
+#include "cut_scene_player.h"
 #include "debug_render.h"
 #include "filespec.h"
 #include "func_wrapper.h"
 #include "game.h"
 #include "geometry_manager.h"
 #include "glass_house_manager.h"
+#include "hierarchical_entity_proximity_map.h"
 #include "line_info.h"
+#include "loaded_regions_cache.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
 #include "render_text.h"
@@ -40,6 +46,12 @@
 #include <cmath>
 
 VALIDATE_SIZE(wds_render_manager, 156u);
+
+struct traversed_entity {
+    entity_base_vhandle m_handle;
+    int field_4;
+};
+static Var<fixed_vector<traversed_entity, 750> *> traversed_entities_last_frame {0x0095C7B4};
 
 wds_render_manager::wds_render_manager() {
     this->field_30.sub_56FCB0();
@@ -182,6 +194,60 @@ void wds_render_manager::update_occluders(camera *a2) {
     }
 }
 
+void update_camera_teleport(camera &cam)
+{
+    TRACE("update_camera_teleport");
+
+    if constexpr (1) {
+        auto *v1 = g_cut_scene_player();
+        auto v17 = ( v1->is_playing() ? 1.0 : 25.0 );
+
+        static Var<vector3d> last_camera_position {0x00960B48};
+        static Var<bool> last_camera_position_valid {0x00960B54};
+
+        auto &abs_pos = cam.get_abs_position();
+        if ( !last_camera_position_valid() )
+        {
+            last_camera_position() = abs_pos;
+        }
+
+        ++entity::visit_key();
+
+        auto len2 = (last_camera_position() - abs_pos).length2();
+        if ( len2 > v17 )
+        {
+            fixed_vector<region *, 15> a2 {};
+            
+            camera_teleport_update_visitor_t visitor {};
+            loaded_regions_cache::get_regions_intersecting_sphere(abs_pos, culling_params::entity_traversal_distance, &a2);
+            for (auto i = 0u; i < a2.size(); ++i) 
+            {
+                region *reg = a2.at(i);
+                assert(reg != nullptr);
+
+                reg->visibility_map->traverse_sphere(
+                                                abs_pos,
+                                                culling_params::entity_traversal_distance,
+                                                &visitor);
+                auto *bitvector_of_legos_rendered_last_frame = reg->bitvector_of_legos_rendered_last_frame;
+                if ( bitvector_of_legos_rendered_last_frame != nullptr ) {
+                    bitvector_of_legos_rendered_last_frame->clear();
+                }
+
+            }
+
+            if ( traversed_entities_last_frame() != nullptr ) {
+                traversed_entities_last_frame()->m_size = 0;
+            }
+        }
+
+        last_camera_position() = cam.get_abs_position();
+        last_camera_position_valid() = true;
+    } else {
+        CDECL_CALL(0x00530760, &cam);
+    }
+}
+
 #include "debug_menu.h"
 
 void wds_render_manager::render(camera &a2, int a3)
@@ -247,6 +313,8 @@ void wds_render_manager_patch() {
         FUNC_ADDRESS(address, &wds_render_manager::render);
         REDIRECT(0x0054E52D, address);
     }
+
+    REDIRECT(0x0054B265, update_camera_teleport);
 
     {
         FUNC_ADDRESS(address, &wds_render_manager::init_level);

@@ -7,8 +7,8 @@ struct nglTexture;
 
 struct nglRenderNode {
     std::intptr_t m_vtbl;
-    nglRenderNode *field_4;
-    nglTexture *field_8;
+    nglRenderNode *m_next_node;
+    nglTexture *m_tex;
 
     /* virtual */ void Render() /* = 0 */;
 

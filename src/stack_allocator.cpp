@@ -69,3 +69,10 @@ void stack_allocator::pop(void *pointer, int size_bytes) {
 
     assert((long(current) & (alignment - 1)) == 0);
 }
+
+void stack_allocator::free()
+{
+    mem_freealign(this->segment);
+    this->segment = nullptr;
+    this->current = nullptr;
+}

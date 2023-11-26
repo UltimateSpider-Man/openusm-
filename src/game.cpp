@@ -134,8 +134,18 @@ void construct_script_controllers() {
     CDECL_CALL(0x0065F4E0);
 }
 
+void destruct_script_controllers()
+{
+    CDECL_CALL(0x0064E290);
+}
+
 void init_subdivision() {
     init_proximity_map_stacks();
+}
+
+void term_subdivision()
+{
+    CDECL_CALL(0x0052E700);
 }
 
 game::level_load_stuff::level_load_stuff() {
@@ -280,10 +290,7 @@ game::game()
         game_button a2{};
         this->field_80.sub_48C800(&a2);
 
-        occlusion::quad_database() = new occlusion::quad[400u];
-        occlusion::quad_database_count() = 0;
-        occlusion::initialized() = true;
-        occlusion::num_active_shadow_volumes() = 0u;
+        occlusion::init();
         init_subdivision();
 
         g_debug_mem_dump_frame() = os_developer_options::instance()->get_int(mString {"MEM_DUMP_FRAME"});
@@ -293,8 +300,94 @@ game::game()
     }
 }
 
-game::~game() {
-    THISCALL(0x00559D10, this);
+game::~game()
+{
+    if constexpr (0) {
+        if ( this->gamefile != nullptr ) {
+            void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(gamefile->m_vtbl, 0x4));
+            finalize(this->gamefile, nullptr, true);
+            this->gamefile = nullptr;
+        }
+
+        if ( g_smoke_test() != nullptr ) {
+            auto &v3 = g_smoke_test();
+            v3->~smoke_test();
+            operator delete(v3);
+            g_smoke_test() = nullptr;
+        }
+
+        auto &v4 = this->gamefile;
+        if ( v4 != nullptr ) {
+            void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(v4->m_vtbl, 0x4));
+            finalize(v4, nullptr, true);
+        }
+
+        subtitles_kill();
+        if ( this->the_world != nullptr ) {
+            if ( !g_is_the_packer() ) {
+                this->unload_current_level();
+            }
+
+            g_femanager().ReleaseIGO();
+            g_femanager().ReleaseFonts();
+            g_femanager().ReleaseFrontEnd();
+
+            auto *partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_HERO);
+            assert(partition != nullptr);
+            assert(partition->get_streamer() != nullptr);
+
+            auto *v5 = partition->get_streamer();
+            v5->flush(nullptr);
+            v5->unload_all();
+            v5->flush(nullptr);
+
+            partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_LANG);
+            assert(partition != nullptr);
+            assert(partition->get_streamer() != nullptr);
+            auto *v6 = partition->get_streamer();
+            v6->flush(nullptr);
+            v6->unload_all();
+            v6->flush(nullptr);
+
+            partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_START);
+            assert(partition != nullptr);
+            assert(partition->get_streamer() != nullptr);
+
+            auto *v7 = partition->get_streamer();
+            v7->flush(nullptr);
+            v7->unload_all();
+            v7->flush(nullptr);
+
+            term_subdivision();
+            if ( g_world_ptr() != nullptr ) {
+                g_world_ptr()->~world_dynamics_system();
+                operator delete(g_world_ptr());
+            }
+
+            g_world_ptr() = nullptr;
+        }
+
+        USOcean2Shader::Release();
+        destruct_script_controllers();
+
+        if (this->mb != nullptr) {
+            this->message_board_clear();
+        }
+
+        script_manager::clear();
+        if ( !g_is_the_packer() ) {
+            this->one_time_deinit_stuff();
+        }
+
+        script_manager::kill();
+
+        occlusion::term();
+
+        scratchpad_stack::term();
+
+    } else {
+        THISCALL(0x00559D10, this);
+    }
 }
 
 void game::begin_hires_screenshot(int a2, int a3)
@@ -565,7 +658,8 @@ void game::render_world()
     }
 }
 
-void game::advance_state_legal(Float a2) {
+void game::advance_state_legal(Float a2)
+{
     //sp_log("advance_state_legal: start");
 
     if constexpr (1) {
@@ -602,6 +696,14 @@ void game::advance_state_legal(Float a2) {
     }
 
     //sp_log("advance_state_legal: end");
+}
+
+void game::handle_frame_locking(float *a1)
+{
+    auto frame_lock = os_developer_options::instance()->get_int(mString {"FRAME_LOCK"});
+    if ( frame_lock > 0 ) {
+        *a1 = 1.0 / frame_lock;
+    }
 }
 
 void game_packs_modified_callback(_std::vector<resource_key> &a1) {
@@ -1107,7 +1209,7 @@ void game::load_this_level()
         auto *common_streamer = common_partition->get_streamer();
         common_streamer->load(v90.c_str(), 0, nullptr, nullptr);
         common_streamer->flush(RenderLoadMeter);
-        resource_manager::get_and_push_resource_context((resource_partition_enum ) 4);
+        resource_manager::get_and_push_resource_context(RESOURCE_PARTITION_COMMON);
 
         slc_manager::init();
 
@@ -1644,6 +1746,14 @@ void game::frame_advance_game_overlays(Float a1) {
 
 void game::message_board_init() {
     this->mb = new message_board{};
+}
+
+void game::message_board_clear()
+{
+    if ( this->mb != nullptr ) {
+        this->mb->~message_board();
+        this->mb = nullptr;
+    }
 }
 
 void game::render_motion_blur() {

@@ -34,6 +34,8 @@ struct entity_base_vhandle {
 
 inline constexpr entity_base_vhandle INVALID_HANDLE = {0};
 
+inline constexpr auto INVALID_VHANDLE = 0;
+
 template<typename T0, typename T1 = typename T0::base_type>
 struct vhandle_type {
     using value_type = T0;
@@ -49,6 +51,16 @@ struct vhandle_type {
     bool operator==(const vhandle_type<T0> &arg) 
     {
         return get_volatile_ptr() != nullptr;
+    }
+
+    bool operator==(int arg) 
+    {
+        return get_volatile_ptr() != nullptr;
+    }
+
+    bool operator==(const entity_base_vhandle &a1) const
+    {
+        return (this->field_0 == a1.field_0);
     }
 
     bool operator!=(const vhandle_type<T0> &arg) 

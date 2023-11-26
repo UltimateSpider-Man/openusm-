@@ -301,16 +301,16 @@ bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3) {
         a2.field_C[2] = v11;
         auto a2a = (v20 ? v20->get_my_handle() : 0);
         auto v13 = a5[0];
-        a2.field_48 = {a2a};
+        a2.hit_entity = {a2a};
         a2.hit_norm[0] = v13;
         a2.hit_norm[1] = a5[1];
         a2.hit_norm[2] = a5[2];
         a2.hit_pos[0] = v12;
-        auto v14 = v21;
         a2.hit_pos[1] = v10;
         a2.hit_pos[2] = v11;
+        auto v14 = v21;
         a2.field_4C = v14;
-        a2.field_58 = 1;
+        a2.collision = true;
 
         auto get_phys_ifc = (*vtbl)[74];
 
@@ -457,12 +457,12 @@ void hero_inode::cleanup_collision_lists() {
     }
 }
 
-int hero_inode::get_hero_type() {
-#if 0
-    return get_hero_type_helper();
-#else
-    return CDECL_CALL(0x0068A050);
-#endif
+hero_type_enum hero_inode::get_hero_type() {
+    if constexpr (0) {
+        //return (hero_type_enum) get_hero_type_helper();
+    } else {
+        return (hero_type_enum) CDECL_CALL(0x0068A050);
+    }
 }
 
 bool hero_inode::crawl_is_eligible_internals(string_hash a2, bool a3) {

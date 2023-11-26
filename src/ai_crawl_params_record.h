@@ -2,13 +2,16 @@
 
 #include "vector3d.h"
 
+enum crawl_transition_type_enum {};
+
 namespace ai {
 
 struct als_inode;
 
 struct crawl_params_record {
-    int field_0;
+    crawl_transition_type_enum field_0;
     bool field_4;
+    bool field_5;
     float field_8;
     float field_C;
     vector3d field_10;

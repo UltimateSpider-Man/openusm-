@@ -7,7 +7,7 @@ struct anim_key;
 
 struct anim_record : mash_virtual_base {
 
-    anim_key *field_4;
+    anim_key *my_key;
     string_hash field_8;
 
     anim_record();

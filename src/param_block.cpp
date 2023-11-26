@@ -298,6 +298,18 @@ bool param_block::does_parameter_exist(string_hash a2) const {
     return result;
 }
 
+bool param_block::does_parameter_match(const param_block::param_data *a2) const
+{
+    if ( this->param_array == nullptr ) {
+        return false;
+    }
+
+    auto v5 = a2->field_8;
+    auto *other = this->param_array->common_find_data(v5);
+    assert(other != nullptr && "attempting to match a parameter that doesn't exist");
+    return a2->deep_compare(other);
+}
+
 void param_block::sub_6D6EB0() {
     auto *v2 = bit_cast<param_data_array *>(this->param_array);
     if (v2 != nullptr && this->field_8) {
@@ -321,6 +333,11 @@ void param_block::sub_6D6EB0() {
 void param_block::param_data::custom_unmash(mash_info_struct *a2, void *a3)
 {
     THISCALL(0x006CC070, this, a2, a3);
+}
+
+bool param_block::param_data::deep_compare(const param_block::param_data *a2) const
+{
+    return (bool) THISCALL(0x006C4AE0, this, a2);
 }
 
 void param_block::param_data::unmash(mash_info_struct *a1, void *a3)

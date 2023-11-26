@@ -22,24 +22,20 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3)
 
     if constexpr (1) {
         struct {
-            nglRenderNode *field_0;
-            nglTexture *field_4;
-        } *list = static_cast<decltype(list)>(nglListAlloc(8 * count, 16));
+            nglRenderNode *m_node;
+            nglTexture *m_tex;
+        } *v1 = static_cast<decltype(v1)>(nglListAlloc(8 * count, 16));
 
-        auto sub_FE1420 = [](auto *a1, nglRenderNode *a2) -> void {
-            while (a2) {
-                a1->field_0 = a2;
-                a1->field_4 = a2->field_8;
-                ++a1;
-                a2 = a2->field_4;
+        [](auto *a1, nglRenderNode *a2) -> void {
+            for (; a2 != nullptr; ++a1, a2 = a2->m_next_node ) {
+                a1->m_node = a2;
+                a1->m_tex = a2->m_tex;
             }
-        };
+        }(v1, node);
 
-        sub_FE1420(list, node);
+        sub_77DFB0(v1, v1 + 8 * count, (8 * count) >> 3, a3);
 
-        sub_77DFB0(list, list + 8 * count, (8 * count) >> 3, a3);
-
-        auto sub_FE1480 = [](auto *begin, nglRenderNode *&a2, int count) -> void {
+        [](auto *begin, nglRenderNode *&a2, int count) -> void {
             auto end = begin + count;
 
             nglRenderNode *v3 = nullptr;
@@ -47,18 +43,16 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3)
                     std::make_reverse_iterator(end),
                     std::make_reverse_iterator(begin),
                     [&v3](auto &n) {
-                        n.field_0->field_4 = v3;
-                        v3 = n.field_0;
+                        n.m_node->m_next_node = v3;
+                        v3 = n.m_node;
                     });
 
             a2 = v3;
-        };
-
-        sub_FE1480(list, node, count);
+        }(v1, node, count);
 
         static Var<nglRenderNode *> nglPrevNode{0x00971F18};
 
-        for ( auto *v9 = node; v9 != nullptr; v9 = v9->field_4 ) {
+        for ( auto *v9 = node; v9 != nullptr; v9 = v9->m_next_node ) {
             v9->Render();
 
             nglPrevNode() = v9;

@@ -17,4 +17,6 @@ struct stack_allocator {
     void reset();
 
     void pop(void *pointer, int size_bytes);
+
+    void free();
 };

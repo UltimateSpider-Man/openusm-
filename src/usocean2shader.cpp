@@ -12,6 +12,11 @@ void USOcean2Shader::Init() {
     USOcean2Shader::OceanMesh() = nglGetFirstMeshInFile(a1);
 }
 
+void USOcean2Shader::Release()
+{
+    CDECL_CALL(0x00403240);
+}
+
 void USOcean2Shader::Draw(const vector3d &a1) {
     CDECL_CALL(0x00408A00, &a1);
 }

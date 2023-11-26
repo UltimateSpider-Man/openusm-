@@ -18,9 +18,9 @@ struct hero_base_state : base_state {
 
     //0x00478D80
     //virtual
-    state_trans_action *check_transition(state_trans_action *out, Float a3);
+    state_trans_action check_transition(Float a3);
 
-    static inline Var<string_hash> NO_TRANS{0x00958408};
+    static inline string_hash NO_TRANS{int(to_hash("DO NOT TRANSITION!"))};
 };
 
 } // namespace ai

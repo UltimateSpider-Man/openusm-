@@ -7,7 +7,9 @@
 #include "event.h"
 #include "func_wrapper.h"
 #include "state_machine.h"
+#include "trace.h"
 #include "utility.h"
+#include "vtbl.h"
 #include "wds.h"
 
 namespace ai {
@@ -31,6 +33,12 @@ string_hash als_inode::sub_48B100(als::layer_types a3) {
 
     string_hash id = v3->get_state_id();
     return id;
+}
+
+bool als_inode::is_layer_interruptable(als::layer_types a1)
+{
+    auto *als_layer = this->get_als_layer(a1);
+    return als_layer->is_interruptable();
 }
 
 string_hash als_inode::get_category_id(als::layer_types a3) {
@@ -96,11 +104,42 @@ float als_inode::get_eta_of_combat_signal(als::layer_types a2) {
     }
 }
 
+bool als_inode::sub_48B140(string_hash a2, als::layer_types a3)
+{
+    auto *als_layer = this->get_als_layer(a3);
+    bool (__fastcall *is_cat_our_prev_cat)(const void *, void *, string_hash) = CAST(is_cat_our_prev_cat,get_vfunc(als_layer->m_vtbl, 0x58));
+    return is_cat_our_prev_cat(als_layer, nullptr, a2);
+}
+
+bool als_inode::anim_finished(string_hash a2, als::layer_types a3)
+{
+    TRACE("als_inode::anim_finished");
+
+    auto *v3 = this->field_1C->get_als_layer(a3);
+    if ( v3->is_cat_our_prev_cat(a2) ) {
+        return true;
+    }
+
+    if ( v3->get_category_id() == a2 )
+    {
+        return std::abs(v3->get_time_to_end_of_anim()) < EPSILON;
+    }
+    else
+    {
+        return !v3->is_requesting_category(a2);
+    }
+}
+
 } // namespace ai
 
 void als_inode_patch() {
     {
         FUNC_ADDRESS(address, &ai::als_inode::get_eta_of_combat_signal);
         //set_vfunc(0x0087CEF8, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::als_inode::anim_finished);
+        SET_JUMP(0x00689E10, address);
     }
 }

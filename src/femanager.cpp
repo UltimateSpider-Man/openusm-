@@ -190,6 +190,11 @@ void FEManager::RenderLoadMeter(bool a2) {
     }
 }
 
+void FEManager::ReleaseIGO()
+{
+    THISCALL(0x00642E40, this);
+}
+
 void FEManager::ReleaseFonts() {
     for (int i = 0; i < 5; ++i) {
         this->ReleaseFont(font_index{i});

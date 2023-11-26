@@ -128,4 +128,6 @@ struct ptr_to_po {
     void sub_48E900(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
 };
 
+extern po sub_48F770(const po &arg4, const po &a3);
+
 extern void po_patch();

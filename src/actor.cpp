@@ -35,6 +35,7 @@
 #include <list.hpp>
 
 VALIDATE_SIZE(actor, 0xC0u);
+VALIDATE_OFFSET(actor, adv_ptrs, 0x78);
 
 actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3)
 {
@@ -197,10 +198,13 @@ void actor::common_destruct() {
     THISCALL(0x004F5720, this);
 }
 
-void actor::cancel_animated_movement(const vector3d &a2, Float a3) {
+void actor::cancel_animated_movement(const vector3d &a2, Float a3)
+{
+    TRACE("actor::cancel_animated_movement");
+
     if constexpr (1) {
         if (this->is_frame_delta_valid()) {
-            auto &v4 = this->adv_ptrs->field_C->field_0;
+            auto &v4 = this->adv_ptrs->mi->field_0;
 
             vector3d pos = v4.get_position();
 
@@ -239,7 +243,7 @@ void actor::get_velocity(vector3d *a2) {
                 *a2 = v4->get_velocity();
                 auto *v6 = this->adv_ptrs;
                 if (v6 != nullptr) {
-                    auto *v7 = v6->field_C;
+                    auto *v7 = v6->mi;
                     if (v7 != nullptr) {
                         if (v7->field_54) {
                             auto *v8 = this->physical_ifc();
@@ -248,7 +252,7 @@ void actor::get_velocity(vector3d *a2) {
                             if (v9->field_84.get_volatile_ptr() != nullptr) {
                                 auto *v10 = this->physical_ifc();
                                 if (v10->field_84.get_volatile_ptr() == (entity *) v3) {
-                                    auto *v11 = (const vector3d *) this->adv_ptrs->field_C;
+                                    auto *v11 = (const vector3d *) this->adv_ptrs->mi;
                                     auto v31 = 1.f / v11[5][1];
                                     auto v12 = v11[4] * v31;
                                     *a2 += v12;
@@ -297,13 +301,13 @@ void actor::get_velocity(vector3d *a2) {
 
             auto *v26 = this->adv_ptrs;
             if (v26 != nullptr) {
-                auto *v27 = v26->field_C;
+                auto *v27 = v26->mi;
                 if (v27 != nullptr) {
                     if (v27->field_54) {
-                        auto *v28 = this->adv_ptrs->field_C;
+                        auto *v28 = this->adv_ptrs->mi;
                         auto v29 = 1.f / v28->field_40;
 
-                        *a2 += v29 * v28->field_30;
+                        *a2 += v28->field_0.get_position() * v29;
                     }
                 }
             }
@@ -847,15 +851,17 @@ void actor::_render(Float a2)
                 ShaderParams.SetParam(frame_param);
             }
 
-            advanced_entity_ptrs *v15 = nullptr;
-            if (a2 != 1.f || (v15 = this->adv_ptrs) != nullptr && v15->field_8 != nullptr) {
+            if ( a2 != 1.f
+                    || (this->adv_ptrs != nullptr && this->adv_ptrs->field_8 != nullptr)
+                    )
+            {
                 auto *mem = nglListAlloc(16, 16);
 
                 auto v17 = this->get_render_color();
 
                 color *v18 = new (mem) color{v17.to_color()};
 
-                v18->a = this->get_render_alpha_mod() * v18->a * a2;
+                v18->a *= this->get_render_alpha_mod() * a2;
 
                 nglTintParam param{(vector4d *) v18};
                 ShaderParams.SetParam(param);
@@ -891,40 +897,33 @@ double actor::get_colgeom_radius() {
     return (float) func(this);
 };
 
-bool actor::is_frame_delta_valid() {
+bool actor::is_frame_delta_valid() const {
+    TRACE("actor::is_frame_delta_valid");
+
     if constexpr (1) {
-        auto *v1 = this->adv_ptrs;
-        bool result = false;
-        if (v1 != nullptr) {
-            auto *v2 = v1->field_C;
-            if (v2 != nullptr) {
-                if (v2->field_54) {
-                    result = true;
-                }
-            }
-        }
-        return result;
+        auto v1 = (this->adv_ptrs != nullptr && this->adv_ptrs->mi != nullptr );
+        return v1 && this->adv_ptrs->mi->field_54;
     } else {
-        return (bool) THISCALL(0x004B8FC0, this);
+        bool (__fastcall *func)(const void *) = CAST(func, 0x004B8FC0);
+        return func(this);
     }
 }
 
 movement_info *actor::get_movement_info() {
-    movement_info *result = nullptr;
-
-    if (this->adv_ptrs) {
-        result = this->adv_ptrs->field_C;
+    if (this->adv_ptrs != nullptr) {
+        return this->adv_ptrs->mi;
     }
 
-    return result;
+    return nullptr;
 }
 
 po *actor::get_frame_delta() {
     if constexpr (1) {
         po *result = nullptr;
 
-        auto *v1 = this->adv_ptrs;
-        if (v1 == nullptr || (result = &v1->field_C->field_0) == nullptr) {
+        if (this->adv_ptrs == nullptr || this->adv_ptrs->mi == nullptr) {
+            result = &this->adv_ptrs->mi->field_0;
+        } else {
             static po po_identity_matrix{};
 
             result = &po_identity_matrix;
@@ -1179,6 +1178,16 @@ void actor_patch()
         FUNC_ADDRESS(address, &actor::_render);
         set_vfunc(0x0088434C, address);
     }
+
+    {
+        FUNC_ADDRESS(address, &actor::is_frame_delta_valid);
+        SET_JUMP(0x004B8FC0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &actor::cancel_animated_movement);
+        SET_JUMP(0x004E3970, address);
+    }
     return;
 
     {
@@ -1197,10 +1206,6 @@ void actor_patch()
         {
             FUNC_ADDRESS(address, &actor::kill_interact_anim);
             SET_JUMP(0x004CC740, address);
-        }
-        {
-            FUNC_ADDRESS(address, &actor::cancel_animated_movement);
-            SET_JUMP(0x004E3970, address);
         }
     }
 }

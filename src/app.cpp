@@ -306,6 +306,8 @@ void app::tick()
             event_manager::garbage_collect();
             input_mgr::instance()->poll_devices();
 
+            assert(time_inc >= 0 && time_inc < 10.0f);
+
             static Var<float> dword_9682D0{0x009682D0};
             static Var<float> dword_9680A8{0x009680A8};
 
@@ -318,7 +320,7 @@ void app::tick()
             byte_9682F0() = false;
         }
 
-        if (os_developer_options::instance()->get_int(mString{"FRAME_LIMIT"})) //
+        if (os_developer_options::instance()->get_int(mString{"FRAME_LIMIT"}))
         {
             while (local_timer.elapsed() < 0.033333335) {
                 ;
@@ -373,11 +375,6 @@ void app_patch()
         //REDIRECT(0x005E10BF, tokenizer_unit_test);
         //REDIRECT(0x005E10BF, collide_unit_test);
         REDIRECT(0x005E10BF, mString_unit_test);
-
-        {
-            FUNC_ADDRESS(address, &app::tick);
-            REDIRECT(0x005AD495, address);
-        }
     }
 
     REDIRECT(0x005E10EE, init_shadow_targets);

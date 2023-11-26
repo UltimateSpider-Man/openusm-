@@ -57,6 +57,12 @@ struct state_machine {
 
     bool is_active() const;
 
+    double get_time_to_end_of_anim();
+
+    bool is_cat_our_prev_cat(string_hash a2) const;
+
+    bool is_requesting_category(string_hash a2) const;
+
     //0x004A6A60
     //virtual
     void set_desired_params(param_list &a2);

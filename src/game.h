@@ -160,6 +160,8 @@ struct game {
 
     game_state get_cur_state() const;
 
+    void handle_frame_locking(float *a1);
+
     //0x00548C10
     void begin_hires_screenshot(int a2, int a3);
 
@@ -207,6 +209,8 @@ struct game {
 
     //0x0054F860
     void message_board_init();
+
+    void message_board_clear();
 
     //0x00559FA0
     void advance_state_running(Float a2);

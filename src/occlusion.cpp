@@ -20,6 +20,25 @@ Var<int> occlusion::quad_database_count = (0x0095C884);
 Var<bool> occlusion::initialized = (0x0095C87C);
 Var<int> occlusion::num_active_shadow_volumes = (0x0095C88C);
 
+namespace occlusion {
+
+void init()
+{
+    quad_database() = new quad[400u];
+    quad_database_count() = 0;
+    initialized() = true;
+    num_active_shadow_volumes() = 0;
+}
+
+void term()
+{
+    operator delete[](quad_database());
+    quad_database() = nullptr;
+    quad_database_count() = 0;
+}
+
+}
+
 void occlusion::add_quad_to_database(const occlusion::quad &a1) {
     if (quad_database_count() < 399) {
         std::memcpy(&quad_database()[quad_database_count()++], &a1, sizeof(occlusion::quad));

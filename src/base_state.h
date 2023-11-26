@@ -44,7 +44,7 @@ struct base_state : mash_virtual_base {
     //0x006BD4D0
     string_hash get_name();
 
-    bool is_flag_set(int a2);
+    bool is_flag_set(int a2) const;
 
     /* virtual */ ~base_state() = default;
 
