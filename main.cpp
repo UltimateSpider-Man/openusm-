@@ -83,6 +83,7 @@
 #include "ghetto_mash_file_header.h"
 #include "glass_house_manager.h"
 #include "glass_house_resource_handler.h"
+#include "hierarchical_entity_proximity_map.h"
 #include "igofrontend.h"
 #include "igozoomoutmap.h"
 #include "item_resource_handler.h"
@@ -98,6 +99,7 @@
 #include "line_anchor.h"
 #include "link_system.h"
 #include "localized_string_table.h"
+#include "local_collision.h"
 #include "mAvlTree.h"
 #include "main_menu_keyboard.h"
 #include "main_menu_options.h"
@@ -2644,6 +2646,8 @@ BOOL install_redirects() {
 
     hero_inode_patch();
 
+    als_inode_patch();
+
     plr_loco_crawl_state_patch();
 
     plr_loco_crawl_transition_state_patch();
@@ -2651,6 +2655,14 @@ BOOL install_redirects() {
     ai_player_controller_patch();
 
     ai_state_machine_patch();
+
+    line_info_patch();
+    
+    local_collision_patch();
+
+    hierarchical_entity_proximity_map_patch();
+
+    spidey_base_state_patch();
 
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
@@ -2864,8 +2876,6 @@ BOOL install_redirects() {
 
         nglRenderList_patch();
 
-        line_info_patch();
-
         swing_anchor_obbfilter_patch();
 
         quick_anchor_info_patch();
@@ -2877,8 +2887,6 @@ BOOL install_redirects() {
         FileUSM_patch();
 
         web_zip_state_patch();
-
-        spidey_base_state_patch();
 
         ai_state_machine_patch();
 
@@ -2910,8 +2918,6 @@ BOOL install_redirects() {
         entity_resource_handler_patch();
 
         eligible_pack_streamer_patch();
-
-        als_inode_patch();
 
         nglMesh_patch();
 
