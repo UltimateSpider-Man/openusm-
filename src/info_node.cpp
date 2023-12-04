@@ -4,6 +4,7 @@
 #include "common.h"
 #include "entity_base.h"
 #include "func_wrapper.h"
+#include "vtbl.h"
 
 namespace ai {
 
@@ -24,6 +25,18 @@ info_node::info_node(from_mash_in_place_constructor *a2) {
 
 actor *info_node::get_actor() {
     return this->field_C;
+}
+
+bool info_node::does_need_advance() const
+{
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x18));
+    return func(this);
+}
+
+void info_node::frame_advance(Float a2)
+{
+    void (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x1C));
+    func(this, nullptr, a2);
 }
 
 } // namespace ai

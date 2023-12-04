@@ -86,6 +86,10 @@ struct entity_base : entity_base_vtable {
 
     float sub_57CB80();
 
+    bool sub_4CB240();
+
+    po *sub_4CB220();
+
     ////// VIRTUAL FUNCTIONS: START //////
 
     //0x004F8FA0

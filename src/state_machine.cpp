@@ -116,8 +116,8 @@ int state_machine::get_optional_pb_int(
     return func(this, &a2, a3, a4);
 }
 
-int state_machine::get_layer_id() {
-    auto func = get_vfunc(m_vtbl, 0x7C);
+layer_types state_machine::get_layer_id() {
+    layer_types (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x7C));
     return func(this);
 }
 

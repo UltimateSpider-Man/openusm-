@@ -27,6 +27,7 @@
 #include "anchor_query_visitor.h"
 #include "animation_controller.h"
 #include "animation_interface.h"
+#include "anim_handle.h"
 #include "anim_resource_handler.h"
 #include "anim_record.h"
 #include "app.h"
@@ -39,6 +40,7 @@
 #include "box_trigger_resource_handler.h"
 #include "camera.h"
 #include "camera_target_info.h"
+#include "character_anim_controller.h"
 #include "character_viewer.h"
 #include "chuck_callbacks.h"
 #include "city_lod.h"
@@ -83,6 +85,7 @@
 #include "ghetto_mash_file_header.h"
 #include "glass_house_manager.h"
 #include "glass_house_resource_handler.h"
+#include "hero_base_state.h"
 #include "hierarchical_entity_proximity_map.h"
 #include "igofrontend.h"
 #include "igozoomoutmap.h"
@@ -117,6 +120,7 @@
 #include "moved_entities.h"
 #include "mstring.h"
 #include "multilinestring.h"
+#include "nal_anim_controller.h"
 #include "nal_system.h"
 #include "nfl_driver.h"
 #include "nfl_system.h"
@@ -213,6 +217,7 @@
 #include "us_simpleshader.h"
 #include "us_translucentshader.h"
 #include "us_variant.h"
+#include "usm_anim_player.h"
 #include "utility.h"
 #include "variables.h"
 #include "vector3d.h"
@@ -2647,6 +2652,14 @@ BOOL install_redirects() {
     hero_inode_patch();
 
     als_inode_patch();
+    
+    nal_anim_controller_patch();
+
+    character_anim_controller_patch();
+
+    usm_anim_player_patch();
+
+    anim_handle_patch();
 
     plr_loco_crawl_state_patch();
 
@@ -2663,6 +2676,8 @@ BOOL install_redirects() {
     hierarchical_entity_proximity_map_patch();
 
     spidey_base_state_patch();
+
+    hero_base_state_patch();
 
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;

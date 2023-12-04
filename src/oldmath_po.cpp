@@ -657,6 +657,11 @@ mString po::to_string() const {
     return result;
 }
 
+void po::sub_48D840()
+{
+    THISCALL(0x0048D840, this);
+}
+
 po sub_48F770(const po &arg4, const po &a3)
 {
     ptr_to_po a2;

@@ -108,8 +108,8 @@ entity *entity::compute_sector(terrain *a1, bool a2, entity *a3) {
 
         return result;
     } else {
-        auto func = get_vfunc(m_vtbl, 0x16C);
-        func(this, a1, a2, a3);
+        entity * (__fastcall *func)(void *, void *, terrain *, bool, entity *) = CAST(func, get_vfunc(m_vtbl, 0x16C));
+        return func(this, nullptr, a1, a2, a3);
     }
 }
 
@@ -119,7 +119,9 @@ void entity::force_region_hack(region *a2) {
     this->regions[0] = a2;
 }
 
-void entity::force_region(region *r) {
+void entity::force_region(region *r)
+{
+    TRACE("entity::force_region");
 
     if constexpr (0) {
         if ((this->field_4 & 0x10000000) == 0) {

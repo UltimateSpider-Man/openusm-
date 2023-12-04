@@ -31,4 +31,6 @@ struct time_interface {
     void add_to_time_ifc_list();
 
     bool is_combat_dilated();
+
+    double sub_4ADE50();
 };

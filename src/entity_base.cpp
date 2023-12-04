@@ -1329,7 +1329,24 @@ bool entity_base::event_raised_last_frame(string_hash a2) {
     return (bool) THISCALL(0x004F3800, this, a2);
 }
 
-void entity_base::set_abs_po(const po &the_po) {
+bool entity_base::sub_4CB240()
+{
+    if ( !this->is_conglom_member() ) {
+        return false;
+    }
+
+    if ( this == this->my_conglom_root ) {
+        return false;
+    }
+
+    auto v2 = this->rel_po_idx - 1;
+    return v2 < this->my_conglom_root->all_model_po.size();
+}
+
+void entity_base::set_abs_po(const po &the_po)
+{
+    TRACE("entity_base::set_abs_po");
+
     if constexpr (1) {
         assert(the_po.is_valid());
 
@@ -1371,6 +1388,11 @@ const vector3d &entity_base::get_abs_position()
 
 entity_base *entity_base::get_first_child() {
     return this->m_child;
+}
+
+po *entity_base::sub_4CB220()
+{
+    return &this->my_conglom_root->all_model_po.m_data[uint16_t(this->rel_po_idx - 1)];
 }
 
 void entity_base::dirty_family(bool a2) {

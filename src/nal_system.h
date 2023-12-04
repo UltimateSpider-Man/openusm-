@@ -31,9 +31,23 @@ namespace PanelComponentMgr {
 extern Var<int *> comp_list;
 }
 
-struct nal_anim_control {};
+struct nal_anim_control {
+    uint32_t m_vtbl;
+};
 
-struct nalAnyPose {};
+struct nalMatrix4x4 {};
+
+struct nalPositionOrientation {
+    float arr[4];
+};
+
+struct nalBasePose {
+    nalComp::nalCompSkeleton *field_0;
+};
+
+struct nalAnyPose {
+    nalBasePose *field_0;
+};
 
 struct nalBaseSkeleton;
 
@@ -50,7 +64,29 @@ struct nalAnimClass {
     int field_34;
     int field_38;
     int field_3C;
+    int field_40;
+    int field_44;
+
+    auto *GetSkeleton()
+    {
+        return this->Skeleton;
+    }
+
+    //virtual
+    void *VirtualCreateInstance(nalBaseSkeleton *Skel);
 };
+
+template<typename T>
+T *nalAnimPtrCast(nalAnimClass<nalAnyPose> *a1)
+{
+    if ( a1 != nullptr
+        && a1->m_vtbl == T::vtbl_ptr() )
+    {
+        return bit_cast<T *>(a1);
+    }
+
+    return nullptr;
+}
 
 namespace nalChar {
 struct nalCharAnim {
@@ -313,12 +349,22 @@ struct nalComponentInitList;
 
 namespace nalGeneric {
 
+struct nalGenericSkeleton;
+
 struct nalGenericAnim {
     std::intptr_t m_vtbl;
     int field_4[9];
 
     tlHashString field_28;
-    int field_2C[9];
+    unsigned int field_2C;
+    nalGenericSkeleton *field_30;
+    int field_34;
+    int field_38;
+    int field_3C;
+    int field_40;
+    int field_44;
+    int field_48;
+    int field_4C;
     int field_50;
 
     struct vtbl {};

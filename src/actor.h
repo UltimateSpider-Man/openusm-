@@ -107,6 +107,10 @@ struct actor : entity {
 
     void allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3);
 
+    generic_anim_controller *select_and_new_anim_controller(
+        nalBaseSkeleton *a2,
+        unsigned int a3);
+
     animation_controller::anim_ctrl_handle play_anim(const string_hash &a3);
 
     void bind_to_scene_anim();
@@ -199,6 +203,9 @@ struct actor : entity {
     //0x004B9000
     //virtual
     po *get_frame_delta();
+
+    //virtual
+    void set_frame_delta_trans(const vector3d &a2, Float a3);
 
     //0x004E31F0
     vector3d _get_visual_center();

@@ -1465,6 +1465,16 @@ void world_dynamics_system::add_anim_ctrl(animation_controller *a2) {
     THISCALL(0x00542160, this, a2);
 }
 
+nal_anim_control *world_dynamics_system::get_anim_ctrl(uint32_t a1)
+{
+    auto **slot_contents_ptr = this->field_0->get_slot_contents_ptr(a1);
+    if ( slot_contents_ptr != nullptr ) {
+        return *slot_contents_ptr;
+    }
+
+    return nullptr;
+}
+
 int get_hero_type_helper() {
     auto *hero_ptr = (actor *) g_world_ptr()->get_hero_ptr(0);
     if (hero_ptr != nullptr) {

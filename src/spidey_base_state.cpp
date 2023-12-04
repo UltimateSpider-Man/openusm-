@@ -406,15 +406,23 @@ string_hash spidey_base_state::get_desired_state_id(Float a3)
 
         return hit_react_state::default_id;
     } else {
-        THISCALL(0x00488680, this, a3);
+        string_hash result;
+        THISCALL(0x00488680, this, &result, a3);
+        return result;
     }
 }
 
 } // namespace ai
 
+
+string_hash * __fastcall get_desired_state_id(ai::spidey_base_state *self, void *, string_hash *a2, Float a3)
+{
+    *a2 = self->get_desired_state_id(a3);
+    return a2;
+}
+
 void spidey_base_state_patch() {
     {
-        FUNC_ADDRESS(address, &ai::spidey_base_state::get_desired_state_id);
-        set_vfunc(0x0087756C, address);
+        //set_vfunc(0x0087756C, &get_desired_state_id);
     }
 }

@@ -472,6 +472,13 @@ void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *
     nalSceneAnimDirectory() = CAST(nalSceneAnimDirectory(), a1);
 }
 
+template<>
+void *nalAnimClass<nalAnyPose>::VirtualCreateInstance(nalBaseSkeleton *Skel)
+{
+    void * (__fastcall *func)(void *, void *, nalBaseSkeleton *) = CAST(func, get_vfunc(m_vtbl, 0x10));
+    return func(this, nullptr, Skel);
+}
+
 void nalStreamInstance_patch() {
 
     REDIRECT(0x005AD21F, nalInit);

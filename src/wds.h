@@ -192,6 +192,8 @@ struct world_dynamics_system {
     //0x00542160
     void add_anim_ctrl(animation_controller *a2);
 
+    nal_anim_control *get_anim_ctrl(uint32_t a1);
+
     void sub_54A3B0();
 
     void sub_530460(const vector3d &a2, int visited_regions, bool a4);

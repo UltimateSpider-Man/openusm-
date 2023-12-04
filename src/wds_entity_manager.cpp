@@ -250,7 +250,7 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
             }
         }
 
-        auto v13 = v71 != nullptr;
+        auto v13 = (v71 != nullptr);
         int v70 = 0;
         if ( v13 )
         {

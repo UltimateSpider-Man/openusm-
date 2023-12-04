@@ -21,6 +21,7 @@
 #include "item.h"
 #include "interactable_interface.h"
 #include "lego_map.h"
+#include "nal_system.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
 #include "ngl_support.h"
@@ -127,10 +128,28 @@ void actor::ifl_lock(int a2)
     func(this, nullptr, a2);
 }
 
+generic_anim_controller *__thiscall actor::select_and_new_anim_controller(
+        nalBaseSkeleton *a2,
+        unsigned int a3)
+{
+    return (generic_anim_controller *) THISCALL(0x004CC470, this, a2, a3);
+}
+
 void actor::allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3) {
     TRACE("actor::allocate_anim_controller");
 
     if constexpr (0) {
+        if ( this->anim_ctrl == nullptr ) {
+            if ( a3 != nullptr ) {
+                this->select_and_new_anim_controller(a3, a2);
+            } else {
+                if ( this->m_skeleton == nullptr ) {
+                    this->m_skeleton = nalGetSkeleton(tlFixedString {"entity"});
+                }
+
+                this->select_and_new_anim_controller(this->m_skeleton, a2);
+            }
+        }
     } else {
         THISCALL(0x004CC630, this, a2, a3);
     }
@@ -139,7 +158,6 @@ void actor::allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3) {
 #include "resource_pack_slot.h"
 #include "resource_directory.h"
 #include "tlresource_location.h"
-#include "nal_system.h"
 
 animation_controller::anim_ctrl_handle actor::play_anim(const string_hash &a3)
 {
@@ -934,6 +952,12 @@ po *actor::get_frame_delta() {
     } else {
         return (po *) THISCALL(0x004B9000, this);
     }
+}
+
+void actor::set_frame_delta_trans(const vector3d &a2, Float a3)
+{
+    void (__fastcall *func)(void *, void *, const vector3d *, Float) = CAST(func, get_vfunc(m_vtbl, 0x280));
+    func(this, nullptr, &a2, a3);
 }
 
 vector4d __fastcall sub_503A90(void *a1, int, vector4d a2) {

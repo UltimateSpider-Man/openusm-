@@ -94,6 +94,9 @@ template<>
 Var<nglTexture *> tlresource_directory<nglTexture, tlFixedString>::default_tlres {0x009609E4};
 
 template<>
+Var<nalAnimClass<nalAnyPose> *> tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::default_tlres {0x009609C4};
+
+template<>
 int tlresource_directory<nglMesh, tlHashString>::tlres_type = 3;
 
 template<>
@@ -327,6 +330,43 @@ nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2
 }
 
 template<>
+nalAnimClass<nalAnyPose> *tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::Find(
+        unsigned int a2)
+{
+    TRACE("tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::Find");
+
+    nalAnimClass<nalAnyPose> *tlresource = nullptr;
+    if (this->field_4 != nullptr) {
+        tlresource = CAST(tlresource, this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_ANIM));
+    }
+
+    if ( tlresource == nullptr && system_dir() != nullptr )
+    {
+        nalAnimClass<nalAnyPose> * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
+        tlresource  = find(system_dir(), nullptr, a2);
+
+        auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
+
+        if ( tlresource != nullptr )
+        {
+            if ( SHOW_RESOURCE_SPAM ) {
+                debug_print_va("found tlresource %08x in system directory", a2);
+            }
+        }
+        else if ( SHOW_RESOURCE_SPAM )
+        {
+            debug_print_va("didn't find tlresource %08x in system directory", a2);
+        }
+    }
+
+    if ( tlresource == nullptr ) {
+        return default_tlres();
+    }
+
+    return tlresource;
+}
+
+template<>
 nglMesh *tlresource_directory<nglMesh, tlHashString>::Find(uint32_t a2)
 {
     if constexpr (1)
@@ -383,6 +423,12 @@ void tlresource_directory_patch()
         nglTexture * (tlresource_directory<nglTexture, tlFixedString>::*func)(uint32_t ) = tlresource_directory<nglTexture, tlFixedString>::Find;
         FUNC_ADDRESS(address, func);
         set_vfunc(0x00889650, address);
+    }
+
+    {
+        nalAnimClass<nalAnyPose> * (tlresource_directory<nalAnimClass<nalAnyPose>,tlFixedString>::*func)(uint32_t ) = tlresource_directory<nalAnimClass<nalAnyPose>,tlFixedString>::Find;
+        FUNC_ADDRESS(address, func);
+        set_vfunc(0x008897B0, address);
     }
 
     {

@@ -105,7 +105,7 @@ int run_state::frame_advance(Float a2) {
 
         auto *v13 = v83;
         v11->field_C = 1;
-        auto *v14 = v13->get_als_layer({0});
+        auto *v14 = v13->get_als_layer(static_cast<als::layer_types>(0));
         if (!v14->is_interruptable()) {
             return 75;
         }
@@ -140,7 +140,7 @@ int run_state::frame_advance(Float a2) {
             v81 = false;
         }
 
-        string_hash tmp_hash = v83->get_category_id({0});
+        string_hash tmp_hash = v83->get_category_id(static_cast<als::layer_types>(0));
         if (tmp_hash != cat_id_idle_walk_run()) {
             v81 = false;
         }
@@ -149,7 +149,7 @@ int run_state::frame_advance(Float a2) {
 
         p_list.add_param(als::param{52, v25});
         if (this->field_54 == 1) {
-            auto *v26 = v83->get_als_layer({0});
+            auto *v26 = v83->get_als_layer(static_cast<als::layer_types>(0));
 
             string_hash v27 = v26->get_state_id();
             if (v27 == string_hash{}) {
@@ -307,7 +307,7 @@ int run_state::frame_advance(Float a2) {
 
         p_list.add_param(30u, *v51);
         p_list.add_param(24u, YVEC);
-        auto *v77 = v83->get_als_layer(als::layer_types{0});
+        auto *v77 = v83->get_als_layer(static_cast<als::layer_types>(0));
         v77->set_desired_params(p_list);
         this->field_50->cleanup_collision_lists();
 

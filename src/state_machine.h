@@ -1,6 +1,7 @@
 #pragma once
 
 #include "animation_controller.h"
+#include "als_layer_types.h"
 #include "param_list.h"
 #include "string_hash.h"
 
@@ -79,6 +80,6 @@ struct state_machine {
         int a3,
         bool *a4);
 
-    int get_layer_id();
+    layer_types get_layer_id();
 };
 } // namespace als

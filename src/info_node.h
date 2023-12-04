@@ -26,6 +26,12 @@ struct info_node : mash_virtual_base {
     actor *get_actor();
 
     ~info_node() = default;
+
+    //virtual
+    bool does_need_advance() const;
+
+    //virtual
+    void frame_advance(Float a2);
 };
 
 } // namespace ai

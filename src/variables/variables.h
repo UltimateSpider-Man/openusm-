@@ -13,6 +13,8 @@ extern Var<float> flt_87EBD4;
 
 extern Var<float> flt_86F860;
 
+extern Var<bool> byte_959561;
+
 extern Var<int> dword_975308;
 
 extern Var<int> dword_975314;

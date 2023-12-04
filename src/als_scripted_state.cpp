@@ -46,6 +46,12 @@ namespace als
         }
     }
 
+    string_hash scripted_state::get_nal_anim_name() const
+    {
+        sp_log("0x%08X", m_vtbl);
+        return this->field_14;
+    }
+
     base_layer_scripted_state::base_layer_scripted_state()
     {
         THISCALL(0x00444000, this);
@@ -57,6 +63,13 @@ namespace als
 
         scripted_state::_unmash(a1, a3);
     }
+
+}
+
+string_hash * __fastcall scripted_state__get_nal_anim_name(als::scripted_state *self, void *, string_hash *a2)
+{
+    *a2 = self->get_nal_anim_name();
+    return a2;
 }
 
 void als_scripted_state_patch()
@@ -64,6 +77,11 @@ void als_scripted_state_patch()
     {
         FUNC_ADDRESS(address, &als::scripted_state::_unmash);
         set_vfunc(0x0087E1DC, address);
+    }
+
+    {
+        auto address = &scripted_state__get_nal_anim_name;
+        SET_JUMP(0x00493E90, address);
     }
 
     {

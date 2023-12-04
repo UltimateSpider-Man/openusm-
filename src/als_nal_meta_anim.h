@@ -2,8 +2,14 @@
 
 #include "fixedstring.h"
 #include "nal_skeleton.h"
+#include "variable.h"
 
 struct actor;
+
+namespace als {
+struct animation_logic_system;
+struct state_machine;
+}
 
 namespace als {
     struct als_meta_anim_base;
@@ -26,5 +32,12 @@ namespace als {
 
         //0x00493F20
         void create(als_meta_anim_base *a2);
+
+        void *create_anim_inst(
+            nalBaseSkeleton *a2,
+            animation_logic_system *a3,
+            state_machine *a4);
+
+        static inline Var<int> vtbl_ptr {0x0095979C};
     };
 }

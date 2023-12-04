@@ -117,8 +117,8 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
             static string_hash cat_id_jump_to_swing {int(to_hash("Jump_To_Swing"))};
 
             auto v15 = 0.0f;
-            auto cat_id = info_node->get_category_id(als::layer_types {0});
-            auto *v13 = bit_cast<als::state_machine *>(info_node->field_1C->get_als_layer(als::layer_types {0}));
+            auto cat_id = info_node->get_category_id(static_cast<als::layer_types>(0));
+            auto *v13 = bit_cast<als::state_machine *>(info_node->field_1C->get_als_layer(static_cast<als::layer_types>(0)));
             auto &anim_handle = v13->get_anim_handle();
             if ( anim_handle.sub_4AD230() ) {
                 auto &v14 = v13->get_anim_handle();
@@ -127,7 +127,7 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
 
             return cat_id != cat_id_jump_to_swing || v15 >= 1.0f;
         } else {
-            auto *v16 = info_node->field_1C->get_als_layer(als::layer_types {0});
+            auto *v16 = info_node->field_1C->get_als_layer(static_cast<als::layer_types>(0));
             return v16->is_interruptable();
         }
     } else {
@@ -217,7 +217,7 @@ void hero_inode::frame_advance(Float a2) {
         v14.field_4 = this->field_244;
         v16.add_param(v14);
 
-        auto *v13 = v12->field_1C->get_als_layer(als::layer_types{0});
+        auto *v13 = v12->field_1C->get_als_layer(static_cast<als::layer_types>(0));
 
         v13->set_desired_params(v16);
 
@@ -382,7 +382,7 @@ void hero_inode::update_wall_run_als_params() {
         als::param_list list;
         list.add_param({18, v12});
 
-        auto *v9 = v5->field_1C->get_als_layer(0);
+        auto *v9 = v5->field_1C->get_als_layer(static_cast<als::layer_types>(0));
         v9->set_desired_params(list);
 
     } else {
@@ -411,11 +411,11 @@ bool hero_inode::run_can_go_to(string_hash arg0) {
         }
 
         if (arg0 == throw_state::default_id &&
-            (arg0 = v5->get_category_id({0}), arg0 != ai::cat_id_idle_walk_run())) {
+            (arg0 = v5->get_category_id(static_cast<als::layer_types>(0)), arg0 != ai::cat_id_idle_walk_run())) {
             return false;
         }
 
-        auto *v7 = v5->field_1C->get_als_layer(0);
+        auto *v7 = v5->field_1C->get_als_layer(static_cast<als::layer_types>(0));
         return v7->is_interruptable();
 
     } else {

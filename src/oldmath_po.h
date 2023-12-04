@@ -42,6 +42,8 @@ struct po {
 
     po sub_4BAB00(const po &a3);
 
+    void sub_48D840();
+
     void sub_4134B0(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
 
     //0x005BD2B0

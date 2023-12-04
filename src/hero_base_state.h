@@ -24,3 +24,6 @@ struct hero_base_state : base_state {
 };
 
 } // namespace ai
+
+
+extern void hero_base_state_patch();

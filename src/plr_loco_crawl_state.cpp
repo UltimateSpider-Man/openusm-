@@ -316,7 +316,7 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {
         }
     }
 
-    auto *v13 = v6->get_als_layer({0});
+    auto *v13 = v6->get_als_layer(static_cast<als::layer_types>(0));
 
     string_hash tmp = v13->get_state_id();
 
@@ -338,7 +338,7 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {
     list.add_param({72, this->m_wallrun_deviation});
     list.add_param({16, v21});
 
-    auto *v15 = v6->get_als_layer({0});
+    auto *v15 = v6->get_als_layer(static_cast<als::layer_types>(0));
     v15->set_desired_params(list);
 
     auto *v16 = this->get_core();

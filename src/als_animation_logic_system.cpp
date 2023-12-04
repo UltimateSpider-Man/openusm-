@@ -3,6 +3,7 @@
 #include "actor.h"
 #include "als_animation_logic_system_shared.h"
 #include "als_state.h"
+#include "als_use_anim_only.h"
 #include "common.h"
 #include "func_wrapper.h"
 #include "layer_state_machine_shared.h"
@@ -12,6 +13,7 @@
 #include "trace.h"
 #include "traffic.h"
 #include "utility.h"
+#include "wds.h"
 
 namespace als {
 
@@ -43,8 +45,13 @@ int animation_logic_system::create_instance_data(animation_logic_system_shared *
     return THISCALL(0x004ABC60, this, a2);
 }
 
+base_state_machine *animation_logic_system::get_als_layer_internal(layer_types a2)
+{
+    return (base_state_machine *) THISCALL(0x0049F300, this, a2);
+}
+
 state_machine *animation_logic_system::get_als_layer(layer_types a2) {
-    return bit_cast<als::state_machine *>(THISCALL(0x004A63F0, this, a2));
+    return this->get_als_layer_internal(a2);
 }
 
 bool animation_logic_system::frame_advance_should_do_frame_advance([[maybe_unused]] Float a2) {
@@ -113,6 +120,17 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
 {
     TRACE("animation_logic_system::frame_advance_play_new_animations");
 
+    {
+        auto v5 = this->field_8.size();
+        if (v5 == 1) {
+            state_machine *the_state_machine = &this->field_18;
+            auto &anim_handle = the_state_machine->get_anim_handle();
+            if (auto *ctrl = anim_handle.field_8; ctrl != nullptr) {
+                sp_log("0x%08X", ctrl->m_vtbl);
+            }
+        }
+    }
+
     if constexpr (0) {
         if ( !this->field_7C ) {
             if ( this->field_6C->has_time_ifc() ) {
@@ -128,7 +146,7 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
                     bool v19 = true;
                     if (!the_state_machine->did_do_transition()) {
                         if (i != -1
-                            || the_state_machine->field_48.is_anim_active()) {
+                            || the_state_machine->get_anim_handle().is_anim_active()) {
                             v19 = false;
                         }
                     }
@@ -156,8 +174,8 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
                         {
                             auto v10 = this->field_8[i]->field_4->field_40;
                             auto v11 = curr_state->field_C;
-                            auto v19 = the_state_machine->get_layer_id();
-                            auto v12 = the_state_machine->get_layer_id();
+                            auto v19 = static_cast<als::layer_types>(the_state_machine->get_layer_id());
+                            auto v12 = static_cast<als::layer_types>(the_state_machine->get_layer_id());
                             auto a5 = this->convert_layer_id_to_priority(v12);
                             v9 = this->the_controller->play_layer_anim(v20, v11, a5, v10, true, v19);
                         }
@@ -174,6 +192,71 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
         }
     } else {
         THISCALL(0x004A6400, this, a2);
+    }
+}
+
+void animation_logic_system::frame_advance_change_mocomp(Float a2)
+{
+    TRACE("animation_logic_system::frame_advance_change_mocomp");
+
+    THISCALL(0x00498DB0, this, a2);
+}
+
+void animation_logic_system::frame_advance_controller(Float a2)
+{
+    TRACE("animation_logic_system::frame_advance_controller");
+
+    if constexpr (1) {
+        double v4;
+        if ( this->field_6C->has_time_ifc() ) {
+            auto *v3 = this->field_6C->time_ifc();
+            v4 = v3->sub_4ADE50();
+        } else {
+            v4 = g_world_ptr()->field_158.field_0;
+        }
+
+        auto a2a = v4 * a2;
+        resource_manager::push_resource_context(this->field_6C->field_BC);
+        this->the_controller->frame_advance(a2a, false, false);
+        resource_manager::pop_resource_context();
+    } else {
+        THISCALL(0x00498E80, this, a2);
+    }
+}
+
+void animation_logic_system::frame_advance_post_controller(Float arg0)
+{
+    TRACE("animation_logic_system::frame_advance_post_controller");
+
+    if constexpr (0) {
+        double v4;
+        if ( this->field_6C->has_time_ifc() )
+        {
+            auto *v3 = this->field_6C->time_ifc();
+            v4 = v3->sub_4ADE50();
+        }
+        else
+        {
+            v4 = g_world_ptr()->field_158.field_0;
+        }
+
+        auto arg0a = v4 * arg0;
+        resource_manager::push_resource_context(this->field_6C->field_BC);
+        if ( this->field_7C )
+        {
+            use_anim_only v6 {};
+            v6.activate(this);
+            v6.post_anim_action(arg0a);
+        }
+        else
+        {
+            auto *v1 = this->field_74;
+            v1->post_anim_action(arg0a);
+        }
+
+        resource_manager::pop_resource_context();
+    } else {
+        THISCALL(0x004AB700, this, arg0);
     }
 }
 
@@ -206,6 +289,21 @@ void animation_logic_system_patch() {
     {
         FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_should_do_frame_advance);
         set_vfunc(0x00881478, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_change_mocomp);
+        set_vfunc(0x00881494, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_controller);
+        set_vfunc(0x0088149C, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_post_controller);
+        set_vfunc(0x008814A0, address);
     }
 
     {

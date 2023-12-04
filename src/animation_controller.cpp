@@ -96,7 +96,7 @@ animation_controller::anim_ctrl_handle animation_controller::play_base_layer_ani
         uint32_t a5,
         bool a6)
 {
-    TRACE("animation_controller::play_base_layer_anim");
+    TRACE("animation_controller::play_base_layer_anim", a3.to_string());
 
     animation_controller::anim_ctrl_handle result;
 
@@ -222,17 +222,29 @@ float animation_controller::anim_ctrl_handle::sub_4AD210()
     return func(this);
 }
 
-bool animation_controller::is_anim_active(float a1) 
+bool animation_controller::is_anim_active(Float a1) 
 {
-    auto func = get_vfunc(m_vtbl, 0x2C);
-    return (bool) func(this, a1);
+    if constexpr (0) {
+        //return this->my_player.IsAnimActive(a1);
+    } else {
+        bool (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2C));
+        return func(this, nullptr, a1);
+    }
+}
+
+void animation_controller::frame_advance(Float a2, bool a3, bool a4)
+{
+    sp_log("0x%08X", m_vtbl);
+    void (__fastcall *func)(void *, void *, Float, bool, bool) = CAST(func, get_vfunc(m_vtbl, 0x70));
+    func(this, nullptr, a2, a3, a4);
 }
 
 //TODO
 void *get_anim_by_hash(
         const string_hash &a1,
         const als::als_meta_anim_table_shared *a2,
-        actor *a3) {
+        actor *a3)
+{
     TRACE("get_anim_by_hash", a1.to_string());
 
     if constexpr (0) {
@@ -247,12 +259,13 @@ void *get_anim_by_hash(
 
         struct {
             char field_0[0x8];
-            void * (__thiscall *field_8)(void *, uint32_t);
+            void * (__fastcall *Find)(void *, void *, uint32_t);
         } * vtbl = CAST(vtbl, nalGetAnimDirectory()->m_vtbl);
 
         auto v5 = a1.source_hash_code;
-        auto *v15 = vtbl->field_8(
+        auto *v15 = vtbl->Find(
                           nalGetAnimDirectory(),
+                          nullptr,
                           v5);
         if ( v15 == nullptr )
         {
@@ -264,8 +277,9 @@ void *get_anim_by_hash(
                 {
                     auto *__old_context = resource_manager::get_and_push_resource_context(RESOURCE_PARTITION_MISSION);
                     auto v7 = a1.source_hash_code;
-                    auto *v15 = vtbl->field_8(
+                    v15 = vtbl->Find(
                                             nalGetAnimDirectory(),
+                                            nullptr,
                                             v7);
                     resource_manager::pop_resource_context();
 

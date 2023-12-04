@@ -215,7 +215,7 @@ void swing_state::activate(ai_state_machine *a2,
 
         static const string_hash Swing_Launch{to_hash("Swing_Launch")};
 
-        v13->request_category_transition(Swing_Launch, als::layer_types{0}, true, false, false);
+        v13->request_category_transition(Swing_Launch, static_cast<als::layer_types>(0), true, false, false);
         auto *v16 = this->get_actor();
 
         po &abs_po = v16->get_abs_po();
@@ -250,7 +250,7 @@ void swing_state::activate(ai_state_machine *a2,
 
         v29.add_param({13, v15->field_80});
 
-        auto *v23 = v32->get_als_layer(als::layer_types{0});
+        auto *v23 = v32->get_als_layer(static_cast<als::layer_types>(0));
         v23->set_desired_params(v29);
 
         if constexpr (1)
@@ -332,7 +332,7 @@ int swing_state::frame_advance(Float a2) {
 
         } else {
             if (!swing_inode_ptr->field_54 &&
-                als_inode_ptr->get_eta_of_combat_signal(als::layer_types{0}) <= 0.0f) {
+                als_inode_ptr->get_eta_of_combat_signal(static_cast<als::layer_types>(0)) <= 0.0f) {
                 swing_inode_ptr->fire_new_web(true);
             }
 
@@ -413,12 +413,12 @@ void swing_inode::update_mode_swinging(Float a2)
                 return;
             }
 
-            auto v83 = v173->sub_48B100({0});
+            auto v83 = v173->sub_48B100(static_cast<als::layer_types>(0));
 
             string_hash v81;
 
             auto v84 = v83 == state_id_sticky_hang_left() ||
-                (v81 = v173->sub_48B100({0}), v81 == state_id_sticky_hang_right());
+                (v81 = v173->sub_48B100(static_cast<als::layer_types>(0)), v81 == state_id_sticky_hang_right());
 
             if (v84) {
                 string_hash hash_id;
@@ -428,7 +428,7 @@ void swing_inode::update_mode_swinging(Float a2)
                     hash_id = cat_id_sticky_hang_left_push_off();
                 }
 
-                v173->request_category_transition(hash_id, {0}, true, false, false);
+                v173->request_category_transition(hash_id, static_cast<als::layer_types>(0), true, false, false);
 
                 auto *v83 = this->get_actor();
 
@@ -440,7 +440,7 @@ void swing_inode::update_mode_swinging(Float a2)
                 auto *v9 = v83->physical_ifc();
                 v9->set_velocity(v8 * v76, false);
             } else {
-                v173->request_category_transition(cat_id_swing, {0}, true, false, false);
+                v173->request_category_transition(cat_id_swing, static_cast<als::layer_types>(0), true, false, false);
 
                 auto *v83 = this->get_actor();
 
@@ -483,7 +483,7 @@ void swing_inode::update_mode_swinging(Float a2)
         this->update_pendulums(a2);
 
         {
-            auto *v19 = v173->get_als_layer({0});
+            auto *v19 = v173->get_als_layer(static_cast<als::layer_types>(0));
             v19->set_desired_params(v167);
         }
 
@@ -2209,7 +2209,7 @@ void swing_inode::setup_new_web() {
 
         //assert(std::abs(dot(norm_move_dir, up)) < LARGE_EPSILON);
 
-        auto *v41 = v40->get_als_layer({0});
+        auto *v41 = v40->get_als_layer(static_cast<als::layer_types>(0));
 
         //als::param_list v43;
         v41->set_desired_params(v44);
@@ -2294,13 +2294,13 @@ bool swing_inode::can_go_to(string_hash a2) {
                         return false;
                     }
 
-                    auto *v15 = v5->get_als_layer(als::layer_types{0});
+                    auto *v15 = v5->get_als_layer(static_cast<als::layer_types>(0));
                     return v15->is_interruptable();
                 }
             }
         }
 
-        auto *v16 = v5->get_als_layer(als::layer_types{0});
+        auto *v16 = v5->get_als_layer(static_cast<als::layer_types>(0));
         return v16->is_interruptable();
 
     } else {

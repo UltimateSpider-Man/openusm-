@@ -14,6 +14,10 @@ struct als_res_data;
 struct light_manager;
 struct light_source;
 
+namespace als {
+struct animation_logic_system;
+}
+
 struct conglomerate : actor {
     mashable_vector<entity_base *> members;
     mashable_vector<entity_base *> skin_bones;
@@ -53,6 +57,10 @@ struct conglomerate : actor {
 
     //0x004CCC90
     entity_base *get_bone(const string_hash &a2, bool a3);
+
+    void sub_4D0E00();
+
+    als::animation_logic_system *get_my_als();
 
     //0x004F9F10
     //virtual

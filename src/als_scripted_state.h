@@ -30,6 +30,8 @@ namespace als
         scripted_state();
 
         void _unmash(mash_info_struct *a1, void *a3);
+
+        string_hash get_nal_anim_name() const;
     };
 
     struct base_layer_scripted_state : scripted_state

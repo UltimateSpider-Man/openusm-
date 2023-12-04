@@ -13,7 +13,6 @@ namespace als {
 
     state::state()
     {
-
     }
 
     void state::_unmash(mash_info_struct *a2, void *a3)

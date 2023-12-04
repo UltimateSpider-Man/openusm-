@@ -68,6 +68,21 @@ void conglomerate::create_parentage_tree()
     THISCALL(0x004E55E0, this);
 }
 
+void conglomerate::sub_4D0E00()
+{
+    THISCALL(0x004D0E00, this);
+}
+
+als::animation_logic_system *conglomerate::get_my_als()
+{
+    auto *v1 = this->field_114;
+    if ( v1 != nullptr ) {
+        return v1->field_8;
+    }
+
+    return nullptr;
+}
+
 constexpr auto _ENTM_TYPE_MAX = 28u;
 
 void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4)

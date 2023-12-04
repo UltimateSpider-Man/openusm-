@@ -14,6 +14,7 @@ struct animation_controller;
 namespace als {
 
 struct animation_logic_system_shared;
+struct motion_compensator;
 
 struct animation_logic_system {
     std::intptr_t m_vtbl = 0x00881460;
@@ -22,7 +23,7 @@ struct animation_logic_system {
     base_state_machine field_18;
     actor *field_6C;
     animation_controller *the_controller;
-    int *field_74;
+    motion_compensator *field_74;
     void *field_78;
     bool field_7C;
     bool field_7D;
@@ -33,8 +34,16 @@ struct animation_logic_system {
     //0x0049F360
     float convert_layer_id_to_priority(layer_types a2);
 
+    base_state_machine *get_als_layer_internal(layer_types a2);
+
     //0x004A6400
     void frame_advance_play_new_animations(Float a2);
+
+    void frame_advance_change_mocomp(Float a2);
+
+    void frame_advance_controller(Float a2);
+
+    void frame_advance_post_controller(Float a2);
 
     //0x00498F70
     void enter_biped_physics();

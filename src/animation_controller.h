@@ -75,7 +75,10 @@ struct animation_controller {
         void *a7);
 
     //virtual
-    bool is_anim_active(float a1);
+    bool is_anim_active(Float a1);
+
+    //virtual
+    void frame_advance(Float a2, bool a3, bool a4);
 };
 
 //0x0049B910

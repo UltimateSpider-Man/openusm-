@@ -41,6 +41,7 @@ string_hash hero_base_state::get_desired_state_id(Float) {
     return hero_base_state::NO_TRANS;
 }
 
+
 state_trans_action hero_base_state::check_transition(Float a3)
 {
     TRACE("hero_base_state::check_transition");
@@ -118,3 +119,14 @@ state_trans_action hero_base_state::check_transition(Float a3)
 }
 
 } // namespace ai
+
+void * __fastcall check_transition(ai::hero_base_state *self, void *, ai::state_trans_action *a2, Float a3)
+{
+    *a2 = self->check_transition(a3);
+    return a2;
+}
+
+
+void hero_base_state_patch() {
+    //set_vfunc(0x00877560, &check_transition);
+}

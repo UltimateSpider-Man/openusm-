@@ -535,6 +535,11 @@ void ai_state_machine_patch() {
     }
 
     {
+        FUNC_ADDRESS(address, &ai::ai_state_machine::process_return);
+        SET_JUMP(0x00687FD0, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &ai::ai_state_machine::process_transition);
         SET_JUMP(0x0069ED60, address);
     }

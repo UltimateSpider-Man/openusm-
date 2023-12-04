@@ -11,6 +11,8 @@ Var<float> flt_86F860 = {0x86F860};
 
 Var<int> dword_975308 = {0x00975308};
 
+Var<bool> byte_959561 = {0x00959561};
+
 Var<int> dword_975314 = {0x00975314};
 
 Var<int> dword_97530C = {0x0097530C};

@@ -242,7 +242,21 @@ void ai_core::advance_info_nodes(Float a2)
 {
     TRACE("ai::ai_core::advance_info_nodes");
 
-    THISCALL(0x0068FCA0, this, a2);
+    if constexpr (0) {
+        auto *v3 = this->field_60;
+        if ( v3 != nullptr )
+        {
+            for ( uint16_t i {0}; i < v3->m_size; ++i )
+            {
+                auto *v5 = v3->at(i);
+                if ( v5->does_need_advance() ) {
+                    v5->frame_advance(a2);
+                }
+            }
+        }
+    } else {
+        THISCALL(0x0068FCA0, this, a2);
+    }
 }
 
 void ai_core::advance_machine_recursive(ai_state_machine *a1, Float a2, bool a3)

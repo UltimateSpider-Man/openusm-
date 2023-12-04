@@ -138,7 +138,7 @@ void jump_state::initiate_from_wall() {
         v29.add_param(0x18u, YVEC);
         v29.add_param(0x2Du, v5.get_position());
 
-        auto *v11 = v3->get_als_layer({0});
+        auto *v11 = v3->get_als_layer(static_cast<als::layer_types>(0));
         v11->set_desired_params(v29);
         auto *v12 = this->get_actor();
 
@@ -251,7 +251,7 @@ void jump_state::initiate_from_swing() {
         list.add_param({10, RAD_TO_DEG(swing_inode_ptr->field_8C)});
         list.add_param({11, RAD_TO_DEG(swing_inode_ptr->field_90)});
 
-        auto *v15 = als_inode_ptr->get_als_layer(als::layer_types{0});
+        auto *v15 = als_inode_ptr->get_als_layer(static_cast<als::layer_types>(0));
 
         v15->set_desired_params(list);
 

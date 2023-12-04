@@ -49,8 +49,12 @@ void aeps::RefreshDevOptions() {
     CDECL_CALL(0x004CDFC0);
 }
 
-int aeps::Reset() {
-    CDECL_CALL(0x004D91A0);
+void aeps::Reset()
+{
+    TRACE("aeps::Reset");
+
+    void (__cdecl *func)() = CAST(func, 0x004D91A0);
+    func();
 }
 
 void aeps::Init()
