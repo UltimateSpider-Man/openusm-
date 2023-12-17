@@ -57,6 +57,28 @@ namespace als
             THISCALL(0x004AC850, this, a1, a3);
         }
     }
+
+    request_data scripted_category::do_implicit_trans(
+        animation_logic_system *a4,
+        state_machine *a5)
+    {
+        TRACE("als::scripted_category::do_implicit_trans");
+
+        request_data data;
+        THISCALL(0x004A7300, this, &data, a4, a5);
+        return data;
+    }
+}
+
+
+als::request_data * __fastcall als_scripted_category_do_implicit_trans(
+    als::scripted_category *self, void *,
+    als::request_data *out,
+    als::animation_logic_system *a4,
+    als::state_machine *a5)
+{
+    *out = self->do_implicit_trans(a4, a5);
+    return out;
 }
 
 void als_scripted_category_patch()
@@ -64,5 +86,10 @@ void als_scripted_category_patch()
     {
         FUNC_ADDRESS(address, &als::scripted_category::_unmash);
         set_vfunc(0x0087E254, address);
+    }
+
+    {
+        auto address = int(&als_scripted_category_do_implicit_trans);
+        set_vfunc(0x0087E268, address);
     }
 }

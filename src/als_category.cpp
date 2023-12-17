@@ -13,6 +13,26 @@ namespace als
 {
     VALIDATE_SIZE(category, 0x10);
 
+    request_data category::do_implicit_trans(
+            animation_logic_system *a3,
+            state_machine *a4)
+    {
+        als::request_data data;
+        void (__fastcall *func)(void *, void *, request_data *, animation_logic_system *, state_machine *) = CAST(func, get_vfunc(m_vtbl, 0x18));
+        func(this, nullptr, &data, a3, a4);
+        return data;
+    }
+
+    request_data category::do_incoming_trans(
+        animation_logic_system *a3,
+        state_machine *a4)
+    {
+        als::request_data data;
+        void (__fastcall *func)(void *, void *, request_data *, animation_logic_system *, state_machine *) = CAST(func, get_vfunc(m_vtbl, 0x24));
+        func(this, nullptr, &data, a3, a4);
+        return data;
+    }
+
     int category::get_mash_sizeof() const
     {
         auto &func = get_vfunc(m_vtbl, 0x34);

@@ -11,6 +11,8 @@ struct base_state_machine : state_machine {
 
     //0x004995D0
     void init(state_machine_shared *a2);
+
+    bool is_curr_state_biped_physics() const;
 };
 
 } // namespace als

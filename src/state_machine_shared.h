@@ -15,9 +15,9 @@ struct transition_group_base;
 struct state_machine_shared : mash_virtual_base {
     state_machine_shared();
 
-    mVector<als::state> field_4;
-    mVector<als::category> field_18;
-    mVector<als::transition_group_base> field_2C;
+    mVector<state> state_list;
+    mVector<category> category_list;
+    mVector<transition_group_base> field_2C;
 
     void destruct_mashed_class();
 

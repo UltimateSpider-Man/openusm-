@@ -13,7 +13,7 @@ void *nalConstructSkeleton(void *a1)
 {
     TRACE("nalConstructSkeleton");
 
-    if constexpr (1)
+    if constexpr (0)
     {
         struct {
             std::intptr_t m_vtbl;
@@ -39,6 +39,7 @@ void *nalConstructSkeleton(void *a1)
 
         auto vtbl = v1->skel_vtbl_ptr;
         skel->m_vtbl = vtbl;
+        sp_log("0x%08X", vtbl);
 
         auto &CheckVersion = get_vfunc(skel->m_vtbl, 0x10);
         if ( !CheckVersion(a1) )

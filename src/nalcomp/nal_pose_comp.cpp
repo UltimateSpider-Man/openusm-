@@ -1,6 +1,7 @@
 #include "nal_pose_comp.h"
 
 #include "common.h"
+#include "trace.h"
 #include <vtbl.h>
 
 #include <nal_skeleton.h>
@@ -10,7 +11,10 @@ namespace nalComp {
 
 VALIDATE_SIZE(nalCompSkeleton, 0x7C);
 
-void nalCompSkeleton::UnMash(void *a2, BaseComponent **a3, unsigned int iNumComponents) {
+void nalCompSkeleton::UnMash(void *a2, BaseComponent **a3, unsigned int iNumComponents)
+{
+    TRACE("nalCompSkeleton::UnMash");
+
     if constexpr (0) {
         auto v5 = (int) this->field_70;
         auto v6 = (int) this->field_74;
@@ -115,6 +119,13 @@ void nalCompSkeleton::UnMash(void *a2, BaseComponent **a3, unsigned int iNumComp
         }
     } else {
         THISCALL(0x007378A0, this, a2, a3, iNumComponents);
+
+        auto *v22 = *(char **) &this->field_70[4];
+        struct {
+            std::intptr_t m_vtbl;
+        } *tmp = CAST(tmp, v22);
+
+        sp_log("0x%08X", tmp->m_vtbl);
     }
 }
 

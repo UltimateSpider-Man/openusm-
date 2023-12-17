@@ -14,6 +14,7 @@ struct nalBaseSkeleton {
     {
         return this->field_28;
     }
+
 };
 
 //0x0078DC80

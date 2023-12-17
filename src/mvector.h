@@ -43,27 +43,26 @@ struct mVector {
 
     mVector() = default;
 
-    mVector(from_mash_in_place_constructor *) {
+    mVector(from_mash_in_place_constructor *) : mVector()
+    {
         if (this->m_data == nullptr) {
             return;
         }
 
-        auto v3 = 0;
         if (this->m_size <= 0) {
             return;
         }
 
-        do {
+        for (auto i = 0; i < this->m_size; ++i)
+        {
             T *v5 = nullptr;
-
-            auto **v4 = &this->m_data[v3];
-            if (*v4 != nullptr) {
-                v5 = new (*v4) T{nullptr};
+            auto *&v4 = this->m_data[i];
+            if (v4 != nullptr) {
+                v5 = new (v4) T {nullptr};
             }
 
-            *v4 = v5;
-            ++v3;
-        } while (v3 < this->m_size);
+            v4 = v5;
+        }
     }
 
     T *at(uint16_t index) {
@@ -139,6 +138,14 @@ struct mVectorBasic : mContainer
 {
     T *m_data;
     int field_C;
+
+    int size() const {
+        return this->m_size;
+    }
+
+    auto &at(int i) {
+        return this->m_data[i];
+    }
 
     void unmash(mash_info_struct *, void *);
 

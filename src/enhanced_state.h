@@ -70,3 +70,6 @@ struct enhanced_state : base_state {
 };
 
 } // namespace ai
+
+
+extern void enhanced_state_patch();

@@ -2,7 +2,9 @@
 
 #include "mash_virtual_base.h"
 #include "float.hpp"
+#include "vector3d.h"
 
+struct actor;
 struct entity_base;
 
 namespace als {
@@ -21,6 +23,21 @@ struct motion_compensator : mash_virtual_base {
     //virtual
     void post_anim_action(Float a2);
 
+    //virtual
+    void set_facing_to_dir_internal(
+        actor *the_actor,
+        vector3d a1,
+        vector3d a2,
+        vector3d a3,
+        Float a7,
+        Float a8,
+        Float a9);
+
+    //virtual
+    double get_anim_movement_scale_param();
+
 };
 
 }
+
+extern void als_motion_compensator_patch();

@@ -52,10 +52,6 @@ Var<tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *> 
 Var<tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *> nalSceneAnimDirectory{
     0x00977168};
 
-Var<BaseComponent **> CharComponentManager::pCompArray{0x0096A55C};
-
-Var<int> CharComponentManager::iCurrNumComponents{0x0096A558};
-
 Var<int *> PanelComponentMgr::comp_list{0x0096F7DC};
 
 int *nalComponentU8Base::GetType() {
@@ -217,144 +213,6 @@ nalStreamInstance *create_stream_instance(uint32_t a1,
     }
 }
 
-namespace nalChar {
-
-VALIDATE_SIZE(nalCharSkeleton, 0x84);
-VALIDATE_SIZE(nalCharPose, 0x10);
-
-nalCharPose::nalCharPose(const nalCharSkeleton *a2) : nalComp::nalCompPose(a2) {
-    if constexpr (0) {
-        m_vtbl = 0x00891A3C;
-        field_C = 0;
-        this->InitializePoseDataFromSkel();
-    } else {
-        THISCALL(0x005F2860, this, a2);
-    }
-}
-
-void nalCharPose::InitializePoseDataFromSkel() {
-    THISCALL(0x005F1290, this);
-}
-
-void nalCharSkeleton::Process() {
-    auto v1 = CharComponentManager::iCurrNumComponents();
-    BaseComponent **v3 = static_cast<decltype(v3)>(tlMemAlloc(4 * v1, 8, 0));
-    for (int i = 0; i < v1; ++i) {
-        v3[i] = CharComponentManager::pCompArray()[i];
-    }
-
-    auto &UnMash = get_vfunc(this->m_vtbl, 0x40);
-    UnMash(this, this, v3, v1);
-    tlMemFree(v3);
-    auto *mem = tlMemAlloc(sizeof(nalCharPose), 8, 0);
-    this->field_80 = new (mem) nalCharPose{this};
-}
-} // namespace nalChar
-
-namespace nalGeneric {
-
-VALIDATE_SIZE(nalGenericSkeleton, 0xE4);
-VALIDATE_SIZE(nalComponentInfo, 0x30);
-VALIDATE_OFFSET(nalGenericSkeleton, field_64, 0x64);
-
-void nalGenericSkeleton::Process() {
-    if constexpr (1) {
-        auto v2 = this->field_64;
-        auto v3 = this->field_6C;
-        this->field_68 = (int) &this->field_E0;
-        auto *v4 = (char *) &this->field_E0 + v2;
-        auto v5 = 48 * this->field_74;
-        this->field_70 = (int) v4;
-        auto v6 = (uint32_t) &v4[v3 + 3] & 0xFFFFFFFC;
-        this->field_78 = v6;
-        auto v7 = v5 + v6 + 3;
-        auto v8 = 5 * this->field_7C;
-        auto v9 = this->field_94;
-        v7 &= 0xFFFFFFFC;
-        this->field_84 = v7;
-        auto v10 = (v7 + 8 * v8 + 3) & 0xFFFFFFFC;
-        auto v11 = v10 + 48 * this->field_88;
-        this->field_8C = CAST(field_8C, v10);
-        auto v12 = v11 + v9 - 1;
-        auto v13 = this->field_9C;
-        auto v14 = ~(v9 - 1) & v12;
-        auto v15 = (this->field_90 + v14 + 3) & 0xFFFFFFFC;
-        this->field_A0 = v15;
-        auto v16 = v13 + v15 + 3;
-        auto v17 = this->field_B0;
-        v16 &= 0xFFFFFFFC;
-        auto v18 = (char *) (v16 + 0x30 * this->field_A4);
-        this->field_A8 = CAST(field_A8, v16);
-        auto v19 = (int) &v18[v17 - 1];
-        auto v20 = this->field_B8;
-        auto v21 = ~(v17 - 1) & v19;
-        auto v22 = this->field_AC;
-        this->field_B4 = v21;
-        auto v23 = v22 + v21 + 3;
-        auto v24 = this->field_C4;
-        v23 &= 0xFFFFFFFC;
-        this->field_BC = v23;
-        this->field_98 = v14;
-        this->field_C8 = ~(v24 - 1) & (v23 + v20 + v24 - 1);
-        this->field_CC = (int) this;
-        this->field_D0 = v14;
-
-        //sp_log("%s", this->field_8C[0].field_0.c_str());
-
-        if (this->field_88 > 0) {
-            for (int i = 0; i < this->field_88; ++i) {
-                this->field_8C[i].field_20 = static_cast<decltype(this->field_8C[i].field_20)>(
-                    nalComponentInstanceBank().Search(this->field_8C[i].field_0)->field_20);
-            }
-        }
-
-        if (this->field_A4 > 0) {
-            for (int i = 0; i < this->field_A4; ++i) {
-                this->field_A8[i].field_20 = static_cast<decltype(this->field_A8[i].field_20)>(
-                    nalComponentInstanceBank().Search(this->field_A8[i].field_0)->field_20);
-            }
-        }
-
-        auto v29 = this->field_A0;
-
-        auto *v30 = this->field_8C;
-        auto v38 = this->field_98;
-
-        auto v37 = v29;
-        if (this->field_88 > 0) {
-            for (int i = 0; i < this->field_88; ++i) {
-                auto &Process = get_vfunc(v30->field_20->m_vtbl, 0x10);
-                Process(v30->field_20, v30, &v38, &v37);
-
-                ++v30;
-            }
-        }
-
-        auto v34 = this->field_BC;
-        auto *v35 = this->field_A8;
-        v38 = this->field_B4;
-
-        v37 = v34;
-        if (this->field_A4 > 0) {
-            for (int i = 0; i < this->field_A4; ++i) {
-                auto &Process = get_vfunc(v35->field_20->m_vtbl, 0x10);
-
-                Process(v35->field_20, v35, &v38, &v37);
-
-                ++v35;
-            }
-        }
-
-    } else {
-        THISCALL(0x00793610, this);
-    }
-}
-
-void nalGenericSkeleton::Release() {
-    ;
-}
-} // namespace nalGeneric
-
 void nalReleaseSceneAnimInternal(nalSceneAnim *a1) {
     CDECL_CALL(0x0078D9B0, a1);
 }
@@ -427,11 +285,11 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
             if (!CheckVersion(anim_class)) {
                 auto *v3 = &anim_class->field_8;
                 auto *v9 = v3->to_string();
-                auto v4 = anim_class->field_2C;
+                auto v4 = anim_class->Version;
                 error("Unsupported anim version %x (%s).\n", v4, v9);
             }
 
-            anim_class->field_3C = 0;
+            anim_class->InstanceCount = 0;
 
             auto &Process = get_vfunc(anim_class->m_vtbl, 0x4);
             Process(anim_class);
@@ -465,7 +323,7 @@ void nalSetAnimDirectory(tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedSt
 
 tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *nalGetAnimDirectory()
 {
-  return nalAnimDirectory();
+    return nalAnimDirectory();
 }
 
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *a1) {
@@ -482,9 +340,9 @@ void *nalAnimClass<nalAnyPose>::VirtualCreateInstance(nalBaseSkeleton *Skel)
 void nalStreamInstance_patch() {
 
     REDIRECT(0x005AD21F, nalInit);
-    return;
 
     REDIRECT(0x0055F8F4, nalConstructSkeleton);
+    return;
 
 
     {
@@ -500,11 +358,6 @@ void nalStreamInstance_patch() {
     {
         FUNC_ADDRESS(address, &nalComponentStringBase::GetType);
         SET_JUMP(0x004AE4D0, address);
-    }
-
-    {
-        FUNC_ADDRESS(address, &nalChar::nalCharSkeleton::Process);
-        set_vfunc(0x00891F90, address);
     }
 
     {

@@ -23,6 +23,11 @@ void animation_controller::get_camera_root_abs_po(po &arg0)
     THISCALL(0x004A8990, this, &arg0);
 }
 
+bool animation_controller::is_same_animtype(tlFixedString a2) const
+{
+    return a2 == this->field_8->GetAnimTypeName();
+}
+
 animation_controller::anim_ctrl_handle animation_controller::play_layer_anim(
         const string_hash &a3,
         unsigned int a4,
@@ -57,26 +62,19 @@ double sub_497DD0(nalComp::nalCompAnim *a1, int a2)
         return 0.13333;
     }
 
-    constexpr float flt_880AFC = 0.26666;
     if ( (a2 & 0x80u) != 0 ) {
-        return flt_880AFC;
+        return 0.26666;
     }
 
-    if ( (a2 & 0x100) == 0 ) {
+    if ( (a2 & 0x100) != 0 ) {
+        auto v4 = a1->field_38 * 0.2;
+        v4 = ( v4 >= 0.5 ? 0.5 : v4);
+        return std::min(v4, 0.26666);
+    } else {
+        assert(0 && "MUST HAVE A BLEND FLAG");
         return 0.0;
     }
 
-    auto v3 = a1->field_38 * 0.2;
-    auto v4 = v3;
-    if ( v3 >= 0.5) {
-        return flt_880AFC;
-    }
-
-    if ( flt_880AFC >= (double)v4 ) {
-        return v4;
-    }
-
-    return flt_880AFC;
 }
 
 animation_controller::anim_ctrl_handle *animation_controller::_play_base_layer_anim(
@@ -101,8 +99,8 @@ animation_controller::anim_ctrl_handle animation_controller::play_base_layer_ani
     animation_controller::anim_ctrl_handle result;
 
     if constexpr (1) {
-        auto *anim_by_hash = (als::als_nal_meta_anim *) get_anim_by_hash(a3, this->field_C, this->field_4);
-        if ( anim_by_hash == nullptr ) {
+        auto *anim_ptr = (als::als_nal_meta_anim *) get_anim_by_hash(a3, this->field_C, this->field_4);
+        if ( anim_ptr == nullptr ) {
             auto v6 = a3.to_string();
             error(
               "Animation %s was referred to by an ALS but couldn't be found (likely 'externed' but never provided for us)",
@@ -116,28 +114,15 @@ animation_controller::anim_ctrl_handle animation_controller::play_base_layer_ani
         v22.field_0 = 0;
         v22.field_4 = this->field_4;
 
-        auto *v8 = (nalBaseSkeleton *)anim_by_hash->field_30;
-        auto AnimTypeName = v8->GetAnimTypeName();
-        tlFixedString v18 = AnimTypeName;
+        tlFixedString v18 = anim_ptr->Skeleton->GetAnimTypeName();
 
-        auto sub_8226E0 = [this](tlFixedString a2) -> bool
-        {
-            auto AnimTypeName = this->field_8->GetAnimTypeName();
-            return AnimTypeName == a2;
-        };
-
-        if ( !sub_8226E0(v18) ) {
-            auto v10 = this->field_8->GetAnimTypeName();
-            auto *v2 = v10.to_string();
-            auto &v11 = this->field_8->field_8;
-            auto *v3 = v11.to_string();
-            auto *v12 = anim_by_hash->field_30;
-            auto v13 = v12->GetAnimTypeName();
-            auto *v4 = v13.to_string();
-            auto v14 = anim_by_hash->field_8;
-            auto *v15 = v14.to_string();
+        if ( !this->is_same_animtype(v18) ) {
+            auto *v2 = this->field_8->GetAnimTypeName().to_string();
+            auto *v3 = this->field_8->field_8.to_string();
+            auto *v4 = anim_ptr->Skeleton->GetAnimTypeName().to_string();
+            auto *v15 = anim_ptr->field_8.to_string();
             error(
-              "Attempted to play an animation \"%s\" of animtype \"%s\" on a character skeleton \"%s\" of animtype \"%s\". They a"
+              "Attempted to play an animation %s of animtype %s on a character skeleton %s of animtype %s. They a"
               "re not compatible. Please have this animation altered to use the correct character's skeleton.",
               v15,
               v4, 
@@ -145,9 +130,9 @@ animation_controller::anim_ctrl_handle animation_controller::play_base_layer_ani
               v2);
         }
 
-        auto v21 = sub_497DD0((nalComp::nalCompAnim *) anim_by_hash, a5);
+        auto v21 = sub_497DD0((nalComp::nalCompAnim *) anim_ptr, a5);
         this->play_base_layer_anim(
-            (nalAnimClass<nalAnyPose> *) anim_by_hash,
+            (nalAnimClass<nalAnyPose> *) anim_ptr,
             a4,
             v21,
             a6,
@@ -251,9 +236,9 @@ void *get_anim_by_hash(
         if ( a2 != nullptr ) {
             auto *v9 = a3;
             string_hash v8 = a1;
-            auto *nal_meta_anim = a2->get_nal_meta_anim(v8, v9);
-            if ( nal_meta_anim != nullptr ) {
-                return nal_meta_anim;
+            auto *anim_ptr = a2->get_nal_meta_anim(v8, v9);
+            if ( anim_ptr != nullptr ) {
+                return anim_ptr;
             }
         }
 
@@ -277,10 +262,9 @@ void *get_anim_by_hash(
                 {
                     auto *__old_context = resource_manager::get_and_push_resource_context(RESOURCE_PARTITION_MISSION);
                     auto v7 = a1.source_hash_code;
-                    v15 = vtbl->Find(
-                                            nalGetAnimDirectory(),
-                                            nullptr,
-                                            v7);
+                    v15 = vtbl->Find(nalGetAnimDirectory(),
+                                    nullptr,
+                                    v7);
                     resource_manager::pop_resource_context();
 
                     assert(resource_manager::get_resource_context() == __old_context);
@@ -293,6 +277,13 @@ void *get_anim_by_hash(
         return (void *) CDECL_CALL(0x0049B910, &a1, a2, a3);
     }
 }
+
+void animation_controller::reset()
+{
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x60));
+    func(this);
+}
+
 
 void animation_controller_patch() {
 

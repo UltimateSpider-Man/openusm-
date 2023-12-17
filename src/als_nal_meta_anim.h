@@ -2,6 +2,7 @@
 
 #include "fixedstring.h"
 #include "nal_skeleton.h"
+#include "nal_system.h"
 #include "variable.h"
 
 struct actor;
@@ -14,17 +15,10 @@ struct state_machine;
 namespace als {
     struct als_meta_anim_base;
 
-    struct als_nal_meta_anim {
-        int field_0;
-        int field_4;
-        tlFixedString field_8;
-        int field_28;
-        int field_2C;
-        nalBaseSkeleton *field_30;
-        int field_34;
-        int field_38;
-        int field_3C;
+    struct als_nal_meta_anim : nalAnimClass<nalAnyPose> {
         als_meta_anim_base *field_40;
+
+        als_nal_meta_anim();
 
         bool is_delay_create() const;
 

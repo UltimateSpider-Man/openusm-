@@ -125,6 +125,8 @@ void mash_info_struct::construct_class(ai_interaction_data *&a1)
 template<>
 void mash_info_struct::construct_class(als_res_data *&a1)
 {
+    TRACE("mash_info_struct::construct_class<als_res_data>");
+
     if ( a1 != nullptr )
     {
         void (__fastcall *func)(void *, int edx, void *) = CAST(func, 0x004ABF80);

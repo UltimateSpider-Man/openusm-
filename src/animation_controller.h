@@ -1,6 +1,7 @@
 #pragma once
 
 #include "als_layer_types.h"
+#include "fixedstring.h"
 #include "float.hpp"
 
 #include <cstdint>
@@ -42,6 +43,8 @@ struct animation_controller {
 
     void get_camera_root_abs_po(po &arg0);
 
+    bool is_same_animtype(tlFixedString a2) const;
+
     anim_ctrl_handle get_base_anim_handle();
 
     anim_ctrl_handle play_layer_anim(
@@ -64,6 +67,9 @@ struct animation_controller {
         Float a4,
         uint32_t a5,
         bool a6);
+
+    //virtual
+    void reset();
 
     //virtual
     void play_base_layer_anim(

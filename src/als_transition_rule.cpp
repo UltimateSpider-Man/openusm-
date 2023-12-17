@@ -4,6 +4,7 @@
 #include "mash_info_struct.h"
 
 #include "common.h"
+#include "trace.h"
 
 namespace als
 {
@@ -14,7 +15,7 @@ namespace als
     VALIDATE_SIZE(incoming_transition_rule, 0x2Cu);
     VALIDATE_SIZE(layer_transition_rule, 0x18u);
 
-    void base_transition_rule::unmash(mash_info_struct *a1, void *a3)
+    void base_transition_rule::unmash(mash_info_struct *a1, void *)
     {
         a1->unmash_class_in_place(this->field_0, this);
         a1->unmash_class_in_place(this->field_14, this);
@@ -37,9 +38,16 @@ namespace als
         }
     }
 
-    void layer_transition_rule::unmash(mash_info_struct *a1, void *a3)
+    void layer_transition_rule::unmash(mash_info_struct *a1, void *)
     {
         a1->unmash_class_in_place(this->field_8, this);
+    }
+
+    bool layer_transition_rule::can_transition(als_data &a2) const
+    {
+        TRACE("als::layer_transition_rule::can_transition");
+
+        return (bool) THISCALL(0x0049FF50, this, &a2);
     }
 
     void explicit_transition_rule::unmash(mash_info_struct *a1, void *a3)

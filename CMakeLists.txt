@@ -249,6 +249,16 @@ target_link_libraries(ngl PUBLIC ngl_dx ngl_shaders)
 target_include_directories(ngl PUBLIC "./src/ngl/include/")
 
 
+file(GLOB SRC_CHARANIMTYPE "./src/charanimtype/*.cpp")
+add_library(charanimtype ${SRC_CHARANIMTYPE})
+target_compile_options(charanimtype
+    PRIVATE
+      ${flags}
+  )
+target_link_libraries(charanimtype PUBLIC nal ngl_dx ngl_shaders)
+target_include_directories(charanimtype PUBLIC "./src/charanimtype/")
+
+
 file(GLOB_RECURSE PHYSICS_SRC "./src/physics/source/*.cpp")
 
 add_library(physics ${PHYSICS_SRC})
@@ -279,7 +289,7 @@ target_link_libraries(ngl_dx PUBLIC d3dx9)
 target_link_directories(binkw32 PUBLIC ${CMAKE_FIND_ROOT_PATH}/include)
 target_link_directories(binkw32 PUBLIC ${CMAKE_FIND_ROOT_PATH}/lib)
 target_link_libraries(binkw32 PUBLIC physics)
-target_link_libraries(binkw32 PUBLIC mash chuck nfl ngl nal nsl utility)
+target_link_libraries(binkw32 PUBLIC charanimtype mash chuck nfl ngl nal nsl utility)
 target_link_libraries(binkw32 PUBLIC winmm psapi d3d9 dinput8 dxguid dsound)
 
 

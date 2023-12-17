@@ -1,6 +1,7 @@
 #pragma once
 
 #include "als_state.h"
+#include "als_transition_post_handle.h"
 #include "mvector.h"
 
 struct mash_info_struct;
@@ -19,6 +20,10 @@ namespace als
 
     struct layer_transition_rule;
 
+    struct request_data;
+    struct animation_logic_system;
+    struct state_machine;
+
     struct scripted_state : state
     {
         string_hash field_14;
@@ -30,6 +35,24 @@ namespace als
         scripted_state();
 
         void _unmash(mash_info_struct *a1, void *a3);
+
+        //virtual
+        int get_filter(
+            int out,
+            animation_logic_system *a2,
+            state_machine *a3,
+            int a4);
+
+        //virtual
+        request_data do_implicit_trans(
+            animation_logic_system *a4,
+            state_machine *a5);
+
+        //virtual
+        void do_post_trans(
+            animation_logic_system *a1,
+            state_machine *a2,
+            transition_post_handle a4);
 
         string_hash get_nal_anim_name() const;
     };

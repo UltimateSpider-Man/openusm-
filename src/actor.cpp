@@ -128,11 +128,16 @@ void actor::ifl_lock(int a2)
     func(this, nullptr, a2);
 }
 
-generic_anim_controller *__thiscall actor::select_and_new_anim_controller(
-        nalBaseSkeleton *a2,
+generic_anim_controller *actor::select_and_new_anim_controller(
+        nalBaseSkeleton *the_skeleton,
         unsigned int a3)
 {
-    return (generic_anim_controller *) THISCALL(0x004CC470, this, a2, a3);
+    assert(the_skeleton != nullptr && "Skeleton passed to select_and_new_anim_controller should never be NULL.");
+
+    if constexpr (0) {
+    } else {
+        return (generic_anim_controller *) THISCALL(0x004CC470, this, the_skeleton, a3);
+    }
 }
 
 void actor::allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3) {

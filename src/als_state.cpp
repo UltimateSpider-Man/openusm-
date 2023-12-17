@@ -48,6 +48,20 @@ namespace als {
         }
     }
 
+    als::request_data state::do_implicit_trans(
+        animation_logic_system *a4,
+        state_machine *a5)
+    {
+
+        void (__fastcall *func)(void *, void *,
+                request_data *,
+                animation_logic_system *,
+                state_machine *) = CAST(func, get_vfunc(m_vtbl, 0x24));
+        request_data data;
+        func(this, nullptr, &data, a4, a5);
+        return data;
+    }
+
     string_hash state::get_nal_anim_name() const {
         void (__fastcall *func)(const void *, void *, string_hash *) = CAST(func, get_vfunc(m_vtbl, 0x34));
         string_hash result;

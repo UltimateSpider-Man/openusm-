@@ -41,7 +41,6 @@ namespace als
 {
     VALIDATE_SIZE(meta_key_anim, 0x10);
     VALIDATE_SIZE(als_meta_linear_blend, 0x40u);
-    VALIDATE_SIZE(als_meta_anim_swing, 0x70u);
 
     void meta_key_anim::unmash(mash_info_struct *a1, void *)
     {
@@ -63,18 +62,6 @@ namespace als
         a1->unmash_class_in_place(this->field_28, this);
     }
 
-    als_meta_anim_swing::als_meta_anim_swing()
-    {
-        THISCALL(0x004AB870, this);
-    }
-
-    void als_meta_anim_swing::_unmash(mash_info_struct *a1, void *a3)
-    {
-        TRACE("als::als_meta_anim_swing::unmash");
-
-        a1->unmash_class_in_place(this->field_28, this);
-    }
-        
 }
 
 void meta_anim_interact_patch()
@@ -94,8 +81,4 @@ void meta_anim_interact_patch()
         set_vfunc(0x0087B958, address);
     }
 
-    {
-        FUNC_ADDRESS(address, &als::als_meta_anim_swing::_unmash);
-        set_vfunc(0x0087B91C, address);
-    }
 }

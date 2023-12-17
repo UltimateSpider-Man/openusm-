@@ -117,6 +117,7 @@ void ai_state_machine::process_transition(Float a2) {
     TRACE("ai_state_machine::process_transition");
 
     if constexpr (1) {
+        sp_log("0x%08X", this->my_curr_state->m_vtbl);
         state_trans_action a3 = this->my_curr_state->check_transition(a2);
 
         a3 = this->sub_697AC0(a2, a3);

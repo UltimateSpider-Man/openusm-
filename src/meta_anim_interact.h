@@ -53,18 +53,6 @@ namespace als
         //virtual
         void _unmash(mash_info_struct *, void *);
     };
-
-    struct als_meta_anim_swing: als_meta_anim_base
-    {
-        mVector<als::meta_key_anim> field_28;
-        int field_3C[12];
-        int field_6C;
-
-        als_meta_anim_swing();
-
-        //virtual
-        void _unmash(mash_info_struct *, void *);
-    };
 }
 
 extern void meta_anim_interact_patch();

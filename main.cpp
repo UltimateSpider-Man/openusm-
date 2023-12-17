@@ -15,15 +15,21 @@
 #include "als_animation_logic_system.h"
 #include "als_animation_logic_system_shared.h"
 #include "als_animation_logic_system_interface.h"
+#include "als_basic_rule_data.h"
 #include "als_category.h"
 #include "als_inode.h"
 #include "als_meta_anim_base.h"
-#include "alternate_costumes.h"
+#include "als_meta_anim_swing.h"
+#include "als_meta_anim_table_shared.h"
+#include "als_motion_compensator.h"
 #include "als_resource_handler.h"
+#include "als_res_data.h"
+#include "als_simple_orientation.h"
 #include "als_state.h"
 #include "als_scripted_category.h"
 #include "als_scripted_state.h"
 #include "als_transition_group_base.h"
+#include "alternate_costumes.h"
 #include "anchor_query_visitor.h"
 #include "animation_controller.h"
 #include "animation_interface.h"
@@ -41,7 +47,9 @@
 #include "camera.h"
 #include "camera_target_info.h"
 #include "character_anim_controller.h"
+#include "character_pose_skel.h"
 #include "character_viewer.h"
+#include "charcomponentbase.h"
 #include "chuck_callbacks.h"
 #include "city_lod.h"
 #include "console.h"
@@ -59,6 +67,7 @@
 #include "daynight.h"
 #include "eligible_pack.h"
 #include "eligible_pack_streamer.h"
+#include "enhanced_state.h"
 #include "entity_base.h"
 #include "entity_base_vhandle.h"
 #include "entity_handle_manager.h"
@@ -2475,7 +2484,13 @@ BOOL install_redirects() {
 
     als_meta_anim_base_patch();
 
+    als_meta_anim_swing_patch();
+
+    als_meta_anim_table_shared_patch();
+
     als_transition_group_base_patch();
+
+    als_state_machine_patch();
 
     als_state_machine_shared_patch();
 
@@ -2483,11 +2498,19 @@ BOOL install_redirects() {
 
     als_category_patch();
 
+    als_simple_orientation_patch();
+
     als_scripted_state_patch();
 
     als_state_patch();
 
     als_layer_state_machine_shared_patch();
+    
+    als_basic_rule_data_patch();
+    
+    als_res_data_patch();
+
+    als_motion_compensator_patch();
 
     script_executable_patch();
 
@@ -2678,6 +2701,12 @@ BOOL install_redirects() {
     spidey_base_state_patch();
 
     hero_base_state_patch();
+    
+    enhanced_state_patch();
+
+    CharComponentBase_patch();
+    
+    nalChar_patch();
 
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;

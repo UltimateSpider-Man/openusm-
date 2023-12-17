@@ -29,6 +29,11 @@ namespace als
 
         //0x004AC850
         void _unmash(mash_info_struct *a1, void *);
+
+        //virtual
+        request_data do_implicit_trans(
+            animation_logic_system *a4,
+            state_machine *a5);
     };
 }
 

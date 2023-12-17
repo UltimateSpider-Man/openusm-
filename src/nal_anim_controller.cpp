@@ -232,8 +232,6 @@ void *nal_anim_controller::std_play_method::CreateInstance(
 {
     TRACE("nal_anim_controller::std_play_method::CreateInstance");
 
-    sp_log("0x%08X", a1->field_40);
-
     if constexpr (0) {
         if ( nalAnimPtrCast<als::als_nal_meta_anim>(a1) != nullptr ) {
             return a1->VirtualCreateInstance(a2);

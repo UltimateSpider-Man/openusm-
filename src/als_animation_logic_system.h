@@ -27,6 +27,8 @@ struct animation_logic_system {
     void *field_78;
     bool field_7C;
     bool field_7D;
+    bool field_7E;
+    bool field_7F;
 
     //0x004ABB80
     animation_logic_system(actor *a1);
@@ -34,7 +36,13 @@ struct animation_logic_system {
     //0x0049F360
     float convert_layer_id_to_priority(layer_types a2);
 
+    void sub_4A6630(layer_types a2);
+
     base_state_machine *get_als_layer_internal(layer_types a2);
+
+    void transition_layer(
+        layer_types a2,
+        string_hash a3);
 
     //0x004A6400
     void frame_advance_play_new_animations(Float a2);
@@ -52,7 +60,10 @@ struct animation_logic_system {
 
     //0x004ABC60
     //virtual
-    int create_instance_data(animation_logic_system_shared *a2);
+    void create_instance_data(animation_logic_system_shared *a2);
+
+    //virtual
+    void reset_animation_player();
 
     //0x00498D10
     /* virtual */ bool frame_advance_should_do_frame_advance(Float a2);

@@ -22,8 +22,8 @@ namespace als {
     {
         TRACE("als::state_machine_shared::unmash");
 
-        a2->unmash_class_in_place(this->field_4, this);
-        a2->unmash_class_in_place(this->field_18, this);
+        a2->unmash_class_in_place(this->state_list, this);
+        a2->unmash_class_in_place(this->category_list, this);
         a2->unmash_class_in_place(this->field_2C, this);
     }
 

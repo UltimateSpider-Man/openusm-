@@ -7,19 +7,14 @@ struct mash_info_struct;
 
 namespace als
 {
-    namespace basic_rule_data
-    {
-        struct rule_action;
-        struct post_action_rule_set;
-    }
-
+    struct als_data;
     struct filter_data;
 
     struct base_transition_rule
     {
-        mVector<als::filter_data> field_0;
-        als::basic_rule_data::rule_action field_14;
-        als::basic_rule_data::post_action_rule_set *field_20;
+        mVector<filter_data> field_0;
+        basic_rule_data::rule_action field_14;
+        basic_rule_data::post_action_rule_set *field_20;
 
         void unmash(mash_info_struct *, void *);
     };
@@ -43,6 +38,8 @@ namespace als
         int field_14;
 
         void unmash(mash_info_struct *, void *);
+
+        bool can_transition(als_data &a2) const;
     };
 
     struct incoming_transition_rule : base_transition_rule {

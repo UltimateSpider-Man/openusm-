@@ -75,13 +75,6 @@ void __fastcall sub_4AD850(
     sp_log("0x%08X", a5->m_vtbl);
     sp_log("0x%08X", a2->m_vtbl);
 
-    {
-        struct {
-            int m_vtbl;
-        } *v1 = CAST(v1, a2->field_40);
-        sp_log("0x%08X", v1->m_vtbl);
-    }
-
     THISCALL(0x004AD850, self, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
 }
 

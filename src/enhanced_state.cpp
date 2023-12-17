@@ -81,7 +81,10 @@ void enhanced_state::activate(ai_state_machine *a2,
     }
 }
 
-state_trans_action enhanced_state::check_transition(Float a3) {
+state_trans_action enhanced_state::check_transition(Float a3)
+{
+    TRACE("ai::enhanced_state::check_transition");
+
     if (!this->is_default_transition_state()) {
         if (this->field_28 && this->field_4 == 2) {
             state_trans_action trans_action = this->process_message(a3, static_cast<state_trans_messages>(3));
@@ -193,3 +196,20 @@ ai::state_trans_action enhanced_state::exit_layer(string_hash a3,
 }
 
 } // namespace ai
+
+
+ai::state_trans_action * __fastcall ai_enhanced_state_check_transition(ai::enhanced_state *self, void *,
+        ai::state_trans_action *out,
+        Float a3)
+{
+    *out = self->check_transition(a3);
+    return out;
+}
+
+void enhanced_state_patch()
+{
+    {
+        auto address = int(&ai_enhanced_state_check_transition);
+        SET_JUMP(0x006BD600, address);
+    }
+}

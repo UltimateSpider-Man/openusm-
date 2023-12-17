@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mash.h"
 #include "resource_key.h"
 
 struct mash_info_struct;
@@ -15,5 +16,9 @@ struct als_res_data {
 
     als_res_data();
 
+    void initialize(mash::allocation_scope);
+
     void unmash(mash_info_struct *a2, void *a3);
 };
+
+extern void als_res_data_patch();

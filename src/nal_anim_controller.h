@@ -10,6 +10,10 @@ struct actor;
 struct nalBaseSkeleton;
 struct po;
 
+namespace als {
+struct als_meta_anim_table_shared;
+}
+
 struct nal_anim_controller : animation_controller {
     struct scene_anim_client {
         //0x00492890
@@ -42,6 +46,7 @@ struct nal_anim_controller : animation_controller {
                         nalBaseSkeleton *a3,
                         unsigned int a4,
                         const als::als_meta_anim_table_shared *a5);
+
 
     //virtual
     void *get_base_layer_anim_ptr();

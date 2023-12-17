@@ -7,25 +7,22 @@
 #include "tl_system.h"
 #include "variable.h"
 
+#include <nal_generic.h>
 #include <nalcomp/nal_pose_comp.h>
 
 #include <memory>
 
 struct BaseComponent {
-    virtual ~BaseComponent() = default;
+    std::intptr_t m_vtbl;
+    //virtual ~BaseComponent() = default;
 
-    virtual int GetType() = 0;
+    //virtual
+    int GetType() { return 0; }
 };
 
 extern Var<tlInstanceBank> nalTypeInstanceBank;
 
 extern Var<tlInstanceBank> nalComponentInstanceBank;
-
-namespace CharComponentManager {
-extern Var<BaseComponent **> pCompArray;
-
-extern Var<int> iCurrNumComponents;
-} // namespace CharComponentManager
 
 namespace PanelComponentMgr {
 extern Var<int *> comp_list;
@@ -59,13 +56,11 @@ struct nalAnimClass {
     nalAnimClass<nalAnyPose> *field_4;
     tlFixedString field_8;
     int field_28;
-    int field_2C;
+    int Version;
     nalBaseSkeleton *Skeleton;
     int field_34;
     int field_38;
-    int field_3C;
-    int field_40;
-    int field_44;
+    int InstanceCount;
 
     auto *GetSkeleton()
     {
@@ -122,40 +117,7 @@ struct nalCharAnim {
     static int vtbl_ptr;
 };
 
-struct nalCharSkeleton;
 
-struct nalCharPose : nalComp::nalCompPose {
-    nalCharPose(const nalCharSkeleton *);
-
-    //virtual
-    void InitializePoseDataFromSkel();
-};
-
-struct nalCharSkeleton : nalComp::nalCompSkeleton {
-    struct vtbl {
-        void *Dummy;
-        void *finalize;
-
-        using Process_t = void (nalCharSkeleton::*)();
-        Process_t Process;
-
-        void *Release;
-
-        using CheckVersion_t = bool (nalCharSkeleton::*)();
-        CheckVersion_t CheckVersion;
-    };
-
-    int field_7C;
-    nalCharPose *field_80;
-
-    void Process();
-
-    bool CheckVersion() {
-        return this->Version == 0x10003;
-    }
-
-    static int vtbl_ptr;
-};
 } // namespace nalChar
 
 namespace nalPanel {
@@ -346,111 +308,6 @@ struct spideySignalData {};
 struct spideySignal {};
 
 struct nalComponentInitList;
-
-namespace nalGeneric {
-
-struct nalGenericSkeleton;
-
-struct nalGenericAnim {
-    std::intptr_t m_vtbl;
-    int field_4[9];
-
-    tlHashString field_28;
-    unsigned int field_2C;
-    nalGenericSkeleton *field_30;
-    int field_34;
-    int field_38;
-    int field_3C;
-    int field_40;
-    int field_44;
-    int field_48;
-    int field_4C;
-    int field_50;
-
-    struct vtbl {};
-
-    static int vtbl_ptr;
-};
-
-struct nalComponentInfo {
-    tlHashString field_0;
-    char field_4[0x1C];
-    struct {
-        std::intptr_t m_vtbl;
-    } * field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
-};
-
-struct nalGenericSkeleton {
-    std::intptr_t m_vtbl;
-    uint32_t field_4;
-    int field_8[8];
-
-    tlHashString field_28;
-    int field_2C[9];
-    int field_50;
-    int field_54[4];
-
-    int field_64;
-    int field_68;
-    int field_6C;
-    int field_70;
-    int field_74;
-    int field_78;
-    int field_7C;
-    int field_80;
-    int field_84;
-    int field_88;
-    nalComponentInfo *field_8C;
-    int field_90;
-    int field_94;
-    int field_98;
-    int field_9C;
-    int field_A0;
-    int field_A4;
-    nalComponentInfo *field_A8;
-    int field_AC;
-    int field_B0;
-    int field_B4;
-    int field_B8;
-    int field_BC;
-    int field_C0;
-    int field_C4;
-    int field_C8;
-    int field_CC;
-    int field_D0;
-    int field_D4;
-    int field_D8;
-    int field_DC;
-    int field_E0;
-
-    struct vtbl {
-        void *field_0;
-        void *field_4;
-        void (nalGenericSkeleton::*Process)();
-        void (nalGenericSkeleton::*Release)();
-        bool (nalGenericSkeleton::*CheckVersion)();
-    };
-
-    nalGenericSkeleton() {
-        vtbl_ptr = (int) std::addressof(bit_cast<int *>(this)[0]);
-    }
-
-    //0x00793610
-    void Process();
-
-    void Release();
-
-    bool CheckVersion() {
-        return this->field_4 == 0x10200;
-    }
-
-    static int vtbl_ptr;
-};
-
-} // namespace nalGeneric
 
 template<typename T>
 T nalSkeletonPtrCast(T a1) {

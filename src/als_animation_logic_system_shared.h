@@ -11,7 +11,7 @@ struct layer_state_machine_shared;
 struct als_meta_anim_table_shared;
 
 struct animation_logic_system_shared {
-    mVector<als::layer_state_machine_shared> field_0;
+    mVector<layer_state_machine_shared> field_0;
     state_machine_shared *field_14;
     als_meta_anim_table_shared *field_18;
 
