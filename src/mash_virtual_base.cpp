@@ -24,13 +24,19 @@ mash_virtual_base::mash_virtual_base()
 
 }
 
-void *mash_virtual_base::create_subclass_by_enum(mash::virtual_types_enum a1) {
+void *mash_virtual_base::create_subclass_by_enum(mash::virtual_types_enum a1)
+{
+    TRACE("mash_virtual_base::create_subclass_by_enum");
+
     return (void *) CDECL_CALL(0x0042AB60, a1);
 }
 
 void *mash_virtual_base::create_subclass_by_enum_in_place(mash::virtual_types_enum a1,
                                                           mash_virtual_base *a2,
-                                                          int a3) {
+                                                          int a3)
+{
+    TRACE("mash_virtual_base::create_subclass_by_enum_in_place");
+
     return (void *) CDECL_CALL(0x004227E0, a1, a2, a3);
 }
 
@@ -59,7 +65,7 @@ bool mash_virtual_base::is_subclass_of(mash::virtual_types_enum) {
 }
 
 bool mash_virtual_base::is_or_is_subclass_of(mash::virtual_types_enum a2) {
-    return this->get_virtual_type_enum() == a2.field_0 || this->is_subclass_of(a2);
+    return this->get_virtual_type_enum() == a2 || this->is_subclass_of(a2);
 }
 
 void mash_virtual_base::generate_vtable()
@@ -168,10 +174,14 @@ void *mash_virtual_base::construct_class_helper(void *a1) {
 
         sp_log("mash::virtual_types_enum = %u", v2);
 
-        return mash_virtual_base::create_subclass_by_enum_in_place(mash::virtual_types_enum{v2},
+        return mash_virtual_base::create_subclass_by_enum_in_place(static_cast<mash::virtual_types_enum>(v2),
                                                                    v1,
                                                                    0x7FFFFFFF);
     } else {
+        auto *v1 = static_cast<mash_virtual_base *>(a1);
+        auto v2 = v1->get_virtual_type_enum();
+
+        sp_log("mash::virtual_types_enum = %u", v2);
         return (void *) CDECL_CALL(0x0042A7C0, a1);
     }
 }
@@ -206,8 +216,10 @@ void mash_virtual_base::fixup_vtable(void *a1)
 void mash_virtual_base_patch() {
 
     REDIRECT(0x00555726, mash_virtual_base::generate_vtable);
+
+    REDIRECT(0x004B157A, mash_virtual_base::construct_class_helper);
+
     return;
 
-    REDIRECT(0x0064B97A, mash_virtual_base::construct_class_helper);
 
 }

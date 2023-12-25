@@ -425,7 +425,7 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
                 assert(cur_parent->get_curr_state() != nullptr);
 
                 ai::launch_layer_state *v8 = CAST(v8, cur_parent->get_curr_state());
-                if ( cur_parent->my_curr_state->is_or_is_subclass_of({330}) ) {
+                if ( cur_parent->my_curr_state->is_or_is_subclass_of(static_cast<mash::virtual_types_enum>(330)) ) {
                     if (auto v9 = cur_child_machine->get_name();
                         v8->get_layer_resource_key() != v9 )
                     {

@@ -1,5 +1,6 @@
 #include "als_animation_logic_system_interface.h"
 
+#include "als_animation_logic_system.h"
 #include "func_wrapper.h"
 #include "trace.h"
 #include "utility.h"
@@ -9,55 +10,92 @@ void animation_logic_system_interface::frame_advance_pre_controller_all_alses(Fl
 {
     TRACE("als::animation_logic_system_interface::frame_advance_pre_controller_all_alses");
 
-    CDECL_CALL(0x0049ED90, a1);
+    if constexpr (0) {
+        for ( auto &v : the_als_list())
+        {
+            v.field_4 = v.field_0->frame_advance_should_do_frame_advance(a1);
+        }
+
+        for ( auto &v : the_als_list())
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_main_als_advance(a1);
+            }
+        }
+
+        for ( auto &v : the_als_list())
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_post_request_processing(a1);
+            }
+        }
+
+        for ( auto &v: the_als_list())
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_on_layer_trans(a1);
+            }
+        }
+
+        for ( auto &v : the_als_list() )
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_post_logic_processing(a1);
+            }
+        }
+
+        for ( auto &v : the_als_list() )
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_play_new_animations(a1);
+            }
+        }
+
+        for ( auto &v : the_als_list() )
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_update_pending_params(a1);
+            }
+        }
+
+        for ( auto &v : the_als_list() )
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_change_mocomp(a1);
+            }
+        }
+
+        for ( auto &v : the_als_list() )
+        {
+            if ( v.field_4 )
+            {
+                v.field_0->frame_advance_run_mocomp_pre_anim(a1);
+            }
+        }
+    } else {
+        CDECL_CALL(0x0049ED90, a1);
+    }
 }
 
 void animation_logic_system_interface::force_update(Float a2)
 {
     TRACE("animation_logic_system_interface::force_update");
 
-#if 0
-    if ( this->m_vtbl->frame_advance_should_do_frame_advance(this, a2) || a2 == EPSILON )
-    {
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_main_als_advance)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_post_request_processing)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_on_layer_trans)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_post_logic_processing)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_play_new_animations)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_update_pending_params)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_change_mocomp)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_run_mocomp_pre_anim)(
-            this,
-            LODWORD(a2));
-        ((void (__thiscall *)(als::animation_logic_system *, _DWORD))this->m_vtbl->frame_advance_controller)(
-            this,
-            LODWORD(a2));
-        this->m_vtbl->frame_advance_post_controller(this, a2);
-    }
-#else
     THISCALL(0x00492FC0, this, a2);
-#endif
 }
 
 void animation_logic_system_interface::force_update()
 {
     TRACE("animation_logic_system_interface::force_update");
 
-    THISCALL(0x00498D00, this);
+    this->force_update(0.000099999997);
 }
 
 

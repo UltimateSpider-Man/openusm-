@@ -39,6 +39,11 @@ struct mVector {
         {
             return (*this->_Ptr);
         }
+
+        auto &operator*() const
+        {
+            return (*this->_Ptr);
+        }
     };
 
     mVector() = default;
@@ -72,8 +77,19 @@ struct mVector {
         return this->m_data[index];
     }
 
-    inline auto size() const {
+    const T *at(uint16_t index) const {
+        assert(index < this->m_size);
+        assert(this->m_data != nullptr);
+
+        return this->m_data[index];
+    }
+
+    auto size() const {
         return m_size;
+    }
+
+    auto empty() const {
+        return this->size() == 0;
     }
 
     auto begin()

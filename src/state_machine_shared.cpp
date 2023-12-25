@@ -24,7 +24,7 @@ namespace als {
 
         a2->unmash_class_in_place(this->state_list, this);
         a2->unmash_class_in_place(this->category_list, this);
-        a2->unmash_class_in_place(this->field_2C, this);
+        a2->unmash_class_in_place(this->trans_group_list, this);
     }
 
     int state_machine_shared::get_mash_sizeof() const

@@ -34,6 +34,8 @@ namespace als
         a1->unmash_class_in_place(this->field_28, this);
         a1->unmash_class_in_place(this->field_3C, this);
 
+        sp_log("%s %d", this->get_nal_anim_name().to_string(), this->field_18.size());
+
 #ifdef TARGET_XBOX
         {
             uint8_t class_mashed = -1;
@@ -54,40 +56,28 @@ namespace als
 
     bool test_all_trans_groups(
         request_data &a1,
-        mVectorBasic<int> *a2,
-        scripted_trans_group::transition_type a3,
+        const mVectorBasic<int> &a2,
+        scripted_trans_group::transition_type trans_type,
         als_data a4,
         string_hash a5)
     {
         TRACE("als::test_all_trans_groups");
 
         if constexpr (1) {
-#if 0
-            for ( int i = 0; i < a2->size(); ++i )
-            {
-                auto v6 = a2->at(i);
-                auto *v15 = bit_cast<scripted_trans_group *>(a4.field_4->get_trans_group(v6));
-                if ( bit_cast<scripted_trans_group *>(v15)->check_transition(a1, a3, a4, a5) )
-                {
-                    return true;
-                }
-            }
+            sp_log("%d", a2.size());
 
-            return false;
-#else
-            auto begin = a2->m_data;
-            auto end = begin + a2->size();
+            auto begin = a2.m_data;
+            auto end = begin + a2.size();
             auto it = std::find_if(begin, end, [&](int v6)
             {
-                auto *v15 = bit_cast<scripted_trans_group *>(a4.field_4->get_trans_group(v6));
-                return ( v15->check_transition(a1, a3, a4, a5) );
+                auto *trans_group = a4.field_4->get_trans_group(v6);
+                return trans_group->check_transition(a1, trans_type, a4, a5);
             });
 
             return (it != end);
-#endif
 
         } else {
-            return (bool) CDECL_CALL(0x004A6EA0, &a1, a2, a3, a4, a5);
+            return (bool) CDECL_CALL(0x004A6EA0, &a1, &a2, trans_type, a4, a5);
         }
     }
 
@@ -108,41 +98,47 @@ namespace als
     {
         TRACE("als::scripted_state::do_implicit_trans");
 
+        if constexpr (1)
         {
-            std::for_each(this->field_28.begin(), this->field_28.end(), [](auto *the_rule){ 
-                printf("%s\n", the_rule->field_14.field_8.to_string());
+            std::for_each(this->field_28.begin(), this->field_28.end(), [](auto &the_rule){ 
+                printf("the_action = %d, %s\n", the_rule->field_0.field_14.the_action, the_rule->field_0.field_14.field_8.to_string());
             });
         }
+
+        sp_log("%s", this->get_nal_anim_name().to_string());
      
         if constexpr (0) {
             request_data data {};
             als_data a2 {a4, a5};
             string_hash v14 {};
-            if ( !als::test_all_trans_groups(
+            if ( !test_all_trans_groups(
                     data,
-                    &this->field_18,
-                    static_cast<scripted_trans_group::transition_type>(0),
+                    this->field_18,
+                    scripted_trans_group::IMPLICIT,
                     a2,
                     v14) )
             {
-                for ( int i = 0; i < this->field_28.size(); ++i)
+                auto begin = this->field_28.m_data;
+                auto end = begin + this->field_28.size();
+                auto it = std::find_if(begin, end, [&a2](auto *trans_rule)
                 {
-                    auto *trans_rule = this->field_28.at(i);
-                    if ( bit_cast<basic_rule_data *>(trans_rule)->can_transition(
-                        a2) )
+                    return trans_rule->can_transition(a2);
+                });
+
+                if (it != end) {
+                    auto &trans_rule = (*it);
+                    trans_rule->field_0.field_14.process_action(data);
+                    if ( trans_rule->field_0.has_post_action() )
                     {
-                        trans_rule->field_14.process_action(data);
-                        if ( trans_rule->field_20 != nullptr )
-                        {
-                            data.field_10 = static_cast<scripted_trans_group::transition_type>(0);
-                            data.field_C = int(&this->field_28.m_data[i]);
-                        }
+                        data.field_10 = scripted_trans_group::IMPLICIT;
+                        data.field_C = int(&trans_rule);
                     }
                 }
+
             }
 
-            if ( !(data.did_transition_occur || data.field_1) ) {
-                if ( (this->field_C & 8) != 0 ) {
+            if ( auto v1 = (data.did_transition_occur || data.field_1); !v1 ) {
+                if ( this->is_flag_set(static_cast<state_flags>(8)) ) {
                     data.field_3 = false;
                 } else {
                     data.field_3 = true;
@@ -154,6 +150,13 @@ namespace als
         } else {
             request_data data;
             THISCALL(0x004A6F10, this, &data, a4, a5);
+
+            sp_log("did_transition_occur = %d, %d %d %d",
+                                data.did_transition_occur,
+                                data.field_1,
+                                data.field_2,
+                                data.field_3);
+
             return data;
         }
     }
@@ -207,6 +210,23 @@ string_hash * __fastcall scripted_state__get_nal_anim_name(als::scripted_state *
     return a2;
 }
 
+als::scripted_state *__fastcall als_base_layer_scripted_state__constructor0(als::scripted_state *self)
+{
+    TRACE("als::base_layer_scripted_state::base_layer_scripted_state");
+    THISCALL(0x00444000, self);
+    return self;
+}
+
+als::base_layer_scripted_state *__fastcall als_base_layer_scripted_state__constructor1(
+        als::base_layer_scripted_state *self, void *,
+        from_mash_in_place_constructor *a2)
+{
+    TRACE("als::base_layer_scripted_state::base_layer_scripted_state(from_mash_in_place_constructor *)");
+
+    THISCALL(0x004ACBD0, self, a2);
+    return self;
+}
+
 void als_scripted_state_patch()
 {
     {
@@ -241,4 +261,8 @@ void als_scripted_state_patch()
         FUNC_ADDRESS(address, &als::base_layer_scripted_state::_unmash);
         set_vfunc(0x0087E218, address);
     }
+
+    REDIRECT(0x0043192E, als_base_layer_scripted_state__constructor0);
+
+    REDIRECT(0x00429A04, als_base_layer_scripted_state__constructor1);
 }

@@ -4,6 +4,8 @@
 
 #include "als_layer_types.h"
 
+struct from_mash_in_place_constructor;
+
 namespace als
 {
     struct layer_state_machine_shared : state_machine_shared
@@ -12,6 +14,8 @@ namespace als
         layer_types field_44;
 
         layer_state_machine_shared();
+
+        layer_state_machine_shared(from_mash_in_place_constructor *);
 
         //virtual
         void _unmash(mash_info_struct *a1, void *a3);

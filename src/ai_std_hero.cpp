@@ -120,9 +120,9 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
             auto cat_id = info_node->get_category_id(static_cast<als::layer_types>(0));
             auto *v13 = bit_cast<als::state_machine *>(info_node->field_1C->get_als_layer(static_cast<als::layer_types>(0)));
             auto &anim_handle = v13->get_anim_handle();
-            if ( anim_handle.sub_4AD230() ) {
+            if ( anim_handle.get_anim_ptr() ) {
                 auto &v14 = v13->get_anim_handle();
-                v15 = v14.sub_4AD210();
+                v15 = v14.get_anim_norm_time();
             }
 
             return cat_id != cat_id_jump_to_swing || v15 >= 1.0f;

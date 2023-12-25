@@ -20,6 +20,7 @@
 #include "als_inode.h"
 #include "als_meta_anim_base.h"
 #include "als_meta_anim_swing.h"
+#include "als_meta_aimed_shot_vert.h"
 #include "als_meta_anim_table_shared.h"
 #include "als_motion_compensator.h"
 #include "als_resource_handler.h"
@@ -2485,6 +2486,8 @@ BOOL install_redirects() {
     als_meta_anim_base_patch();
 
     als_meta_anim_swing_patch();
+
+    als_meta_aimed_shot_vert_patch();
 
     als_meta_anim_table_shared_patch();
 

@@ -17,7 +17,7 @@ struct state_machine_shared : mash_virtual_base {
 
     mVector<state> state_list;
     mVector<category> category_list;
-    mVector<transition_group_base> field_2C;
+    mVector<transition_group_base> trans_group_list;
 
     void destruct_mashed_class();
 

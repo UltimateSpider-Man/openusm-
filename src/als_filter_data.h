@@ -1,13 +1,15 @@
 #pragma once
 
+#include <cstdint>
+
 struct mash_info_struct;
 
 namespace als
 {
     struct filter_data {
-        int field_0;
-        int field_4;
-        int field_8;
+        uint32_t field_0;
+        float field_4;
+        float field_8;
 
         void unmash(mash_info_struct *, void *) {}
     };

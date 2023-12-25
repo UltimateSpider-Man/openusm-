@@ -3,6 +3,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "mash_info_struct.h"
+#include "nal_system.h"
 #include "utility.h"
 #include "trace.h"
 
@@ -35,7 +36,7 @@ namespace ai
         als::als_meta_anim_base::_unmash(a1, a3);
     }
 
-}
+} // ai
 
 namespace als
 {
@@ -62,7 +63,14 @@ namespace als
         a1->unmash_class_in_place(this->field_28, this);
     }
 
-}
+    float als_meta_linear_blend::get_anim_duration() const
+    {
+        TRACE("als::als_meta_linear_blend::get_anim_duration");
+
+        return this->field_28.m_data[0]->field_4->field_38;
+    }
+
+} // als
 
 void meta_anim_interact_patch()
 {
@@ -79,6 +87,11 @@ void meta_anim_interact_patch()
     {
         FUNC_ADDRESS(address, &als::als_meta_linear_blend::_unmash);
         set_vfunc(0x0087B958, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &als::als_meta_linear_blend::get_anim_duration);
+        set_vfunc(0x0087B978, address);
     }
 
 }

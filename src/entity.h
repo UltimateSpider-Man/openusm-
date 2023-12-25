@@ -36,6 +36,8 @@ struct entity : signaller {
 
     static void destroy_static_entity_pointers();
 
+    bool is_in_limbo() const;
+
     ////// VIRTUAL FUNCTIONS: START //////
 
     ~entity();

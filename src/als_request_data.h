@@ -16,9 +16,11 @@ struct request_data {
 
     request_data();
 
+    request_data(const request_data &);
+
     void clear();
 
-    void sub_4ADF40(const request_data &a2);
+    void operator=(const request_data &a2);
 };
 
 }

@@ -1,12 +1,13 @@
 #include "als_animation_logic_system_shared.h"
 
-#include "state_machine_shared.h"
+#include "als_meta_anim_table_shared.h"
 #include "func_wrapper.h"
-#include "trace.h"
+#include "layer_state_machine_shared.h"
 #include "mash_info_struct.h"
 #include "common.h"
 #include "mash_virtual_base.h"
-#include "als_meta_anim_table_shared.h"
+#include "state_machine_shared.h"
+#include "trace.h"
 
 namespace als {
 
@@ -15,6 +16,19 @@ namespace als {
     animation_logic_system_shared::animation_logic_system_shared()
     {
         THISCALL(0x004AC000, this);
+    }
+
+    animation_logic_system_shared::animation_logic_system_shared(
+        from_mash_in_place_constructor *a2) : field_0(a2)
+    {
+        auto *v3 = this->field_14;
+        if ( v3 != nullptr ) {
+            this->field_14 = (als::state_machine_shared *)mash_virtual_base::construct_class_helper(v3);
+        }
+
+        if ( this->field_18 != nullptr ) {
+            this->field_18 = new (this->field_18) als_meta_anim_table_shared {nullptr};
+        }
     }
 
     void animation_logic_system_shared::destruct_mashed_class()

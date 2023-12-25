@@ -31,6 +31,7 @@
 #include "layer_state_machine.h"
 #include "marker.h"
 #include "oldmath_po.h"
+#include "oldmath_usefulmath.h"
 #include "os_developer_options.h"
 #include "physical_interface.h"
 #include "physics_inode.h"
@@ -641,23 +642,13 @@ double generic_compute_swing_angle(const vector3d &forward,
 
     auto v8 = dot(forward, basis);
 
-    auto v5 = bounded_acos(v8);
+    auto ang = bounded_acos(v8);
 
     if (dot(up, basis) >= 0.0) {
-        v5 = -v5;
+        ang = -ang;
     }
 
-    auto sub_78EDF0 = [](float ang) -> float {
-        constexpr float _2PI = PI * 2.0;
-
-        assert(ang < _2PI * 16 && ang > -_2PI * 16);
-
-        auto anga = (1.0 / _2PI) * ang;
-        auto angb = anga - std::floor(anga);
-        return (float) (angb * _2PI);
-    };
-
-    return sub_78EDF0(v5);
+    return wrap_angle(ang);
 }
 
 void sub_44BCD0(entity_base *a1) {

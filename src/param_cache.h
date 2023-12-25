@@ -23,7 +23,7 @@ namespace als {
 
         float cache_param(int a2, Float a3);
 
-        float get_from_cache(int location);
+        float get_from_cache(int location) const;
 
         static inline constexpr auto INVALID_CACHE_ID = -1;
     };

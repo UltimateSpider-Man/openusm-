@@ -6,6 +6,11 @@
 
 struct mash_info_struct;
 
+struct nalAnyPose;
+
+template<typename T>
+struct nalAnimClass;
+
 namespace ai
 {
     struct meta_anim_interact : als::als_meta_anim_base
@@ -36,7 +41,7 @@ namespace als
 {
     struct meta_key_anim {
         string_hash field_0;
-        int field_4;
+        nalAnimClass<nalAnyPose> *field_4;
         int field_8;
         int field_C;
 
@@ -52,6 +57,9 @@ namespace als
 
         //virtual
         void _unmash(mash_info_struct *, void *);
+
+        //virtual
+        float get_anim_duration() const;
     };
 }
 

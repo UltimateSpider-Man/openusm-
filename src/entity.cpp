@@ -36,6 +36,20 @@ entity::~entity() {
     THISCALL(0x004F91C0, this);
 }
 
+bool entity::is_in_limbo() const
+{
+    auto v1 = [](const entity *self) -> bool
+    {
+        return self->is_ext_flagged(0x2000u) || !bit_cast<entity *>(self)->get_primary_region();
+    }(this);
+
+    auto sub_6A7DAB = [](const entity_base *self) -> bool
+    {
+        return self->is_flagged(8u);
+    };
+    return v1 && !sub_6A7DAB(this);
+}
+
 float entity::get_visual_radius() {
     if constexpr (0) {
         if ((this->field_4 & 0x8004) == 0) {

@@ -21,6 +21,9 @@ struct motion_compensator : mash_virtual_base {
     void activate(animation_logic_system *a2);
 
     //virtual
+    void pre_anim_action(Float a3);
+
+    //virtual
     void post_anim_action(Float a2);
 
     //virtual

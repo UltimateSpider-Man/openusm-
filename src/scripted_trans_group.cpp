@@ -47,99 +47,78 @@ void scripted_trans_group::_unmash(mash_info_struct *a1, void *)
 
 bool scripted_trans_group::check_transition(
         request_data &data,
-        scripted_trans_group::transition_type a3,
+        scripted_trans_group::transition_type trans_type,
         als_data a4,
-        string_hash a5)
+        string_hash a5) const
 {
     TRACE("scripted_trans_group::check_transition");
 
+    sp_log("transition_type = %d", trans_type);
+
     if constexpr (0) {
-        if ( test_all_trans_groups(data, &this->field_4, a3, a4, a5) ) {
+        if ( test_all_trans_groups(data, this->field_4, trans_type, a4, a5) ) {
             return true;
         }
 
-        if ( a3 == 0 )
-        {
-            int v13 = 0;
-            if ( this->field_14.m_size > 0 )
+        switch (trans_type) {
+        case IMPLICIT: {
+            auto begin = this->field_14.m_data;
+            auto end = begin + this->field_14.size();
+            auto it = std::find_if(begin, end, [&a4](auto &trans_rule)
             {
-                while ( !bit_cast<basic_rule_data *>(this->field_14.at(v13))->can_transition(a4) )
-                {
-                    if ( ++v13 >= this->field_14.m_size ) {
-                        return false;
-                    }
-                }
+                return trans_rule->can_transition(a4);
+            });
 
-                auto v14 = v13;
-                this->field_14.at(v14)->field_14.process_action(data);
-                if ( this->field_14.m_data[v14]->field_20 != nullptr )
+            if (it != end) {
+                (*it)->field_0.field_14.process_action(data);
+                if ( (*it)->field_0.has_post_action() )
                 {
-                    data.field_10 = static_cast<transition_type>(0);
-                    data.field_C = int(&this->field_14.m_data[v14]);
+                    data.field_10 = trans_type;
+                    data.field_C = int(&(*it));
                 }
             }
 
-            return false;
+            break;
         }
-
-        if ( a3 == 1 )
-        {
-            int v10 = 0;
-            if ( this->field_28.size() > 0 )
+        case EXPLICIT: {
+            for (int i = 0; i < this->field_28.size(); ++i) 
             {
-                while ( 1 )
-                {
-                    auto *v11 = this->field_28.m_data[v10];
-                    if ( a5 == v11->field_24 && bit_cast<als::basic_rule_data *>(v11)->can_transition(a4) ) {
-                        break;
+                auto *v11 = this->field_28.at(i);
+                if ( v11->can_transition(a4, a5) ) {
+                    v11->field_0.field_14.process_action(data);
+                    if ( v11->field_0.has_post_action() )
+                    {
+                        data.field_10 = trans_type;
+                        data.field_C = int(&v11);
                     }
 
-                    if ( ++v10 >= this->field_28.m_size ) {
-                        return false;
+                    break;
+                }
+            }
+
+            break;
+        }
+        case LAYER: {
+            if ( this->field_3C != nullptr ) {
+                for (int i = 0; i < this->field_3C->size(); ++i )
+                {
+                    auto *trans_rule = this->field_3C->at(i);
+                    if ( trans_rule->can_transition(a4) ) {
+                        trans_rule->field_8.process_action(data);
                     }
                 }
-
-                auto v12 = v10;
-                this->field_28.at(v12)->field_14.process_action(data);
-                if ( this->field_28.at(v12)->field_20 != nullptr )
-                {
-                    data.field_10 = static_cast<transition_type>(1);
-                    data.field_C = int(&this->field_28.m_data[v12]);
-                    return false;
-                }
-            }
-            return false;
-        }
-
-        if ( a3 != 2 ) {
-            return false;
-        }
-
-        auto *v8 = this->field_3C;
-        if ( v8 == nullptr ) {
-            return false;
-        }
-
-        auto v9 = 0;
-
-        if ( v8->m_size <= 0 ) {
-            return false;
-        }
-
-        do
-        {
-            if ( v8->at(v9)->can_transition(a4) ) {
-                this->field_3C->at(v9)->field_8.process_action(data);
             }
 
-            v8 = this->field_3C;
-            ++v9;
+            break;
         }
-        while ( v9 < v8->m_size );
+        default:
+            assert(0 && "Unknown type specified for trans group.");
+            break;
+        }
 
         return false;
     } else {
-        return (bool) THISCALL(0x004A0090, this, &data, a3, a4, a5);
+        return (bool) THISCALL(0x004A0090, this, &data, trans_type, a4, a5);
     }
 }
 

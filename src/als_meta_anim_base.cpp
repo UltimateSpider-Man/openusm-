@@ -35,8 +35,9 @@ namespace als
         return func(this);
     }
 
-    float als_meta_anim_base::get_anim_duration()
+    float als_meta_anim_base::get_anim_duration() const
     {
+        sp_log("0x%08X", m_vtbl);
         float (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x24));
         return func(this);
     }

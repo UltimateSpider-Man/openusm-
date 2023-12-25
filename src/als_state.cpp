@@ -21,8 +21,8 @@ namespace als {
 
         if constexpr (1)
         {
-            a2->unmash_class_in_place(this->field_4, a3);
-            a2->unmash_class_in_place(this->field_8, a3);
+            a2->unmash_class_in_place(this->m_state_id, a3);
+            a2->unmash_class_in_place(this->m_cat_id, a3);
 
 #ifdef TARGET_XBOX
             {

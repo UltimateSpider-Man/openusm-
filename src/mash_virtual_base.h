@@ -9,9 +9,9 @@
 #endif
 
 namespace mash {
-struct virtual_types_enum {
-    uint32_t field_0;
-};
+
+enum virtual_types_enum { };
+
 } // namespace mash
 
 struct mash_info_struct;

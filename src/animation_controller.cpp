@@ -187,7 +187,7 @@ void animation_controller::anim_ctrl_handle::set_anim_speed(Float a2)
     }
 }
 
-bool animation_controller::anim_ctrl_handle::is_anim_active()
+bool animation_controller::anim_ctrl_handle::is_anim_active() const
 {
     if ( this->field_8 != nullptr && this->field_0 ) {
         return true;
@@ -196,23 +196,23 @@ bool animation_controller::anim_ctrl_handle::is_anim_active()
     return this->field_8 != nullptr && this->field_8->is_anim_active(this->field_4);
 }
 
-int animation_controller::anim_ctrl_handle::sub_4AD230()
+void *animation_controller::anim_ctrl_handle::get_anim_ptr() const
 {
-    return THISCALL(0x004AD230, this);
+    return (void *) THISCALL(0x004AD230, this);
 }
 
-float animation_controller::anim_ctrl_handle::sub_4AD210()
+float animation_controller::anim_ctrl_handle::get_anim_norm_time() const
 {
-    float (__fastcall *func)(void *) = CAST(func, 0x004AD210);
+    float (__fastcall *func)(const void *) = CAST(func, 0x004AD210);
     return func(this);
 }
 
-bool animation_controller::is_anim_active(Float a1) 
+bool animation_controller::is_anim_active(Float a1) const
 {
     if constexpr (0) {
         //return this->my_player.IsAnimActive(a1);
     } else {
-        bool (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2C));
+        bool (__fastcall *func)(const void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2C));
         return func(this, nullptr, a1);
     }
 }

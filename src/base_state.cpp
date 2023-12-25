@@ -38,7 +38,7 @@ ai_core *base_state::get_core() {
 }
 
 bool base_state::is_subclass_of(mash::virtual_types_enum a1) {
-    return mash_virtual_base::get_virtual_type_enum() == a1.field_0;
+    return mash_virtual_base::get_virtual_type_enum() == a1;
 }
 
 bool base_state::is_flag_set(int a2) const {

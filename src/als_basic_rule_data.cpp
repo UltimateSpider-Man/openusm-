@@ -1,19 +1,63 @@
 #include "als_basic_rule_data.h"
 
 #include "als_dest_weight_data.h"
+#include "als_filter_data.h"
 #include "als_request_data.h"
 #include "mash_info_struct.h"
 #include "common.h"
+#include "state_machine.h"
 #include "trace.h"
 #include "utility.h"
 
 namespace als
 {
+    VALIDATE_SIZE(basic_rule_data, 0x24);
     VALIDATE_SIZE(basic_rule_data::post_action_rule_set, 0x28u);
+
+    void basic_rule_data::unmash(mash_info_struct *a1, void *)
+    {
+        a1->unmash_class_in_place(this->field_0, this);
+        a1->unmash_class_in_place(this->field_14, this);
+
+#ifdef TARGET_XBOX
+        {
+            uint8_t class_mashed = -1;
+            class_mashed = *a1->read_from_buffer(mash::SHARED_BUFFER, 1, 1);
+            assert(class_mashed == 0xAF || class_mashed == 0);
+        }
+#endif
+
+        if (this->field_20 != nullptr)
+        {
+            a1->unmash_class(this->field_20, this
+#ifdef TARGET_XBOX
+                , mash::NORMAL_BUFFER
+#endif
+                    );
+        }
+    }
+
 
     bool basic_rule_data::can_transition(als_data &a2) const
     {
-        return (bool) THISCALL(0x0049FEE0, this, &a2);
+        TRACE("als::basic_rule_data::can_transition");
+
+        if constexpr (1) {
+            for ( auto &data : this->field_0 )
+            {
+                auto param = a2.field_4->get_param(a2.field_0, data->field_0);
+                sp_log("%f %f %f %u", param, data->field_4, data->field_8, data->field_0);
+                if ( param < data->field_4 || data->field_8 < param ) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            bool (__fastcall *func)(const void *, void *, als_data *) = CAST(func, 0x0049FEE0);
+
+            return func(this, nullptr, &a2);
+        }
     }
 
     void basic_rule_data::do_post_action(als_data &a2)
@@ -50,7 +94,7 @@ namespace als
         }
     }
 
-    string_hash basic_rule_data::rule_action::get_dest()
+    string_hash basic_rule_data::rule_action::get_dest() const
     {
         TRACE("als::basic_rule_data::rule_action::get_dest");
 
@@ -79,14 +123,14 @@ namespace als
                     v7 += this->destination_states->at(i)->field_4;
                     if ( v7 >= v8 )
                     {
-                        auto *v3 = (string_hash *)this->destination_states->at(i);
-                        return (*v3);
+                        auto v3 = this->destination_states->at(i)->field_0;
+                        return v3;
                     }
                 }
 
                 auto v4 = this->destination_states->size();
-                auto *v5 = (string_hash *)this->destination_states->at(v4 - 1);
-                return (*v5);
+                auto v5 = this->destination_states->at(v4 - 1)->field_0;
+                return v5;
             }
             else
             {
@@ -100,7 +144,7 @@ namespace als
         }
     }
 
-    void basic_rule_data::rule_action::process_action(request_data &a2)
+    void basic_rule_data::rule_action::process_action(request_data &a2) const
     {
         TRACE("als::basic_rule_data::rule_action::process_action");
 
@@ -155,6 +199,11 @@ void als_basic_rule_data_patch()
 {
     FUNC_ADDRESS(address, &als::basic_rule_data::rule_action::process_action);
     SET_JUMP(0x004997D0, address);
+
+    {
+        FUNC_ADDRESS(address, &als::basic_rule_data::can_transition);
+        REDIRECT(0x004A6F9F, address);
+    }
 
     {
         FUNC_ADDRESS(address, &als::basic_rule_data::do_post_action);

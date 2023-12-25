@@ -75,16 +75,8 @@ void plr_loco_crawl_state::activate(
             v25->set_avoid_floor(0);
             v25->set_mode((capsule_alter_sys::eAlterMode)2);
 
-            vector3d v37;
-            v37[0] = -0.30000001;
-            v37[1] = 0.0;
-            v37[2] = 0.30000001;
-
-
-            vector3d v38;
-            v38[0] = 0.0;
-            v38[1] = 0.0;
-            v38[2] = 0.30000001;
+            vector3d v37 {-0.30000001, 0.0, 0.30000001};
+            vector3d v38 {0.0, 0.0, 0.30000001};
             v25->set_static_capsule(v38, v37, 0.30000001);
         }
 
@@ -271,58 +263,52 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {
     auto *v4 = (ai::als_inode *) v3->get_info_node(ai::als_inode::default_id, true);
     auto v5 = this->m_wallrun_deviation;
     auto *v6 = v4;
-    float v21 = 1.0;
 
     static constexpr auto deviance_forgiveness_timeout = 0.1f;
 
     if (v5 < 0.0f || this->field_1C < deviance_forgiveness_timeout) {
         auto *v9 = this->get_actor();
-        if ((v9->field_8 & 0x10000000) != 0) {
-            v9->update_abs_po(1);
-        }
-
-        this->field_38 = v9->my_abs_po->m[2];
+        this->field_38 = v9->get_abs_po().get_z_facing();
         this->m_wallrun_deviation = 0.0;
     } else {
         auto *v7 = this->get_actor();
-        auto *v8 = v7;
-        if ((v7->field_8 & 0x10000000) != 0) {
-            v7->update_abs_po(1);
-        }
-
         this->m_wallrun_deviation = 1.0f -
-            std::abs(this->field_38[2] * v8->my_abs_po->m[2][2] +
-                     this->field_38[1] * v8->my_abs_po->m[2][1] +
-                     this->field_38[0] * v8->my_abs_po->m[2][0]);
+            std::abs(dot(this->field_38, v7->get_abs_po().get_z_facing()));
     }
 
     auto *v10 = this->get_actor();
-    if ((v10->field_8 & 0x10000000) != 0) {
-        v10->update_abs_po(true);
-    }
-
-    auto v11 = -YVEC[0] * v10->my_abs_po->m[2][0] +
-        -YVEC[1] * v10->my_abs_po->m[2][1] +
-        -YVEC[2] * v10->my_abs_po->m[2][2];
+    auto v11 = dot(-YVEC, v10->get_abs_po().get_z_facing());
     if (v11 >= 0.0f) {
         this->m_wallrun_deviation = v11 * v11 + this->m_wallrun_deviation;
     }
 
     auto *v12 = this->get_actor()->m_player_controller;
-    if ((v12->gb_grab.m_flags & 0x20) == 0) {
-        if (v12->gb_grab.m_flags & 1) {
-            if (this->field_1C > 0.12f)
-                this->m_wallrun_deviation = 1.0;
+    auto &gb_grab = v12->gb_grab;
+    auto func = [](const game_button &self) -> bool {
+        auto v1 = [](const game_button &self, int a2) {
+             return (a2 & self.m_flags) != 0;
+        }(self, 0x20);
+
+        if (v1) {
+            return false;
         }
+
+        auto result = ((self.m_flags & 1) != 0);
+        return result;
+    };
+
+    if (func(gb_grab) && this->field_1C > 0.12f) {
+        this->m_wallrun_deviation = 1.0;
     }
 
     auto *v13 = v6->get_als_layer(static_cast<als::layer_types>(0));
 
     string_hash tmp = v13->get_state_id();
 
-    static Var<string_hash> wall_run_state_hash {0x009585DC};
+    static const string_hash wall_run_state_hash {int(to_hash("Wall_Run"))};
 
-    if (tmp == wall_run_state_hash()) {
+    float v21 = 1.0;
+    if (tmp == wall_run_state_hash) {
         auto v14 = this->field_1C / 2.0f;
         if (v14 > 1.0f) {
             v14 = 1.0f;
@@ -334,7 +320,6 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {
     }
 
     als::param_list list;
-
     list.add_param({72, this->m_wallrun_deviation});
     list.add_param({16, v21});
 

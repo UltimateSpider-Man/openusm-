@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "als_animation_logic_system_interface.h"
 #include "als_inode.h"
 #include "base_state_machine.h"
 
@@ -16,9 +17,8 @@ namespace als {
 struct animation_logic_system_shared;
 struct motion_compensator;
 
-struct animation_logic_system {
-    std::intptr_t m_vtbl = 0x00881460;
-    int field_4;
+struct animation_logic_system : animation_logic_system_interface {
+    animation_logic_system_shared *als_shared;
     _std::vector<als::state_machine *> field_8;
     base_state_machine field_18;
     actor *field_6C;
@@ -32,6 +32,8 @@ struct animation_logic_system {
 
     //0x004ABB80
     animation_logic_system(actor *a1);
+
+    bool sub_49F2A0();
 
     //0x0049F360
     float convert_layer_id_to_priority(layer_types a2);
@@ -47,16 +49,28 @@ struct animation_logic_system {
     //0x004A6400
     void frame_advance_play_new_animations(Float a2);
 
+    //virtual
+    void frame_advance_update_pending_params(Float a2);
+
+    //virtual
     void frame_advance_change_mocomp(Float a2);
 
+    //virtual
+    void frame_advance_run_mocomp_pre_anim(Float a2);
+
+    //virtual
     void frame_advance_controller(Float a2);
 
+    //virtual
     void frame_advance_post_controller(Float a2);
 
     //0x00498F70
     void enter_biped_physics();
 
     void exit_biped_physics();
+
+    //virtual
+    void suspend_logic_system(bool a2);
 
     //0x004ABC60
     //virtual

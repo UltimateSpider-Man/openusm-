@@ -14,14 +14,66 @@ namespace als {
 
 VALIDATE_SIZE(state_machine, 0x54);
 
-state_machine::state_machine() {
-    THISCALL(0x004A9180, this);
-}
-
-param_node *state_machine::find_external_param(
-        external_parameter_types a2)
+state_machine::state_machine()
 {
     if constexpr (0) {
+        this->m_vtbl = 0x008813D8;
+
+        [](auto &self) {
+            self.clear();
+        }(this->field_8);
+
+        this->curr_req_data.did_transition_occur = false;
+        this->curr_req_data.field_1 = false;
+        this->curr_req_data.field_2 = false;
+        this->curr_req_data.field_3 = false;
+        this->curr_req_data.field_4 = false;
+        this->curr_req_data.field_C = 0;
+
+        this->shared_portion = nullptr;
+        this->m_curr_state = nullptr;
+        this->m_prev_state = nullptr;
+    } else {
+        THISCALL(0x004A9180, this);
+    }
+}
+
+param_node *state_machine::find_external_param(external_parameter_types a2) const
+{
+    TRACE("als::state_machine::find_external_param");
+
+    if constexpr (0) {
+        if ( !this->field_8.field_8.is_empty() && this->is_interruptable() )
+        {
+            auto *result = this->field_8.field_8.field_0;
+            while ( 1 )
+            {
+                if (result->field_0.field_0 == a2) {
+                    return result;
+                }
+
+                result = result->field_8;
+                if ( result == this->field_8.field_8.field_0 ) {
+                    break;
+                }
+            }
+        }
+
+        if ( this->field_34.field_0.is_empty() ) {
+            return nullptr;
+        }
+
+        auto *result = this->field_34.field_0.field_0;
+        while ( result->field_0.field_0 != a2 )
+        {
+            result = result->field_8;
+            if ( result == this->field_34.field_0.field_0 ) {
+                return nullptr;
+            }
+        }
+
+        return result;
+
     } else {
         return (param_node *) THISCALL(0x00493660, this, a2);
     }
@@ -29,23 +81,35 @@ param_node *state_machine::find_external_param(
 
 float state_machine::get_internal_param(
         animation_logic_system *a3,
-        internal_parameter_types a4)
+        internal_parameter_types a4) const
 {
-    float (__fastcall *func)(void *, void *, animation_logic_system *, internal_parameter_types) = CAST(func, 0x0049CFD0);
+    float (__fastcall *func)(const void *, void *, animation_logic_system *, internal_parameter_types) = CAST(func, 0x0049CFD0);
     return func(this, nullptr, a3, a4);
 }
 
-bool state_machine::has_ext_param_been_set(uint32_t a2)
+bool state_machine::is_curr_state_interruptable(
+        animation_logic_system *a2) const
+{
+    auto func = [](const auto *self) {
+        return !self->is_flag_set(static_cast<state_flags>(1));
+    };
+
+    return a2->sub_49F2A0() && func(this->m_curr_state);
+}
+
+bool state_machine::has_ext_param_been_set(uint32_t a2) const
 {
     return this->find_external_param(static_cast<external_parameter_types>(a2)) != nullptr;
 }
 
 float state_machine::get_param(
         animation_logic_system *a2,
-        unsigned int a3)
+        unsigned int a3) const
 {
+    TRACE("als::state_machine::get_param");
+
     if constexpr (0) {
-        auto func = [](param_cache &self, int a2) -> int
+        auto func = [](const param_cache &self, int a2) -> int
         {
             int i;
             auto num_params_in_cache = self.get_num_params_in_cache();
@@ -68,42 +132,53 @@ float state_machine::get_param(
         {
             auto *external_param = this->find_external_param((external_parameter_types)a3);
             if ( external_param != nullptr ) {
-                return this->field_40.cache_param(a3, external_param->field_0.field_4);
+                return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, external_param->field_0.field_4);
             } else {
                 return 0.0;
             }
         }
         else
         {
-            auto internal_param = this->get_internal_param(a2, (internal_parameter_types)a3);
-            return this->field_40.cache_param(a3, internal_param);
+            auto internal_param = this->get_internal_param(a2, static_cast<internal_parameter_types>(a3));
+            return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, internal_param);
         }
 
     } else {
-        float (__fastcall *func)(void *, void *, animation_logic_system *, uint32_t) = CAST(func, 0x0049FB00);
+        float (__fastcall *func)(const void *, void *, animation_logic_system *, uint32_t) = CAST(func, 0x0049FB00);
         return func(this, nullptr, a2, a3);
     }
 }
 
 bool state_machine::did_do_transition() const
 {
-    return this->field_14;
+    return this->field_14.m_trans_succeed;
 }
 
-void state_machine::request_category_transition(string_hash a2) {
-    //return this->field_16 || !this->field_17;
-
-    auto &func = get_vfunc(m_vtbl, 0x10);
-
-    func(this, a2);
+void state_machine::request_category_transition(string_hash a2)
+{
+    if constexpr (0) {
+        if ( !this->field_8.field_2 )
+        {
+            this->field_8.field_1 = true;
+            this->field_8.m_cat_id = a2;
+        }
+    } else {
+        void (__fastcall *func)(void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x10));
+        func(this, nullptr, a2);
+    }
 }
 
-bool state_machine::is_interruptable() {
-    //return this->field_16 || !this->field_17;
-
-    auto &func = get_vfunc(m_vtbl, 0x14);
+bool state_machine::is_interruptable() const {
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
 
     return func(this);
+}
+
+bool state_machine::did_transition_succeed() const
+{
+    TRACE("als::state_machine::did_transition_succeed");
+
+    return this->field_14.m_trans_succeed;
 }
 
 bool state_machine::is_request_satisfied() const
@@ -111,7 +186,7 @@ bool state_machine::is_request_satisfied() const
     TRACE("als::state_machine::is_request_satisfied");
 
     if constexpr (1) {
-        return !this->field_15;
+        return !this->field_14.m_request_not_satisfied;
     } else {
         bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
         return func(this);
@@ -121,7 +196,7 @@ bool state_machine::is_request_satisfied() const
 bool state_machine::is_active() const
 {
     if constexpr (0) {
-        return this->m_active;
+        return this->field_14.m_active;
     } else {
         bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x20));
         return func(this);
@@ -132,9 +207,9 @@ void state_machine::force_als_state(string_hash a2, int )
 {
     TRACE("als::state_machine::force_als_state");
 
-    this->field_9 = true;
-    this->field_A = true;
-    this->field_C = a2;
+    this->field_8.field_1 = true;
+    this->field_8.field_2 = true;
+    this->field_8.m_cat_id = a2;
 }
 
 bool state_machine::does_category_exist(string_hash a2) const
@@ -172,11 +247,11 @@ bool state_machine::is_cat_our_prev_cat(string_hash a2) const
     TRACE("als::state_machine::is_cat_our_prev_cat");
 
     if constexpr (1) {
-        if ( !this->field_14 ) {
+        if ( !this->field_14.m_trans_succeed ) {
             return false;
         }
 
-        return a2 == this->field_18
+        return a2 == this->field_14.m_cat_id
             && a2 != this->get_category_id();
     } else {
         bool (__fastcall *func)(const void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x58));
@@ -189,8 +264,8 @@ bool state_machine::is_requesting_category(string_hash a2) const
     TRACE("als::state_machine::is_requesting_category");
 
     if constexpr (1) {
-        if ( this->field_9 ) {
-            if ( this->field_C == a2 ) {
+        if ( this->field_8.field_1 ) {
+            if ( this->field_8.m_cat_id == a2 ) {
                 return true;
             }
         }
@@ -204,12 +279,21 @@ bool state_machine::is_requesting_category(string_hash a2) const
 
 string_hash state_machine::get_category_id() const
 {
-    void (__fastcall *func)(const void *, void *, string_hash *) = CAST(func, get_vfunc(m_vtbl, 0x0));
+    TRACE("als::state_machine::get_category_id");
 
-    string_hash id;
-    func(this, nullptr, &id);
+    if constexpr (1) {
+        if ( this->is_active() ) {
+            return this->m_curr_state->get_category_id();
+        }
 
-    return id;
+        return string_hash {0};
+    } else {
+        void (__fastcall *func)(const void *, void *, string_hash *) = CAST(func, get_vfunc(m_vtbl, 0x0));
+
+        string_hash id;
+        func(this, nullptr, &id);
+        return id;
+    }
 }
 
 float state_machine::get_time_to_signal(string_hash a2)
@@ -221,7 +305,7 @@ float state_machine::get_time_to_signal(string_hash a2)
 }
 
 void state_machine::set_desired_params(param_list &a2) {
-    param_list &v2 = this->field_10;
+    param_list &v2 = this->field_8.field_8;
     v2.concat_list(a2);
     v2.cull_duplicates_keep_last();
 }
@@ -233,7 +317,7 @@ void state_machine::set_desired_param(const param &a2) {
 
         v8.add_param(v7);
 
-        auto *v4 = &this->field_10;
+        auto *v4 = &this->field_8.field_8;
         v4->concat_list(v8);
 
         v4->cull_duplicates_keep_last();
@@ -244,13 +328,33 @@ void state_machine::set_desired_param(const param &a2) {
     }
 }
 
-string_hash state_machine::get_state_id()
+string_hash state_machine::get_state_id() const
 {
-    void (__fastcall *func)(const void *, void *, string_hash *) = CAST(func, get_vfunc(this->m_vtbl, 0x4));
+    TRACE("als::state_machine::get_state_id");
 
-    string_hash id;
-    func(this, nullptr, &id);
-    return id;
+    if constexpr (1) {
+        if ( this->is_active() )
+        {
+            auto *curr_state = this->get_curr_state();
+            if ( curr_state->is_flag_set(static_cast<state_flags>(0x1000)) )
+            {
+                return curr_state->get_state_id();
+            }
+
+            return string_hash {0};
+        }
+        else
+        {
+            return string_hash {0};
+        }
+
+    } else {
+        void (__fastcall *func)(const void *, void *, string_hash *) = CAST(func, get_vfunc(this->m_vtbl, 0x4));
+
+        string_hash id;
+        func(this, nullptr, &id);
+        return id;
+    }
 }
 
 int state_machine::get_optional_pb_int(
@@ -266,7 +370,13 @@ layer_types state_machine::get_layer_id() {
     return func(this);
 }
 
-state *state_machine::get_curr_state() {
+bool state_machine::determine_if_request_satisfied(animation_logic_system *a2) const
+{
+    bool (__fastcall *func)(const void *, void *, animation_logic_system *) = CAST(func, get_vfunc(m_vtbl, 0x80));
+    return func(this, nullptr, a2);
+}
+
+state *state_machine::get_curr_state() const {
     return m_curr_state;
 }
 
@@ -274,22 +384,25 @@ void state_machine::process_requests(animation_logic_system *a2)
 {
     TRACE("als::state_machine::process_requests");
 
-    sp_log("%d %d %d", this->field_8, this->field_9, this->field_A);
-    sp_log("%s", this->field_C.to_string());
+    {
+        auto &v1 = this->field_8;
+        sp_log("%d %d %d", v1.field_0, v1.field_1, v1.field_2);
+        sp_log("%s", v1.m_cat_id.to_string());
+    }
 
     if constexpr (1) {
         this->curr_req_data.clear();
         this->field_40.clear_cache();
-        if ( this->field_8 ) {
+        if ( this->field_8.field_0 ) {
             layer_types v4 = this->get_layer_id();
             a2->sub_4A6630(v4);
             this->field_34.clear();
         } else {
-            if ( this->field_9 ) {
-                if ( this->field_A ) {
+            if ( this->field_8.field_1 ) {
+                if ( this->field_8.field_2 ) {
                     this->do_force_state_trans(a2);
                 } else {
-                    auto *cat = this->find_category(this->field_C);
+                    auto *cat = this->find_category(this->field_8.m_cat_id);
                     if ( cat != nullptr ) {
                         if ( cat->is_flag_set(1u) ) {
                             this->do_cat_force_trans(a2);
@@ -300,9 +413,7 @@ void state_machine::process_requests(animation_logic_system *a2)
                         this->do_implicit_trans(a2);
                     }
                 }
-            }
-            else if ( this->is_active() )
-            {
+            } else if ( this->is_active() ) {
                 this->do_implicit_trans(a2);
             }
         }
@@ -330,7 +441,7 @@ bool category_binary_search(string_hash a1, category **a2, int size, int *found_
     return (bool) CDECL_CALL(0x004935B0, a1, a2, size, found_idx);
 }
 
-category *state_machine::find_category(string_hash a2)
+category *state_machine::find_category(string_hash a2) const
 {
     assert(this->shared_portion != nullptr);
 
@@ -346,9 +457,9 @@ category *state_machine::find_category(string_hash a2)
     return nullptr;
 }
 
-transition_group_base *state_machine::get_trans_group(int idx)
+scripted_trans_group *state_machine::get_trans_group(int idx) const
 {
-    return this->shared_portion->field_2C.at(idx);
+    return bit_cast<scripted_trans_group *>(this->shared_portion->trans_group_list.at(idx));
 }
 
 void state_machine::set_active(
@@ -357,11 +468,34 @@ void state_machine::set_active(
 {
     TRACE("als::state_machine::set_active");
     
-    this->m_active = true;
+    this->field_14.m_active = true;
     auto *the_state = this->find_state(a3);
     this->change_state(a2, the_state);
-    this->field_14 = true;
+    this->field_14.m_trans_succeed = true;
     this->field_34.clear();
+}
+
+void state_machine::set_pending_params(param_list &a2)
+{
+    THISCALL(0x004995B0, this, &a2);
+}
+
+void state_machine::update_pending_params(animation_logic_system *a2)
+{
+    this->field_14.m_request_not_satisfied = !this->determine_if_request_satisfied(a2);
+    auto v5 = this->field_14.m_curr_state_interruptable;
+    if ( this->field_14.m_active )
+    {
+        this->field_14.m_curr_state_interruptable = this->is_curr_state_interruptable(a2);
+    }
+
+    if ( v5 || this->field_14.m_curr_state_interruptable ) {
+        this->set_pending_params(this->field_8.field_8);
+    }
+
+    this->field_8.clear();
+
+    this->field_40.clear_cache();
 }
 
 void state_machine::do_implicit_trans(animation_logic_system *a2)
@@ -376,8 +510,7 @@ void state_machine::do_implicit_trans(animation_logic_system *a2)
             return self.did_transition_occur || self.field_1;
         };
 
-        auto v4 = this->m_curr_state->do_implicit_trans(a2, this);
-        this->curr_req_data.sub_4ADF40(v4);
+        this->curr_req_data = this->m_curr_state->do_implicit_trans(a2, this);
 
         sp_log("did_transition_occur = %d, %d %d %d", this->curr_req_data.did_transition_occur,
                                 this->curr_req_data.field_1,
@@ -387,8 +520,7 @@ void state_machine::do_implicit_trans(animation_logic_system *a2)
             if ( func(this->curr_req_data) ) {
                 if (this->curr_req_data.field_2) {
                     auto *cat = this->find_category(this->curr_req_data.field_8);
-                    auto v15 = cat->do_incoming_trans(a2, this);
-                    this->curr_req_data.sub_4ADF40(v15);
+                    this->curr_req_data = cat->do_incoming_trans(a2, this);
                     if ( func(this->curr_req_data) ) {
                         auto *the_state = this->find_state(this->curr_req_data.field_8);
                         this->change_state(a2, the_state);
@@ -400,18 +532,17 @@ void state_machine::do_implicit_trans(animation_logic_system *a2)
                     this->change_state(a2, the_state);
                 }
             } else {
-                this->field_14 = false;
+                this->field_14.m_trans_succeed = false;
             }
 
         } else {
-            auto v16 = this->m_curr_state->field_8;
+            auto v16 = this->m_curr_state->get_category_id();
             auto *v6 = this->find_category(v16);
-            auto v7 = v6->do_implicit_trans(a2, this);
-            this->curr_req_data.sub_4ADF40(v7);
+            this->curr_req_data = v6->do_implicit_trans(a2, this);
             if ( func(this->curr_req_data) ) {
                 if ( this->curr_req_data.field_2 ) {
                     auto *v10 = this->find_category(this->curr_req_data.field_8);
-                    this->curr_req_data.sub_4ADF40(v10->do_incoming_trans(a2, this));
+                    this->curr_req_data = v10->do_incoming_trans(a2, this);
                     if ( func(this->curr_req_data) ) {
                         auto *the_state = this->find_state(this->curr_req_data.field_8);
                         this->change_state(a2, the_state);
@@ -420,7 +551,7 @@ void state_machine::do_implicit_trans(animation_logic_system *a2)
                     }
                 }
             } else {
-                this->field_14 = false;
+                this->field_14.m_trans_succeed = false;
             }
         }
 
@@ -436,33 +567,23 @@ void state_machine::do_explicit_trans(animation_logic_system *a2)
     THISCALL(0x0049F5A0, this, a2);
 }
 
-state *state_machine::find_state(string_hash a2)
+state *state_machine::find_state(string_hash a2) const
 {
     TRACE("als::state_machine::find_state", a2.to_string());
 
     assert(this->shared_portion != nullptr);
 
-#if 0
-    auto size = this->shared_portion->state_list.size();
-    for (int i {0}; i < size ; ++i)
-    {
-        auto *the_state = this->shared_portion->state_list.at(i);
-        if (the_state->field_4 == a2) {
-            return the_state;
-        }
-    }
-#else
-    auto begin = this->shared_portion->state_list.m_data;
-    auto end = begin + this->shared_portion->state_list.size();
+    auto &state_list = this->shared_portion->state_list;
+    auto begin = state_list.m_data;
+    auto end = begin + state_list.size();
     auto it = std::find_if(begin, end, [a2](auto *the_state)
     {
-        return (the_state->field_4 == a2);
+        return (the_state->get_state_id() == a2);
     });
 
     if (it != end) {
         return (*it);
     }
-#endif
 
     auto *v5 = a2.to_string();
     error("Could not find state (%s).", v5);
@@ -478,22 +599,30 @@ void state_machine::change_state(
     if (a2 != nullptr) {
     }
 
-    if ( !this->field_14 ) {
-        this->field_3C = this->m_curr_state;
+    if ( !this->field_14.m_trans_succeed ) {
+        this->m_prev_state = this->m_curr_state;
+
+        sp_log("prev_state = %s, curr_state = %s", this->m_prev_state->get_state_id().to_string(),
+                a3->get_state_id().to_string());
     }
 
     this->m_curr_state = a3;
-    this->field_14 = true;
-    this->m_active = (this->m_curr_state != nullptr);
-    auto *v4 = this->field_3C;
-    if ( v4 != nullptr ) {
-        this->field_18 = v4->field_8;
-    } else {
-        this->field_18 = {0};
-    }
+    this->field_14.m_trans_succeed = true;
+    this->field_14.m_active = (this->m_curr_state != nullptr);
+    auto *prev_state = this->m_prev_state;
+    this->field_14.m_cat_id = ( prev_state != nullptr
+                                ? prev_state->get_category_id()
+                                : string_hash {0}
+                                );
 }
 
 } // namespace als
+
+
+string_hash * als_state_machine_get_state_id(als::state_machine *self, void *, string_hash *out) {
+    *out = self->get_state_id();
+    return out;
+}
 
 void als_state_machine_patch()
 {
@@ -506,9 +635,22 @@ void als_state_machine_patch()
 
     REPLACE(0x0049F9B0, &als::state_machine::set_active);
 
+    REPLACE(0x004934F0, &als::state_machine::did_transition_succeed);
+
+    {
+        auto address = int(&als_state_machine_get_state_id);
+        SET_JUMP(0x00499320, address);
+    }
+
+
     {
         FUNC_ADDRESS(address, &als::state_machine::is_request_satisfied);
         SET_JUMP(0x00493500, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &als::state_machine::find_external_param);
+        REDIRECT(0x0049FB7E, address);
     }
 
     {

@@ -18,7 +18,7 @@ namespace als
     struct scripted_category : category
     {
         string_hash field_10;
-        als::force_transitions field_14;
+        force_transitions field_14;
         mVectorBasic<int> field_2C;
         mVector<als::implicit_transition_rule> field_3C;
         mVector<als::explicit_transition_rule> field_50;

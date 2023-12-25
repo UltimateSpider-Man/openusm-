@@ -80,7 +80,7 @@ void param_list::clear() {
     }
 }
 
-bool param_list::is_empty() {
+bool param_list::is_empty() const {
     return (this->field_0 != nullptr);
 }
 

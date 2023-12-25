@@ -35,7 +35,7 @@ namespace als
         nalBaseSkeleton *get_skeleton();
 
         //virtual
-        float get_anim_duration();
+        float get_anim_duration() const;
 
         //virtual
         int get_mash_sizeof() const;

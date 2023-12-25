@@ -29,11 +29,11 @@ struct animation_controller {
 
         void set_anim_speed(Float a2);
 
-        bool is_anim_active();
+        bool is_anim_active() const;
 
-        int sub_4AD230();
+        void *get_anim_ptr() const;
 
-        float sub_4AD210();
+        float get_anim_norm_time() const;
     };
 
     std::intptr_t m_vtbl;
@@ -81,7 +81,7 @@ struct animation_controller {
         void *a7);
 
     //virtual
-    bool is_anim_active(Float a1);
+    bool is_anim_active(Float a1) const;
 
     //virtual
     void frame_advance(Float a2, bool a3, bool a4);

@@ -13,7 +13,11 @@ namespace als {
 
     struct scripted_trans_group : transition_group_base
     {
-        enum transition_type {};
+        enum transition_type {
+            IMPLICIT = 0,
+            EXPLICIT = 1,
+            LAYER = 2,
+        };
 
         mVectorBasic<int> field_4;
         mVector<implicit_transition_rule> field_14;
@@ -29,12 +33,12 @@ namespace als {
             request_data &a2,
             scripted_trans_group::transition_type a3,
             als_data a4,
-            string_hash a5);
+            string_hash a5) const;
     };
 
     extern bool test_all_trans_groups(
         request_data &a1,
-        mVectorBasic<int> *a2,
+        const mVectorBasic<int> &a2,
         scripted_trans_group::transition_type a3,
         als_data a4,
         string_hash a5);

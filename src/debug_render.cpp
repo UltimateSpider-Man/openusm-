@@ -158,7 +158,7 @@ nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base>::Iterator sub_CBFF50(int a3)
         material = (nglMaterialBase *)&debug_material->field_4;
     }
 
-    auto v2 = sub_507920(material, 4 * a3, a3, 0, 0, 5, true);
+    auto v2 = sub_507920(material, 4 * a3, a3, 0, nullptr, 5, true);
     auto result = v2->CreateIterator();
     return result;
 }

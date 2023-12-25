@@ -21,13 +21,21 @@ struct state_machine;
 enum state_flags {};
 
 struct state : mash_virtual_base {
-    string_hash field_4;
-    string_hash field_8;
+    string_hash m_state_id;
+    string_hash m_cat_id;
     uint16_t field_C;
     uint16_t field_E;
     ai::param_block *field_10;
 
     state();
+
+    string_hash get_state_id() const {
+        return m_state_id;
+    }
+
+    string_hash get_category_id() const {
+        return m_cat_id;
+    }
 
     bool is_flag_set(state_flags a2) const
     {

@@ -2,6 +2,7 @@
 
 #include "mvector.h"
 
+struct from_mash_in_place_constructor;
 struct mash_info_struct;
 
 namespace als {
@@ -17,6 +18,9 @@ struct animation_logic_system_shared {
 
     //0x004AC000
     animation_logic_system_shared();
+
+    animation_logic_system_shared(
+        from_mash_in_place_constructor *a2);
 
     void destruct_mashed_class();
 

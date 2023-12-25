@@ -21,6 +21,12 @@ void motion_compensator::activate(animation_logic_system *a2)
     this->field_10 = 10.0;
 }
 
+void motion_compensator::pre_anim_action(Float a3)
+{
+    void (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x20));
+    func(this, nullptr, a3);
+}
+
 void motion_compensator::post_anim_action(Float a2)
 {
     void (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x24));

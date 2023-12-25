@@ -32,7 +32,7 @@ struct param_list {
     //0x00499620
     void add_param(param a2);
 
-    bool is_empty();
+    bool is_empty() const;
 
     void insert_node(param_node *a2);
 

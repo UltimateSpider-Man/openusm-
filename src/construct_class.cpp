@@ -85,10 +85,16 @@ void mash_info_struct::construct_class(gab_database *&a1)
 template<>
 void mash_info_struct::construct_class(als::animation_logic_system_shared *&a1)
 {
+    TRACE("mash_info_struct::construct_class<als::animation_logic_system_shared>");
+
     if ( a1 != nullptr )
     {
-        void (__fastcall *func)(void *, int edx, void *) = CAST(func, 0x004AC000);
-        func(a1, 0, nullptr);
+        if constexpr (0) {
+            a1 = new (a1) als::animation_logic_system_shared {nullptr};
+        } else {
+            void (__fastcall *func)(void *, int edx, void *) = CAST(func, 0x004AC000);
+            func(a1, 0, nullptr);
+        }
     }
 }
 

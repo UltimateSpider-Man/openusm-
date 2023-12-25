@@ -10,16 +10,19 @@
 
 namespace ai {
 
-static constexpr auto PT_FLOAT = 0;
-static constexpr auto PT_INTEGER = 1;
-static constexpr auto PT_STRING_HASH = 2;
-static constexpr auto PT_FIXED_STRING = 3;
-static constexpr auto PT_VECTOR_3D = 4;
-static constexpr auto PT_FLOAT_VARIANCE = 5;
-static constexpr auto PT_ENTITY = 6;
-static constexpr auto PT_POINTER = 7;
-
 struct param_block {
+
+    enum param_data_type {
+        PT_FLOAT = 0,
+        PT_INTEGER = 1,
+        PT_STRING_HASH = 2,
+        PT_FIXED_STRING = 3,
+        PT_VECTOR_3D = 4,
+        PT_FLOAT_VARIANCE = 5,
+        PT_ENTITY = 6,
+        PT_POINTER = 7,
+    };
+
     struct param_data {
         union U {
             int i;
@@ -29,7 +32,7 @@ struct param_block {
             vector3d *vec3;
             variance_variable<float> *float_variance;
         } m_union;
-        int my_type;
+        param_data_type my_type;
         string_hash field_8;
 
         void custom_unmash(mash_info_struct *a2, void *a3);

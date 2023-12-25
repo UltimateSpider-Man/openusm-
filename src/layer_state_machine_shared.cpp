@@ -14,6 +14,11 @@ namespace als {
         THISCALL(0x00444850, this);
     }
 
+    layer_state_machine_shared::layer_state_machine_shared(from_mash_in_place_constructor *)
+                                    : layer_state_machine_shared()
+    {
+    }
+
     void layer_state_machine_shared::_unmash(mash_info_struct *a1, void *a3)
     {
         TRACE("layer_state_machine_shared::unmash");

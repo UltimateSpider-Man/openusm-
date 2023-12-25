@@ -21,7 +21,7 @@ namespace als {
         return a3;
     }
 
-    float param_cache::get_from_cache(int location)
+    float param_cache::get_from_cache(int location) const
     {
         assert(location != INVALID_CACHE_ID && "Given item is not in the cache.");
         assert(location < get_num_params_in_cache() && "Given item is outside the range of the cache.");
