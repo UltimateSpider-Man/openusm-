@@ -460,13 +460,10 @@ void nglSetScissor(Float a1, Float a2, Float a3, Float a4)
             ScreenWidth = 640.0;
         }
 
-        auto v9 = a3 + 1.0f;
         nglCurScene()->field_354[0] = ((a1 + 1.0f) * 0.5f * ScreenWidth + 0.5f);
-        nglCurScene()->field_354[2] = (v9 * 0.5f * ScreenWidth + 0.5f);
-        auto v11 = a2 + 1.0f;
-        nglCurScene()->field_354[1] = (v11 * 0.5f * ScreenHeight + 0.5f);
-        auto v13 = a4 + 1.0f;
-        nglCurScene()->field_354[3] = (v13 * 0.5f * ScreenHeight + 0.5f);
+        nglCurScene()->field_354[2] = ((a3 + 1.0f) * 0.5f * ScreenWidth + 0.5f);
+        nglCurScene()->field_354[1] = ((a2 + 1.0f) * 0.5f * ScreenHeight + 0.5f);
+        nglCurScene()->field_354[3] = ((a4 + 1.0f) * 0.5f * ScreenHeight + 0.5f);
         nglCurScene()->field_3E4 = true;
     } else {
         CDECL_CALL(0x0076B4D0, a1, a2, a3, a4);
