@@ -441,15 +441,44 @@ bool nglVertexBuffer::createVertexBuffer(int size, uint32_t flags) {
 
 void nglSetScissor(Float a1, Float a2, Float a3, Float a4)
 {
-    CDECL_CALL(0x0076B4D0, a1, a2, a3, a4);
+    if constexpr (1) {
+        nglCurScene()->sx1 = std::clamp<float>(a1, -1.0f, 1.0f);
+        nglCurScene()->sy1 = std::clamp<float>(a2, -1.0f, 1.0f);
+        nglCurScene()->sx2 = std::clamp<float>(a3, -1.0f, 1.0f);
+        nglCurScene()->sy2 = std::clamp<float>(a4, -1.0f, 1.0f);
+
+        float ScreenWidth;
+        float ScreenHeight;
+        if ( (nglCurScene()->field_334->field_34 & 4) != 0 )
+        {
+            ScreenWidth = nglGetScreenWidth();
+            ScreenHeight = nglGetScreenHeight();
+        }
+        else
+        {
+            ScreenHeight = 480.0;
+            ScreenWidth = 640.0;
+        }
+
+        auto v9 = a3 + 1.0f;
+        nglCurScene()->field_354[0] = ((a1 + 1.0f) * 0.5f * ScreenWidth + 0.5f);
+        nglCurScene()->field_354[2] = (v9 * 0.5f * ScreenWidth + 0.5f);
+        auto v11 = a2 + 1.0f;
+        nglCurScene()->field_354[1] = (v11 * 0.5f * ScreenHeight + 0.5f);
+        auto v13 = a4 + 1.0f;
+        nglCurScene()->field_354[3] = (v13 * 0.5f * ScreenHeight + 0.5f);
+        nglCurScene()->field_3E4 = true;
+    } else {
+        CDECL_CALL(0x0076B4D0, a1, a2, a3, a4);
+    }
 }
 
 void nglSetView(Float a1, Float a2, Float a3, Float a4)
 {
-    nglCurScene()->field_364[0] = a1;
-    nglCurScene()->field_364[1] = a2;
-    nglCurScene()->field_364[2] = a3;
-    nglCurScene()->field_364[3] = a4;
+    nglCurScene()->vx1 = a1;
+    nglCurScene()->vy1 = a2;
+    nglCurScene()->vx2 = a3;
+    nglCurScene()->vy2 = a4;
     nglCurScene()->field_3E4 = true;
 }
 
