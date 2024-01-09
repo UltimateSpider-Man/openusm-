@@ -320,8 +320,35 @@ void world_dynamics_system::frame_advance(Float a2) {
     }
 }
 
-void world_dynamics_system::sub_54A3B0() {
-    THISCALL(0x0054A3B0, this);
+bool world_dynamics_system::is_entity_in_water(vhandle_type<entity> a1)
+{
+    TRACE("world_dynamics_system::is_entity_in_water");
+
+    return THISCALL(0x0052FE00, this, a1);
+}
+
+void world_dynamics_system::entity_sinks(vhandle_type<entity> a2)
+{
+    TRACE("world_dynamics_system::entity_sinks");
+
+    THISCALL(0x0054A2E0, this, a2);
+}
+
+void world_dynamics_system::sub_54A3B0()
+{
+    if constexpr (0) {
+        for ( auto &v1 : this->field_254 )
+        {
+            vhandle_type<entity> v4 {v1};
+            if ( this->is_entity_in_water(v4) ) {
+                this->entity_sinks(v4);
+            }
+        }
+
+        this->field_254.clear();
+    } else {
+        THISCALL(0x0054A3B0, this);
+    }
 }
 
 void world_dynamics_system::sub_530460(const vector3d &a2, int visited_regions, bool a4) {

@@ -439,8 +439,61 @@ bool nglVertexBuffer::createVertexBuffer(int size, uint32_t flags) {
                                      (D3DPOOL) (~(uint8_t) (flags >> 9) & 1)) == 0;
 }
 
-void nglSetViewport(Float a1, Float a2, Float a3, Float a4) {
-    CDECL_CALL(0x0076B6D0, a1, a2, a3, a4);
+void nglSetScissor(Float a1, Float a2, Float a3, Float a4)
+{
+    CDECL_CALL(0x0076B4D0, a1, a2, a3, a4);
+}
+
+void nglSetView(Float a1, Float a2, Float a3, Float a4)
+{
+    nglCurScene()->field_364[0] = a1;
+    nglCurScene()->field_364[1] = a2;
+    nglCurScene()->field_364[2] = a3;
+    nglCurScene()->field_364[3] = a4;
+    nglCurScene()->field_3E4 = true;
+}
+
+void nglSetViewport(Float a1, Float a2, Float a3, Float a4)
+{
+    TRACE("nglSetViewport");
+
+    if constexpr (1) {
+        float ScreenWidth;
+        float ScreenHeight;
+        if ( (nglCurScene()->field_334->field_34 & 4) != 0 )
+        {
+            ScreenWidth = nglGetScreenWidth();
+            ScreenHeight = nglGetScreenHeight();
+        }
+        else
+        {
+            auto *tex = nglCurScene()->field_334;
+            int width = tex->m_width;
+            ScreenWidth = width;
+            if ( width < 0 ) {
+                ScreenWidth += 4.2949673e9;
+            }
+
+            int height = tex->m_height;
+            ScreenHeight = height;
+            if ( height < 0 ) {
+                ScreenHeight += 4.2949673e9;
+            }
+        }
+
+        auto v9 = 1.0f / ScreenWidth;
+        auto a1a = a1 * v9 + a1 * v9 - 1.0f ;
+        auto v10 = a3 + 1.0f;
+        auto a3a = v10 * v9 + v10 * v9 - 1.0f;
+        auto v11 = 1.0f / ScreenHeight;
+        auto a2a = a2 * v11 + a2 * v11 - 1.0f;
+        auto a4a = (a4 + 1.0f) * v11 + (a4 + 1.0f) * v11 - 1.0f;
+
+        nglSetView(a1a, a2a, a3a, a4a);
+        nglSetScissor(a1a, a2a, a3a, a4a);
+    } else {
+        CDECL_CALL(0x0076B6D0, a1, a2, a3, a4);
+    }
 }
 
 void nglSetWorldToViewMatrix(const math::MatClass<4, 3> &a1) {
@@ -5628,6 +5681,8 @@ void ngl_patch()
     SET_JUMP(0x00507690, FastListAddMesh);
 
     SET_JUMP(0x0076C970, nglListBeginScene);
+
+    SET_JUMP(0x0076B6D0, nglSetViewport);
 
     //SET_JUMP(0x0076C400, nglSetDefaultSceneParams);
 

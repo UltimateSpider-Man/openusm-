@@ -147,6 +147,10 @@ struct world_dynamics_system {
         return this->num_players;
     }
 
+    bool is_entity_in_water(vhandle_type<entity> a1);
+
+    void entity_sinks(vhandle_type<entity> a2);
+
     //0x0055B100
     terrain *create_terrain(const mString &a2);
 

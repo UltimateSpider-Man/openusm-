@@ -68,7 +68,9 @@ struct nglScene {
     int OpaqueListCount;
     int TransListCount;
     nglLightContext *field_350;
-    int empty0[18];
+    float field_354[4];
+    float field_364[4];
+    int field_374[10];
     int field_39C;
     int field_3A0;
     float field_3A4[4];
