@@ -77,36 +77,26 @@ void ai_state_machine::advance_curr_state(Float a2, bool a3) {
     }
 }
 
-state_trans_action ai_state_machine::sub_697AC0(Float a3, const state_trans_action &a4) {
+state_trans_action ai_state_machine::check_trans_on_interrupt(Float a3, const state_trans_action &a4)
+{
+    TRACE("ai_state_machine::check_trans_on_interrupt");
 
-    if (a4.the_action != 4)
+    if (a4.the_action != 4 && this->field_34)
     {
-        if (this->field_34)
+        auto &v7 = this->field_C->field_20;
+        if (v7.size() > 0)
         {
-           auto *v5 = this->field_C; 
-           auto v6 = v5->field_20.size();
-           if (v6 > 0)
-           {
-               auto &v7 = v5->field_20;
+            for (auto *state : v7)
+            {
+                sp_log("0x%08X", state->m_vtbl);
+                state->activate(this, nullptr, nullptr, nullptr, static_cast<base_state::activate_flag_e>(1));
+                auto trans_action = state->check_transition(a3);
 
-               auto it = v7.begin();
-               auto end = v7.end();
-               while (it != end)
-               {
-                    auto *state = *it._Ptr;
-                    state->activate(this, nullptr, nullptr, nullptr, static_cast<base_state::activate_flag_e>(1));
-                    auto trans_action = state->check_transition(a3);
-
-                    state->deactivate(nullptr);
-                    if (!(trans_action.the_action == 3 || trans_action.the_action == 4)) {
-                        return trans_action;
-                    }
-
-                    ++it;
-               }
-
-           }
-
+                state->deactivate(nullptr);
+                if (!(trans_action.the_action == 3 || trans_action.the_action == 4)) {
+                    return trans_action;
+                }
+            }
         }
     }
 
@@ -120,7 +110,7 @@ void ai_state_machine::process_transition(Float a2) {
         sp_log("0x%08X", this->my_curr_state->m_vtbl);
         state_trans_action a3 = this->my_curr_state->check_transition(a2);
 
-        a3 = this->sub_697AC0(a2, a3);
+        a3 = this->check_trans_on_interrupt(a2, a3);
 
         ai::state_trans_action v3 = this->check_keyword_overrides(a3);
 

@@ -27,6 +27,8 @@ struct animation_controller {
         float field_4;
         animation_controller *field_8;
 
+        bool is_same_animtype(tlFixedString a1) const;
+
         void set_anim_speed(Float a2);
 
         bool is_anim_active() const;
@@ -34,6 +36,10 @@ struct animation_controller {
         void *get_anim_ptr() const;
 
         float get_anim_norm_time() const;
+
+        double get_anim_time_in_sec() const;
+
+        double get_anim_speed() const;
     };
 
     std::intptr_t m_vtbl;
@@ -82,6 +88,18 @@ struct animation_controller {
 
     //virtual
     bool is_anim_active(Float a1) const;
+
+    //virtual
+    double get_base_anim_time_in_sec() const;
+
+    //virtual
+    double get_anim_time_in_sec(Float a2) const;
+
+    //virtual
+    double get_base_anim_speed();
+
+    //virtual
+    double get_anim_speed(Float a2);
 
     //virtual
     void frame_advance(Float a2, bool a3, bool a4);

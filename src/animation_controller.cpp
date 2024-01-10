@@ -169,19 +169,25 @@ void animation_controller::play_base_layer_anim(
     func(this, nullptr, a2, a3, a4, a5, a6, a7);
 }
 
+bool animation_controller::anim_ctrl_handle::is_same_animtype(tlFixedString a1) const
+{
+    return this->field_8->is_same_animtype(a1);
+}
+
 void animation_controller::anim_ctrl_handle::set_anim_speed(Float a2)
 {
     struct {
         char field_0[0x58];
-        void (__thiscall *field_58)(void *, Float);
-        void (__thiscall *field_5C)(void *, Float, Float);
+        void (__fastcall *set_base_anim_speed)(void *, void *, Float);
+        void (__fastcall *set_anim_speed)(void *, void *, Float, Float);
     } * vtbl = CAST(vtbl, this->field_8->m_vtbl);
 
     if ( this->field_0 ) {
-        vtbl->field_58(this->field_8, a2);
+        vtbl->set_base_anim_speed(this->field_8, nullptr, a2);
     } else {
-        vtbl->field_5C(
+        vtbl->set_anim_speed(
             this->field_8,
+            nullptr,
             a2,
             this->field_4);
     }
@@ -201,6 +207,28 @@ void *animation_controller::anim_ctrl_handle::get_anim_ptr() const
     return (void *) THISCALL(0x004AD230, this);
 }
 
+double animation_controller::anim_ctrl_handle::get_anim_time_in_sec() const
+{
+    TRACE("animation_controller::anim_ctrl_handle::get_anim_time_in_sec");
+
+    if ( this->field_0 )
+        return this->field_8->get_base_anim_time_in_sec();
+    else {
+        return this->field_8->get_anim_time_in_sec(this->field_4);
+    }
+}
+
+double animation_controller::anim_ctrl_handle::get_anim_speed() const
+{
+    TRACE("animation_controller::anim_ctrl_handle::get_anim_speed");
+
+    if ( this->field_0 ) {
+        return this->field_8->get_base_anim_speed();
+    } else {
+        return this->field_8->get_anim_speed(this->field_4);
+    }
+}
+
 float animation_controller::anim_ctrl_handle::get_anim_norm_time() const
 {
     float (__fastcall *func)(const void *) = CAST(func, 0x004AD210);
@@ -215,6 +243,34 @@ bool animation_controller::is_anim_active(Float a1) const
         bool (__fastcall *func)(const void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2C));
         return func(this, nullptr, a1);
     }
+}
+
+double animation_controller::get_base_anim_time_in_sec() const
+{
+    double (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x30));
+    return func(this);
+}
+
+double animation_controller::get_anim_time_in_sec(Float a2) const
+{
+    double (__fastcall *func)(const void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x34));
+    return func(this, nullptr, a2);
+}
+
+double animation_controller::get_base_anim_speed()
+{
+    TRACE("animation_controller::get_base_anim_speed");
+
+    double (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x50));
+    return func(this);
+}
+
+double animation_controller::get_anim_speed(Float a2)
+{
+    TRACE("animation_controller::get_base_anim_speed");
+
+    double (__fastcall *func)(const void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x54));
+    return func(this, nullptr, a2);
 }
 
 void animation_controller::frame_advance(Float a2, bool a3, bool a4)

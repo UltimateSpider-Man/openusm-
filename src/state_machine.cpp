@@ -6,6 +6,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "layer_state_machine_shared.h"
+#include "nal_generic.h"
 #include "trace.h"
 #include "utility.h"
 #include "vtbl.h"
@@ -83,6 +84,8 @@ float state_machine::get_internal_param(
         animation_logic_system *a3,
         internal_parameter_types a4) const
 {
+    TRACE("state_machine::get_internal_param");
+
     float (__fastcall *func)(const void *, void *, animation_logic_system *, internal_parameter_types) = CAST(func, 0x0049CFD0);
     return func(this, nullptr, a3, a4);
 }
@@ -218,26 +221,36 @@ bool state_machine::does_category_exist(string_hash a2) const
 
     assert(this->shared_portion != nullptr);
 
-    for ( int i = 0; i < this->shared_portion->category_list.size(); ++i)
+    auto &cat_list = this->shared_portion->category_list;
+    auto begin = cat_list.m_data;
+    auto end = begin + cat_list.size();
+    auto it = std::find_if(begin, end, [a2](auto &cat)
     {
-        auto *cat = this->shared_portion->category_list.at(i);
-        if ( cat->field_4 == a2 ) {
-            return true;
-        }
-    }
+        return cat->field_4 == a2;
+    });
 
-    return false;
+    return it != end;
 }
 
-double state_machine::get_time_to_end_of_anim()
+double state_machine::get_time_to_end_of_anim() const
 {
     TRACE("als::state_machine::get_time_to_end_of_anim");
 
     if constexpr (1) {
-        double (__fastcall *func)(void *) = CAST(func, 0x004993C0);
-        return func(this);
+        auto &the_handle = this->get_anim_handle();
+        assert(the_handle.is_anim_active());
+
+        auto *anim_ptr = static_cast<nalGeneric::nalGenericAnim *>(the_handle.get_anim_ptr());
+
+        if ( (anim_ptr->field_34 & 1) != 0 ) {
+            return -1.0f;
+        }
+
+        float v1 = the_handle.get_anim_time_in_sec(); 
+        auto v11 = anim_ptr->field_38 - v1;
+        return v11 * (1.0f / the_handle.get_anim_speed());
     } else {
-        double (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x50));
+        double (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x50));
         return func(this);
     }
 }
@@ -252,7 +265,7 @@ bool state_machine::is_cat_our_prev_cat(string_hash a2) const
         }
 
         return a2 == this->field_14.m_cat_id
-            && a2 != this->get_category_id();
+                && a2 != this->get_category_id();
     } else {
         bool (__fastcall *func)(const void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x58));
         return func(this, nullptr, a2);
@@ -264,13 +277,8 @@ bool state_machine::is_requesting_category(string_hash a2) const
     TRACE("als::state_machine::is_requesting_category");
 
     if constexpr (1) {
-        if ( this->field_8.field_1 ) {
-            if ( this->field_8.m_cat_id == a2 ) {
-                return true;
-            }
-        }
-
-        return false;
+        return ( this->field_8.field_1
+                    && this->field_8.m_cat_id == a2 );
     } else {
         bool (__fastcall *func)(const void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x5C));
         return func(this, nullptr, a2);
@@ -296,12 +304,55 @@ string_hash state_machine::get_category_id() const
     }
 }
 
+double get_character_time_to_signal(const animation_controller::anim_ctrl_handle &a1, string_hash a2, bool a3)
+{
+    TRACE("get_character_time_to_signal");
+
+    double (__cdecl *func)(const animation_controller::anim_ctrl_handle *, string_hash, bool) = CAST(func, 0x004939D0);
+    return func(&a1, a2, a3);
+}
+
+double get_generic_time_to_signal(const animation_controller::anim_ctrl_handle &a1, string_hash a2, bool a3)
+{
+    TRACE("get_generic_time_to_signal");
+
+    double (__cdecl *func)(const animation_controller::anim_ctrl_handle *, string_hash, bool) = CAST(func, 0x0049DF60);
+    return func(&a1, a2, a3);
+}
+
+
 float state_machine::get_time_to_signal(string_hash a2)
 {
     TRACE("als::state_machine::get_time_to_signal");
 
-    float (__fastcall *func)(void *, void *, string_hash) = CAST(func, 0x0049F4E0);
-    return func(this, nullptr, a2);
+    if constexpr (1) {
+        auto &the_handle = this->get_anim_handle();
+        assert(the_handle.is_anim_active());
+
+        float time_to_signal = ( the_handle.is_same_animtype(tlFixedString {"Character"})
+                                    ? get_character_time_to_signal(
+                                        the_handle,
+                                        a2,
+                                        false)
+                                    : get_generic_time_to_signal(
+                                        the_handle, 
+                                        a2,
+                                        false)
+                                );
+
+        auto result = ( time_to_signal < 0.0f
+                        ? time_to_signal
+                        : time_to_signal * (1.0f / the_handle.get_anim_speed())
+                        );
+
+        sp_log("%f", result);
+        return result;
+    } else {
+        float (__fastcall *func)(void *, void *, string_hash) = CAST(func, 0x0049F4E0);
+        auto result = func(this, nullptr, a2);
+
+        return result;
+    }
 }
 
 void state_machine::set_desired_params(param_list &a2) {
@@ -654,10 +705,15 @@ void als_state_machine_patch()
     }
 
     {
+        FUNC_ADDRESS(address, &als::state_machine::get_internal_param);
+        REDIRECT(0x0049FB39, address);
+        REDIRECT(0x0049D3CD, address);
+        REDIRECT(0x0049DCBD, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &als::state_machine::get_time_to_end_of_anim);
-        set_vfunc(0x00881428, address);
-        set_vfunc(0x00881500, address);
-        set_vfunc(0x00881588, address);
+        SET_JUMP(0x004993C0, address);
     }
 
     {

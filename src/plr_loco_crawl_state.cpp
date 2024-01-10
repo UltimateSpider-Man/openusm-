@@ -95,12 +95,9 @@ void plr_loco_crawl_state::activate(
         bit_cast<als::animation_logic_system_interface *>(v27->field_1C)->force_update();
         auto *v29 = this->get_actor();
         if ( v29->has_physical_ifc() ) {
-            auto *v30 = this->get_actor();
-            auto *v31 = this->get_actor();
-            auto *v32 = v30->physical_ifc();
-            auto is_effectively_standing = v32->is_effectively_standing();
-            auto *v33 = v31->physical_ifc();
-            v33->manage_standing(is_effectively_standing);
+            auto *physical_ifc = v29->physical_ifc();
+            auto is_effectively_standing = physical_ifc->is_effectively_standing();
+            physical_ifc->manage_standing(is_effectively_standing);
         }
     } else {
         THISCALL(0x0046A080, this, a2, a3, a4, a5, a6);

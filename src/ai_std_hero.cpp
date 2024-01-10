@@ -4,6 +4,7 @@
 
 #include "actor.h"
 #include "ai_player_controller.h"
+#include "ai_state_jump.h"
 #include "ai_state_swing.h"
 #include "ai_state_web_zip.h"
 #include "als_animation_logic_system.h"
@@ -11,6 +12,7 @@
 #include "base_ai_core.h"
 #include "colgeom_alter_sys.h"
 #include "collide.h"
+#include "combat_state.h"
 #include "common.h"
 #include "conglom.h"
 #include "custom_math.h"
@@ -25,6 +27,7 @@
 #include "param_list.h"
 #include "physical_interface.h"
 #include "physics_inode.h"
+#include "pick_up_state.h"
 #include "plr_loco_crawl_state.h"
 #include "plr_loco_crawl_transition_state.h"
 #include "put_down_state.h"
@@ -68,7 +71,7 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
 
     if constexpr (1) {
         auto *v4 = this->field_8;
-        auto *info_node = (ai::als_inode *)v4->get_info_node(als_inode::default_id, true);
+        auto *info_node = bit_cast<ai::als_inode *>(v4->get_info_node(als_inode::default_id, true));
         if ( this->field_7C ) {
             return false;
         }
@@ -338,8 +341,30 @@ bool hero_inode::get_closest_corner(corner_info *a2, crawl_request_type a3) {
     return (bool) THISCALL(0x006A5CF0, this, a2, a3);
 }
 
-bool hero_inode::run_is_eligible(string_hash a2) {
-    return THISCALL(0x006A7770, this, a2);
+bool hero_inode::run_is_eligible(string_hash a2)
+{
+    TRACE("hero_inode::run_is_eligible");
+
+    if constexpr (1) {
+        auto *v3 = this->field_8;
+        auto *the_phys_inode = bit_cast<physics_inode *>(v3->get_info_node(physics_inode::default_id, true));
+        this->field_4C = 0;
+        if ( auto *phys_ifc = the_phys_inode->field_1C;
+                phys_ifc->is_effectively_standing()
+                    && phys_ifc->allow_manage_standing() )
+        {
+            if ( a2 != jump_state::default_id ) {
+                this->field_58 = the_phys_inode->get_abs_position();
+            }
+
+            return true;
+        }
+
+        return false;
+
+    } else {
+        return THISCALL(0x006A7770, this, a2);
+    }
 }
 
 bool hero_inode::crawl_is_eligible(string_hash a2, bool a3) {
@@ -423,25 +448,48 @@ bool hero_inode::run_can_go_to(string_hash arg0) {
     }
 }
 
-int hero_inode::engage_water_exit() {
-    return THISCALL(0x006944D0, this);
+void hero_inode::engage_water_exit()
+{
+    TRACE("hero_inode::engage_water_exit");
+
+    THISCALL(0x006944D0, this);
 }
 
-bool hero_inode::jump_is_eligible(string_hash a2) {
+bool hero_inode::jump_is_eligible(string_hash a2)
+{
+    TRACE("hero_inode::jump_is_eligible");
+
     return THISCALL(0x006A7110, this, a2);
 }
 
-bool hero_inode::crawl_can_go_to(string_hash a2, string_hash a3) {
-    return THISCALL(0x006A6340, this, a2, a3);
+bool hero_inode::crawl_can_go_to(string_hash a2, string_hash a3)
+{
+    TRACE("hero_inode::crawl_can_go_to");
+
+    if constexpr (1) {
+        auto *v3 = this->field_8;
+        auto *the_als_inode = bit_cast<als_inode *>(v3->get_info_node(als_inode::default_id, true));
+        auto v5 = (a2 == jump_state::default_id
+                    || a2 == combat_state::default_id
+                    || a2 == web_zip_state::default_id
+                    || a2 == hit_react_state::default_id
+                    || a2 == pick_up_state::default_id
+                    || a2 == plr_loco_crawl_state::default_id);
+
+        bool result = false;
+        if ( a3 == plr_loco_crawl_state::default_id && v5 )
+        {
+            result = (v5 && the_als_inode->is_layer_interruptable(static_cast<als::layer_types>(0)));
+        }
+
+        return result;
+    } else {
+        return THISCALL(0x006A6340, this, a2, a3);
+    }
 }
 
-void hero_inode::sub_68A7F0(int a2, bool a3) {
-    if (a3) {
-        this->field_54 = 21;
-    } else {
-        this->field_54 = this->field_50;
-    }
-
+void hero_inode::set_jump_type(eJumpType a2, bool a3) {
+    this->field_54 = static_cast<eJumpType>(a3 ? 21 : this->field_50);
     this->field_50 = a2;
 }
 
@@ -541,6 +589,21 @@ void hero_inode_patch() {
     {
         FUNC_ADDRESS(address, &ai::hero_inode::frame_advance);
         //set_vfunc(0x0087DAC0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::hero_inode::run_is_eligible);
+        SET_JUMP(0x006A7770, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::hero_inode::crawl_can_go_to);
+        SET_JUMP(0x006A6340, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::hero_inode::engage_water_exit);
+        REDIRECT(0x00478EAA, address);
     }
 
     {

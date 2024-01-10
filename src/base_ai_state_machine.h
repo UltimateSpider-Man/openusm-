@@ -45,7 +45,7 @@ struct ai_state_machine {
     //0x0069BCE0
     void process_machine_exit(ai::state_trans_messages a2);
 
-    [[nodiscard]] state_trans_action sub_697AC0(Float a3, const state_trans_action &a4);
+    [[nodiscard]] state_trans_action check_trans_on_interrupt(Float a3, const state_trans_action &a4);
 
     //0x0069F870
     void advance_curr_state(Float a2, bool a3);

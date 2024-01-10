@@ -33,7 +33,10 @@ hero_base_state::hero_base_state(int a2) : base_state(a2) {
     
 }
 
-void hero_base_state::combat_inode_transition_notification(Float a2, string_hash a3) {
+void hero_base_state::combat_inode_transition_notification(Float a2, string_hash a3)
+{
+    TRACE("hero_base_state::combat_inode_transition_notification");
+
     THISCALL(0x00474040, this, a2, a3);
 }
 
@@ -76,8 +79,10 @@ state_trans_action hero_base_state::check_transition(Float a3)
         auto *glass_house_inode_ptr = hero_inode_ptr->field_44;
         if (glass_house_inode_ptr->field_20 &&
             (v21 != ai::jump_state::default_id ||
-             hero_inode_ptr->field_50 != 14)) {
-            hero_inode_ptr->sub_68A7F0(14, false);
+             hero_inode_ptr->field_50 != static_cast<ai::eJumpType>(14))
+            )
+        {
+            hero_inode_ptr->set_jump_type(static_cast<ai::eJumpType>(14), false);
             glass_house_inode_ptr->show_glass_house_message();
             glass_house_inode_ptr->field_20 = 0;
             return result = state_trans_action {0, ai::jump_state::default_id, TRANS_TOTAL_MSGS, nullptr};
@@ -128,5 +133,10 @@ void * __fastcall check_transition(ai::hero_base_state *self, void *, ai::state_
 
 
 void hero_base_state_patch() {
-    //set_vfunc(0x00877560, &check_transition);
+    set_vfunc(0x00877560, &check_transition);
+
+    {
+        FUNC_ADDRESS(address, &ai::hero_base_state::combat_inode_transition_notification);
+        REDIRECT(0x00478F55, address);
+    }
 }

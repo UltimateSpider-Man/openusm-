@@ -32,7 +32,7 @@ struct als_inode : info_node {
 
     bool is_layer_interruptable(als::layer_types a1);
 
-    string_hash sub_48B100(als::layer_types a3);
+    string_hash get_state_id(als::layer_types a3);
 
     bool sub_48B140(string_hash a2, als::layer_types a3);
 

@@ -50,7 +50,13 @@ struct nalBaseSkeleton;
 
 template<typename T>
 struct nalAnimClass {
-    struct nalInstanceClass {};
+    struct nalInstanceClass {
+        std::intptr_t m_vtbl;
+        float field_4;
+        float field_8;
+        nalBaseSkeleton *field_C;
+        nalAnimClass<nalAnyPose> *field_10;
+    };
 
     std::intptr_t m_vtbl;
     nalAnimClass<nalAnyPose> *field_4;

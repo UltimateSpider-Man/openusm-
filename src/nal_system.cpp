@@ -21,6 +21,8 @@ VALIDATE_OFFSET(nalStreamInstance, m_callback, 0x20);
 
 VALIDATE_OFFSET(nalGeneric::nalGenericSkeleton, field_50, 0x50);
 
+VALIDATE_SIZE(nalAnimClass<nalAnyPose>::nalInstanceClass, 0x14);
+
 Var<tlInstanceBank> nalTypeInstanceBank{0x009770E8};
 
 Var<tlInstanceBank> nalComponentInstanceBank{0x00977100};

@@ -28,11 +28,9 @@ als::state_machine *als_inode::get_als_layer(als::layer_types a2) {
     }
 }
 
-string_hash als_inode::sub_48B100(als::layer_types a3) {
-    auto *v3 = this->get_als_layer(a3);
-
-    string_hash id = v3->get_state_id();
-    return id;
+string_hash als_inode::get_state_id(als::layer_types a3) {
+    auto *the_layer= this->get_als_layer(a3);
+    return the_layer->get_state_id();
 }
 
 bool als_inode::is_layer_interruptable(als::layer_types a1)
@@ -115,18 +113,42 @@ bool als_inode::anim_finished(string_hash a2, als::layer_types a3)
 {
     TRACE("als_inode::anim_finished");
 
-    auto *v3 = this->field_1C->get_als_layer(a3);
-    if ( v3->is_cat_our_prev_cat(a2) ) {
-        return true;
-    }
+    if constexpr (0) {
+        auto *the_layer = this->field_1C->get_als_layer(a3);
+        if ( the_layer->is_cat_our_prev_cat(a2) ) {
+            return true;
+        }
 
-    if ( v3->get_category_id() == a2 )
-    {
-        return std::abs(v3->get_time_to_end_of_anim()) < EPSILON;
-    }
-    else
-    {
-        return !v3->is_requesting_category(a2);
+        if ( the_layer->get_category_id() == a2 )
+        {
+            return std::abs(the_layer->get_time_to_end_of_anim()) < EPSILON;
+        }
+        else
+        {
+            return !the_layer->is_requesting_category(a2);
+        }
+    } else {
+        auto result = [this, a2, a3]() -> bool {
+            auto *the_layer = this->field_1C->get_als_layer(a3);
+            if ( the_layer->is_cat_our_prev_cat(a2) ) {
+                return true;
+            }
+
+            sp_log("%s", the_layer->get_category_id().to_string());
+
+            if ( the_layer->get_category_id() == a2 )
+            {
+                return std::abs(the_layer->get_time_to_end_of_anim()) < EPSILON;
+            }
+            else
+            {
+                return !the_layer->is_requesting_category(a2);
+            }
+        }();
+
+        sp_log("result = %d", result);
+
+        return false;
     }
 }
 

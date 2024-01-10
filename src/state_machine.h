@@ -140,7 +140,8 @@ struct state_machine {
     //virtual
     bool does_category_exist(string_hash a2) const;
 
-    double get_time_to_end_of_anim();
+    //virtual
+    double get_time_to_end_of_anim() const;
 
     bool is_cat_our_prev_cat(string_hash a2) const;
 

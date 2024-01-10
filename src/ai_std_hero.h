@@ -24,6 +24,8 @@ enum hero_type_enum {
 
 namespace ai {
 
+enum eJumpType {};
+
 struct physics_inode;
 struct als_inode;
 struct corner_info;
@@ -61,9 +63,8 @@ struct hero_inode : info_node {
     glass_house_inode *field_44;
     pole_swing_inode *field_48;
     char field_4C;
-    int field_50;
-
-    int field_54;
+    eJumpType field_50;
+    eJumpType field_54;
     vector3d field_58;
     vector3d field_64;
 
@@ -88,7 +89,7 @@ struct hero_inode : info_node {
     //0x006A1B10
     hero_inode(from_mash_in_place_constructor *a2);
 
-    void sub_68A7F0(int a2, bool a3);
+    void set_jump_type(eJumpType a2, bool a3);
 
     //0x00698970
     bool compute_curr_ground_plane(force_recompute_enum a2, Float a3);
@@ -103,7 +104,7 @@ struct hero_inode : info_node {
     bool crawl_can_go_to(string_hash a2, string_hash a3);
 
     //0x006944D0
-    int engage_water_exit();
+    void engage_water_exit();
 
     //0x006A76D0
     bool run_can_go_to(string_hash arg0);

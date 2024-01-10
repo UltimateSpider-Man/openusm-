@@ -38,10 +38,10 @@ void usm_anim_player<nalAnimClass<nalAnyPose>, 3>::sub_4B0860(nalAnyPose &a2)
 }
 
 template<>
-void *usm_anim_player<nalAnimClass<nalAnyPose>, 3>::Advance(
+usm_anim_player<nalAnimClass<nalAnyPose>, 3>::nalAnimState *usm_anim_player<nalAnimClass<nalAnyPose>, 3>::Advance(
         Float a2)
 {
-    return (void *) THISCALL(0x004AD7F0, this, a2);
+    return (nalAnimState *) THISCALL(0x004AD7F0, this, a2);
 }
 
 bool __fastcall sub_4B0020(void *self, void *, int a2, Float a3)

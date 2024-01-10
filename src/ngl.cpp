@@ -470,12 +470,12 @@ void nglSetScissor(Float a1, Float a2, Float a3, Float a4)
     }
 }
 
-void nglSetView(Float a1, Float a2, Float a3, Float a4)
+void nglSetView(Float x1, Float y1, Float x2, Float y2)
 {
-    nglCurScene()->vx1 = a1;
-    nglCurScene()->vy1 = a2;
-    nglCurScene()->vx2 = a3;
-    nglCurScene()->vy2 = a4;
+    nglCurScene()->vx1 = x1;
+    nglCurScene()->vy1 = y1;
+    nglCurScene()->vx2 = x2;
+    nglCurScene()->vy2 = y2;
     nglCurScene()->field_3E4 = true;
 }
 

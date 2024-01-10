@@ -8,6 +8,7 @@
 #include "common.h"
 #include "conglom.h"
 #include "func_wrapper.h"
+#include "nal_instance.h"
 #include "nal_skeleton.h"
 #include "nal_system.h"
 #include "oldmath_po.h"
@@ -34,6 +35,32 @@ nal_anim_controller::nal_anim_controller(actor *a2,
                                          unsigned int a4,
                                          const als::als_meta_anim_table_shared *a5) {
     THISCALL(0x0049BCF0, this, a2, a3, a4, a5);
+}
+
+double nal_anim_controller::_get_base_anim_speed()
+{
+    TRACE("nal_anim_controller::get_base_anim_speed");
+
+    auto *v1 = this->my_player.field_14[0];
+    if ( v1 != nullptr ) {
+        return v1->field_4;
+    }
+
+    return 0.0;
+}
+
+double nal_anim_controller::_get_anim_speed(Float priority)
+{
+    TRACE("nal_anim_controller::get_anim_speed");
+
+    assert(my_player.IsAnimActive(priority) && "Cannot get speed of an inactive animation.");
+
+    auto *v2 = this->my_player.Advance(priority);
+    if ( v2 != nullptr ) {
+        return v2->field_4;
+    }
+
+    return 0.0;
 }
 
 void nal_anim_controller::_frame_advance(Float a2, bool a3, bool a4)
@@ -69,6 +96,56 @@ bool nal_anim_controller::scene_animation_playing() const
 {
     return this->field_50;
 }
+
+bool nal_anim_controller::is_anim_active(Float a1)
+{
+    TRACE("nal_anim_controller::is_anim_active");
+
+    return this->my_player.Advance(a1) != nullptr;
+}
+
+double nal_anim_controller::_get_base_anim_time_in_sec() const
+{
+    TRACE("nal_anim_controller::get_base_anim_time_in_sec");
+
+    if constexpr (0) {
+        auto *v3 = this->my_player.field_14[0];
+        auto *v4 = (v3 != nullptr ? v3->field_0->field_10 : nullptr);
+        if ( (v4->field_34 & 1) != 0 )
+        {
+            auto *v5 = this->my_player.field_14[0];
+            double v6 = (v5 != nullptr ? v5->field_18 : 0.0);
+            auto *v7 = this->my_player.field_14[0];
+            auto v8 = v6 - static_cast<int>(v6);
+            if ( v7 != nullptr ) {
+                return v8 * v7->field_0->field_10->field_38;
+            } else {
+                assert(0);
+                //return v8 * MEMORY[0x38];
+            }
+        }
+
+        auto result = this->get_total_base_anim_time_in_sec();
+        auto *v9 = this->my_player.field_14[0];
+        nalAnimClass<nalAnyPose> *v10 = (v9 != nullptr ? v9->field_0->field_10 : nullptr);
+        if ( result > v10->field_38 )
+        {
+            auto *v11 = this->my_player.field_14[0];
+            if ( v11 != nullptr ) {
+                return v11->field_0->field_10->field_38;
+            } else {
+                assert(0);
+                //return MEMORY[0x38];
+            }
+        }
+
+        return result;
+    } else {
+        double (__fastcall *func)(const void *) = CAST(func, 0x00497E50);
+        return func(this);
+    }
+}
+
 
 void nal_anim_controller::get_curr_po_offset(po &a2)
 {
@@ -213,6 +290,20 @@ double nal_anim_controller::get_anim_time_in_sec(Float a2)
     }
 }
 
+double nal_anim_controller::get_total_base_anim_time_in_sec() const
+{
+    auto *v1 = this->my_player.field_14[0];
+    auto v2 = (v1 != nullptr ? v1->field_18 : 0.0);
+
+    auto *v3 = this->my_player.field_14[0];
+    if ( v3 != nullptr ) {
+        return v2 * v3->field_0->field_10->field_38;
+    } else {
+        assert(0);
+        //return v2 * MEMORY[0x38];
+    }
+}
+
 void *nal_anim_controller::get_base_layer_anim_ptr()
 {
     TRACE("nal_anim_controller::get_base_layer_anim_ptr");
@@ -276,13 +367,6 @@ void *nal_anim_controller::std_play_method::CreateInstance(
 
 }
 
-bool nal_anim_controller::is_anim_active(Float a1)
-{
-    TRACE("nal_anim_controller::is_anim_active");
-
-    return this->my_player.Advance(a1) != nullptr;
-}
-
 void nal_anim_controller_patch()
 {
     {
@@ -299,6 +383,25 @@ void nal_anim_controller_patch()
         FUNC_ADDRESS(address, &nal_anim_controller::std_play_method::CreateInstance);
         set_vfunc(0x00880B90, address);
         set_vfunc(0x00880BA8, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &nal_anim_controller::_get_base_anim_time_in_sec);
+        set_vfunc(0x00880D88, address);
+        set_vfunc(0x00880F18, address);
+        set_vfunc(0x00880FC0, address);
+        set_vfunc(0x00881068, address);
+        set_vfunc(0x00881110, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &nal_anim_controller::_get_base_anim_speed);
+        //SET_JUMP(0x00497F70, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &nal_anim_controller::_get_anim_speed);
+        SET_JUMP(0x0049BFE0, address);
     }
 
     {

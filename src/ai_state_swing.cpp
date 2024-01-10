@@ -414,20 +414,18 @@ void swing_inode::update_mode_swinging(Float a2)
                 return;
             }
 
-            auto v83 = v173->sub_48B100(static_cast<als::layer_types>(0));
+            auto v83 = v173->get_state_id(static_cast<als::layer_types>(0));
 
             string_hash v81;
 
             auto v84 = v83 == state_id_sticky_hang_left() ||
-                (v81 = v173->sub_48B100(static_cast<als::layer_types>(0)), v81 == state_id_sticky_hang_right());
+                (v81 = v173->get_state_id(static_cast<als::layer_types>(0)), v81 == state_id_sticky_hang_right());
 
             if (v84) {
-                string_hash hash_id;
-                if (this->field_7C < 0.0) {
-                    hash_id = cat_id_sticky_hang_right_push_off();
-                } else {
-                    hash_id = cat_id_sticky_hang_left_push_off();
-                }
+                string_hash hash_id = (this->field_7C < 0.0
+                                        ? cat_id_sticky_hang_right_push_off()
+                                        : cat_id_sticky_hang_left_push_off()
+                                        );
 
                 v173->request_category_transition(hash_id, static_cast<als::layer_types>(0), true, false, false);
 

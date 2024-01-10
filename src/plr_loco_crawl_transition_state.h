@@ -27,6 +27,9 @@ struct plr_loco_crawl_transition_state : ai::enhanced_state {
     void deactivate(
         const ai::mashed_state *a1);
 
+    //virtual
+    ai::state_trans_messages frame_advance(Float );
+
     static const inline string_hash default_id{to_hash("crawl_transition")};
 };
 

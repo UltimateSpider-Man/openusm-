@@ -11,6 +11,10 @@ struct linear_interpolator {
     float field_4;
 };
 
+namespace nalComp {
+struct nalCompInstance;
+}
+
 template<typename T, uint32_t I>
 struct usm_anim_player {
     enum class usm_anim_player_modifier_type : uint8_t {};
@@ -20,11 +24,15 @@ struct usm_anim_player {
     };
 
     struct nalAnimState {
-        char field_0[0xC];
+        nalComp::nalCompInstance *field_0;
+        float field_4;
+        float field_8;
         struct {
             int m_vtbl;
         } *field_C;
         nalPlayMethod *field_10;
+        usm_anim_player<T, I> *field_14;
+        float field_18;
     };
 
     int field_0;
@@ -50,7 +58,11 @@ struct usm_anim_player {
         bool a10,
         void *a11);
 
-    void *Advance(Float a2);
+    bool IsAnimActive(Float a1) {
+        return this->Advance(a1) != nullptr;
+    }
+
+    nalAnimState *Advance(Float a2);
 
     void sub_4B06A0(Float a2);
 

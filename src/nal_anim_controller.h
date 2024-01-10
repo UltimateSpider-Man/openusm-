@@ -57,14 +57,25 @@ struct nal_anim_controller : animation_controller {
     bool scene_animation_playing() const;
 
     //virtual
+    bool is_anim_active(Float a1);
+
+    double _get_base_anim_time_in_sec() const;
+
+    //virtual
     //0x0049BE60
     double get_anim_time_in_sec(Float a2);
 
     //virtual
-    void _frame_advance(Float a2, bool a3, bool a4);
+    double get_total_base_anim_time_in_sec() const;
 
     //virtual
-    bool is_anim_active(Float a1);
+    double _get_base_anim_speed();
+
+    //virtual
+    double _get_anim_speed(Float );
+
+    //virtual
+    void _frame_advance(Float a2, bool a3, bool a4);
 
     void get_matrix_data_from_pose(nalAnyPose &arg0);
 };
