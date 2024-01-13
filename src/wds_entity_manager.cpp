@@ -257,17 +257,17 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
             auto v38 = v66 && !v65
                 || (v70 & 0x2000) != 0
                 || v71->is_flagged(0x2000);
-            v71->set_flag_recursive(entity_flag_t {0x2000}, v38);
+            v71->set_flag_recursive(static_cast<entity_flag_t>(0x2000), v38);
             v38 = !v65
                 || (v70 & 0x40) != 0
                 || v71->is_flagged(0x40);
-            v71->set_flag_recursive(entity_flag_t {0x40}, v38);
+            v71->set_flag_recursive(static_cast<entity_flag_t>(0x40), v38);
             v38 = v62
                 || (v70 & 0x80) != 0
                 || v71->is_flagged(0x80);
-            v71->set_flag_recursive(entity_flag_t {0x80}, v38);
+            v71->set_flag_recursive(static_cast<entity_flag_t>(0x80), v38);
             v38 = !v64 || (v70 & 0x200) != 0;
-            v71->set_flag_recursive(entity_flag_t {0x200}, v38);
+            v71->set_flag_recursive(static_cast<entity_flag_t>(0x200), v38);
             auto *tmp_e = v71;
             if ( tmp_e->is_an_actor() )
             {

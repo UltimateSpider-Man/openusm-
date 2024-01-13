@@ -9,9 +9,11 @@
 #include "camera.h"
 #include "scene_brew.h"
 #include "scene_entity_brew.h"
+#include "collide_aux.h"
 #include "collide_trajectories.h"
 #include "collision_trajectory_filter.h"
 #include "common.h"
+#include "conglom.h"
 #include "convex_box.h"
 #include "cut_scene_player.h"
 #include "damage_interface.h"
@@ -20,6 +22,7 @@
 #include "decal_data_interface.h"
 #include "decal_morphs.h"
 #include "dirty_sphere.h"
+#include "dynamic_rtree.h"
 #include "entity_mash.h"
 #include "facial_expression_interface.h"
 #include "femanager.h"
@@ -34,7 +37,10 @@
 #include "intraframe_trajectory.h"
 #include "item.h"
 #include "light_source.h"
+#include "limbo_area.h"
+#include "limbo_entities.h"
 #include "line_info.h"
+#include "loaded_regions_cache.h"
 #include "manip_obj.h"
 #include "mash_virtual_base.h"
 #include "memory.h"
@@ -45,6 +51,7 @@
 #include "physical_interface.h"
 #include "polytube.h"
 #include "region.h"
+#include "region_intersect_visitor.h"
 #include "resource_key.h"
 #include "resource_manager.h"
 #include "scene_spline_path_brew.h"
@@ -196,9 +203,9 @@ void collide_all_moved_entities(Float a1) {
     if constexpr (0) {
         stack_allocator allocator;
         scratchpad_stack::save_state(&allocator);
+        //sub_A4B0D0();
         collision_trajectory_filter_t filter{};
         auto *trajectories = moved_entities::get_all_trajectories(a1, &filter);
-        auto v2 = 0u;
 
         fixed_vector<intraframe_trajectory_t *, 300> v10{};
 
@@ -211,19 +218,22 @@ void collide_all_moved_entities(Float a1) {
             ++v4;
         }
 
+        assert( v10.size() == v4 );
+
         if (trajectories != nullptr) {
             resolve_rotations(trajectories, v4);
             resolve_collisions(&trajectories, a1);
             resolve_moving_pendulums(trajectories, a1);
         }
 
-        for (auto j = 0u; j < v2; ++j) {
+        for (auto j = 0u; j < v10.size(); ++j) {
             auto *v7 = v10.at(j);
             if (!sub_512730(v7)) {
-                intraframe_trajectory_t::pool().set(v7);
+                intraframe_trajectory_t::pool().remove(v7);
             }
         }
 
+        //sub_A4B0D0();
         scratchpad_stack::restore_state(allocator);
 
     } else {
@@ -1440,9 +1450,9 @@ int world_dynamics_system::remove_player(int player_num) {
 
     struct Vtbl {
         int empty0[29];
-        bool __fastcall (*is_a_game_camera)(const void *);
+        bool (__fastcall *is_a_game_camera)(const void *);
         int empty1[135];
-        int __fastcall (*sync)(void *, void *, void *);
+        int (__fastcall *sync)(void *, void *, void *);
     };
 
     cut_scene_player *v3 = g_cut_scene_player();
@@ -1472,24 +1482,223 @@ int world_dynamics_system::remove_player(int player_num) {
     return this->num_players;
 }
 
+void entity_get_max_visual_and_collision_bounding_sphere(
+        entity *ent,
+        vector3d *center_result,
+        float *radius_result)
+{
+    auto visual_center = ent->get_visual_center();
+    auto visual_radius = ent->get_visual_radius();
+    if ( ent->is_an_actor() && ent->colgeom != nullptr )
+    {
+        auto colgeom_center = ent->get_colgeom_center();
+        auto colgeom_radius = ent->get_colgeom_radius();
+        merge_spheres(visual_center, visual_radius, colgeom_center, colgeom_radius, *center_result, *radius_result);
+    }
+    else
+    {
+        *center_result = visual_center;
+        *radius_result = visual_radius;
+    }
+}
+
 void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities(Float a1) {
     TRACE("world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities");
 
-    THISCALL(0x00530100, this, a1);
+    if constexpr (0) {
+        void *mem_for_visitor = nullptr;
+        update_limbo_list_if_needed();
+
+        static constexpr auto n_bytes = 2400u;
+        auto entity_pointers = (entity **)scratchpad_stack::alloc(n_bytes);
+        int num_entity_pointers = 0;
+
+        if ( moved_entities::moved_count() > 0 )
+        {
+            for (int v6 = 0; v6 < moved_entities::moved_count(); ++v6)
+            {
+                auto *v7 = &moved_entities::moved_list()[v6];
+                auto *ent = v7->get_volatile_ptr();
+                if ( ent != nullptr ) {
+                    assert(!(ent->is_a_conglomerate() && ((conglomerate *)ent)->is_cloned_conglomerate()));
+
+                    assert("regions_[ 0 ] can not be NULL when regions_[ 1 ] is not. "
+                            && ( ent->regions[ 1 ] ? ent->regions[ 0 ] != nullptr : 1 ) );
+
+                    assert("regions_[ 0 ] and regions_[ 1 ] should not be NULL while extended_regions_ is not."
+                            && ent->extended_regions != nullptr ? ent->regions[ 0 ] && ent->regions[ 1 ] : 1);
+
+                    assert(ent->extended_regions != nullptr ? ent->extended_regions->size() > 0 : 1);
+
+                    auto &abs_po = ent->get_abs_po();
+                    if ( !abs_po.is_valid(true, false) )
+                    {
+                        mString a2a {"Message: "};
+                        auto v23 = a2a + "Entity Assert";
+                        auto v22 = v23 + "\n";
+                        auto v21 = v22 + "File: ";
+                        auto v19 = v21 + " : ";
+                        auto v17 = v19 + "\n";
+                        auto v16 = v17 + "Expression: ";
+                        auto v15 = v16 + "ent->get_abs_po().is_valid()";
+                        auto v14 = v15 + "\n";
+                        entity_report(ent, v14, false);
+                    }
+
+                    assert(ent->get_abs_po().is_valid());
+
+                    entity_pointers[num_entity_pointers++] = ent;
+                }
+            }
+
+            assert(num_entity_pointers + 2 < moved_entities::MAX_MOVED);
+
+            if ( num_entity_pointers > 0 ) {
+                entity_pointers[num_entity_pointers] = entity_pointers[num_entity_pointers - 1];
+                entity_pointers[num_entity_pointers + 1] = entity_pointers[num_entity_pointers - 1];
+                mem_for_visitor = scratchpad_stack::alloc(0x44);
+                struct {
+                    vector3d field_0;
+                    float field_C;
+                } *vec4_pointers = CAST(vec4_pointers, scratchpad_stack::alloc(16 * (num_entity_pointers + 1)));
+
+                for (int k = 0; k < num_entity_pointers; ++k) 
+                {
+                    auto *v1 = &vec4_pointers[k].field_0;
+                    auto *v2 = &vec4_pointers[k].field_C;
+                    entity_get_max_visual_and_collision_bounding_sphere(entity_pointers[k], v1, v2);
+                }
+
+                for (int m = 0; m < num_entity_pointers; ++m) 
+                {
+                    auto *ent = entity_pointers[m];
+                    region *reg = nullptr;
+                    if ( ent->has_region_idx() ) {
+                        assert(ent->has_region_idx() && ( ent->get_region_idx() < the_terrain->get_num_regions() ));
+
+                        auto reg_idx = ent->get_region_idx();
+                        reg = this->the_terrain->get_region(reg_idx);
+                        assert(reg != nullptr);
+                    }
+
+                    auto *visitor = new (mem_for_visitor) region_intersect_visitor {reg};
+
+                    fixed_vector<region *, 15> a2a {};
+                    auto *v60 = &vec4_pointers[m];
+                    loaded_regions_cache::get_regions_intersecting_sphere(v60->field_0, v60->field_C, &a2a);
+                    for (int n = 0; n < a2a.size(); ++n)
+                    {
+                        auto *v25 = a2a.m_data[n];
+                        [](region_intersect_visitor *self, region *r) -> int {
+                            assert(r != nullptr);
+
+                            for ( auto i = 0; i < self->field_4; ++i ) {
+                                if ( r == self->field_8[i] ) {
+                                    return 0;
+                                }
+                            }
+
+                            if ( self->field_4 < 15 ) {
+                                self->field_8[self->field_4++] = r;
+                            }
+
+                            return 0;
+                        }(visitor, v25);
+                    }
+
+                    if ( visitor->field_4 != 0 ) {
+                        ent->update_regions(visitor->field_8, visitor->field_4);
+                    } else if ( ent->regions[0] != nullptr ) {
+                        ent->remove_from_regions();
+                    }
+                }
+
+                for (auto v29 = 0; v29 < num_entity_pointers; ++v29) {
+                    auto *v30 = &vec4_pointers[v29];
+                    auto *v31 = entity_pointers[v29];
+                    bool v51 = false;
+                    if ( auto *primary_region = v31->get_primary_region();
+                            primary_region != nullptr )
+                    {
+                        if ( !primary_region->is_interior() ) {
+                            if (limbo_area::sphere_intersects_unsafe_area(v30->field_0, v30->field_C)) {
+                                v51 = true;
+                            }
+                        }
+
+                    } else {
+                        v51 = true;
+                    }
+
+                    if (v51) {
+                        entity_pointers[v29]->enter_limbo();
+                    } else {
+                        entity_pointers[v29]->exit_limbo();
+                    }
+                }
+
+                scratchpad_stack::pop(vec4_pointers, 16 * (num_entity_pointers + 1));
+                scratchpad_stack::pop(mem_for_visitor, 0x44);
+
+                for (int v35 = 0; v35 < num_entity_pointers; ++v35) {
+                    entity_pointers[v35]->update_proximity_maps();
+                }
+            }
+        }
+
+        scratchpad_stack::pop(entity_pointers, n_bytes);
+    } else {
+        THISCALL(0x00530100, this, a1);
+    }
 }
 
 void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(Float a1) {
     TRACE("world_dynamics_system::update_collision_proximity_maps_for_moved_entities");
 
-    THISCALL(0x0054A610, this, a1);
+    if constexpr (0) {
+        for (int i = 0; i < moved_entities::moved_count(); ++i)
+        {
+            auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
+            if ( ent != nullptr )
+            {
+                assert("regions[ 0 ] can not be NULL when regions[ 1 ] is not."
+                        && ( ent->regions[ 1 ] ? ent->regions[ 0 ] != nullptr : 1 ));
+
+                assert("regions[ 0 ] and regions[ 1 ] should not be NULL while extended_regions is not."
+                        && ent->extended_regions ? ent->regions[ 0 ] && ent->regions[ 1 ] : 1);
+
+                assert(ent->extended_regions != nullptr
+                    ? ent->extended_regions->size() > 0
+                    : 1);
+                if ( ent->possibly_collide() )
+                {
+                    auto *v2 = ent->regions[0]->collision_proximity_map;
+                    if ( v2 != nullptr ) {
+                        v2->update_entity(ent);
+                    }
+                }
+            }
+        }
+
+        collision_dynamic_rtree().sort();
+    } else {
+        THISCALL(0x0054A610, this, a1);
+    }
 }
 
 void world_dynamics_system::update_light_proximity_maps_for_moved_entities(Float a1) {
     THISCALL(0x00529CC0, this, a1);
 }
 
-void world_dynamics_system::add_anim_ctrl(animation_controller *a2) {
-    THISCALL(0x00542160, this, a2);
+void world_dynamics_system::add_anim_ctrl(animation_controller *a2)
+{
+    TRACE("world_dynamics_system::add_anim_ctrl");
+
+    if constexpr (0) {
+        this->field_4.push_back(a2);
+    } else {
+        THISCALL(0x00542160, this, a2);
+    }
 }
 
 nal_anim_control *world_dynamics_system::get_anim_ctrl(uint32_t a1)
@@ -1517,6 +1726,11 @@ void world_dynamics_system_patch() {
     {
         FUNC_ADDRESS(address, &world_dynamics_system::create_terrain);
         REDIRECT(0x0055BB5C, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities);
+        REDIRECT(0x00558403, address);
     }
 
     REDIRECT(0x005584B8, manage_standing_for_all_physical_interfaces);
@@ -1563,6 +1777,11 @@ void world_dynamics_system_patch() {
         REDIRECT(0x00676CFB, address);
     }
 
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::frame_advance);
+        REDIRECT(0x0055A0F7, address);
+    }
+
     return;
 
     {
@@ -1581,8 +1800,4 @@ void world_dynamics_system_patch() {
         REDIRECT(0x0047DB5F, address);
     }
 
-    {
-        FUNC_ADDRESS(address, &world_dynamics_system::frame_advance);
-        REDIRECT(0x0055A0F7, address);
-    }
 }

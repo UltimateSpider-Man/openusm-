@@ -12,6 +12,7 @@
 #include "primitive_query_token.h"
 #include "scratchpad_stack.h"
 #include "stack_allocator.h"
+#include "trace.h"
 
 #include <cmath>
 
@@ -33,7 +34,7 @@ sphere compute_bounding_sphere_for_trajectory_and_intersected_trajectories(
 
             vector3d center;
             float radius;
-            sub_5628F0(v15.center, a2a, v16.center, a2a, center, radius);
+            merge_spheres(v15.center, a2a, v16.center, a2a, center, radius);
             v15.center = center;
             v15.radius = radius;
         }
@@ -42,7 +43,7 @@ sphere compute_bounding_sphere_for_trajectory_and_intersected_trajectories(
     }
 
     for (auto *iter = trj->field_168; iter != nullptr; iter = iter->field_4) {
-        intersected_trajectory_t::pool().set(iter);
+        intersected_trajectory_t::pool().remove(iter);
     }
 
     trj->field_168 = nullptr;
@@ -133,26 +134,95 @@ void roll_back_rotation_and_rel_capsule_if_tunnelled(intraframe_trajectory_t *tr
         }
 
         for (auto *v8 = v5; v8 != nullptr; v8 = v8->field_0) {
-            local_collision::primitive_list_t::pool().set(v8);
+            local_collision::primitive_list_t::pool().remove(v8);
         }
     }
 }
 
-local_collision::primitive_list_t *query_potential_collision_primitives(
-    const capsule &, const capsule &a3, actor *a4, intraframe_trajectory_t *eax0) {}
+local_collision::primitive_list_t *query_potential_collision_primitives(const capsule &a1,
+                                                                        const capsule &a2,
+                                                                        actor *a3,
+                                                                        intraframe_trajectory_t *a4)
+{
+    TRACE("query_potential_collision_primitives");
+    
+    local_collision::primitive_list_t *v11 = nullptr;
 
-void resolve_rotations(intraframe_trajectory_t *a2, int a1) {
+    sphere v18 {};
+    compute_bounding_sphere_for_two_capsules(a1, a2, &v18);
+    ++entity::visit_key3();
+
+    local_collision::query_args_t v20 {};
+
+    v20.field_10 = v18.center;
+    v20.field_0 |= 0x3Cu;
+
+    v20.field_28 = v18.radius;
+    v20.field_2C = a3;
+    v20.field_30 = a3;
+
+    static local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_AND<local_collision::entfilter_VALID_COLLISION_PAIR,local_collision::entfilter_SPHERE_TEST>>> entf_36027 {};
+
+    for ( auto *i = a4; i != nullptr; i = i->field_15C )
+    {
+        if ( i->ent != a3 && i->has_colgeom() ) {
+            auto v19 = i->get_bounding_sphere();
+
+            auto v9 = [](sphere *self, const vector3d &a2, float a3)
+            {
+                auto v4 = self->center - a2;
+                auto v7 = AbsSquared(v4);
+                auto v6 = self->radius + a3;
+                return (v6 *v6) >= v7;
+            }(&v19, v18.center, v18.radius);
+
+            if ( v9 )
+            {
+                dynamic_conglomerate_clone *v10 = nullptr;
+                if ( a4->ent->is_a_dynamic_conglomerate_clone() ) {
+                    v10 = CAST(v10, a4->ent);
+                }
+
+                static local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_VALID_COLLISION_PAIR>> constraint_filter {};
+                
+                if ( local_collision::collision_pair_matches_query_constraints(a4->ent, v10, constraint_filter, v20) ) {
+                    auto *mem = local_collision::primitive_list_t::pool().allocate_new_block();
+                    v11 = new (mem) local_collision::primitive_list_t {i->ent, i->field_13C};
+                    v11->field_10 = i;
+                }
+            }
+
+            i->ent->field_64 = entity::visit_key3();
+        }
+    }
+
+    --entity::visit_key3();
+    local_collision::query_args_t v17 {};
+    auto *result = local_collision::query_sphere(
+        v18.center,
+        v18.radius,
+        entf_36027,
+        *local_collision::obbfilter_sphere_test(),
+        v17);
+
+    local_collision::primitive_list_t *j = nullptr;
+    for ( j = (local_collision::primitive_list_t *)&v11; j->field_0 != nullptr; j = j->field_0 ) {
+        ;
+    }
+    j->field_0 = result;
+
+    return v11;
+}
+
+void resolve_rotations(intraframe_trajectory_t *a2, int a1)
+{
+    TRACE("resolve_rotations");
+
     if constexpr (1) {
         stack_allocator allocator;
         scratchpad_stack::save_state(&allocator);
-        auto *token = (primitive_query_token_t *) scratchpad_stack::stk().current;
-        if (scratchpad_stack::stk().current == scratchpad_stack::stk().segment) {
-            tlScratchpadLocked() = true;
-        }
-
-        auto v4 = 0x3C * a1 + scratchpad_stack::stk().alignment - 1;
-
-        scratchpad_stack::stk().current += ~(scratchpad_stack::stk().alignment - 1) & v4;
+        auto *token = static_cast<primitive_query_token_t *>(
+                scratchpad_stack::alloc(sizeof(primitive_query_token_t) * a1));
 
         for (auto *trj = a2; trj != nullptr; trj = trj->field_15C) {
             if (a2->is_capsule) {

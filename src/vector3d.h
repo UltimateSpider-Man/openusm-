@@ -184,6 +184,8 @@ struct vector3d
     static bool is_colinear(vector3d a1, vector3d a4, Float epsilon = LARGE_EPSILON);
 };
 
+inline constexpr vector3d UP {0.0, 1.0, 0.0};
+
 extern vector3d XVEC;
 
 extern vector3d YVEC;

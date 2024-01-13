@@ -33,6 +33,7 @@
 #include "put_down_state.h"
 #include "throw_state.h"
 #include "utility.h"
+#include "vector2d.h"
 #include "vtbl.h"
 
 #include <cmath>
@@ -71,7 +72,7 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
 
     if constexpr (1) {
         auto *v4 = this->field_8;
-        auto *info_node = bit_cast<ai::als_inode *>(v4->get_info_node(als_inode::default_id, true));
+        auto *info_node = bit_cast<als_inode *>(v4->get_info_node(als_inode::default_id, true));
         if ( this->field_7C ) {
             return false;
         }
@@ -83,10 +84,11 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
             }
 
             auto *v8 = this->field_8;
-            auto *v9 = bit_cast<ai::physics_inode *>(v8->get_info_node(physics_inode::default_id, true));
-            auto a3 = v9->field_1C->get_velocity();
-            auto len = std::sqrt(a3[2] * a3[2] + a3[0] * a3[0]);
-            return len * 0.2f < -a3[1];
+            auto *v9 = bit_cast<physics_inode *>(v8->get_info_node(physics_inode::default_id, true));
+            auto vel = v9->field_1C->get_velocity();
+            vector2d v10 = {vel.x, vel.z};
+            auto len = v10.length();
+            return len * 0.2f < -vel.y;
         }
 
         if ( (a2 == plr_loco_crawl_transition_state::default_id
@@ -138,18 +140,12 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
     }
 }
 
-void hero_inode::frame_advance(Float a2) {
-    sp_log("hero_inode::frame_advance():");
+void hero_inode::frame_advance(Float a2)
+{
+    TRACE("hero_inode::frame_advance");
 
-    if constexpr (0) {
-        auto *v3 = this->field_C->m_player_controller;
-
-        als::param v14;
-        v14.field_4 = 1;
-        v14.field_0 = physics_inode::default_id.source_hash_code;
-        auto *v4 = this->field_8;
-
-        auto *v5 = (physics_inode *) v4->get_info_node(physics_inode::default_id, true);
+    if constexpr (1) {
+        auto *v5 = (physics_inode *) this->field_8->get_info_node(physics_inode::default_id, true);
         if (!this->field_1C) {
             setup_hero_capsule(this->field_C);
             this->field_1C = true;
@@ -157,21 +153,13 @@ void hero_inode::frame_advance(Float a2) {
 
         auto *v6 = v5->field_C;
 
-        auto &v7 = v6->get_abs_po().get_position();
+        auto v18 = v6->get_abs_po().get_position();
 
-        vector3d v18;
-        v18[0] = v7[0];
-        v18[1] = v7[1];
-        v18[2] = v7[2];
+        this->field_C->get_primary_region();
 
-        auto *v8 = (entity *) this->field_C;
-        v8->get_primary_region();
+        static constexpr float max_ground_dist {10.0};
 
-        Var<vector3d> stru_937D94{0x00937D94};
-
-        Var<const float> max_ground_dist_35476{0x00937F6C};
-
-        vector3d v19 = v18 - stru_937D94() * max_ground_dist_35476();
+        vector3d v19 = v18 - UP * max_ground_dist;
 
         vector3d v20, v21;
         if (find_intersection(v18,
@@ -184,53 +172,48 @@ void hero_inode::frame_advance(Float a2) {
                               nullptr,
                               nullptr,
                               false)) {
-            this->field_244 = v18[1] - v20[1];
+            this->field_244 = v18.y - v20.y;
         } else {
-            this->field_244 = max_ground_dist_35476();
+            this->field_244 = max_ground_dist;
         }
 
         float v17 = 0.0;
-        auto *v9 = v3->get_gb_swing_raw();
-        if ((v9->m_flags & 0x20) == 0) {
-            if (v9->m_flags & 1) {
-                float v11 = ((v9->m_flags & 0x20) != 0 ? 0.0f : v9->field_1C);
-
-                v17 = v11 + 0.050000001f;
+        auto *player_controller = this->get_actor()->get_player_controller();
+        auto *gb_swing = player_controller->get_gb_swing_raw();
+        auto cond = [](game_button *self) -> bool {
+            if ((self->m_flags & 0x20) != 0) {
+                return false;
             }
+
+            return self->m_flags & 1;
+        }(gb_swing);
+        if (cond) {
+
+            auto v11 = [](game_button *self) -> float {
+                return ((self->m_flags & 0x20) != 0 ? 0.0f : self->field_1C);
+            }(gb_swing);
+
+            v17 = v11 + 0.050000001f;
         }
 
         this->field_238 += a2;
 
-        if (v3->get_motion_force() > EPSILON) {
+        if (player_controller->get_motion_force() > EPSILON) {
             this->field_238 = 0.0;
         }
 
-        auto *v12 = (als_inode *) this->field_8->get_info_node(als_inode::default_id, true);
         als::param_list v16;
+        v16.add_param(als::param {17, v17});
+        v16.add_param(als::param {19, this->field_238});
+        v16.add_param(als::param {70, this->field_244});
 
-        v14.field_0 = 17;
-        v14.field_4 = v17;
-        v16.add_param(v14);
-
-        v14.field_0 = 19;
-        v14.field_4 = this->field_238;
-        v16.add_param(v14);
-
-        v14.field_0 = 70;
-        v14.field_4 = this->field_244;
-        v16.add_param(v14);
-
+        auto *v12 = bit_cast<als_inode *>(
+                this->field_8->get_info_node(als_inode::default_id, true));
         auto *v13 = v12->field_1C->get_als_layer(static_cast<als::layer_types>(0));
 
         v13->set_desired_params(v16);
 
-        if (this->field_80) {
-            local_collision::destroy_primitive_list(&this->field_80);
-        }
-
-        if (this->field_84) {
-            local_collision::destroy_primitive_list(&this->field_84);
-        }
+        cleanup_collision_lists();
 
     } else {
         THISCALL(0x006A7950, this, a2);
@@ -239,10 +222,13 @@ void hero_inode::frame_advance(Float a2) {
 
 bool hero_inode::is_a_crawl_state(string_hash a1, bool a2) {
     auto result = (a1 == plr_loco_crawl_state::default_id);
-    if (a2 &&
-        (a1 == plr_loco_crawl_transition_state::default_id ||
-         a1 == plr_loco_crawl_state::default_id)) {
-        result = true;
+    if (a2)
+    {
+        if (a1 == plr_loco_crawl_transition_state::default_id
+                || result)
+        {
+            result = true;
+        }
     }
 
     return result;
@@ -367,11 +353,33 @@ bool hero_inode::run_is_eligible(string_hash a2)
     }
 }
 
-bool hero_inode::crawl_is_eligible(string_hash a2, bool a3) {
-    return (bool) THISCALL(0x006B0EB0, this, a2, a3);
+static string_hash loco_allow_crawl_id {int(to_hash("loco_allow_crawl"))};
+
+bool hero_inode::crawl_is_eligible(string_hash a2, bool a3)
+{
+    TRACE("hero_inode::crawl_is_eligible");
+
+    if constexpr (1) {
+        auto &v4 = this->field_8->field_50;
+        if ( v4.get_pb_int(loco_allow_crawl_id) == 0 ) {
+            return false;
+        }
+
+        auto is_eligible = this->crawl_is_eligible_internals(a2, a3);
+        if ( is_eligible ) {
+            this->field_1B0 = this->field_88.field_7C.field_0;
+        }
+
+        return is_eligible;
+    } else {
+        return (bool) THISCALL(0x006B0EB0, this, a2, a3);
+    }
 }
 
-bool hero_inode::oldcrawl_is_eligible(string_hash a2, bool a3) {
+bool hero_inode::oldcrawl_is_eligible(string_hash a2, bool a3)
+{
+    TRACE("hero_inode::oldcrawl_is_eligible");
+
     return (bool) THISCALL(0x006B0E60, this, a2, a3);
 }
 
@@ -436,7 +444,7 @@ bool hero_inode::run_can_go_to(string_hash arg0) {
         }
 
         if (arg0 == throw_state::default_id &&
-            (arg0 = v5->get_category_id(static_cast<als::layer_types>(0)), arg0 != ai::cat_id_idle_walk_run())) {
+            (arg0 = v5->get_category_id(static_cast<als::layer_types>(0)), arg0 != cat_id_idle_walk_run())) {
             return false;
         }
 
@@ -493,16 +501,27 @@ void hero_inode::set_jump_type(eJumpType a2, bool a3) {
     this->field_50 = a2;
 }
 
-void hero_inode::cleanup_collision_lists() {
-    if (this->field_80) // ai::hero_inode::cleanup_crawl_collision_list()
-    {
-        local_collision::destroy_primitive_list(&this->field_80);
+void hero_inode::cleanup_crawl_collision_list()
+{
+    if ( this->nearby_crawl_collidables != nullptr ) {
+        local_collision::destroy_primitive_list(&this->nearby_crawl_collidables);
     }
 
-    if (this->field_84) // ai::hero_inode::cleanup_swing_collision_list()
-    {
-        local_collision::destroy_primitive_list(&this->field_84);
+    assert(nearby_crawl_collidables == nullptr);
+}
+
+void hero_inode::cleanup_swing_collision_list()
+{
+    if ( this->nearby_swing_collidables != nullptr ) {
+        local_collision::destroy_primitive_list(&this->nearby_swing_collidables);
     }
+    
+    assert(nearby_swing_collidables == nullptr);
+}
+
+void hero_inode::cleanup_collision_lists() {
+    cleanup_crawl_collision_list();
+    cleanup_swing_collision_list();
 }
 
 hero_type_enum hero_inode::get_hero_type() {
@@ -513,7 +532,10 @@ hero_type_enum hero_inode::get_hero_type() {
     }
 }
 
-bool hero_inode::crawl_is_eligible_internals(string_hash a2, bool a3) {
+bool hero_inode::crawl_is_eligible_internals(string_hash a2, bool a3)
+{
+    TRACE("hero_inode::crawl_is_eligible_internals");
+
     return (bool) THISCALL(0x006A6900, this, a2, a3);
 }
 
@@ -588,7 +610,12 @@ bool have_relative_movement(entity *a1, entity *a2) {
 void hero_inode_patch() {
     {
         FUNC_ADDRESS(address, &ai::hero_inode::frame_advance);
-        //set_vfunc(0x0087DAC0, address);
+        set_vfunc(0x0087DAC0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::hero_inode::crawl_is_eligible);
+        //SET_JUMP(0x006B0EB0, address);
     }
 
     {

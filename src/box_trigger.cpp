@@ -20,7 +20,7 @@ box_trigger::box_trigger(string_hash a2, entity_base *a3) : trigger(a2) {
     this->field_5C = ZEROVEC;
     this->field_68 = ZEROVEC;
 
-    a3->set_flag_recursive(entity_flag_t{0x400u}, true);
+    a3->set_flag_recursive(static_cast<entity_flag_t>(0x400u), true);
     this->update_center();
 }
 

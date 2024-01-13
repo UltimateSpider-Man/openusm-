@@ -38,6 +38,8 @@ struct entity : signaller {
 
     bool is_in_limbo() const;
 
+    void update_proximity_maps();
+
     ////// VIRTUAL FUNCTIONS: START //////
 
     ~entity();
@@ -143,7 +145,7 @@ struct entity : signaller {
     }
 
     //0x004CB5C0
-    bool is_in_region(const region *a2);
+    bool is_in_region(const region *a2) const;
 
     //0x004F52C0
     void add_me_to_region(region *r);
@@ -151,6 +153,9 @@ struct entity : signaller {
     collision_geometry *get_colgeom() const;
 
     /* virtual */ float get_colgeom_radius() const;
+
+    //virtual
+    vector3d get_colgeom_center() const;
 
     //0x004F5390
     void remove_me_from_region(region *r);

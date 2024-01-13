@@ -73,8 +73,8 @@ struct hero_inode : info_node {
     int field_78;
     bool field_7C;
 
-    local_collision::primitive_list_t *field_80;
-    local_collision::primitive_list_t *field_84;
+    local_collision::primitive_list_t *nearby_crawl_collidables;
+    local_collision::primitive_list_t *nearby_swing_collidables;
 
     ai::hero_inode::internal field_88;
     int field_1AC;
@@ -93,6 +93,10 @@ struct hero_inode : info_node {
 
     //0x00698970
     bool compute_curr_ground_plane(force_recompute_enum a2, Float a3);
+
+    void cleanup_crawl_collision_list();
+
+    void cleanup_swing_collision_list();
 
     //0x006942A0
     void cleanup_collision_lists();

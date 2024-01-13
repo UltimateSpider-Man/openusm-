@@ -10,7 +10,7 @@ trigger::trigger(string_hash a2) : signaller(true) {
     TRACE("trigger::trigger");
 
     this->m_vtbl = 0x008887F8;
-    this->set_flag_recursive(entity_flag_t{0x2000}, true);
+    this->set_flag_recursive(static_cast<entity_flag_t>(0x2000), true);
     assert(my_rel_po == nullptr);
 
     assert(my_abs_po == nullptr);

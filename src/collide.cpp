@@ -380,7 +380,7 @@ bool collide_segment_mesh(const vector3d &a3,
     auto result = get_closest_intersection_from_list(a3, mesh, v12, closest_point, closest_normal);
 
     if (v12 != nullptr) {
-        mesh_triangle_intersection_record_t::pool().set(v12->field_14);
+        mesh_triangle_intersection_record_t::pool().remove(v12->field_14);
     }
 
     return result;

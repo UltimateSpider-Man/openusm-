@@ -9,7 +9,7 @@ namespace scratchpad_stack {
 extern Var<stack_allocator> stk;
 
 //0x00512760
-extern stack_allocator *save_state(stack_allocator *a1);
+extern void save_state(stack_allocator *a1);
 
 //0x00512790
 extern void restore_state(const stack_allocator &a1);

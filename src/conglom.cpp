@@ -473,7 +473,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
         this->field_110 |= 3u;
 
-        this->set_flag_recursive(entity_flag_t {2}, this->possibly_collide());
+        this->set_flag_recursive(static_cast<entity_flag_t>(2), this->possibly_collide());
 
         this->field_108 = -1.0;
         this->field_10C = -1.0;

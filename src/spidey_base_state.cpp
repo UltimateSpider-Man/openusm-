@@ -38,6 +38,11 @@ string_hash spidey_base_state::get_desired_state_id(Float a3)
 {
     TRACE("spidey_base_state::get_desired_state_id");
 
+    {
+        string_hash a2 = this->field_C->my_curr_state->get_name();
+        sp_log("%s", a2.to_string());
+    }
+
     if constexpr (0) {
         string_hash a2 = this->field_C->my_curr_state->get_name();
 

@@ -54,5 +54,11 @@ struct intraframe_trajectory_t {
 
     collision_geometry *get_colgeom();
 
+    bool has_colgeom()
+    {
+        return this->get_colgeom() != nullptr;
+    }
+
+
     static inline Var<fixed_pool> pool{0x0092244C};
 };

@@ -73,7 +73,7 @@ sphere intraframe_trajectory_t::get_bounding_sphere() {
 
         vector3d v4 = this->world_po0.get_matrix() * v9;
 
-        sub_5628F0(v4, colgeom_radius, v6, colgeom_radius, a3.center, a3.radius);
+        merge_spheres(v4, colgeom_radius, v6, colgeom_radius, a3.center, a3.radius);
     }
 
     return a3;

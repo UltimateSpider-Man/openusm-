@@ -15,6 +15,7 @@
 #include "event_recipient_entry.h"
 #include "event_type.h"
 #include "func_wrapper.h"
+#include "limbo_entities.h"
 #include "memory.h"
 #include "motion_effect_struct.h"
 #include "oldmath_po.h"
@@ -1408,8 +1409,30 @@ void entity_base::dirty_family(bool a2) {
     }
 }
 
-void entity_base::exit_limbo() {
-    THISCALL(0x004F3B80, this);
+void entity_base::enter_limbo()
+{
+    if ( !this->is_ext_flagged(0x2000u) && this->is_ext_flagged(0x200u) )
+    {
+        vhandle_type<entity> v3 {this->get_my_handle()};
+        add_to_limbo_list(v3);
+        this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x2000u), true);
+        this->raise_event(event::ENTER_LIMBO);
+    }
+}
+
+void entity_base::exit_limbo()
+{
+    if constexpr (0) {
+        if ( this->is_ext_flagged(0x2000u) && this->is_ext_flagged(0x200u) )
+        {
+            vhandle_type<entity> v3 {this->get_my_handle()};
+            remove_from_limbo_list(v3);
+            this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x2000u), false);
+            this->raise_event(event::EXIT_LIMBO);
+        }
+    } else {
+        THISCALL(0x004F3B80, this);
+    }
 }
 
 void entity_base::on_fade_distance_changed_internal(int a2) {

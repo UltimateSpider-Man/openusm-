@@ -35,20 +35,10 @@ inline constexpr auto EFLAG_EXT_SIGNALLER_ONLY = 0x20000u;
 
 inline constexpr auto EFLAG_EXT_DOES_NOT_MANAGE_ABS_PO = 0x40000000u;
 
-struct entity_flag_t {
-    uint32_t field_0;
-
-    operator int() {
-        return field_0;
-    }
+enum entity_flag_t {
 };
 
-struct entity_ext_flag_t {
-    uint32_t field_0;
-
-    operator int() {
-        return field_0;
-    }
+enum entity_ext_flag_t {
 };
 
 struct entity_base : entity_base_vtable {
@@ -81,6 +71,16 @@ struct entity_base : entity_base_vtable {
 
     //0x004F3400
     entity_base(const string_hash &a2, uint32_t a3, bool a4);
+
+    bool has_region_idx() const
+    {
+        return this->field_3C != 0xFFFF;
+    }
+
+    uint16_t get_region_idx() const
+    {
+        return this->field_3C;
+    }
 
     uint16_t get_bone_idx() const;
 
@@ -382,6 +382,8 @@ struct entity_base : entity_base_vtable {
     const vector3d &get_abs_position();
 
     entity_base *get_first_child();
+
+    void enter_limbo();
 
     //0x004F3B80
     void exit_limbo();

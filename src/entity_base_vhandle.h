@@ -9,7 +9,7 @@ struct entity_base_vhandle {
 
     constexpr entity_base_vhandle(int p) : field_0(p) {}
 
-    auto get_goodies() const
+    uint32_t get_goodies() const
     {
         return field_0;
     }

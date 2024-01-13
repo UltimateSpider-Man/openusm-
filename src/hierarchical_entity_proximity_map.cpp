@@ -108,7 +108,7 @@ bool hierarchical_entity_proximity_map::remove_entity(entity *ent)
         {
             assert(pool.get_entry_size() == sizeof( entity_proximity_map_data ));
 
-            pool.set(a1);
+            pool.remove(a1);
         }(hash_entry_pool(), result);
 
         return true;

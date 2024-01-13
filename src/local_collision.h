@@ -39,11 +39,15 @@ struct query_args_t {
     vector3d field_1C;
     float field_28;
     entity *field_2C;
-    int field_30;
+    entity *field_30;
 };
 
 struct entfilter_base {
     std::intptr_t m_vtbl;
+
+    bool accept(actor *act,
+                dynamic_conglomerate_clone *a2,
+                const query_args_t &a3) const;
 };
 
 struct obbfilter_base {
@@ -63,6 +67,9 @@ struct entfilter_COLLIDE_CAMERA {};
 struct entfilter_LINESEG_TEST {};
 struct entfilter_NO_CAPSULES {};
 struct entfilter_BLOCKS_BEAMS {};
+struct entfilter_EXCLUDE_ENTITY {};
+struct entfilter_SPHERE_TEST {};
+struct entfilter_VALID_COLLISION_PAIR {};
 
 template<typename T0, typename T1>
 struct obbfilter_AND {};
@@ -92,6 +99,8 @@ struct primitive_list_t {
     void *field_8;
     bool is_ent;
     intraframe_trajectory_t *field_10;
+
+    primitive_list_t(void *a2, void *a3);
 
     bool is_entity() {
         return this->is_ent;
@@ -140,6 +149,12 @@ extern bool get_closest_sphere_intersection(primitive_list_t *a1,
                                             vector3d *a4,
                                             vector3d *a5,
                                             intersection_list_t *best_intersection_record);
+
+extern bool collision_pair_matches_query_constraints(
+        actor *a1,
+        dynamic_conglomerate_clone *a2,
+        local_collision::entfilter_base &a3,
+        local_collision::query_args_t &a4);
 
 inline Var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>> *>
     entfilter_entity_no_capsules{0x00960068};

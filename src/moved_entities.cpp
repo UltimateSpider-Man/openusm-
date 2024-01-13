@@ -97,7 +97,10 @@ LABEL_44:
 }
 
 intraframe_trajectory_t *moved_entities::get_all_trajectories(
-    Float a1, const moved_entities::trajectory_filter_t *filter) {
+    Float a1, const moved_entities::trajectory_filter_t *filter)
+{
+    TRACE("moved_entities::get_all_trajectories");
+
     return (intraframe_trajectory_t *) CDECL_CALL(0x0053F2A0, a1, filter);
 }
 

@@ -6,6 +6,7 @@
 #include "param_block.h"
 
 namespace ai {
+
 VALIDATE_SIZE(nugget_wait_state, 0x3C);
 
 state_trans_messages nugget_wait_state::frame_advance(Float )
@@ -17,7 +18,7 @@ state_trans_messages nugget_wait_state::frame_advance(Float )
     auto v3 = this->field_34;
     if ( v3 != v14 && !this->field_38 && !this->field_39 )
     {
-        if ( the_als_i->sub_48B140(v3, static_cast<als::layer_types>(0)) ) {
+        if ( the_als_i->is_cat_our_prev_cat(v3, static_cast<als::layer_types>(0)) ) {
             this->field_39 = true;
         } else {
             v13 = TRANS_TOTAL_MSGS;

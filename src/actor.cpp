@@ -91,7 +91,7 @@ void actor::common_construct()
 void actor::set_colgeom(collision_geometry *a2)
 {
     this->colgeom = a2;
-    this->set_flag_recursive(entity_flag_t {2}, this->colgeom != nullptr);
+    this->set_flag_recursive(static_cast<entity_flag_t>(2), this->colgeom != nullptr);
 }
 
 int actor::get_entity_size() {
@@ -432,8 +432,8 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
 
         this->field_A4 = 0;
 
-        this->set_ext_flag_recursive_internal(entity_ext_flag_t {0x2000000u}, false);
-        this->set_ext_flag_recursive_internal(entity_ext_flag_t {0x800000u}, false);
+        this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x2000000u), false);
+        this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x800000u), false);
 
         rebase(v4->field_4, 8u);
 

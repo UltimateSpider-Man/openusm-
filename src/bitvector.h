@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "bitmath.h"
+#include "variable.h"
 
 inline constexpr auto LOG_BASE_TYPE_BITS = 5;
 
@@ -55,3 +56,5 @@ struct fixed_bitvector {
         v2 |= get_bit(bit_position);
     }
 };
+
+inline Var<fixed_bitvector<uint32_t, 256>> hash_update_bitvector {0x009222B0};

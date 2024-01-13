@@ -2,6 +2,9 @@
 
 #include "collision_geometry.h"
 #include "common.h"
+#include "conglom.h"
+#include "fixed_pool.h"
+#include "fixed_vector.h"
 #include "func_wrapper.h"
 #include "memory.h"
 #include "moved_entities.h"
@@ -10,12 +13,17 @@
 #include "trace.h"
 #include "utility.h"
 #include "vtbl.h"
+#include "wds.h"
 
 #include <cassert>
 
 VALIDATE_SIZE(entity, 0x68u);
 
 Var<int> entity::visit_key3{0x0095A6EC};
+
+namespace entity_extended_regions_array_t {
+    static Var<fixed_pool> pool {0x0091FF9C};
+}
 
 entity::entity(const string_hash &a2, uint32_t a3) : signaller(a2, a3, false) {
     this->field_64 = 0;
@@ -34,6 +42,13 @@ void entity::destroy_static_entity_pointers() {
 
 entity::~entity() {
     THISCALL(0x004F91C0, this);
+}
+
+void entity::update_proximity_maps()
+{
+    TRACE("entity::update_proximity_maps");
+    
+    THISCALL(0x004CB810, this);
 }
 
 bool entity::is_in_limbo() const
@@ -294,7 +309,7 @@ void entity::set_render_alpha_mod(Float) {
 
 float entity::get_render_alpha_mod() {
     if constexpr (1) {
-        float __thiscall (*func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x1CC));
+        float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x1CC));
 
         return func(this);
 
@@ -378,12 +393,92 @@ void entity::set_recursive_age(Float a2) {
     this->set_age(a2);
 }
 
-bool entity::is_in_region(const region *a2) {
-    return (bool) THISCALL(0x004CB5C0, this, a2);
+bool entity::is_in_region(const region *r) const
+{
+    if constexpr (1) {
+        assert("regions[ 0 ] can not be NULL when regions[ 1 ] is not. "
+                    && ( this->regions[ 1 ] ? this->regions[ 0 ] != nullptr : 1 ));
+
+        assert("regions[ 0 ] and regions[ 1 ] should not be NULL while extended_regions is not."
+                    && this->extended_regions ? this->regions[ 0 ] && this->regions[ 1 ] : 1);
+
+        assert(this->extended_regions != nullptr ? this->extended_regions->size() > 0 : 1);
+
+        auto v4 = 0;
+        region *v2 = nullptr;
+        for (auto *reg = this->regions[0]; reg != r; reg = v2)
+        {
+            if (reg == r) {
+                return true;
+            }
+
+            if ( ++v4 >= 2 )
+            {
+                if ( this->extended_regions != nullptr ) {
+                    v2 = ( (v4 - 2) < extended_regions->size()
+                                    ? extended_regions->m_data[v4 - 2]
+                                    : nullptr
+                                    );
+                }
+            }
+            else
+            {
+                v2 = this->regions[v4];
+            }
+        }
+
+        return false;
+    } else {
+        return (bool) THISCALL(0x004CB5C0, this, r);
+    }
 }
 
-void entity::add_me_to_region(region *r) {
-    THISCALL(0x004F52C0, this, r);
+void entity::add_me_to_region(region *r)
+{
+    TRACE("entity::add_me_to_region");
+
+    if constexpr (1) {
+        assert((!is_a_conglomerate() || !((conglomerate *)this)->is_cloned_conglomerate()) && "A cloned conglomerate should NEVER be put into a region!!!");
+
+        assert(r != nullptr);
+
+        auto ent_to_add = this->get_my_vhandle();
+        assert(ent_to_add != INVALID_HANDLE);
+
+        if ( !this->is_in_region(r) )
+        {
+            if ( r->is_loaded() )
+            {
+                auto v3 = 0;
+                auto **regions = this->regions;
+                int i = 0;
+                for (; i < 2; ++i) {
+                    if ( this->regions[i] == nullptr ) {
+                        this->regions[i] = r;
+                        break;
+                    }
+                }
+
+                if (i == 2) {
+                    if ( this->extended_regions == nullptr ) {
+                        auto *mem = entity_extended_regions_array_t::pool().allocate_new_block();
+                        auto *v5 = new (mem) fixed_vector<region *, 7> {};
+                        this->extended_regions = v5;
+                    }
+
+                    assert(extended_regions != nullptr);
+
+                    this->extended_regions->push_back(r);
+                }
+
+                r->add(this);
+            } else {
+                this->enter_limbo();
+            }
+        }
+    } else {
+        THISCALL(0x004F52C0, this, r);
+    }
 }
 
 collision_geometry *entity::get_colgeom() const {
@@ -394,6 +489,16 @@ float entity::get_colgeom_radius() const {
     float (*func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x254));
 
     return func(this);
+}
+
+vector3d entity::get_colgeom_center() const
+{
+    void (__fastcall *func)(const void *, void *, vector3d *) = CAST(func, get_vfunc(m_vtbl, 0x258));
+
+    vector3d result;
+    func(this, nullptr, &result);
+
+    return result;
 }
 
 void entity::remove_me_from_region(region *r) {
@@ -420,8 +525,51 @@ region *entity::update_regions(region **a2, int a3) {
     return (region *) THISCALL(0x004F5510, this, a2, a3);
 }
 
-void entity::remove_from_regions() {
-    THISCALL(0x004CB750, this);
+void entity::remove_from_regions()
+{
+    TRACE("entity::remove_from_regions");
+
+    if constexpr (0) {
+        assert("regions[ 0 ] can not be NULL when regions[ 1 ] is not. "
+                    && ( this->regions[ 1 ] ? this->regions[ 0 ] != nullptr: 1 ));
+
+        assert("regions_[ 0 ] and regions_[ 1 ] should not be NULL while extended_regions_ is not."
+                    && this->extended_regions ? this->regions[ 0 ] && this->regions[ 1 ] : 1);
+
+        assert(this->extended_regions != nullptr ? this->extended_regions->size() > 0 : 1);
+
+        if ( g_world_ptr() != nullptr )
+        {
+            auto *v2 = this->regions[0];
+            if ( v2 != nullptr && v2->is_loaded() ) {
+                v2->remove(this);
+            }
+
+            auto *v3 = this->regions[1];
+            if ( v3 != nullptr && v3->is_loaded() ) {
+                v3->remove(this);
+            }
+
+            this->regions[1] = nullptr;
+            this->regions[0] = nullptr;
+            if ( this->extended_regions != nullptr )
+            {
+                for (auto v5 = 0; v5 < this->extended_regions->size(); ++v5)
+                {
+                    auto *reg = this->extended_regions->m_data[v5];
+                    if ( reg != nullptr && reg->is_loaded() )
+                    {
+                        reg->remove(this);
+                    }
+                }
+
+                entity_extended_regions_array_t::pool().remove(this->extended_regions);
+                this->extended_regions = nullptr;
+            }
+        }
+    } else {
+        THISCALL(0x004CB750, this);
+    }
 }
 
 region *entity::get_primary_region()

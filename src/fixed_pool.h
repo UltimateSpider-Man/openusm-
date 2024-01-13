@@ -21,7 +21,7 @@ struct fixed_pool {
 
     bool is_empty();
 
-    void set(void *a2);
+    void remove(void *a2);
     
     int get_entry_size() const
     {

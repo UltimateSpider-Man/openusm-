@@ -4,6 +4,7 @@
 #include "common.h"
 #include "log.h"
 #include "memory.h"
+#include "trace.h"
 
 #include <cassert>
 
@@ -28,7 +29,10 @@ bool stack_allocator::allocate(int size, int alignment_arg, int external_alignme
     return status;
 }
 
-void *stack_allocator::push(int size_bytes) {
+void *stack_allocator::push(int size_bytes)
+{
+    TRACE("stack_allocator::push");
+
     assert((alignment >= 2) && bitmath::is_power_of_2(alignment));
 
     auto size = ~(this->alignment - 1) & (size_bytes + this->alignment - 1);

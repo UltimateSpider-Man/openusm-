@@ -6,6 +6,7 @@
 #include "ai_state_run.h"
 #include "ai_state_swing.h"
 #include "ai_std_hero.h"
+#include "als_inode.h"
 #include "base_ai_core.h"
 #include "base_state.h"
 #include "common.h"
@@ -14,12 +15,16 @@
 #include "event.h"
 #include "from_mash_in_place_constructor.h"
 #include "func_wrapper.h"
+#include "hit_react_state.h"
 #include "oldmath_po.h"
 #include "physics_inode.h"
 #include "polytube.h"
+#include "state_machine.h"
 #include "utility.h"
 #include "vector2d.h"
 #include "wds.h"
+
+#include <cassert>
 
 namespace ai {
 
@@ -66,8 +71,67 @@ int web_zip_inode::activate(ai_core *a2) {
     return THISCALL(0x00481A50, this, a2);
 }
 
-bool web_zip_inode::can_go_to(string_hash a2) {
-    return THISCALL(0x0044C930, this, a2);
+bool web_zip_inode::can_go_to(string_hash a2)
+{
+    TRACE("web_zip_inode::can_go_to");
+
+    if constexpr (1) {
+        if ( a2 == hit_react_state::default_id ) {
+            return false;
+        }
+
+        auto *v3 = this->field_DC;
+        auto *v4 = v3->field_20;
+        auto zip_type = this->field_78;
+
+        switch (zip_type) {
+        case 0: {
+            if ( hero_inode::is_a_crawl_state(a2, true)
+                    || a2 == run_state::default_id)
+            {
+                return false;
+            }
+
+            auto *als_layer = v4->get_als_layer(static_cast<als::layer_types>(0));
+            return als_layer->get_time_to_signal(event::ANIM_ACTION) < 0.0f;
+        }
+        case 1: {
+            auto *phys_inode_ptr = v3->field_28;
+            auto floor_offset = this->field_C->get_floor_offset();
+            auto v23 = floor_offset * this->field_1C.hit_norm + this->field_1C.hit_pos;
+
+            auto v14 = phys_inode_ptr->get_abs_position() - v23;
+            auto len = v14.length();
+            auto v16 = this->field_1C.hit_norm.y > 0.5f;
+            if ( hero_inode::is_a_crawl_state(a2, true) ) {
+                return !v16 && len < 1.3f;
+            } else if (a2 == ai::run_state::default_id) {
+                return v16 && this->field_C->physical_ifc()->get_floor_offset() + 0.1f > len;
+            } else {
+                return false;
+            }
+            break;
+        }
+        case 2: {
+            if (hero_inode::is_a_crawl_state(a2, 1)
+                && a2 == ai::run_state::default_id )
+            {
+                return false;
+            }
+
+            auto *v18 = v4->get_als_layer(static_cast<als::layer_types>(0));
+            auto v29 = v18->get_time_to_signal(event::ANIM_ACTION);
+            return !hero_inode::is_a_crawl_state(a2, 1) && v29 < 0.0f;
+        }
+        default: {
+            assert(0 && "Unknown zip type!");
+        }
+        }
+
+        return false;
+    } else {
+        return THISCALL(0x0044C930, this, a2);
+    }
 }
 
 static Var<string_hash> loco_allow_web_zip_id{0x00958E64};
@@ -231,6 +295,11 @@ void web_zip_state_patch() {
     {
         FUNC_ADDRESS(address, &ai::web_zip_state::frame_advance);
         //set_vfunc(0x008775D0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::web_zip_inode::can_go_to);
+        SET_JUMP(0x0044C930, address);
     }
 
     {

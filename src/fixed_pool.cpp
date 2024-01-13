@@ -82,7 +82,7 @@ void *fixed_pool::allocate_new_block()
     return v2;
 }
 
-void fixed_pool::set(void *a2) {
+void fixed_pool::remove(void *a2) {
     assert(m_initialized);
 
     struct {

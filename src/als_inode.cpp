@@ -46,6 +46,12 @@ string_hash als_inode::get_category_id(als::layer_types a3) {
     return id;
 }
 
+void als_inode::set_desired_params(als::param_list &a2, als::layer_types a3)
+{
+    auto *the_layer = this->get_als_layer(a3);
+    the_layer->set_desired_params(a2);
+}
+
 void als_inode::request_category_transition(
     string_hash a2, als::layer_types a3, bool a4, bool a5, bool a6) {
     if constexpr (1) {
@@ -102,7 +108,7 @@ float als_inode::get_eta_of_combat_signal(als::layer_types a2) {
     }
 }
 
-bool als_inode::sub_48B140(string_hash a2, als::layer_types a3)
+bool als_inode::is_cat_our_prev_cat(string_hash a2, als::layer_types a3)
 {
     auto *als_layer = this->get_als_layer(a3);
     bool (__fastcall *is_cat_our_prev_cat)(const void *, void *, string_hash) = CAST(is_cat_our_prev_cat,get_vfunc(als_layer->m_vtbl, 0x58));

@@ -17,6 +17,17 @@
 
 #include <cmath>
 
+bool local_collision::entfilter_base::accept(
+    actor *act,
+    dynamic_conglomerate_clone *a2,
+    const query_args_t &a3) const
+{
+    bool (__fastcall *func)(const void *, void *, actor *act,
+        dynamic_conglomerate_clone *a2,
+        const query_args_t *a3 ) = CAST(func, get_vfunc(m_vtbl, 0x0));
+    return func(this, nullptr, act, a2, &a3);
+}
+
 bool find_intersection(const vector3d &a1,
                        const vector3d &a2,
                        const local_collision::entfilter_base &a3,
@@ -79,7 +90,7 @@ bool find_intersection(const vector3d &a1,
         }
 
         for (auto *i = v10; i != nullptr; i = i->field_0) {
-            local_collision::primitive_list_t::pool().set(i);
+            local_collision::primitive_list_t::pool().remove(i);
         }
 
         return v16;
@@ -106,6 +117,15 @@ namespace local_collision {
 VALIDATE_SIZE(query_args_t, 0x34);
 
 VALIDATE_SIZE(intersection_list_t, 0x30);
+
+primitive_list_t::primitive_list_t(
+        void *a2,
+        void *a3)
+{
+    this->field_4.ent = static_cast<entity *>(a2);
+    this->is_ent = true;
+    this->field_8 = a3;
+}
 
 entity *primitive_list_t::get_entity() {
     assert(is_ent);
@@ -331,6 +351,17 @@ bool sub_50D220(const vector3d &a1, const vector3d &a2, entity *a3)
         nullptr,
         false)
         || a3 && a3 == a8;
+}
+
+bool local_collision::collision_pair_matches_query_constraints(
+        actor *a1,
+        dynamic_conglomerate_clone *a2,
+        local_collision::entfilter_base &a3,
+        local_collision::query_args_t &a4)
+{
+    return a1->get_colgeom() != nullptr
+          && a3.accept(a1, a2, a4)
+          && a1->are_collisions_active();
 }
 
 void local_collision_patch()

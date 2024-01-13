@@ -9,6 +9,7 @@ namespace als {
 
 struct state_machine;
 struct animation_logic_system;
+struct param_list;
 
 } // namespace als
 
@@ -26,15 +27,17 @@ struct als_inode : info_node {
 
     als_inode();
 
-    inline als::animation_logic_system *get_system() {
+    als::animation_logic_system *get_system() {
         return this->field_1C;
     }
+
+    void set_desired_params(als::param_list &a2, als::layer_types a3);
 
     bool is_layer_interruptable(als::layer_types a1);
 
     string_hash get_state_id(als::layer_types a3);
 
-    bool sub_48B140(string_hash a2, als::layer_types a3);
+    bool is_cat_our_prev_cat(string_hash a2, als::layer_types a3);
 
     bool anim_finished(string_hash a2, als::layer_types a3);
 
