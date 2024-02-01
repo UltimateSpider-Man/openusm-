@@ -32,6 +32,7 @@
 #include "fx_cache.h"
 #include "game.h"
 #include "grenade.h"
+#include "hierarchical_entity_proximity_map.h"
 #include "interactable_interface.h"
 #include "intersected_trajectory.h"
 #include "intraframe_trajectory.h"
@@ -1502,7 +1503,8 @@ void entity_get_max_visual_and_collision_bounding_sphere(
     }
 }
 
-void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities(Float a1) {
+void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities(Float a1)
+{
     TRACE("world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities");
 
     if constexpr (0) {
@@ -1652,10 +1654,11 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
     }
 }
 
-void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(Float a1) {
+void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(Float a1)
+{
     TRACE("world_dynamics_system::update_collision_proximity_maps_for_moved_entities");
 
-    if constexpr (0) {
+    if constexpr (1) {
         for (int i = 0; i < moved_entities::moved_count(); ++i)
         {
             auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
@@ -1668,8 +1671,8 @@ void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(F
                         && ent->extended_regions ? ent->regions[ 0 ] && ent->regions[ 1 ] : 1);
 
                 assert(ent->extended_regions != nullptr
-                    ? ent->extended_regions->size() > 0
-                    : 1);
+                        ? ent->extended_regions->size() > 0
+                        : 1);
                 if ( ent->possibly_collide() )
                 {
                     auto *v2 = ent->regions[0]->collision_proximity_map;
@@ -1686,8 +1689,63 @@ void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(F
     }
 }
 
-void world_dynamics_system::update_light_proximity_maps_for_moved_entities(Float a1) {
-    THISCALL(0x00529CC0, this, a1);
+void world_dynamics_system::update_light_proximity_maps_for_moved_entities(Float a1)
+{
+    TRACE("world_dynamics_system::update_light_proximity_maps_for_moved_entities");
+
+    if constexpr (0) {
+        for (int i = 0; i < moved_entities::moved_count(); ++i)
+        {
+            auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
+            if ( ent != nullptr )
+            {
+                if ( ent->is_a_conglomerate() )
+                {
+                    auto *the_conglom = bit_cast<conglomerate *>(ent);
+                    auto *list = the_conglom->field_100;
+                    if ( list != nullptr && list->size() > 0
+                            && (the_conglom->field_110 & 0x4000) == 0 )
+                    {
+                        assert("regions[ 0 ] can not be NULL when regions[ 1 ] is not. "
+                                && ( ent->regions[ 1 ] ? ent->regions[ 0 ] != nullptr : 1 ));
+
+                        assert("regions[ 0 ] and regions[ 1 ] should not be NULL while extended_regions is not."
+                                && ent->extended_regions ? ent->regions[ 0 ] && ent->regions[ 1 ] : 1);
+
+                        assert(ent->extended_regions ? ent->extended_regions->size() > 0 : 1);
+
+                        int v14 = 0;
+                        region *v9 = nullptr;
+                        for (auto *v6 = ent->regions[0]; v6 != nullptr; v6 = v9)
+                        {
+                            for (auto v8 : (*the_conglom->field_100))
+                            {
+                                v6->light_proximity_map->update_entity(v8);
+                            }
+
+                            if (++v14 >= 2)
+                            {
+                                v9 = nullptr;
+                                if (ent->extended_regions != nullptr)
+                                {
+                                    int v2 = v14 - 2;
+                                    v9 = ( v2 < ent->extended_regions->size()
+                                             ? ent->extended_regions->m_data[v2]
+                                             : nullptr );
+                                }
+                            }
+                            else
+                            {
+                                v9 = ent->regions[v14];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        THISCALL(0x00529CC0, this, a1);
+    }
 }
 
 void world_dynamics_system::add_anim_ctrl(animation_controller *a2)

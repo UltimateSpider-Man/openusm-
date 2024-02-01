@@ -5,6 +5,7 @@
 #include "colgeom_alter_sys.h"
 #include "common.h"
 #include "core_ai_resource.h"
+#include "debugutil.h"
 #include "func_wrapper.h"
 #include "ghetto_mash_file_header.h"
 #include "info_node.h"
@@ -108,6 +109,165 @@ bool binary_search_array_deref1(T *a1, T **a2, int a3, int *index) {
     return result;
 }
 
+bool ai_core::push_base_machine(resource_key a2, int )
+{
+    TRACE("ai::ai_core::push_base_machine");
+
+    assert(my_base_machine != nullptr);
+    assert(my_mode != AI_KILLING_MACHINES && "trying to push a new machine while a change is in progress");
+
+    resource_key name = ( this->my_mode == 1
+                    ? this->field_30
+                    : this->my_base_machine->get_name()
+                );
+
+    bool result = false;
+    if ( this->change_base_machine(a2, 1, string_hash {0}) ) {
+        if constexpr (0) { 
+            this->field_0.push_back(name);
+        } else {
+            auto *m_head = this->field_0.m_head;
+            auto *Prev = m_head->_Prev;
+            decltype(Prev) (__fastcall *sub_6B7660)(_std::list<resource_key> *, void *,
+                                                decltype(Prev),
+                                                decltype(Prev),
+                                                resource_key *a2) = CAST(sub_6B7660, 0x006B7660);
+            auto *v8 = sub_6B7660(&this->field_0, nullptr, Prev, Prev->_Next, &name);
+
+            void (__fastcall *sub_6B76F0)(_std::list<resource_key> *, void *, uint32_t) = CAST(sub_6B76F0, 0x006B76F0);
+            sub_6B76F0(&this->field_0, nullptr, 1u);
+
+            Prev->_Next = v8;
+            v8->_Next->_Prev = v8;
+        }
+
+        result = true;
+    }
+
+    if ( result )
+    {
+        auto *the_actor = this->get_actor(0);
+        auto id = the_actor->get_id();
+        auto *v17 = id.to_string();
+        auto *v7 = a2.m_hash.to_string();
+        debug_print_va("\n--- successful AI machine push to %s  (ent %s)", v7, v17);
+    }
+    else
+    {
+        auto *v8 = this->get_actor(0);
+        auto v10 = v8->get_id();
+        auto *v17 = v10.to_string();
+        auto *v11 = a2.m_hash.to_string();
+        debug_print_va("\n--- failed AI machine push to %s  (ent %s)", v11, v17);
+    }
+
+    {
+        int v37 = 0;
+        for ( auto name : this->field_0 )
+        {
+            auto *v13 = name.m_hash.to_string();
+            debug_print_va("    [%d] %s", v37, v13);
+            ++v37;
+        }
+    }
+    
+    return result;
+}
+
+bool ai_core::pop_base_machine(int )
+{
+    TRACE("ai::ai_core::pop_base_machine");
+
+    assert(my_mode != AI_KILLING_MACHINES && "trying to pop a machine while a change is in progress");
+
+    resource_key a2;
+    bool result = false;
+    if ( !this->field_0.empty() )
+    { 
+        a2 = this->field_0.front();
+
+        {
+            auto *head = this->field_0.m_head;
+            auto *Prev = head->_Prev;
+            if ( head->_Prev != head )
+            {
+                Prev->_Next->_Prev = Prev->_Prev;
+                auto *v5 = Prev->_Prev;
+                auto *Next = Prev->_Next;
+                v5->_Next = Next;
+                operator delete(Prev);
+                --this->field_0.m_size;
+            }
+        }
+
+        result = this->change_base_machine(a2, 2, string_hash {0});
+    }
+
+    if ( result )
+    {
+        auto v21 = a2.m_hash;
+        auto *v6 = this->get_actor(0);
+        auto id = v6->get_id();
+        auto *v18 = id.to_string();
+        auto *v8 = v21.to_string();
+        debug_print_va("\n--- successful AI machine pop to %s  (ent %s)", v8, v18);
+    }
+    else
+    {
+        auto v21 = a2.m_hash;
+        auto *v9 = this->get_actor(0);
+        auto v11 = v9->get_id();
+        auto *v18 = v11.to_string();
+        auto *v12 = v21.to_string();
+        debug_print_va("\n--- failed AI machine pop to %s  (ent %s)", v12, v18);
+    }
+
+    {
+        int a2 = 0;
+        for ( auto name : this->field_0 )
+        {
+            auto v22 = name.m_hash;
+            auto *v14 = v22.to_string();
+            debug_print_va("    [%d] %s", a2, v14);
+            ++a2;
+        }
+    }
+
+    return result;
+}
+
+bool ai_core::change_base_machine(
+        resource_key the_state_graph,
+        int a3,
+        string_hash a4)
+{
+    TRACE("ai::ai_core::change_base_machine");
+
+    if constexpr (1)
+    {
+        if (the_state_graph.get_type() != RESOURCE_KEY_TYPE_AI_STATE_GRAPH) {
+            return false;
+        }
+
+        if ( !this->field_6C->does_base_graph_exist(the_state_graph) ) {
+            return false;
+        }
+
+        if ( this->find_state_graph(the_state_graph) == nullptr ) {
+            return false;
+        }
+
+        this->my_mode = static_cast<mode_e>(1);
+        this->field_30 = the_state_graph;
+        this->field_48 = a4;
+
+        return true;
+    } else {
+        bool (__fastcall *func)(void *, void *, resource_key, int, string_hash) = CAST(func, 0x006978F0);
+        return func(this, nullptr, the_state_graph, a3, a4);
+    }
+}
+
 void ai_core::create_capsule_alter() {
     if constexpr (1) {
         if (this->field_70 == nullptr) {
@@ -184,31 +344,72 @@ info_node *ai_core::get_info_node(string_hash the_info_node, bool a3) {
     return nullptr;
 }
 
-state_graph *ai_core::find_state_graph(resource_key a2) {
-    auto *v2 = this->field_6C->field_3C;
-
-    resource_manager::push_resource_context(v2);
-
-    auto a1 = a2;
-    a1.m_type = RESOURCE_KEY_TYPE_AI_STATE_GRAPH;
-
-    auto *v3 = resource_manager::get_resource(a1, nullptr, nullptr);
+namespace state_graph_manager {
+state_graph *find_state_graph_from_resource(
+        resource_key resource_id,
+        resource_pack_slot *pack_slot)
+{
+    auto *__old_context = resource_manager::push_resource_context(pack_slot);
+    resource_id.set_type(RESOURCE_KEY_TYPE_AI_STATE_GRAPH);
+    auto *resource = bit_cast<state_graph *>(resource_manager::get_resource(resource_id, nullptr, nullptr));
     resource_manager::pop_resource_context();
-    return (state_graph *) v3;
+
+    assert(resource_manager::get_resource_context() == __old_context);
+    return resource;
+}
 }
 
-ai_state_machine *ai_core::find_machine(resource_key a2) {
-    return (ai_state_machine *) THISCALL(0x0069B8F0, this, a2);
+state_graph *ai_core::find_state_graph(resource_key a2)
+{
+    TRACE("ai::ai_core::find_state_graph");
+
+    auto *v2 = this->field_6C->field_3C;
+
+    auto *v3 = state_graph_manager::find_state_graph_from_resource(a2, v2);
+    return v3;
+}
+
+ai_state_machine *ai_core::find_machine(resource_key a2)
+{
+	TRACE("ai::ai_core::find_machine");
+
+	if constexpr (1)
+	{
+		for ( auto &v3 : this->my_machine_list )
+		{
+			auto name = v3->get_name();
+			if ( name == a2 )
+			{
+				return v3;
+			}
+
+		}
+
+		return nullptr;
+	} else {
+		return (ai_state_machine *) THISCALL(0x0069B8F0, this, a2);
+	}
+}
+
+int ai_core::can_spawn_state_machine(resource_key a2)
+{
+    TRACE("ai::ai_core::can_spawn_state_machine");
+
+    return (int) THISCALL(0x0069E9B0, this, a2);
 }
 
 void ai_core::spawn_state_machine_internal(ai_state_machine *a2,
                                            resource_key graph_name,
                                            ai_state_machine **base_machine_ptr,
-                                           string_hash a5) {
-    auto v13 = graph_name;
+                                           string_hash a5)
+{
+    TRACE("ai::ai_core::spawn_state_machine_internal");
+
+    assert(can_spawn_state_machine(graph_name) == 0);
+
     auto *v6 = this->find_state_graph(graph_name);
     if (v6 != nullptr) {
-        if (this->find_machine(graph_name) == nullptr) {
+        if ( this->find_machine(graph_name) == nullptr ) {
             auto *mem = mem_alloc(sizeof(ai_state_machine));
 
             auto *new_state_machine = new (mem) ai_state_machine{this, v6, a5};
@@ -268,10 +469,21 @@ void ai_core::advance_machine_recursive(ai_state_machine *a1, Float a2, bool a3)
 
 } // namespace ai
 
-void ai_core_patch() {
+void ai_core_patch()
+{
     {
         FUNC_ADDRESS(address, &ai::ai_core::get_info_node);
         REDIRECT(0x006A34BA, address);
+    }
+
+	{
+		FUNC_ADDRESS(address, &ai::ai_core::find_machine);
+		//SET_JUMP(0x0069B8F0, address);
+	}
+
+    {
+        FUNC_ADDRESS(address, &ai::ai_core::push_base_machine);
+        //SET_JUMP(0x0069F690, address);
     }
 
     {

@@ -21,6 +21,7 @@
 #include "item.h"
 #include "interactable_interface.h"
 #include "lego_map.h"
+#include "memory.h"
 #include "nal_system.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
@@ -120,6 +121,30 @@ traffic_light_interface *actor::traffic_light_ifc() {
 bool actor::has_skeleton_ifc() const {
     bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x12C));
     return func(this);
+}
+
+void actor::set_render_scale(const vector3d &s)
+{
+	assert(s.is_valid());
+
+	this->create_adv_ptrs();
+	if ( this->adv_ptrs->field_8 == nullptr )
+	{
+		auto *mem = mem_alloc(0x18u);
+		this->adv_ptrs->field_8 = new (mem) advanced_entity_ptrs::render_data {};
+	}
+
+	this->adv_ptrs->field_8->m_scale = s;
+}
+
+vector3d actor::get_render_scale() const
+{
+	bool v1 = (this->adv_ptrs != nullptr
+				&& this->adv_ptrs->field_8 != nullptr);
+	return (v1
+			? this->adv_ptrs->field_8->m_scale
+			: vector3d {1.0, 1.0, 1.0}
+			);
 }
 
 void actor::ifl_lock(int a2)
@@ -380,6 +405,17 @@ void actor::kill_interact_anim() {
     } else {
         THISCALL(0x004CC740, this);
     }
+}
+
+void actor::create_adv_ptrs()
+{
+	if ( this->adv_ptrs == nullptr )
+	{
+		auto *mem = mem_alloc(0x14u);
+		this->adv_ptrs = new (mem) advanced_entity_ptrs {};
+
+		this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x2000000u), true);
+	}
 }
 
 physical_interface *actor::physical_ifc() {

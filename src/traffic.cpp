@@ -8,6 +8,7 @@
 #include "trace.h"
 #include "traffic_path_graph.h"
 #include "traffic_path_lane.h"
+#include "vehicle.h"
 #include "wds.h"
 
 VALIDATE_SIZE(traffic, 0x22Cu);
@@ -19,10 +20,89 @@ void traffic::sub_6DA3B0(Float a2, Float a3, Float a4) {
     v4[2] = a4;
 }
 
-void traffic::enable_traffic(bool a1, bool a2) {
+void traffic::initialize_traffic()
+{
+    CDECL_CALL(0x006D1CC0);
+}
+
+void sub_6BA2A0(vhandle_type<entity> a1, uint32_t a2)
+{
+    if ( a2 <= 7 )
+    {
+        auto *v2 = vehicle::models()[a2];
+        if ( v2 != nullptr )
+        {
+            v2->sub_6B9F30(a1);
+        }
+    }
+}
+
+void traffic::enable_traffic(bool a1, bool a2)
+{
     TRACE("traffic::enable_traffic");
 
-    CDECL_CALL(0x006D33C0, a1, a2);
+    a1 = false;
+
+    if constexpr (1) {
+        traffic_enabled() = a1;
+        if ( a1 && !traffic_initialized() )
+        {
+            initialize_traffic();
+        }
+
+        if (!a1 && traffic_initialized() )
+        {
+            bool v13 = false;
+            bool v14 = true;
+            while (v14)
+            {
+                v14 = false;
+                for ( auto &the_traffic : traffic_list() )
+                {
+                    if ( the_traffic != nullptr )
+                    {
+                        if ( the_traffic->field_4 && the_traffic->field_158 )
+                        {
+                            if ( !the_traffic->field_5 )
+                            {
+                                if ( the_traffic->get_current_lane() != nullptr)
+                                {
+                                    the_traffic->un_spawn();
+                                }
+                            }
+
+                            the_traffic->field_158 = false;
+                            auto *e = the_traffic->get_my_actor();
+                            auto bodytype = the_traffic->field_C.bodytype;
+                            the_traffic = nullptr;
+                            assert(e != nullptr);
+
+                            if ( e != nullptr )
+                            {
+                                sub_6BA2A0(vhandle_type<entity> {e->get_my_handle()}, bodytype);
+                            }
+
+                            v14 = true;
+                            continue;
+                        }
+
+                        sp_log("traffic was disabled with mission cars in world - this may cause problems");
+                        v13 = true;
+                    }
+                }
+            }
+
+            if ( !v13 )
+            {
+                vehicle::terminate_vehicles();
+                traffic::traffic_list().clear();
+            }
+
+            traffic_initialized() = false;
+        }
+    } else {
+        CDECL_CALL(0x006D33C0, a1, a2);
+    }
 }
 
 void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, bool a3) {
@@ -65,7 +145,7 @@ void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, 
                 auto v26 = v8->get_node_before_point(a5, &tmp);
                 auto v9 = tmp;
                 vector3d node1;
-                if (tmp < 1 || tmp < v8->field_C - 2) {
+                if (tmp < 1 || tmp < v8->total_nodes - 2) {
                     node1 = v8->sub_5E2000(tmp);
                     ++v9;
                 } else {
@@ -111,7 +191,7 @@ traffic *traffic::get_traffic_from_entity(vhandle_type<entity> a1) {
     return (traffic *) CDECL_CALL(0x006C3510, a1);
 }
 
-void traffic_patch() {
-    REDIRECT(0x006779EB, traffic::enable_traffic);
-    REDIRECT(0x006779FF, traffic::enable_traffic);
+void traffic_patch()
+{
+    SET_JUMP(0x006D33C0, traffic::enable_traffic);
 }

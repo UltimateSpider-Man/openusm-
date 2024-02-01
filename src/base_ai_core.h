@@ -20,15 +20,20 @@ struct ai_state_machine;
 struct state_graph;
 
 struct ai_core {
+
+    enum mode_e {
+        AI_KILLING_MACHINES = 2,
+    };
+
     _std::list<resource_key> field_0;
     ai_state_machine *my_base_machine;
     ai_state_machine *my_locomotion_machine;
     _std::list<ai_state_machine *> my_machine_list;
     _std::list<void *> field_20;
-    int field_2C;
+    mode_e my_mode;
     resource_key field_30;
     int field_38;
-    int my_locomotion_mode;
+    mode_e my_locomotion_mode;
     int field_40;
     int field_44;
     string_hash field_48;
@@ -44,9 +49,18 @@ struct ai_core {
     //0x006AEA90
     ai_core(core_ai_resource *a3, const param_block *arg4, actor *a4);
 
-    auto get_actor(int) {
+    actor * get_actor(int) {
         return field_64;
     }
+
+    bool push_base_machine(resource_key a2, int a3);
+
+    bool pop_base_machine(int );
+
+    bool change_base_machine(
+        resource_key the_state_graph,
+        int a3,
+        string_hash a4);
 
     //0x00687C50
     void create_capsule_alter();
@@ -83,6 +97,8 @@ struct ai_core {
 
     //0x0068FCA0
     void advance_info_nodes(Float a2);
+
+    int can_spawn_state_machine(resource_key a2);
 
     void spawn_state_machine_internal(ai_state_machine *a2,
                                       resource_key graph_name,

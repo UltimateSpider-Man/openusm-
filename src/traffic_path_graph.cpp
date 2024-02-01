@@ -5,6 +5,8 @@
 #include "trace.h"
 #include "utility.h"
 
+VALIDATE_SIZE(traffic_path_graph::laneInfoStruct, 0x10);
+
 traffic_path_graph::traffic_path_graph() {}
 
 traffic_path_lane *traffic_path_graph::get_closest_or_farthest_lane(bool arg0,

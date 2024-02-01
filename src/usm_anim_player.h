@@ -33,6 +33,7 @@ struct usm_anim_player {
         nalPlayMethod *field_10;
         usm_anim_player<T, I> *field_14;
         float field_18;
+        float field_1C;
     };
 
     int field_0;

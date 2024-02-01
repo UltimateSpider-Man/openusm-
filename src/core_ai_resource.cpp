@@ -28,7 +28,7 @@ void core_ai_resource::unmash(mash_info_struct *a1, void *a3)
     if constexpr (1)
     {
         a1->unmash_class_in_place(this->field_0, this);
-        a1->unmash_class_in_place(this->field_14, this);
+        a1->unmash_class_in_place(this->my_base_graphs, this);
         a1->unmash_class_in_place(this->my_locomotion_graphs, this);
 
 #ifdef TARGET_XBOX
@@ -82,22 +82,13 @@ void core_ai_resource::unmash(mash_info_struct *a1, void *a3)
     }
 }
 
-bool core_ai_resource::does_locomotion_graph_exist(resource_key the_graph) {
+bool core_ai_resource::does_base_graph_exist(resource_key the_graph) const
+{
     assert(the_graph.get_type() == RESOURCE_KEY_TYPE_AI_STATE_GRAPH);
 
-    const auto size = this->my_locomotion_graphs.m_size;
-
-    if (size <= 0) {
-        return false;
-    }
-
-    uint16_t i = 0;
-    for (; i < size; ++i) {
-        const auto *curr = this->my_locomotion_graphs.at(i);
-
-        if (curr->get_type() != RESOURCE_KEY_TYPE_AI_STATE_GRAPH) {
-            assert(0);
-        }
+    for (auto &curr : this->my_base_graphs)
+    {
+        assert(curr->get_type() == RESOURCE_KEY_TYPE_AI_STATE_GRAPH);
 
         if (*curr == the_graph) {
             return true;
@@ -106,4 +97,21 @@ bool core_ai_resource::does_locomotion_graph_exist(resource_key the_graph) {
 
     return false;
 }
+
+bool core_ai_resource::does_locomotion_graph_exist(resource_key the_graph) const
+{
+    assert(the_graph.get_type() == RESOURCE_KEY_TYPE_AI_STATE_GRAPH);
+
+    for (auto &curr : this->my_locomotion_graphs)
+    {
+        assert(curr->get_type() != RESOURCE_KEY_TYPE_AI_STATE_GRAPH);
+
+        if (*curr == the_graph) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 } // namespace ai

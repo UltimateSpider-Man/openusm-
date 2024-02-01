@@ -14,7 +14,7 @@ struct core_ai_resource {
     param_block field_0;
     int field_C;
     combo_system *field_10;
-    mVector<resource_key> field_14;
+    mVector<resource_key> my_base_graphs;
     mVector<resource_key> my_locomotion_graphs;
     resource_pack_slot *field_3C;
     int field_40;
@@ -29,7 +29,9 @@ struct core_ai_resource {
     //0x006D71A0
     int destruct_mashed_class();
 
+    bool does_base_graph_exist(resource_key a2) const;
+
     //0x006C4D00
-    bool does_locomotion_graph_exist(resource_key the_graph);
+    bool does_locomotion_graph_exist(resource_key the_graph) const;
 };
 } // namespace ai

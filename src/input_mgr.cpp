@@ -8,6 +8,7 @@
 #include "pc_input_mgr.h"
 #include "pc_joypad_device.h"
 #include "rumble_manager.h"
+#include "trace.h"
 #include "utility.h"
 #include "vtbl.h"
 
@@ -113,20 +114,12 @@ void input_mgr::frame_advance(Float a2) {
     THISCALL(0x005DAB20, this, a2);
 }
 
-float input_mgr::get_control_state(int a2, device_id_t a3) const {
-    if constexpr (0)
-    {
-        /*
-        if ( this->m_state_callback != nullptr && a2 != 73
-                //&& !sub_6A822E()
-                //&& !byte_15B7275
-                )
-        {
-            auto result = this->m_state_callback(a2);
-            return result;
-        }
-        */
+float input_mgr::get_control_state(int a2, device_id_t a3) const
+{
+    TRACE("input_mgr::get_control_state");
 
+    if constexpr (1)
+    {
 #if 0
         auto it = this->control_map.find(a2);
 #else
@@ -169,23 +162,23 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const {
                 {
                     auto func = [](float a1) -> float
                     {
-                        if ( (float)(-1.0 * 0.75) > a1 )
+                        if ( a1 < -0.75 )
                         {
                             return -1.0;
                         }
 
-                        if ( a1 <= (float)(1.0 * 0.75) )
+                        if ( a1 > 0.75 )
                         {
-                            return 0.0;
+                            return 1.0;
                         }
 
-                        return 1.0f;
+                        return 0.0f;
                     };
 
                     v12 = func(v12);
                 }
 
-                a1 = a1 + v12;
+                a1 += v12;
             }
         }
 
@@ -538,7 +531,7 @@ void input_mgr_patch() {
 
     {
         FUNC_ADDRESS(address, &input_mgr::get_control_state);
-        //REDIRECT(0x005D86D0, address);
+        //SET_JUMP(0x005D86D0, address);
     }
 
     {

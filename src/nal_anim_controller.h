@@ -72,7 +72,13 @@ struct nal_anim_controller : animation_controller {
     double _get_base_anim_speed();
 
     //virtual
+    void _set_base_anim_time_in_sec(Float a2);
+
+    //virtual
     double _get_anim_speed(Float );
+
+    //virtual
+    void _set_base_anim_speed(Float speed);
 
     //virtual
     void _frame_advance(Float a2, bool a3, bool a4);

@@ -37,6 +37,9 @@ struct motion_compensator : mash_virtual_base {
         Float a9);
 
     //virtual
+    void set_anim_playback_speed(Float new_anim_speed);
+
+    //virtual
     double get_anim_movement_scale_param();
 
 };

@@ -13,9 +13,8 @@ static Var<int> s_script_sound_instance_key_generator{0x0096BB3C};
 
 Var<script_sound_instance_slot *> s_script_sound_instance_slots{0x0096BB38};
 
-script_sound_manager::script_sound_manager() {}
-
-void script_sound_manager::create_inst() {
+void script_sound_manager::create_inst()
+{
     if constexpr (1) {
         s_script_sound_instance_key_generator() = 0;
 
@@ -72,6 +71,11 @@ void script_sound_manager::create_inst() {
     } else {
         CDECL_CALL(0x0065F0A0);
     }
+}
+
+void script_sound_manager::delete_inst()
+{
+    CDECL_CALL(0x0065F190);
 }
 
 void script_sound_manager::frame_advance(Float a1) {

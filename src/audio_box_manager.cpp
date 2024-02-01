@@ -11,3 +11,8 @@ void audio_box_manager::create_inst() {
 void audio_box_manager::frame_advance(Float a1) {
     CDECL_CALL(0x00552610, a1);
 }
+
+void audio_box_manager::delete_inst()
+{
+    s_holds() = 0;
+}

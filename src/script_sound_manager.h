@@ -4,14 +4,15 @@
 #include "sound_instance_id.h"
 #include "variable.h"
 
-struct script_sound_manager {
-    script_sound_manager();
+namespace script_sound_manager {
 
     //0x0065F0A0
-    static void create_inst();
+    extern void create_inst();
+
+    extern void delete_inst();
 
     //0x0065F240
-    static void frame_advance(Float a1);
+    extern void frame_advance(Float a1);
 };
 
 struct script_sound_instance_slot {

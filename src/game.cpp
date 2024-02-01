@@ -2465,7 +2465,7 @@ void game::unload_hero_packfile() {
     my_streamer->unload_all();
     my_streamer->flush(game::render_empty_list);
 
-    s_sound_bank_slots()[SB_TYPE_HERO].unload();
+    sound_manager::unload_hero_sound_bank();
 }
 
 void game__setup_inputs(game *a1) {

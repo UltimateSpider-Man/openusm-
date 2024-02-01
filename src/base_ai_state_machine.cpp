@@ -466,12 +466,14 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
     }
 }
 
-resource_key ai_state_machine::get_name() {
-    auto result = this->field_C->sub_6B68F0();
-    return result;
+resource_key ai_state_machine::get_name()
+{
+    TRACE("ai::ai_state_machine::get_name");
+    return this->field_C->sub_6B68F0();
 }
 
-void ai_state_machine::add_as_child(ai_state_machine *a2) {
+void ai_state_machine::add_as_child(ai_state_machine *a2)
+{
     THISCALL(0x006A1530, this, a2);
 }
 

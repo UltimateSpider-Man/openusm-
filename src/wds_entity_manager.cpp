@@ -71,10 +71,28 @@ bool wds_entity_manager::is_item_valid(item *a2)
     return v11 != this->items.end();
 }
 
-int wds_entity_manager::acquire_entity(string_hash a1, uint32_t a2) {
+entity *wds_entity_manager::acquire_entity(
+        string_hash a2,
+        string_hash a3,
+        uint32_t a6)
+{
+    mString v6 {};
+    auto *v5 = this->create_and_add_entity_or_subclass(a2, a3, {identity_matrix}, v6, a6, nullptr);
+    return v5;
+}
+
+entity *wds_entity_manager::acquire_entity(string_hash a1, uint32_t a2)
+{
     TRACE("wds_entity_manager::acquire_entity");
 
-    return THISCALL(0x005E0D40, this, a1, a2);
+    if constexpr (1) {
+        mString a5 {};
+        auto v6 = make_unique_entity_id();
+        auto *v4 = this->create_and_add_entity_or_subclass(a1, v6, identity_matrix, a5, a2, nullptr);
+        return v4;
+    } else {
+        return (entity *) THISCALL(0x005E0D40, this, a1, a2);
+    }
 }
 
 void wds_entity_manager::add_dynamic_instanced_entity(entity *a2) {
@@ -389,7 +407,9 @@ void wds_entity_manager_patch() {
 
     if constexpr (0) {
         {
-            FUNC_ADDRESS(address, &wds_entity_manager::acquire_entity);
+
+            entity * (wds_entity_manager::*func)(string_hash, uint32_t) = &wds_entity_manager::acquire_entity;
+            FUNC_ADDRESS(address, func);
             REDIRECT(0x00635795, address);
         }
 

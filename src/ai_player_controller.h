@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ai_std_hero.h"
 #include "anchor_storage_class.h"
 #include "float.hpp"
 #include "game_axis.h"
@@ -38,10 +39,12 @@ struct ai_player_controller {
     vector3d field_3E0;
     vector3d field_3EC;
     int field_3F8[10];
-    int field_420;
+    hero_type_enum field_420;
 
     //0x004728D0
     ai_player_controller(actor *a2);
+
+    hero_type_enum find_hero_type() const;
 
     //0x00449A90
     anchor_storage_class get_poleswing_anchor() const;

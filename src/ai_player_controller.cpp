@@ -13,8 +13,36 @@
 
 VALIDATE_SIZE(ai_player_controller, 0x424u);
 
-ai_player_controller::ai_player_controller(actor *a2) {
+ai_player_controller::ai_player_controller(actor *a2)
+{
     THISCALL(0x004728D0, this, a2);
+}
+
+hero_type_enum ai_player_controller::find_hero_type() const
+{
+    if constexpr (0) {
+        auto *v2 = this->field_4[1]->get_ai_core();
+        if (v2 == nullptr ) {
+            return hero_type_enum::UNDEFINED;
+        }
+
+        static constexpr const char *str[] = {"SPIDEY", "VENOM", "PARKER"};
+
+        int i = 1;
+        for (auto s : str) {
+            resource_key v3 {string_hash {s}, RESOURCE_KEY_TYPE_AI_STATE_GRAPH};
+            if ( v2->find_machine(v3) != nullptr )
+            {
+                return static_cast<hero_type_enum>(i);
+            }
+
+            ++i;
+        }
+    
+        return hero_type_enum::UNDEFINED;
+    } else {
+        return (hero_type_enum) THISCALL(0x00449390, this);
+    }
 }
 
 anchor_storage_class ai_player_controller::get_poleswing_anchor() const

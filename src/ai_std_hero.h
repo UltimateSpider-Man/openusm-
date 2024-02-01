@@ -19,7 +19,8 @@ enum force_recompute_enum {};
 enum hero_type_enum {
     UNDEFINED = 0,
     SPIDEY = 1,
-    VENOM = 2
+    VENOM = 2,
+    PARKER = 3,
 };
 
 namespace ai {

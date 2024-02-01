@@ -236,7 +236,6 @@ void resolve_rotations(intraframe_trajectory_t *a2, int a1)
                 auto v9 = token->field_1C.base - token->field_0.base;
 
                 token->field_1C.base = token->field_1C.base - v9;
-
                 token->field_1C.end = token->field_1C.end - v9;
 
                 auto *v11 = query_potential_collision_primitives(token->field_0,

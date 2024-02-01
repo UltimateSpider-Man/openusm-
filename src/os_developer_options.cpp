@@ -4,6 +4,7 @@
 #include "func_wrapper.h"
 #include "log.h"
 
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
 
@@ -298,12 +299,18 @@ static Var<const char *[8]> string_defaults { &g_string_defaults };
 
 #endif
 
-char os_developer_options::get_flag(int a2) {
+void os_developer_options::toggle_flag(os_developer_options::flags_t a2)
+{
+  	this->m_flags[a2] = !this->m_flags[a2];
+}
+
+char os_developer_options::get_flag(os_developer_options::flags_t a2) const
+{
     return this->m_flags[a2];
 }
 
-int os_developer_options::get_int(int a2) {
-
+int os_developer_options::get_int(os_developer_options::ints_t a2) const
+{
     return this->m_ints[a2];
 }
 
@@ -367,36 +374,28 @@ os_developer_options::~os_developer_options() {
     }
 }
 
-mString *os_developer_options::get_hero_name() {
-    if constexpr (1) {
-        static Var<int> dword_96A4AC{0x0096A4AC};
+mString *os_developer_options::get_hero_name() const
+{
+    if constexpr (1)
+	{
+        static mString result {"HERO"};
 
-        static Var<mString> result{0x0096A49C};
-
-        void (*sub_868B40)(void) = CAST(sub_868B40, 0x00868B40);
-
-        if (!(dword_96A4AC() & 1)) {
-            dword_96A4AC() |= 1u;
-
-            result() = mString{"HERO"};
-        }
-
-        result() = this->m_strings[2];
-        return (&result());
+        result = this->m_strings[2];
+        return &result;
     } else {
         return (mString *) THISCALL(0x005C3150, this);
     }
 }
 
-int os_developer_options::get_flag_from_name(const mString &a1) {
-
+int os_developer_options::get_flag_from_name(const mString &a1) const
+{
     auto func = [&a1](const char *v2) {
         return (_strcmpi(v2, a1.c_str()) == 0);
     };
 
     auto it = std::find_if(std::begin(flag_names()), std::end(flag_names()), func);
 
-    auto v3 = std::distance(std::begin(flag_names()), it);
+    size_t v3 = std::distance(std::begin(flag_names()), it);
     if (v3 == std::size(flag_names())) {
         mString out = "Nonexistent option flag " + a1;
         sp_log("%s", out.c_str());
@@ -405,24 +404,20 @@ int os_developer_options::get_flag_from_name(const mString &a1) {
     return v3;
 }
 
-char os_developer_options::get_flag(const mString &a2) {
+char os_developer_options::get_flag(const mString &a2) const
+{
+	TRACE("os_developer_options::get_flag");
+
     if constexpr (1) {
         return this->m_flags[this->get_flag_from_name(a2)];
     } else {
-        return (char) THISCALL(0x005C2F20, &a2);
+		char (__fastcall *func)(const void *, void *, const mString *) = CAST(func, 0x005C2F20);
+        return func(this, nullptr, &a2);
     }
 }
 
-os_developer_options::strings_t os_developer_options::get_string_from_name(const mString &a1) {
-    const char **v2 = string_names();
-    do {
-        {
-            break;
-        }
-
-        ++v2;
-    } while (v2 != (const char **) string_defaults());
-
+os_developer_options::strings_t os_developer_options::get_string_from_name(const mString &a1) const
+{
     auto func = [&a1](const char *v2) {
         return (_strcmpi(v2, a1.c_str()) == 0);
     };
@@ -447,7 +442,7 @@ void os_developer_options::set_string(strings_t a2, const mString &a3) {
     this->m_strings[a2] = a3;
 }
 
-std::optional<mString> os_developer_options::get_string(os_developer_options::strings_t a2)
+std::optional<mString> os_developer_options::get_string(os_developer_options::strings_t a2) const
 {
     if (a2 < strings_t::SOUND_LIST || a2 > strings_t::DEBUG_ENTITY_NAME) {
         return {};
@@ -457,7 +452,8 @@ std::optional<mString> os_developer_options::get_string(os_developer_options::st
     }
 }
 
-std::optional<mString> os_developer_options::get_string(const mString &a1) {
+std::optional<mString> os_developer_options::get_string(const mString &a1) const
+{
 
     auto v4 = this->get_string_from_name(a1);
     if (v4 < strings_t::SOUND_LIST || v4 > strings_t::DEBUG_ENTITY_NAME) {
@@ -468,27 +464,25 @@ std::optional<mString> os_developer_options::get_string(const mString &a1) {
     }
 }
 
-int os_developer_options::get_int(const mString &a2) {
+int os_developer_options::get_int(const mString &a2) const
+{
     return this->m_ints[os_developer_options::get_int_from_name(a2)];
 }
 
-int os_developer_options::get_int_from_name(const mString &a1) {
-
+int os_developer_options::get_int_from_name(const mString &a1) const
+{
     auto func = [&a1](const char *v2) -> bool {
         return (_strcmpi(v2, a1.c_str()) == 0);
     };
 
     auto it = std::find_if(std::begin(int_names()), std::end(int_names()), func);
 
-    auto v3 = std::distance(std::begin(int_names()), it);
+    size_t v3 = std::distance(std::begin(int_names()), it);
     if (v3 == std::size(int_names())) {
         mString out = "Nonexistent int " + a1;
         sp_log("%s", out.c_str());
-
-        //sub_4209C0(&out, 0);
-
-        //nullsub_2(0);
     }
+
     return v3;
 }
 
@@ -496,14 +490,15 @@ void os_developer_options::os_developer_init() {
     instance() = new os_developer_options{};
 }
 
-void os_developer_options_patch() {
-    int (os_developer_options::*func)(int) = &os_developer_options::get_int;
+void os_developer_options_patch()
+{
+    int (os_developer_options::*func)(os_developer_options::ints_t ) const = &os_developer_options::get_int;
 
     FUNC_ADDRESS(address, func);
     REDIRECT(0x0052B5F1, address);
 
     {
-        char (os_developer_options::*func)(int a2) = &os_developer_options::get_flag;
+        char (os_developer_options::*func)(os_developer_options::flags_t a2) const = &os_developer_options::get_flag;
         FUNC_ADDRESS(address, func);
         SET_JUMP(0x005B87E0, address);
     }

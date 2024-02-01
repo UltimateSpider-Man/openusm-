@@ -43,14 +43,29 @@ void sound_manager::create_inst() {
     CDECL_CALL(0x00543500);
 }
 
+void sound_manager::delete_inst()
+{
+    CDECL_CALL(0x00543EF0);
+}
+
 void sound_manager::frame_advance(Float a1) {
     CDECL_CALL(0x00551C20, a1);
 }
 
-void sound_manager::load_hero_sound_bank(const char *a1, bool a2) {
+void sound_manager::load_hero_sound_bank(const char *a1, bool a2)
+{
+    assert(s_sound_bank_slots()[SB_TYPE_LEVEL_COMMON].get_state() == SB_STATE_LOADED);
+
     char *v11 = sub_50F010();
 
     s_sound_bank_slots()[SB_TYPE_HERO].load(v11, a1, a2, 0);
+}
+
+void sound_manager::unload_hero_sound_bank()
+{
+    assert(s_sound_bank_slots()[SB_TYPE_LEVEL_COMMON].get_state() == SB_STATE_LOADED);
+
+    s_sound_bank_slots()[SB_TYPE_HERO].unload();
 }
 
 float sound_manager::get_source_type_volume(unsigned int source_type) {

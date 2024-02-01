@@ -7,6 +7,13 @@ struct traffic_path_brew;
 struct vector3d;
 
 struct traffic_path_graph {
+    struct laneInfoStruct {
+        int field_0;
+        int field_4;
+        int field_8;
+        int field_C;
+    };
+
     traffic_path_graph();
 
     //0x005CE2D0

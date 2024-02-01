@@ -49,6 +49,18 @@ double nal_anim_controller::_get_base_anim_speed()
     return 0.0;
 }
 
+void nal_anim_controller::_set_base_anim_time_in_sec(Float a2)
+{
+    TRACE("nal_anim_controller::set_base_anim_time_in_sec");
+
+    auto *v2 = this->my_player.field_14[0];
+    if ( v2 != nullptr )
+    {
+        this->my_player.field_14[0]->field_18 = a2 * v2->field_0->field_8;
+        this->my_player.field_14[0]->field_1C = this->my_player.field_14[0]->field_18;
+    }
+}
+
 double nal_anim_controller::_get_anim_speed(Float priority)
 {
     TRACE("nal_anim_controller::get_anim_speed");
@@ -61,6 +73,18 @@ double nal_anim_controller::_get_anim_speed(Float priority)
     }
 
     return 0.0;
+}
+
+void nal_anim_controller::_set_base_anim_speed(Float speed)
+{
+    TRACE("nal_anim_controller::set_base_anim_speed");
+
+    assert(speed >= 0.0f && "Animation speed must be 0 or more. Negative speeds are not supported.");
+
+    auto *v2 = this->my_player.field_14[0];
+    if ( v2 != nullptr ) {
+        v2->field_4 = speed;
+    }
 }
 
 void nal_anim_controller::_frame_advance(Float a2, bool a3, bool a4)
@@ -400,8 +424,18 @@ void nal_anim_controller_patch()
     }
 
     {
+        FUNC_ADDRESS(address, &nal_anim_controller::_set_base_anim_time_in_sec);
+        SET_JUMP(0x00497F40, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &nal_anim_controller::_get_anim_speed);
         SET_JUMP(0x0049BFE0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &nal_anim_controller::_set_base_anim_speed);
+        SET_JUMP(0x00497F90, address);
     }
 
     {

@@ -40,8 +40,16 @@ void entity::destroy_static_entity_pointers() {
     CDECL_CALL(0x004D6940);
 }
 
-entity::~entity() {
+entity::~entity()
+{
     THISCALL(0x004F91C0, this);
+}
+
+void entity::randomize_position(const vector3d &a2, Float a3, Float a4, Float a5)
+{
+    TRACE("entity::randomize_position");
+
+    THISCALL(0x004E2460, this, &a2, a3, a4, a5);
 }
 
 void entity::update_proximity_maps()

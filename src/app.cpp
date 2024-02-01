@@ -128,6 +128,11 @@ void colgeom_init_lists() {
     CDECL_CALL(0x00544E90);
 }
 
+void colgeom_destroy_lists()
+{
+    CDECL_CALL(0x005489A0);
+}
+
 app::app() : m_vtbl(0x00891634), field_4(), field_34() {
     g_platform() = NL_PLATFORM_PC;
     if (link_system::use_link_system()) {
@@ -194,7 +199,7 @@ void app::destructor_internal() {
 
     g_game_ptr() = nullptr;
     this->m_game = nullptr;
-    app::cleanup();
+    cleanup();
     //debug_menu::deinit(); // link_system::un_init()
     //physics_system_shutdown();
 
@@ -346,10 +351,49 @@ void app::create_inst()
 #endif
 }
 
-void app::cleanup() {
-    CDECL_CALL(0x005D9430);
+void app::cleanup()
+{
+    TRACE("app::cleanup");
 
-    sp_log("app::cleanup():");
+    if constexpr (0) {
+        gab_manager::delete_inst();
+
+        if ( !os_developer_options::instance()->get_flag(mString {"DISABLE_AUDIO_BOXES"}) ) { 
+            audio_box_manager::delete_inst();
+        }
+
+        ambient_audio_manager::delete_inst();
+        script_sound_manager::delete_inst();
+        sound_manager::delete_inst();
+
+        if ( input_mgr::instance() != nullptr )
+        {
+            delete input_mgr::instance();
+            input_mgr::instance() = nullptr;
+        }
+
+        string_hash_dictionary::delete_inst();
+
+        if ( pc_input_mgr::instance() != nullptr )
+        {
+            delete pc_input_mgr::instance();
+            pc_input_mgr::instance() = nullptr;
+        }
+
+        if ( trigger_manager::instance() != nullptr )
+        {
+            delete trigger_manager::instance();
+            trigger_manager::instance() = nullptr;
+        }
+
+        event_manager::delete_inst();
+        colgeom_destroy_lists();
+        resource_manager::delete_inst();
+        nglReleaseAllMeshFiles();
+        nglReleaseAllTextures();
+    } else {
+        CDECL_CALL(0x005D9430);
+    }
 }
 
 void app_patch()

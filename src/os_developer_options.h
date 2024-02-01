@@ -7,6 +7,7 @@
 #include <optional>
 
 struct os_developer_options : singleton {
+
     enum strings_t {
         SOUND_LIST = 0,
         SCENE_NAME = 1,
@@ -25,6 +26,10 @@ struct os_developer_options : singleton {
 
     };
 
+	enum flags_t {};
+
+	enum ints_t {};
+
     bool m_flags[150];
     mString m_strings[14];
     int m_ints[76];
@@ -36,23 +41,25 @@ struct os_developer_options : singleton {
     //0x005E2CB0
     virtual ~os_developer_options();
 
+	void toggle_flag(flags_t a2);
+
     //0x005B87E0
-    char get_flag(int a2);
+    char get_flag(flags_t a2) const;
 
     //0x005C2F20
-    char get_flag(const mString &a2);
+    char get_flag(const mString &a2) const;
 
     //0x005B88A0
-    int get_flag_from_name(const mString &a1);
+    int get_flag_from_name(const mString &a1) const;
 
     //0x005B8830
-    int get_int(int a2);
+    int get_int(ints_t a2) const;
 
     //0x005C2F60
-    int get_int(const mString &a2);
+    int get_int(const mString &a2) const;
 
     //0x005B8950
-    int get_int_from_name(const mString &a1);
+    int get_int_from_name(const mString &a1) const;
 
     //0x005B8810
     void set_int(int idx, int a3);
@@ -64,19 +71,19 @@ struct os_developer_options : singleton {
     void set_flag(int a2, bool a3);
 
     //0x005C3150
-    mString *get_hero_name();
+    mString *get_hero_name() const;
 
     //0x005C2F00
     void set_flag(const mString &a2, bool a3);
 
     //0x005B8860
-    std::optional<mString> get_string(strings_t a2);
+    std::optional<mString> get_string(strings_t a2) const;
 
     //0x005C2FB0
-    std::optional<mString> get_string(const mString &a1);
+    std::optional<mString> get_string(const mString &a1) const;
 
     //0x005B8A00
-    strings_t get_string_from_name(const mString &a1);
+    strings_t get_string_from_name(const mString &a1) const;
 
     //0x005C2F80
     void set_string(const mString &a2, const mString &a3);

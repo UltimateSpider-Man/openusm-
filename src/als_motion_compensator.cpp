@@ -106,6 +106,17 @@ void motion_compensator::set_facing_to_dir_internal(
     }
 }
 
+void motion_compensator::set_anim_playback_speed(Float new_anim_speed)
+{
+    TRACE("motion_compensator::set_anim_playback_speed");
+
+    assert(new_anim_speed < 10.0f && "Unreasonable anim speed shift!");
+
+    auto *the_machine = this->field_4->get_als_layer_internal(static_cast<layer_types>(0));
+    auto the_handle = the_machine->get_anim_handle();
+    the_handle.set_anim_speed(new_anim_speed);
+}
+
 double motion_compensator::get_anim_movement_scale_param()
 {
     TRACE("als::motion_compensator::get_anim_movement_scale_param");
@@ -123,6 +134,11 @@ void als_motion_compensator_patch()
 {
     FUNC_ADDRESS(address, &als::motion_compensator::set_facing_to_dir_internal);
     //set_vfunc(0x0087860C, address);
+
+    {
+        FUNC_ADDRESS(address, &als::motion_compensator::set_anim_playback_speed);
+        SET_JUMP(0x004A0FC0, address);
+    }
 
     {
         FUNC_ADDRESS(address, &als::motion_compensator::get_anim_movement_scale_param);

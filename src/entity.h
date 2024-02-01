@@ -38,6 +38,8 @@ struct entity : signaller {
 
     bool is_in_limbo() const;
 
+    void randomize_position(const vector3d &a2, Float a3, Float a4, Float a5);
+
     void update_proximity_maps();
 
     ////// VIRTUAL FUNCTIONS: START //////

@@ -7,10 +7,6 @@ VALIDATE_SIZE(movement_info, 0x58);
 VALIDATE_SIZE(advanced_entity_ptrs, 0x14);
 VALIDATE_OFFSET(advanced_entity_ptrs, mi, 0xC);
 
-advanced_entity_ptrs::advanced_entity_ptrs()
-{
-
-}
 advanced_entity_ptrs::~advanced_entity_ptrs() {
     THISCALL(0x004EF1C0, this);
 }

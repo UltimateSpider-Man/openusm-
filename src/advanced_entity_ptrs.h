@@ -22,13 +22,24 @@ struct movement_info {
 struct coninfo_t;
 
 struct advanced_entity_ptrs {
+
+    struct render_data {
+		color32 field_0;
+		vector3d m_scale;
+		float field_10;
+		float field_14;
+
+		render_data() : field_0(255, 255, 255, 255), m_scale(1.0, 1.0, 1.0), field_10(1.0), field_14(1.0) {
+		}
+	};
+
     coninfo_t *coninfo;
     _std::vector<vhandle_type<actor>> *ignore_col_ents;
-    void *field_8;
+	render_data *field_8;
     movement_info *mi;
     script_instance *my_script;
 
-    advanced_entity_ptrs();
+    advanced_entity_ptrs() = default;
 
     ~advanced_entity_ptrs();
 

@@ -68,7 +68,7 @@ struct slot_pool {
             return nullptr;
         }
 
-        auto v3 = this->field_0 & a2;
+        int v3 = this->field_0 & a2;
         if ( v3 < 0 || v3 >= this->MAX_SLOTS ) {
             return nullptr;
         } else {

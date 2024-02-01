@@ -10,7 +10,14 @@
 
 namespace als
 {
+
 VALIDATE_SIZE(scripted_trans_group, 0x40u);
+
+const char *to_string(scripted_trans_group::transition_type trans_type)
+{
+    const char *str[] = {"IMPLICIT", "EXPLICIT", "LAYER"};
+    return str[trans_type];
+}
 
 scripted_trans_group::scripted_trans_group()
 {
@@ -51,9 +58,7 @@ bool scripted_trans_group::check_transition(
         als_data a4,
         string_hash a5) const
 {
-    TRACE("scripted_trans_group::check_transition");
-
-    sp_log("transition_type = %d", trans_type);
+    TRACE("scripted_trans_group::check_transition", to_string(trans_type));
 
     if constexpr (0) {
         if ( test_all_trans_groups(data, this->field_4, trans_type, a4, a5) ) {
@@ -81,18 +86,20 @@ bool scripted_trans_group::check_transition(
             break;
         }
         case EXPLICIT: {
-            for (int i = 0; i < this->field_28.size(); ++i) 
+            auto begin = this->field_28.m_data;
+            auto end = begin + this->field_28.size();
+            auto it = std::find_if(begin, end, [&a4, &a5](auto &trans_rule)
             {
-                auto *v11 = this->field_28.at(i);
-                if ( v11->can_transition(a4, a5) ) {
-                    v11->field_0.field_14.process_action(data);
-                    if ( v11->field_0.has_post_action() )
-                    {
-                        data.field_10 = trans_type;
-                        data.field_C = int(&v11);
-                    }
+                return trans_rule->can_transition(a4, a5);
+            });
 
-                    break;
+            if (it != end)
+            {
+                (*it)->field_0.field_14.process_action(data);
+                if ( (*it)->field_0.has_post_action() )
+                {
+                    data.field_10 = trans_type;
+                    data.field_C = int(&(*it));
                 }
             }
 
@@ -100,13 +107,14 @@ bool scripted_trans_group::check_transition(
         }
         case LAYER: {
             if ( this->field_3C != nullptr ) {
-                for (int i = 0; i < this->field_3C->size(); ++i )
+                auto begin = this->field_3C->m_data;
+                auto end = begin + this->field_3C->size();
+                std::for_each(begin, end, [&a4, &data](auto &trans_rule)
                 {
-                    auto *trans_rule = this->field_3C->at(i);
                     if ( trans_rule->can_transition(a4) ) {
                         trans_rule->field_8.process_action(data);
                     }
-                }
+                });
             }
 
             break;
@@ -118,7 +126,12 @@ bool scripted_trans_group::check_transition(
 
         return false;
     } else {
-        return (bool) THISCALL(0x004A0090, this, &data, trans_type, a4, a5);
+        bool (__fastcall *func)(const void *, void *,
+                request_data *data,
+                scripted_trans_group::transition_type trans_type,
+                als_data a4,
+                string_hash a5 ) = CAST(func, 0x004A0090);
+        return func(this, nullptr, &data, trans_type, a4, a5);
     }
 }
 

@@ -99,6 +99,12 @@ struct actor : entity {
 
     bool has_skeleton_ifc() const;
 
+	//virtual
+	void set_render_scale(const vector3d &s);
+
+	//virtual
+	vector3d get_render_scale() const;
+
     //virtual
     void ifl_lock(int a2);
 
@@ -158,6 +164,8 @@ struct actor : entity {
 
     //0x004B8B40
     physical_interface *physical_ifc();
+
+	void create_adv_ptrs();
 
     //0x004C0E60
     bool has_camera_collision();

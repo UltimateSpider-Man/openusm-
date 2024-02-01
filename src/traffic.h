@@ -5,8 +5,11 @@
 #include "entity.h"
 #include "entity_base_vhandle.h"
 #include "float.hpp"
+#include "variable.h"
 #include "vector3d.h"
 #include "vehicle.h"
+
+#include <vector.hpp>
 
 struct traffic_path_lane;
 struct actor;
@@ -20,7 +23,8 @@ struct traffic : spawnable {
     traffic_path_lane *field_148;
     vector3d field_14C;
 
-    int field_158[42];
+    bool field_158;
+    int field_15C[41];
 
     bool field_200;
     bool field_201;
@@ -37,7 +41,14 @@ struct traffic : spawnable {
     int field_224;
     int field_228;
 
+    traffic_path_lane * get_current_lane()
+    {
+        return field_140;
+    }
+
     void sub_6DA3B0(Float a2, Float a3, Float a4);
+
+    static void initialize_traffic();
 
     static void enable_traffic(bool a1, bool a2);
 
@@ -49,6 +60,12 @@ struct traffic : spawnable {
 
     //0x006C3510
     static traffic *get_traffic_from_entity(vhandle_type<entity> a1);
+
+    static inline Var<bool> traffic_enabled {0x00937FF4};
+
+    static inline Var<bool> traffic_initialized {0x0096C9E8};
+
+    static inline Var<_std::vector<traffic *>> traffic_list {0x0096D2A8};
 };
 
 extern void traffic_patch();

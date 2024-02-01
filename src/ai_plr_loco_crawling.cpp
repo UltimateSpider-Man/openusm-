@@ -76,7 +76,7 @@ line_info *check_exterior_transition(
         actor *the_actor,
         ai::crawl_params_record &arg4,
         ai::als_inode *arg8,
-        bool argC,
+        bool a4,
         bool a5,
         bool a6)
 {
@@ -110,7 +110,7 @@ line_info *check_exterior_transition(
         static constexpr float spidey_ext[6] = {1.0, 1.2, 1.0, 0.40000001, 1.2, 1.0};
         static constexpr float venom_ext[6] = {2.0, 2.5, 1.0, 0.40000001, 2.0, 1.35};
 
-        const float *v10 = (argC ? spidey_ext : venom_ext);
+        const float *v10 = (a4 ? spidey_ext : venom_ext);
 
         auto *v95 = v10;
 
@@ -471,6 +471,6 @@ line_info *check_exterior_transition(
                         bool a4,
                         bool a5,
                         bool a6) = CAST(func, 0x0047BFF0);
-        return func(the_actor, &arg4, arg8, argC, a5, a6);
+        return func(the_actor, &arg4, arg8, a4, a5, a6);
     }
 }

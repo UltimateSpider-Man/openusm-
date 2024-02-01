@@ -7617,7 +7617,7 @@ void slc_manager::un_mash_all_funcs()
     assert(!script_manager::using_chuck_old_fashioned());
     assert(!g_is_the_packer());
 
-    auto a1 = create_resource_key_from_path("all_slc_functions_mac", RESOURCE_KEY_TYPE_SLF);
+    auto a1 = create_resource_key_from_path("all_slc_functions_mac", RESOURCE_KEY_TYPE_SLF_LIST);
     sp_log("%s", a1.get_platform_string(3).c_str());
 
     auto *image = bit_cast<char *>(resource_manager::get_resource(a1, nullptr, nullptr));

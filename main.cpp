@@ -161,6 +161,7 @@
 #include "pause_menu_options_display.h"
 #include "pausemenusystem.h"
 #include "pc_joypad_device.h"
+#include "ped_spawner.h"
 #include "physical_interface.h"
 #include "physics_inode.h"
 #include "physics_system.h"
@@ -217,6 +218,7 @@
 #include "tlresourcedirectory.h"
 #include "tlresource_directory.h"
 #include "traffic.h"
+#include "traffic_path_lane.h"
 #include "trigger_manager.h"
 #include "tx_system.h"
 #include "unlockables_menu.h"
@@ -2515,6 +2517,8 @@ BOOL install_redirects() {
 
     als_motion_compensator_patch();
 
+    input_mgr_patch();
+
     script_executable_patch();
 
     sin_container_patch();
@@ -2647,6 +2651,8 @@ BOOL install_redirects() {
 
     traffic_patch();
 
+    traffic_path_lane_patch();
+
     script_instance_patch();
 
     script_access_patch();
@@ -2711,6 +2717,8 @@ BOOL install_redirects() {
     
     nalChar_patch();
 
+    ped_spawner_patch();
+
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
         REDIRECT(0x008218B0, hookDirectInputAddress);
@@ -2736,8 +2744,6 @@ BOOL install_redirects() {
     SET_JUMP(0x005952D0, sub_5952D0);
 
     os_developer_options_patch();
-
-    input_mgr_patch();
 
     //pc_joypad_device_patch();
 

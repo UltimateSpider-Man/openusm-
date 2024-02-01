@@ -2,15 +2,16 @@
 
 #include "float.hpp"
 
-struct ambient_audio_manager {
-    ambient_audio_manager();
+namespace ambient_audio_manager {
 
     //0x0053EC10
-    static void create_inst();
+    extern void create_inst();
+
+    extern void delete_inst();
 
     //0x00559380
-    static void frame_advance(Float a1);
+    extern void frame_advance(Float a1);
 
     //0x0054DF90
-    static void reset();
+    extern void reset();
 };

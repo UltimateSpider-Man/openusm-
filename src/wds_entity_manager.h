@@ -41,8 +41,13 @@ struct wds_entity_manager {
 
     bool is_item_valid(item *a2);
 
+    entity *acquire_entity(
+        string_hash a2,
+        string_hash a3,
+        uint32_t a6);
+
     //0x005E0D40
-    int acquire_entity(string_hash a1, uint32_t a2);
+    entity *acquire_entity(string_hash a1, uint32_t a2);
 
     //0x005B85A0
     entity_base *get_entity(string_hash a1);

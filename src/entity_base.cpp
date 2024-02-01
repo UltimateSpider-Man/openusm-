@@ -1462,11 +1462,13 @@ void entity_base::on_fade_distance_changed(int value) {
     this->on_fade_distance_changed_internal(value);
 }
 
-bool entity_base::is_flagged(uint32_t a2) const {
+bool entity_base::is_flagged(uint32_t a2) const
+{
     return (a2 & this->field_4) != 0;
 }
 
-bool entity_base::is_walkable() const {
+bool entity_base::is_walkable() const
+{
     return this->is_flagged(0x80);
 }
 
