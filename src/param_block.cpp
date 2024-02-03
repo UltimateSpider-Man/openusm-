@@ -46,6 +46,11 @@ void param_block::unmash(mash_info_struct *a1, void *a3)
     }
 }
 
+int param_block::get_parameter_data_type(string_hash a2) const
+{
+    return this->param_array->common_find_data(a2)->my_type;
+}
+
 const char *param_block::get_pb_fixedstring(string_hash a2) const {
     auto *v2 = bit_cast<param_data_array *>(this->param_array);
     if (v2 == nullptr) {

@@ -5,7 +5,6 @@
 #include "vector3d.h"
 
 struct actor;
-struct entity_base;
 
 namespace als {
 
@@ -15,7 +14,7 @@ struct state_machine;
 struct motion_compensator : mash_virtual_base {
     animation_logic_system *field_4;
     state_machine *field_8;
-    entity_base *field_C;
+    actor *the_actor;
     float field_10;
 
     void activate(animation_logic_system *a2);

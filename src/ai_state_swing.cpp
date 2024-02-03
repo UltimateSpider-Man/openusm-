@@ -1788,11 +1788,10 @@ void swing_inode::compute_forward_and_up_directions(vector3d &forward, vector3d 
     po &v19 = this->field_C->get_abs_po();
 
     vector3d v23 = v19.get_y_facing();
-
     vector3d v24 = v19.get_z_facing();
 
     vector3d a14;
-    vector3d::reorient_vectors(v24, v23, forward, up, forward, a14, slerp);
+    reorient_vectors(v24, v23, forward, up, forward, a14, slerp);
 
     forward = sub_444A60(forward, up);
     forward.normalize();

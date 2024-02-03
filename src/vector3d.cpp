@@ -139,47 +139,46 @@ vector3d sub_48B5B0(const vector3d &a2, const vector3d &a3, Float a4) {
     return result;
 }
 
-vector3d::vector3d(const vector4d &v) {
-    x = v[0];
-    y = v[1];
-    z = v[2];
-}
+vector3d::vector3d(const vector4d &v)
+                    : x(v[0]), y(v[1]), z(v[2])
+{}
 
-void vector3d::reorient_vectors(
-    vector3d a1, vector3d a4, vector3d a7, vector3d a10, vector3d &a13, vector3d &a14, float a15) {
-    if (a7.is_normal() && a10.is_normal() && a1.is_normal() && a4.is_normal() && ::abs(a10, a7) &&
-        ::abs(a4, a1)) {
-        //
+void reorient_vectors(vector3d a1,
+                        vector3d a4,
+                        vector3d a7,
+                        vector3d a10,
+                        vector3d &a13,
+                        vector3d &a14,
+                        Float a15)
+{
+    if ( a7.is_normal()
+         && a10.is_normal()
+         && a1.is_normal()
+         && a4.is_normal()
+         && ::abs(a10, a7)
+         && ::abs(a4, a1)
+       )
+    {
         a7.normalize();
         a10.normalize();
         a1.normalize();
         a4.normalize();
 
-        vector3d a5a{};
-
         matrix4x4 mat1 {vector3d::cross(a4, a1), a4, a1, vector3d {}};
-
-        quaternion quat1 = quaternion{mat1};
+        quaternion quat1 {mat1};
 
         matrix4x4 mat2 {vector3d::cross(a10, a7), a10, a7, vector3d {}};
+        quaternion quat2 {mat2};
 
-        quaternion quat2 = quaternion{mat2};
-
-        auto a2 = quaternion::slerp(quat1, quat2, a15);
+        quaternion a2 = slerp(quat1, quat2, a15);
 
         matrix4x4 mat3;
         a2.to_matrix(mat3);
 
-        a13[0] = mat3[2][0];
-        a13[1] = mat3[2][1];
-        a13[2] = mat3[2][2];
-
-        a14[0] = mat3[1][0];
-        a14[1] = mat3[1][1];
-        a14[2] = mat3[1][2];
+        a13 = mat3[2];
+        a14 = mat3[1];
     } else {
         a13 = a1;
-
         a14 = a4;
     }
 }

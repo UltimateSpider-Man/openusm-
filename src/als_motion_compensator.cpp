@@ -17,7 +17,7 @@ void motion_compensator::activate(animation_logic_system *a2)
 {
     this->field_4 = a2;
     this->field_8 = (als::state_machine *)this->field_4->get_als_layer_internal(static_cast<als::layer_types>(0));
-    this->field_C = this->field_4->field_6C;
+    this->the_actor = this->field_4->field_6C;
     this->field_10 = 10.0;
 }
 

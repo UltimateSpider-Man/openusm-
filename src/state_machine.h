@@ -1,11 +1,16 @@
 #pragma once
 
+#include "ai_param_types.h"
 #include "animation_controller.h"
 #include "als_layer_types.h"
 #include "als_request_data.h"
 #include "param_cache.h"
 #include "param_list.h"
 #include "string_hash.h"
+
+namespace ai {
+struct param_block;
+}
 
 namespace als {
 
@@ -85,6 +90,12 @@ struct state_machine {
 
     bool has_ext_param_been_set(uint32_t a2) const;
 
+    ai::param_block *find_param_block_with_param(string_hash a2) const;
+
+    ai::param_block *find_param_block_with_param(
+        string_hash a2,
+        ai::param_types a3) const;
+
     float get_internal_param(
         animation_logic_system *a3,
         internal_parameter_types a4) const;
@@ -92,6 +103,10 @@ struct state_machine {
     float get_param(
         animation_logic_system *a2,
         unsigned int a3) const;
+
+    vector3d get_vector_param(
+        animation_logic_system *a2,
+        uint32_t a3) const;
 
     void process_requests(animation_logic_system *a2);
 
@@ -106,6 +121,8 @@ struct state_machine {
     state *get_curr_state() const;
 
     category *find_category(string_hash a2) const;
+
+    category *get_curr_category() const;
 
     scripted_trans_group *get_trans_group(int idx) const;
 
@@ -141,6 +158,15 @@ struct state_machine {
     bool does_category_exist(string_hash a2) const;
 
     //virtual
+    float get_pb_float(string_hash a1) const;
+
+    //virtual
+    bool does_parameter_exist(string_hash a1) const;
+
+    //virtual
+    int get_parameter_data_type(string_hash a2) const;
+
+    //virtual
     double get_time_to_end_of_anim() const;
 
     bool is_cat_our_prev_cat(string_hash a2) const;
@@ -157,6 +183,12 @@ struct state_machine {
 
     //0x00499320
     /* virtual */ string_hash get_state_id() const;
+
+    //virtual
+    float get_optional_pb_float(
+        const string_hash &a2,
+        Float a3,
+        bool *a4) const;
 
     int get_optional_pb_int(
         const string_hash &a2,

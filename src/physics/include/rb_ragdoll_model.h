@@ -1,6 +1,7 @@
 #pragma once
 
 #include "float.hpp"
+#include "phys_anim_bone_array.h"
 
 #include <cassert>
 
@@ -50,6 +51,11 @@ struct rb_ragdoll_model {
     int field_444;
     int field_448;
     int field_44C;
+    int field_450;
+    int field_454;
+    int field_458;
+    int field_45C;
+    phys_anim_bone_array field_460;
 
     rb_ragdoll_model();
 

@@ -15,7 +15,8 @@ IGOFrontEnd::IGOFrontEnd()
     THISCALL(0x00648B40, this);
 }
 
-void IGOFrontEnd::Draw() {
+void IGOFrontEnd::Draw()
+{
     if constexpr(0)
     {
 
@@ -45,5 +46,10 @@ void IGOFrontEnd_patch()
     {
         FUNC_ADDRESS(address, &IGOFrontEnd::Init);
         REDIRECT(0x00649085, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &IGOFrontEnd::Draw);
+        REDIRECT(0x00640F01, address);
     }
 }

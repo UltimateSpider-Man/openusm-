@@ -1,5 +1,6 @@
 #include "state_machine.h"
 
+#include "actor.h"
 #include "als_animation_logic_system.h"
 #include "als_category.h"
 #include "als_state.h"
@@ -7,6 +8,7 @@
 #include "func_wrapper.h"
 #include "layer_state_machine_shared.h"
 #include "nal_generic.h"
+#include "oldmath_po.h"
 #include "trace.h"
 #include "utility.h"
 #include "vtbl.h"
@@ -105,6 +107,57 @@ bool state_machine::has_ext_param_been_set(uint32_t a2) const
     return this->find_external_param(static_cast<external_parameter_types>(a2)) != nullptr;
 }
 
+ai::param_block *state_machine::find_param_block_with_param(string_hash a2) const
+{
+    if ( this->is_active() )
+    {
+        ai::param_block *v4 = this->m_curr_state->field_10;
+        if (v4 != nullptr && v4->does_parameter_exist(a2))
+        {
+            return v4;
+        }
+        else
+        {
+            auto *curr_category = this->get_curr_category();
+            auto *v4 = curr_category->field_C;
+
+            if (v4 != nullptr && v4->does_parameter_exist(a2)) {
+                return v4;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+ai::param_block *state_machine::find_param_block_with_param(
+        string_hash a2,
+        ai::param_types a3) const
+{
+    if ( this->is_active() ) {
+        ai::param_block *v5 = this->m_curr_state->field_10;
+        if (v5 != nullptr
+            && v5->does_parameter_exist(a2)
+            && v5->get_parameter_data_type(a2) == a3)
+        {
+            return v5;
+        }
+        else
+        {
+            ai::param_block *v5 = this->get_curr_category()->field_C;
+
+            if (v5 != nullptr
+                && v5->does_parameter_exist(a2)
+                && v5->get_parameter_data_type(a2) == a3)
+            {
+                return v5;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 float state_machine::get_param(
         animation_logic_system *a2,
         unsigned int a3) const
@@ -131,105 +184,173 @@ float state_machine::get_param(
             return this->field_40.get_from_cache(v5);
         }
 
-        if ( a3 < 91 )
-        {
-            auto *external_param = this->find_external_param((external_parameter_types)a3);
-            if ( external_param != nullptr ) {
-                return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, external_param->field_0.field_4);
-            } else {
-                return 0.0;
+            if ( a3 < 91 )
+            {
+                auto *external_param = this->find_external_param((external_parameter_types)a3);
+                if ( external_param != nullptr ) {
+                    return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, external_param->field_0.field_4);
+                } else {
+                    return 0.0;
+                }
             }
+            else
+            {
+                auto internal_param = this->get_internal_param(a2, static_cast<internal_parameter_types>(a3));
+                return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, internal_param);
+            }
+
+        } else {
+            float (__fastcall *func)(const void *, void *, animation_logic_system *, uint32_t) = CAST(func, 0x0049FB00);
+            return func(this, nullptr, a2, a3);
         }
-        else
-        {
-            auto internal_param = this->get_internal_param(a2, static_cast<internal_parameter_types>(a3));
-            return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, internal_param);
-        }
-
-    } else {
-        float (__fastcall *func)(const void *, void *, animation_logic_system *, uint32_t) = CAST(func, 0x0049FB00);
-        return func(this, nullptr, a2, a3);
     }
-}
 
-bool state_machine::did_do_transition() const
-{
-    return this->field_14.m_trans_succeed;
-}
-
-void state_machine::request_category_transition(string_hash a2)
-{
-    if constexpr (0) {
-        if ( !this->field_8.field_2 )
-        {
-            this->field_8.field_1 = true;
-            this->field_8.m_cat_id = a2;
-        }
-    } else {
-        void (__fastcall *func)(void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x10));
-        func(this, nullptr, a2);
-    }
-}
-
-bool state_machine::is_interruptable() const {
-    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
-
-    return func(this);
-}
-
-bool state_machine::did_transition_succeed() const
-{
-    TRACE("als::state_machine::did_transition_succeed");
-
-    return this->field_14.m_trans_succeed;
-}
-
-bool state_machine::is_request_satisfied() const
-{
-    TRACE("als::state_machine::is_request_satisfied");
-
-    if constexpr (1) {
-        return !this->field_14.m_request_not_satisfied;
-    } else {
-        bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
-        return func(this);
-    }
-}
-
-bool state_machine::is_active() const
-{
-    if constexpr (0) {
-        return this->field_14.m_active;
-    } else {
-        bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x20));
-        return func(this);
-    }
-}
-
-void state_machine::force_als_state(string_hash a2, int )
-{
-    TRACE("als::state_machine::force_als_state");
-
-    this->field_8.field_1 = true;
-    this->field_8.field_2 = true;
-    this->field_8.m_cat_id = a2;
-}
-
-bool state_machine::does_category_exist(string_hash a2) const
-{
-    TRACE("als::state_machine::does_category_exist");
-
-    assert(this->shared_portion != nullptr);
-
-    auto &cat_list = this->shared_portion->category_list;
-    auto begin = cat_list.m_data;
-    auto end = begin + cat_list.size();
-    auto it = std::find_if(begin, end, [a2](auto &cat)
+    vector3d state_machine::get_vector_param(
+            animation_logic_system *a2,
+            uint32_t a3) const
     {
-        return cat->field_4 == a2;
-    });
+        if ( a3 >= 91 )
+        {
+            vector3d result;
+            switch ( a3 )
+            {
+            case 108u:
+            case 109u:
+            case 110u: {
+                auto *v9 = a2->field_6C;
+                result = v9->get_abs_po().get_y_facing();
+                break;
+            }
+            case 111u:
+            case 112u:
+            case 113u: {
+                auto *v11 = a2->field_6C;
+                result = v11->get_abs_po().get_x_facing();
+                break;
+            }
+            case 115u:
+            case 116u:
+            case 117u: {
+                auto *v10 = a2->field_6C;
+                result = v10->get_abs_po().get_z_facing();
+                break;
+            }
+            default:
+                assert("Internal Vector parameter has not been added to get_vector_param");
+                result = vector3d {0.0, 0.0, 0.0};
+                break;
+            }
 
-    return it != end;
+            return result;
+        }
+
+        auto a3a = this->get_param(a2, a3 + 2);
+        auto a2a = this->get_param(a2, a3 + 1);
+        auto a1a = this->get_param(a2, a3);
+        vector3d result {a1a, a2a, a3a};
+        return result;
+    }
+
+    bool state_machine::did_do_transition() const
+    {
+        return this->field_14.m_trans_succeed;
+    }
+
+    void state_machine::request_category_transition(string_hash a2)
+    {
+        if constexpr (0) {
+            if ( !this->field_8.field_2 )
+            {
+                this->field_8.field_1 = true;
+                this->field_8.m_cat_id = a2;
+            }
+        } else {
+            void (__fastcall *func)(void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x10));
+            func(this, nullptr, a2);
+        }
+    }
+
+    bool state_machine::is_interruptable() const {
+        bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
+
+        return func(this);
+    }
+
+    bool state_machine::did_transition_succeed() const
+    {
+        TRACE("als::state_machine::did_transition_succeed");
+
+        return this->field_14.m_trans_succeed;
+    }
+
+    bool state_machine::is_request_satisfied() const
+    {
+        TRACE("als::state_machine::is_request_satisfied");
+
+        if constexpr (1) {
+            return !this->field_14.m_request_not_satisfied;
+        } else {
+            bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
+            return func(this);
+        }
+    }
+
+    bool state_machine::is_active() const
+    {
+        if constexpr (0) {
+            return this->field_14.m_active;
+        } else {
+            bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x20));
+            return func(this);
+        }
+    }
+
+    void state_machine::force_als_state(string_hash a2, int )
+    {
+        TRACE("als::state_machine::force_als_state");
+
+        this->field_8.field_1 = true;
+        this->field_8.field_2 = true;
+        this->field_8.m_cat_id = a2;
+    }
+
+    bool state_machine::does_category_exist(string_hash a2) const
+    {
+        TRACE("als::state_machine::does_category_exist");
+
+        assert(this->shared_portion != nullptr);
+
+        auto &cat_list = this->shared_portion->category_list;
+        auto begin = cat_list.m_data;
+        auto end = begin + cat_list.size();
+        auto it = std::find_if(begin, end, [a2](auto &cat)
+        {
+            return cat->field_4 == a2;
+        });
+
+        return it != end;
+    }
+
+    float state_machine::get_pb_float(string_hash a1) const
+{
+    auto *the_param_block = this->find_param_block_with_param(a1, static_cast<ai::param_types>(0));
+    return the_param_block->get_pb_float(a1);
+}
+
+bool state_machine::does_parameter_exist(string_hash a1) const
+{
+    bool (__fastcall *func)(const void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x48));
+    return func(this, nullptr, a1);
+}
+
+int state_machine::get_parameter_data_type(string_hash a2) const
+{
+    auto *the_param_block = this->find_param_block_with_param(a2);
+    if ( the_param_block != nullptr ) {
+        return the_param_block->get_parameter_data_type(a2);
+    }
+
+    return 9;
 }
 
 double state_machine::get_time_to_end_of_anim() const
@@ -408,6 +529,23 @@ string_hash state_machine::get_state_id() const
     }
 }
 
+float state_machine::get_optional_pb_float(
+        const string_hash &a2,
+        Float a3,
+        bool *a4) const
+{
+    auto *the_param_block = this->find_param_block_with_param(a2, static_cast<ai::param_types>(0));
+    if ( a4 != nullptr ) {
+        *a4 = (the_param_block != nullptr);
+    }
+
+    if ( the_param_block != nullptr ) {
+        return the_param_block->get_pb_float(a2);
+    }
+
+    return a3;
+}
+
 int state_machine::get_optional_pb_int(
         const string_hash &a2,
         int a3,
@@ -506,6 +644,13 @@ category *state_machine::find_category(string_hash a2) const
     auto *v4 = a2.to_string();
     sp_log("Could not find category (%s).", v4);
     return nullptr;
+}
+
+category *state_machine::get_curr_category() const
+{
+    auto *curr_state = this->m_curr_state;
+    auto v4 = curr_state->get_category_id();
+    return this->find_category(v4);
 }
 
 scripted_trans_group *state_machine::get_trans_group(int idx) const

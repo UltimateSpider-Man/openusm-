@@ -171,15 +171,6 @@ struct vector3d
 
     static vector3d sub_401870(const vector3d &a2, const vector3d &a3);
 
-    //0x00495450
-    static void reorient_vectors(vector3d a1,
-                                 vector3d a4,
-                                 vector3d a7,
-                                 vector3d a10,
-                                 vector3d &a13,
-                                 vector3d &a14,
-                                 float a15);
-
     //0x005BF0B0
     static bool is_colinear(vector3d a1, vector3d a4, Float epsilon = LARGE_EPSILON);
 };
@@ -197,6 +188,16 @@ extern vector3d ZEROVEC;
 extern float dot(const vector3d &a1, const vector3d &a2);
 
 extern float Abs(const vector3d &a1);
+
+//0x00495450
+extern void reorient_vectors(vector3d a1,
+                             vector3d a4,
+                             vector3d a7,
+                             vector3d a10,
+                             vector3d &a13,
+                             vector3d &a14,
+                             Float a15);
+
 
 //0x00581AE0
 [[nodiscard]] extern vector3d make_vector3d(const euler_direction &a2);

@@ -103,6 +103,8 @@ struct param_block {
 
     void sub_6D6EB0();
 
+    int get_parameter_data_type(string_hash a2) const;
+
     //0x006CDCE0
     string_hash get_pb_hash(string_hash a3) const;
 

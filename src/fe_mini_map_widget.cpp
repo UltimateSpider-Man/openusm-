@@ -24,9 +24,9 @@ fe_mini_map_widget::fe_mini_map_widget() {
     THISCALL(0x006343C0, this);
 }
 
-void fe_mini_map_widget::Init() {
+void fe_mini_map_widget::Init()
+{
     TRACE("fe_mini_map_widget::Init");
-
 
     if constexpr (1) {
         assert(mini_map_icons == nullptr);
@@ -61,15 +61,23 @@ int fe_mini_map_widget::PrepareRegions() {
     return THISCALL(0x00619690, this);
 }
 
-void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4) {
+void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
+{
     THISCALL(0x00638C30, this, a2, &a4);
 }
 
-void fe_mini_map_widget::UpdatePOIs(matrix4x4 *a2, Float a3, Float a4, Float a5, Float a6, Float a7) {
+void fe_mini_map_widget::UpdatePOIs(matrix4x4 *a2,
+                                    Float a3,
+                                    Float a4,
+                                    Float a5,
+                                    Float a6,
+                                    Float a7)
+{
     THISCALL(0x0063AEC0, this, a2, a3, a4, a5, a6, a7);
 }
 
-void fe_mini_map_widget::Draw() {
+void fe_mini_map_widget::Draw()
+{
     auto *v2 = this->field_3A0;
     auto v3 = v2 && v2->field_2D;
     if (this->field_3A8 || v3) {
@@ -143,11 +151,13 @@ void fe_mini_map_widget::Draw() {
     }
 }
 
-void fe_mini_map_widget::Update(Float a2) {
+void fe_mini_map_widget::Update(Float a2)
+{
     THISCALL(0x00641810, this, a2);
 }
 
-void fe_mini_map_widget_patch() {
+void fe_mini_map_widget_patch()
+{
     {
         FUNC_ADDRESS(address, &fe_mini_map_widget::Init);
         set_vfunc(0x00895A04, address);

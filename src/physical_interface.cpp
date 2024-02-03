@@ -317,7 +317,8 @@ void physical_interface::set_velocity(const vector3d &new_velocity, bool a3) {
     }
 }
 
-vector3d physical_interface::get_velocity() {
+vector3d physical_interface::get_velocity()
+{
     vector3d result;
 
     if (this->field_C & 0x80000) {

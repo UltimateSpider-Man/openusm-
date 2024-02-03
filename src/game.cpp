@@ -1975,8 +1975,10 @@ float game::get_script_game_clock_timer() {
     }
 }
 
-void game::render_ui() {
-    if constexpr (1)
+//TODO
+void game::render_ui()
+{
+    if constexpr (0)
     {
         nglListBeginScene(nglSceneParamType{1});
         render_motion_blur();
@@ -1988,12 +1990,15 @@ void game::render_ui() {
         nglSetClearFlags(g_preserve_z_buffer() ? 0 : 6);
         nglListEndScene();
 
-        static Var<bool> g_disable_interface{0x0095C879};
+        static Var<bool> g_disable_interface {0x0095C879};
 
         if (g_disable_interface() || !this->flag.level_is_loaded ||
-            os_developer_options::instance()->get_flag(53)) { //INTERFACE_DISABLE
-            if (this->flag.level_is_loaded) {
-                if (!EnableShader()) {
+            os_developer_options::instance()->get_flag(mString {"INTERFACE_DISABLE"}))
+        {
+            if (this->flag.level_is_loaded)
+            {
+                if (!EnableShader())
+                {
                     matrix4x4 a1;
                     a1.arr[0][0] = 0.003125;
                     a1.arr[0][1] = 0.0;
@@ -2018,19 +2023,23 @@ void game::render_ui() {
                 }
 
                 mission_manager::s_inst()->render_fade();
-            } else {
+            } else
+            {
                 if (g_femanager().m_fe_menu_system != nullptr) {
                     g_femanager().m_fe_menu_system->RenderLoadMeter(true);
                 }
             }
-        } else {
+        }
+        else
+        {
             g_femanager().Draw();
         }
 
         nglListBeginScene(nglSceneParamType{1});
         nglSetClearFlags(g_preserve_z_buffer() ? 0 : 6);
         sub_769DE0(7);
-        if (!EnableShader()) {
+        if (!EnableShader())
+        {
             matrix4x4 v5;
             v5.arr[0][0] = 0.003125;
             v5.arr[0][1] = 0.0;
@@ -2058,7 +2067,8 @@ void game::render_ui() {
             render_interface();
         }
 
-        if (os_developer_options::instance()->get_flag(107)) {
+        if (os_developer_options::instance()->get_flag(107))
+        {
             auto v2 = g_game_ptr()->get_script_game_clock_timer();
 
             mString v8{0, "%d:%.02d", (int) v2 / 3600, (int) v2 / 60 % 60};

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "float.hpp"
+
 struct matrix4x4;
 
 struct quaternion {
@@ -11,6 +13,26 @@ struct quaternion {
 
     auto &operator[](int idx) {
         return arr[idx];
+    }
+
+    quaternion operator+(const quaternion &a1) const
+    {
+        quaternion result;
+        result[0] = a1[0] + this->arr[0];
+        result[1] = a1[1] + this->arr[1];
+        result[2] = a1[2] + this->arr[2];
+        result[3] = a1[3] + this->arr[3];
+        return result;
+    }
+
+    quaternion operator*(float a1) const
+    {
+        quaternion result;
+        result[0] = a1 * this->arr[0];
+        result[1] = a1 * this->arr[1];
+        result[2] = a1 * this->arr[2];
+        result[3] = a1 * this->arr[3];
+        return result;
     }
 
     quaternion() = default;
@@ -31,6 +53,7 @@ struct quaternion {
     //0x00588550
     void to_matrix(matrix4x4 &mat) const;
 
-    //sub_588630
-    static quaternion slerp(const quaternion &a2, const quaternion &a3, float lambda);
 };
+
+//sub_588630
+extern quaternion slerp(const quaternion &a2, const quaternion &a3, Float lambda);
