@@ -22,6 +22,7 @@
 #include "als_meta_anim_swing.h"
 #include "als_meta_aimed_shot_vert.h"
 #include "als_meta_anim_table_shared.h"
+#include "als_mocomp.h"
 #include "als_motion_compensator.h"
 #include "als_resource_handler.h"
 #include "als_res_data.h"
@@ -2379,7 +2380,8 @@ HRESULT __stdcall HookDirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFII
 	return res;
 }
 
-BOOL install_redirects() {
+BOOL install_redirects()
+{
     sp_log("Installing redirects\n");
 
     //fix invalid float operation
@@ -2515,6 +2517,8 @@ BOOL install_redirects() {
     
     als_res_data_patch();
 
+    als_mocomp_patch();
+
     als_motion_compensator_patch();
 
     input_mgr_patch();
@@ -2528,6 +2532,12 @@ BOOL install_redirects() {
     daynight_patch();
 
     slc_manager_patch();
+
+    vm_patch();
+
+    vm_thread_patch();
+
+    vm_executable_patch();
 
     resource_directory_patch();
 
@@ -2545,7 +2555,17 @@ BOOL install_redirects() {
 
     mission_manager_patch();
 
+    resource_manager_patch();
+
+    resource_pack_streamer_patch();
+
+    resource_partition_patch();
+
     resource_pack_slot_patch();
+
+    resource_pack_standalone_patch();
+
+    slab_allocator_patch();
 
     tlresource_directory_patch();
 
@@ -2629,23 +2649,9 @@ BOOL install_redirects() {
 
     eligible_pack_patch();
 
-    resource_manager_patch();
-
     terrain_patch();
 
-    resource_pack_streamer_patch();
-
-    resource_partition_patch();
-
-    vm_patch();
-
-    vm_thread_patch();
-
-    vm_executable_patch();
-
     chuck_callbacks_patch();
-
-    resource_pack_standalone_patch();
 
     os_file_patch();
 
@@ -2656,8 +2662,6 @@ BOOL install_redirects() {
     script_instance_patch();
 
     script_access_patch();
-
-    slab_allocator_patch();
 
     trigger_manager_patch();
 
