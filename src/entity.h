@@ -75,13 +75,13 @@ struct entity : signaller {
     void set_family_visible(bool a2);
 
     //0x004C0850
-    bool is_renderable();
+    bool is_renderable() const;
 
     bool possibly_collide();
 
     bool possibly_camera_collide();
 
-    bool possibly_walkable();
+    bool possibly_walkable() const;
 
     bool sub_4C08E0();
 
@@ -142,7 +142,7 @@ struct entity : signaller {
 
     ////// VIRTUAL FUNCTIONS: END //////
 
-    inline bool is_visible() {
+    bool is_visible() const {
         return (this->field_4 & 0x200) != 0;
     }
 

@@ -52,6 +52,8 @@ struct conglomerate : actor {
 
     void create_parentage_tree();
 
+	void remove_member_lights_from_region(region *a2);
+
     //0x004D0590
     entity_base *get_member(const string_hash &a2, bool a3);
 

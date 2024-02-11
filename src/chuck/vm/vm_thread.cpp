@@ -25,7 +25,10 @@ Var<void (*)(vm_thread *, string_hash)> dword_965F20 {0x00965F20};
 
 Var<fixed_pool> vm_thread::pool {0x00922D58};
 
-vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this) {
+vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this)
+{
+    TRACE("vm_thread::vm_thread");
+
     if constexpr (1) {
         this->ex = a3;
         this->inst = a2;
@@ -34,8 +37,6 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
         this->flags = 2;
 
         this->PC = this->ex->get_start();
-        this->field_4 = 0;
-        this->field_8 = 0;
         this->field_1DC = nullptr;
         this->field_1E0 = 0;
         this->field_1E4 = ++id_counter();
@@ -47,7 +48,9 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
     }
 }
 
-vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : dstack(this) {
+vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : dstack(this)
+{
+    TRACE("vm_thread::vm_thread");
 
     if constexpr(1) {
         this->ex = a3;
@@ -58,8 +61,6 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
 
         this->PC = this->ex->get_start();
         this->field_1DC = a4;
-        this->field_4 = 0;
-        this->field_8 = 0;
         this->field_1E0 = 0;
         this->field_1E4 = ++id_counter();
         this->PC_stack.reserve(4u);
@@ -70,8 +71,26 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
     }
 }
 
-vm_thread::~vm_thread() {
-    THISCALL(0x005A55E0, this);
+vm_thread::~vm_thread()
+{
+    if ( this->inst != nullptr ) {
+        this->inst->run_callbacks(static_cast<script_instance_callback_reason_t>(1), this);
+    }
+
+    while ( this->field_1C8.size() != 0 )
+    {
+        auto size = this->field_1C8.size();
+        struct {
+            string_hash field_0;
+            int field_4;
+        } *data = CAST(data, this->field_1C8.m_first);
+        auto *back = data + (size - 1);
+
+        dword_965F20()(this, back->field_0);
+
+        this->field_1C8.pop_back();
+    }
+
 }
 
 void vm_thread::set_flag(flags_t a2, bool a3)
@@ -81,6 +100,7 @@ void vm_thread::set_flag(flags_t a2, bool a3)
 
 void vm_thread::set_suspended(bool a2)
 {
+    TRACE("vm_thread::set_suspended");
     if ( !a2 || this->is_flagged(SUSPENDABLE) )
     {
         this->set_flag(SUSPENDED, a2);
@@ -89,7 +109,19 @@ void vm_thread::set_suspended(bool a2)
 
 void vm_thread::pop_PC()
 {
-    THISCALL(0x005A0C10, this);
+	if constexpr (0) {
+		if ( this->PC_stack.empty() )
+		{
+			this->PC = nullptr;
+		}
+		else
+		{
+			this->PC = this->PC_stack.back();
+			this->PC_stack.pop_back();
+		}
+	} else {
+		THISCALL(0x005A0C10, this);
+	}
 }
 
 void vm_thread::create_event_callback(const vm_thread::argument_t &a2, bool a3)
@@ -145,7 +177,8 @@ void vm_thread::slf_error(const mString &a2)
     }
 }
 
-bool vm_thread::run() {
+bool vm_thread::run()
+{
     TRACE("vm_thread::run");
 
     assert(PC_stack.end() >= PC_stack.begin());

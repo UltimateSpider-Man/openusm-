@@ -47,7 +47,8 @@ struct input_mgr : singleton {
     input_mgr();
 
     //0x005E0870
-    virtual ~input_mgr();
+    //virtual
+    ~input_mgr();
 
     //0x005DC140
     void insert_device(input_device *a2);

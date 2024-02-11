@@ -1,5 +1,7 @@
 #pragma once
 
+#include "singleton.h"
+
 #include "variable.h"
 #include "variables.h"
 
@@ -8,7 +10,7 @@
 
 struct game;
 
-struct app {
+struct app : singleton {
     struct internal {
         mString field_0;
         int field_10;
@@ -40,7 +42,6 @@ struct app {
         void end_screen_recording();
     };
 
-    std::intptr_t m_vtbl;
     internal field_4;
     game *m_game;
     limited_timer_base field_34;
@@ -59,8 +60,6 @@ struct app {
     static void cleanup();
 
     static Var<app *> instance;
-
-    void destructor_internal();
 
     //0x005E99D0 + 0x005DBC10
     //virtual

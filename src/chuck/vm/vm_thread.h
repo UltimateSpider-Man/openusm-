@@ -2,6 +2,7 @@
 
 #include "script_library_class.h"
 #include "fixed_pool.h"
+#include "msimpletemplates_guts.h"
 #include "opcodes.h"
 #include "vm_stack.h"
 
@@ -30,14 +31,10 @@ struct vm_thread {
         SUSPENDABLE = 0x0002,
     };
 
-    struct {
-        vm_thread *_sl_next_element;
-    } simple_list_vars;
-    int field_4;
-    int field_8;
+    simple_list<vm_thread>::vars_t simple_list_vars;
     script_instance *inst;
     const vm_executable *ex;
-    int field_14;
+    vm_thread *field_14;
     int field_18;
     int flags;
     vm_stack dstack;
@@ -59,6 +56,10 @@ struct vm_thread {
 
     //0x005A55E0
     ~vm_thread();
+
+    script_instance *get_instance() {
+        return inst;
+    }
 
     const vm_executable *get_executable() const {
         return this->ex;

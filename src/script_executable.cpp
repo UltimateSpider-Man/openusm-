@@ -23,24 +23,52 @@
 
 VALIDATE_SIZE(script_executable, 0x5Cu);
 
-script_executable::script_executable() {
-    THISCALL(0x005AFF40, this);
+script_executable::script_executable()
+{
+	this->constructor_common();
 }
 
 void script_executable::constructor_common()
 {
-    THISCALL(0x005AFC50, this);
+	assert(script_allocated_stuff_map == nullptr);
+
+	if constexpr (1) {
+		auto *v2 = mem_alloc(sizeof(*script_allocated_stuff_map));
+		if ( v2 != nullptr ) {
+			decltype(script_allocated_stuff_map) (__fastcall *sub_5B8490)(void *) = CAST(sub_5B8490, 0x005B8490);
+			this->script_allocated_stuff_map = sub_5B8490(v2);
+		}
+	} else {
+		THISCALL(0x005AFC50, this);
+	}
+
+	assert(script_allocated_stuff_map != nullptr);
 }
 
-bool script_executable::has_threads() {
-    return (bool) THISCALL(0x0059BBA0, this);
+bool script_executable::has_threads() const
+{
+	if constexpr (1)
+	{
+		for ( int i = 0; i < this->total_script_objects; ++i )
+		{
+			auto &so = this->script_objects[i];
+			if ( so->has_threads() ) {
+				return true;
+			}
+		}
+
+		return false;
+	} else {
+		return (bool) THISCALL(0x0059BBA0, this);
+	}
 }
 
 bool script_executable::is_from_mash() const {
     return (this->flags & SCRIPT_EXECUTABLE_FLAG_FROM_MASH) != 0;
 }
 
-void script_executable::quick_un_mash() {
+void script_executable::quick_un_mash()
+{
     TRACE("script_executable::quick_un_mash");
 
     assert(( flags & SCRIPT_EXECUTABLE_FLAG_UN_MASHED ) != 0);
@@ -51,7 +79,7 @@ void script_executable::quick_un_mash() {
 
     this->constructor_common();
     for ( auto i = 0; i < this->total_script_objects; ++i ) {
-        this->script_objects[i]->sub_5AB420();
+        this->script_objects[i]->quick_un_mash();
     }
 }
 
@@ -105,12 +133,20 @@ bool script_executable::compare(const script_executable &a, const script_executa
     return true;
 }
 
-void script_executable::un_mash_start(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4, [[maybe_unused]] void *a5) {
+void script_executable::un_mash_start(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4, [[maybe_unused]] void *a5)
+{
     TRACE("script_executable::un_mash_start");
 
     this->un_mash(a2, a3, a4);
 
     printf("field_58 = %d\n", this->field_58);
+
+    if constexpr (0)
+    {
+        if (this->field_0 == fixedstring<8>{"CITY_ARENA"}) {
+            assert(0);
+        }
+    }
 
     if constexpr (0) {
         assert(this->script_object_dummy_list == nullptr);
@@ -130,7 +166,8 @@ void script_executable::un_mash_start(generic_mash_header *a2, void *a3, generic
     }
 }
 
-script_object *script_executable::find_object(int index) const {
+script_object *script_executable::find_object(int index) const
+{
     TRACE("script_executable::find_object", std::to_string(index).c_str());
 
     assert(index >= 0);
@@ -318,8 +355,29 @@ vm_executable *script_executable::find_function_by_address(const uint16_t *a2) c
     }
 }
 
-vm_executable *script_executable::find_function_by_name(string_hash a2) const {
-    return (vm_executable *) THISCALL(0x0058F310, this, a2);
+vm_executable *script_executable::find_function_by_name(string_hash a2) const
+{
+	TRACE("script_executable::find_function_by_name");
+	if constexpr (1)
+	{
+		for ( int v3 = 0; ++v3 < this->total_script_objects; ++v3 )
+		{
+			auto &so = this->script_objects[v3];
+			if ( auto idx = so->find_func(a2);
+					idx != -1 )
+			{
+				auto *func = so->get_func(idx);
+				auto *owner = func->get_owner();
+				if ( owner->is_global_object() ) {
+					return func;	
+				}
+			}
+		}
+
+		return nullptr;
+	} else {
+		return (vm_executable *) THISCALL(0x0058F310, this, a2);
+	}
 }
 
 void script_executable::register_allocated_stuff_callback(int a2, void (*a3)(script_executable *, _std::list<uint32_t> &, _std::list<mString> &))
@@ -578,17 +636,31 @@ void script_executable::load(const resource_key &resource_id) {
 
 vm_thread *script_executable::sub_5AB510(Float a2)
 {
-    return (vm_thread *) THISCALL(0x005AB510, this, a2);
+	assert(this->global_script_object != nullptr);
+
+	if constexpr (1) {
+		auto *inst = this->global_script_object->global_instance;
+		assert(inst != nullptr && "where did the global instance go?");
+
+		char v1[4] {};
+		memcpy(v1, &a2, 4);
+		return inst->add_thread(this->global_script_object->funcs[0], v1);
+	} else {
+		return (vm_thread *) THISCALL(0x005AB510, this, a2);
+	}
 }
 
 static bool g_cant_create_threads {};
 
-void script_executable::un_load(bool a2) {
+void script_executable::un_load(bool a2)
+{
     TRACE("script_executable::un_load");
 
-    if constexpr (1) {
+    if constexpr (1)
+	{
         script_manager::run_callbacks((script_manager_callback_reason)1, this, nullptr);
-        for ( auto i = 0; i < 20; ++i ) {
+        for ( auto i = 0; i < 20; ++i )
+		{
             if ( script_object::function_cache()[i].field_0 != nullptr ) {
                 if ( script_object::function_cache()[i].field_0->get_parent() == this ) {
                     script_object::function_cache()[i].field_0 = nullptr;
@@ -599,7 +671,8 @@ void script_executable::un_load(bool a2) {
             }
         }
 
-        if ( a2 ) {
+        if ( a2 )
+		{
             for ( auto j = 0; j < this->total_script_objects; ++j ) {
                 auto &so = this->script_objects[j];
                 so->create_destructor_instances();
@@ -650,7 +723,8 @@ void script_executable::un_load(bool a2) {
     }
 }
 
-void script_executable::release_mem() {
+void script_executable::release_mem()
+{
     TRACE("script_executable::release_mem");
 
     if constexpr (1) {
@@ -684,8 +758,8 @@ script_library_class * script_executable::find_library_class(const mString &a2) 
     return nullptr;
 }
 
-const char *script_executable::get_permanent_string(unsigned int index) const {
-
+const char *script_executable::get_permanent_string(unsigned int index) const
+{
     assert(permanent_string_table != nullptr && "We should still have the string table around any time we're doing a lookup");
 
     assert(index < permanent_string_table_size && "Index out of bounds... bad juju man");
@@ -864,7 +938,7 @@ void script_executable::first_run(Float a2, bool a3) {
                     *(DWORD *)buffer = (int)so->add_instance(info.field_0, info.field_8);
                     break;
                 case 0xFFFFFFFE:
-                    *(DWORD *)buffer = (int)so->sub_5AB030(info.field_0, 0);
+                    *(DWORD *)buffer = (int)so->add_game_init_instance(info.field_0, 0);
                     break;
                 case 0xFFFFFFFC:
                     *(DWORD *)buffer = info.field_14;

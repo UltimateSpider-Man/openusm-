@@ -1,5 +1,6 @@
 #include "eligible_pack_streamer.h"
 
+#include "binary_search_array_cmp.h"
 #include "common.h"
 #include "eligible_pack.h"
 #include "eligible_pack_category.h"
@@ -7,6 +8,7 @@
 #include "func_wrapper.h"
 #include "memory.h"
 #include "resource_pack_streamer.h"
+#include "terrain.h"
 #include "utility.h"
 
 #include <cassert>
@@ -21,7 +23,8 @@ void eligible_pack_streamer::init(
                               resource_pack_streamer *,
                               resource_pack_slot *,
                               limited_timer *),
-    void(__cdecl *get_ideal_pack_info)(_std::vector<ideal_pack_info> *)) {
+    void(__cdecl *get_ideal_pack_info)(_std::vector<ideal_pack_info> *))
+{
     //
     if constexpr (1) {
         this->clear();
@@ -67,7 +70,6 @@ int compare_eligible_pack_names(const void *a1, const void *a2) {
     return CDECL_CALL(0x0050EC30, a1, a2);
 }
 
-
 eligible_pack *eligible_pack_streamer::find_eligible_pack_by_packfile_name_hash(string_hash a2)
 {
     if constexpr (1)
@@ -88,6 +90,49 @@ eligible_pack *eligible_pack_streamer::find_eligible_pack_by_packfile_name_hash(
         assert(0);
     }
 
+}
+
+int compare_name_to_eligible_pack_name(string_hash *a1, eligible_pack **a2)
+{
+	string_hash v13 = *a1;
+	auto *v12 = *a2;
+	auto name_hash = v12->get_name_hash();
+	auto v5 = (v13 > name_hash);
+	if ( v5 )
+	{
+		return 1;
+	}
+	else
+	{
+		auto v4 = v12->get_name_hash();
+		auto v8 = (v13 < v4);
+		if ( v8 )
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+}
+
+eligible_pack *eligible_pack_streamer::find_eligible_pack_by_name(
+        string_hash a2)
+{
+	int index = -1;
+	auto size = this->eligible_packs.size();
+	auto **v2 = &this->eligible_packs[0];
+	if ( binary_search_array_cmp<string_hash, eligible_pack *>(&a2, v2, 0, size, &index, compare_name_to_eligible_pack_name) )
+	{
+		assert(index >= 0 && index < eligible_packs.size());
+
+		return this->eligible_packs[index];
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 void eligible_pack_streamer::fixup_eligible_pack_parent_child_relationships() {
@@ -181,7 +226,45 @@ bool eligible_pack_streamer::sub_537F80() {
     }
 }
 
-void eligible_pack_streamer_patch() {
+eligible_pack *eligible_pack_streamer::find_eligible_pack_by_token(
+        resource_pack_token &a2)
+{
+	auto *ep = bit_cast<eligible_pack *>(a2.field_0);
+	assert(!eligible_packs.empty());
+	return ep;
+}
+
+pack_switch_info_t *eligible_pack_streamer::get_pack_switch_info(
+        string_hash a2)
+{
+	auto size = this->field_28.size();
+	if (size != 0)
+	{
+		auto *epack = this->find_eligible_pack_by_name(a2);
+		if ( epack != nullptr )
+		{
+			for ( uint32_t i = 0; i < size; ++i )
+			{
+				auto &v1 = this->field_28[i];
+				if (v1.field_0 == epack) {
+					return (&v1);
+				}
+			}
+		}	
+	}
+
+	return nullptr;
+}
+
+resource_pack_slot *eligible_pack_streamer::get_eligible_pack_slot(
+        eligible_pack *e_pack)
+{
+	assert(e_pack != nullptr);
+	return e_pack->get_resource_pack_slot();
+}
+
+void eligible_pack_streamer_patch()
+{
     {
         FUNC_ADDRESS(address, &eligible_pack_streamer::init);
         REDIRECT(0x0055C4A5, address);

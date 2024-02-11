@@ -39,8 +39,8 @@ void moved_entities::add_moved(vhandle_type<entity> e_arg) {
 LABEL_44:
         if ( !e->is_flagged_in_the_moved_list() )
         {
-            e->field_8 |= 0x40;
-            e->field_8 |= 0x800000;
+            e->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x40), true);
+            e->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x800000), true);
 
             if (moved_count() >= 600)
             {

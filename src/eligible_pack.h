@@ -14,7 +14,7 @@ struct eligible_pack {
     fixedstring<8> field_0;
     fixedstring<8> field_20;
 
-    int field_40;
+    string_hash field_40;
     string_hash field_44;
 
     eligible_pack_token field_48;
@@ -28,7 +28,19 @@ struct eligible_pack {
     eligible_pack(const char *a2, const eligible_pack_token &a3, eligible_pack_category *a4);
 
     //0x0056BAB0
-    ~eligible_pack();
+    //~eligible_pack();
+
+	void set_packfile_name(const char *a2);
+
+	eligible_pack_token &get_token()
+	{
+		return this->field_48;
+	}
+
+	string_hash get_name_hash()
+	{
+		return this->field_40;
+	}
 
     //0x00532130
     bool is_loadable();

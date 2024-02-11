@@ -3275,6 +3275,7 @@ uint32_t RGBA2ARGB(uint32_t c) {
     return (((c >> 8) & 0xFFFFFF) | ((c & 0xFF) << 24));
 }
 
+//TODO
 void nglGetStringDimensions(
     nglFont *Font,
     char *Text,
@@ -3285,7 +3286,8 @@ void nglGetStringDimensions(
 {
     TRACE("nglGetStringDimensions", Text);
 
-    if constexpr (1) {
+    if constexpr (0)
+    {
         float CurMaxScaleY = a6;
         auto *TextPtr = Text;
         char v7 = '\0';
@@ -3464,13 +3466,14 @@ void nglGetStringDimensions(
 }
 
 void nglGetStringDimensions(
-    nglFont *Font, unsigned int *arg4, unsigned int *a3, const char *a2, ...) {
-    char a1[1024];
+    nglFont *Font, unsigned int *arg4, unsigned int *a3, const char *Format, ...)
+{
+    static Var<char[1024]> nglFontBuffer {0x00974E08};
     va_list va;
 
-    va_start(va, a2);
-    vsprintf(a1, a2, va);
-    nglGetStringDimensions(Font, a1, arg4, a3, 1.0, 1.0);
+    va_start(va, Format);
+    vsprintf(nglFontBuffer(), Format, va);
+    nglGetStringDimensions(Font, nglFontBuffer(), arg4, a3, 1.0, 1.0);
 }
 
 static constexpr auto NGLMESH_TEMP = 0x40000;

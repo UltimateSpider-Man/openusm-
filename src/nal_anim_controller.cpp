@@ -209,24 +209,18 @@ void nal_anim_controller::get_matrix_data_from_pose(nalAnyPose &arg0)
                 auto v32 = new_parent.inverse();
                 for ( ; child != nullptr; child = child->field_28 )
                 {
-                    if ( child->sub_4CB240() )
+                    if ( child->has_model_po() )
                     {
-                        po a2_28;
-                        a2_28.m[0][0] = 1.0;
-                        memset(&a2_28.m[0][1], 0, 16);
-                        a2_28.m[1][1] = 1.0;
-                        memset(&a2_28.m[1][2], 0, 16);
-                        a2_28.m[2][2] = 1.0;
-                        memset(&a2_28.m[2][3], 0, 16);
-                        a2_28.m[3][3]= 1.0;
-                        auto *v6 = child->sub_4CB220();
+                        po new_po {};
+                        auto *v6 = child->get_model_po();
 
                         ptr_to_po a2;
                         a2.m_abs_po = v32;
                         a2.m_rel_po = v6;
-                        a2_28.sub_415A30(a2);
 
-                        child->set_abs_po(a2_28);
+                        new_po.sub_415A30(a2);
+
+                        child->set_abs_po(new_po);
 
                         child->get_abs_po();
                     }
@@ -269,15 +263,8 @@ void nal_anim_controller::get_matrix_data_from_pose(nalAnyPose &arg0)
                 quaternion a2_12 {v30.arr[3], v30.arr[0], v30.arr[1], v30.arr[2]};
                 vector3d v31 {};
                 po v32 {v31, a2_12, 1.0};
-                auto *v24 = this->field_4;
-                
-                memcpy(v24->my_rel_po, &v32, sizeof(po));
-                v24->dirty_family(0);
-                auto v25 = v24->field_4;
-                if ( (v25 & 0x8000) != 0 || (v25 & 4) != 0 ) {
-                    v24->dirty_model_po_family();
-                }
-                v24->po_changed();
+
+                this->field_4->set_abs_po(v32);
             }
             else
             {

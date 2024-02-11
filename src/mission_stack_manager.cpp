@@ -109,18 +109,24 @@ void mission_stack_manager::push_mission_pack(const mString &a2,
         assert(v33.loc.m_size > 0);
 
         void *v23 = nullptr;
-        if (district_slot_override_idx == -1) {
-            if (!my_partition->has_room_for_slot(v33.loc.m_size)) {
-                mString v32{mString::fmtd{0},
+        if (district_slot_override_idx == -1)
+		{
+            if (!my_partition->has_room_for_slot(v33.loc.m_size))
+			{
+                mString v32 {mString::fmtd{0},
                             "%s tried to push pack %s, but it won't fit on the "
                             "stack.\r\nCurrently on the stack:",
                             a2.c_str(),
                             a3.c_str()};
                 auto *pack_slots = my_streamer->get_pack_slots();
 
-                if (pack_slots != nullptr) {
-                    for (auto &slot : (*pack_slots)) {
-                        if (slot != nullptr && slot->m_slot_state != SLOT_STATE_EMPTY) {
+                if ( pack_slots != nullptr )
+				{
+                    for (auto &slot : (*pack_slots))
+					{
+                        if (slot != nullptr
+								&& slot->m_slot_state != SLOT_STATE_EMPTY)
+						{
                             auto v14 = slot->get_name_key().m_hash;
                             auto *v15 = v14.to_string();
                             mString v16{mString::fmtd{0}, " %s", v15};

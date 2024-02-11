@@ -2,6 +2,7 @@
 
 #include "astar.h"
 #include "mstring.h"
+#include "progress.h"
 #include "region_audio_box_set.h"
 #include "variable.h"
 #include "vector3d.h"
@@ -79,8 +80,15 @@ struct region
     traffic_path_graph *field_100;
     ai_region_paths *field_104;
     _std::vector<eligible_pack *> field_108;
-
-    int field_118[7];
+    struct {
+		progress field_0;
+		progress field_4;
+		int field_8;
+		progress field_C;
+		progress field_10;
+		progress field_14;
+	} field_118;
+	progress unload_progress;
 
     struct region_astar_search_record : astar_search_record {
         _std::vector<void *> field_24;
@@ -124,7 +132,7 @@ struct region
     void create_proximity_maps();
 
     //0x00519E00
-    mString *get_scene_id(bool a2);
+    const mString &get_scene_id(bool a2) const;
 
     //0x00519E20
     void set_district_variant(int a2);
@@ -132,8 +140,12 @@ struct region
     //0x00519C70
     float get_ground_level() const;
 
+	int get_district_variant();
+
     //0x00545700
     void remove(entity *a3);
+
+	void remove(light_source *a2);
 
     bool has_quad_paths();
 
@@ -162,7 +174,9 @@ struct region
     //0x0054FEC0
     void un_mash_lego_map(char *a2, int *a3);
 
-    static inline Var<int> visit_key2{0x0095C91C};
+	static inline Var<int> visit_key1 {0x0095C918};
+
+    static inline Var<int> visit_key2 {0x0095C91C};
 
     static inline Var<region *> all_regions{0x0095C924};
 

@@ -109,7 +109,6 @@ void plr_loco_crawl_state::deactivate(const ai::mashed_state *a1)
     TRACE("plr_loco_crawl_state::deactivate");
 
     THISCALL(0x0044B6A0, this, a1);
-    assert(0);
 }
 
 ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
@@ -166,13 +165,10 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
         else
         {
             auto *v17 = this->get_actor();
-            if ( (v17->field_8 & 0x10000000) != 0 ) {
-                v17->update_abs_po(1);
-            }
 
             static constexpr float autocrawl_timeout = 0.44999999;
 
-            if ( v17->my_abs_po->m[1][1] > 0.80000001
+            if ( v17->get_abs_po().get_z_facing().y > 0.80000001
                     && this->can_handle_message((ai::state_trans_messages)71, false) )
             {
                 result = static_cast<ai::state_trans_messages>(71);

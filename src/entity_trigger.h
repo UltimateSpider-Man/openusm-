@@ -11,4 +11,6 @@ struct entity_trigger : trigger {
 
     //0x0053CA70
     entity_trigger(string_hash a2, entity_base *a3, Float a4);
+
+    entity_base *get_ent();
 };

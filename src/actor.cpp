@@ -50,8 +50,7 @@ actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3)
     this->field_58 = nullptr;
     this->field_7C = nullptr;
 
-    this->colgeom = nullptr;
-    this->field_4 &= 0xFFFFFFFD;
+    this->set_colgeom(nullptr);
 
     this->common_construct();
 
@@ -130,7 +129,7 @@ void actor::set_render_scale(const vector3d &s)
 	this->create_adv_ptrs();
 	if ( this->adv_ptrs->field_8 == nullptr )
 	{
-		auto *mem = mem_alloc(0x18u);
+		auto *mem = mem_alloc(sizeof(advanced_entity_ptrs::render_data));
 		this->adv_ptrs->field_8 = new (mem) advanced_entity_ptrs::render_data {};
 	}
 
@@ -370,14 +369,15 @@ void actor::process_extra_scene_flags(unsigned int a2) {
     THISCALL(0x004FB960, this, a2);
 }
 
-bool actor::has_camera_collision() {
+bool actor::has_camera_collision() const
+{
     auto *v1 = this->colgeom;
-    return (v1 != nullptr) && (this->field_4 & 0x4000) != 0 && (v1->field_C & 0x10) != 0;
+    return (v1 != nullptr) && this->are_collisions_active() && (v1->field_C & 0x10) != 0;
 }
 
 bool actor::has_entity_collision() {
     auto *v1 = this->colgeom;
-    return v1 && (this->field_4 & 0x4000) != 0 && (v1->field_C & 2) != 0;
+    return v1 && this->are_collisions_active() && (v1->field_C & 2) != 0;
 }
 
 void actor::kill_interact_anim() {
@@ -411,7 +411,7 @@ void actor::create_adv_ptrs()
 {
 	if ( this->adv_ptrs == nullptr )
 	{
-		auto *mem = mem_alloc(0x14u);
+		auto *mem = mem_alloc(sizeof(advanced_entity_ptrs));
 		this->adv_ptrs = new (mem) advanced_entity_ptrs {};
 
 		this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x2000000u), true);
@@ -869,6 +869,11 @@ vector3d actor::get_colgeom_center() {
     return result;
 }
 
+void actor::radius_changed(bool )
+{
+    this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x40u), true);
+}
+
 lego_map_root_node *actor::get_lego_map_root() {
     return (lego_map_root_node *) THISCALL(0x00502C70, this);
 }
@@ -1030,7 +1035,8 @@ vector4d __fastcall sub_503A90(void *a1, int, vector4d a2) {
     }
 }
 
-vector3d sub_509170(entity_base *a2, unsigned int a3) {
+vector3d sub_509170(entity_base *a2, unsigned int a3)
+{
     vector3d result;
 
     if ((a3 & 0x20) != 0) {
@@ -1043,7 +1049,7 @@ vector3d sub_509170(entity_base *a2, unsigned int a3) {
 
         result = -2.0f * YVEC + v8 * 3.2f;
 
-    } else if ((a2->field_4 & 0x800) != 0) {
+    } else if ( a2->is_flagged(0x800) ) {
         auto &v12 = a2->get_abs_po().get_z_facing();
 
         result = v12 * 2.f;
@@ -1073,7 +1079,8 @@ vector3d actor::_get_visual_center()
     {
         vector3d v6;
 
-        if (this->get_mesh() != nullptr) {
+        if (this->get_mesh() != nullptr)
+        {
             if (this->has_vertical_obb()) {
                 auto v17 = sub_503A90(this->field_A8, 0, this->get_abs_po().m[3]);
 

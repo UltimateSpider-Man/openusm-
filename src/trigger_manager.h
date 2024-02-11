@@ -7,6 +7,9 @@
 
 #include "variable.h"
 
+struct box_trigger;
+struct entity_trigger;
+struct point_trigger;
 struct trigger;
 struct entity_base;
 
@@ -23,7 +26,7 @@ struct trigger_manager : singleton {
     //0x00541F30
     void update();
 
-    trigger *sub_51E5B0(entity_base *a2);
+    trigger *find_instance(entity_base *a2);
 
     void remove(trigger **trem);
 
@@ -31,18 +34,18 @@ struct trigger_manager : singleton {
 
     void add_trigger(trigger *a2);
 
-    trigger *new_point_trigger(vector3d a2, Float a5);
+    point_trigger *new_point_trigger(vector3d a2, Float a5);
 
-    trigger *new_entity_trigger(entity_base *a2, Float a3);
-
-    trigger *new_box_trigger(string_hash a2, const vector3d &a3);
-
-    trigger *new_box_trigger(string_hash a2, entity_base *a3);
-
-    trigger *new_point_trigger(
+    point_trigger *new_point_trigger(
         string_hash a2,
         vector3d a3,
         Float a4);
+
+    entity_trigger *new_entity_trigger(entity_base *a2, Float a3);
+
+    box_trigger *new_box_trigger(string_hash a2, const vector3d &a3);
+
+    box_trigger *new_box_trigger(string_hash a2, entity_base *a3);
 
     static Var<trigger_manager *> instance;
 };

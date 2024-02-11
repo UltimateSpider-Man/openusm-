@@ -24,11 +24,9 @@ box_trigger::box_trigger(string_hash a2, entity_base *a3) : trigger(a2) {
     this->update_center();
 }
 
-void box_trigger::update_center() {
-    if constexpr (0) {
-    } else {
-        THISCALL(0x0050CE70, this);
-    }
+entity_base *box_trigger::get_box_ent() const
+{
+    return this->field_58.get_volatile_ptr();
 }
 
 bool box_trigger::triggered(const vector3d &a2) {
@@ -54,15 +52,15 @@ void box_trigger::set_box_info(const convex_box &a2)
     THISCALL(0x0050CD30, this, &a2);
 }
 
-bool box_trigger::is_point_trigger() {
+bool box_trigger::_is_point_trigger() {
     return false;
 }
 
-bool box_trigger::is_box_trigger() {
+bool box_trigger::_is_box_trigger() {
     return true;
 }
 
-bool box_trigger::is_entity_trigger() {
+bool box_trigger::_is_entity_trigger() {
     return false;
 }
 
@@ -75,3 +73,11 @@ bool box_trigger::get_bounding_sphere(vector3d *a2, float *a3) {
     *a3 = this->field_48;
     return true;
 }
+
+void box_trigger::update_center() {
+    if constexpr (0) {
+    } else {
+        THISCALL(0x0050CE70, this);
+    }
+}
+

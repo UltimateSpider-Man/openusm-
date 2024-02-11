@@ -238,35 +238,20 @@ bool hero_inode::ought_to_jump_off_wall(line_info &a2) {
     return (bool) THISCALL(0x006A6280, this, &a2);
 }
 
-bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3) {
-    if constexpr (0) {
-        auto *v4 = this->field_C;
+bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3)
+{
+    if constexpr (0)
+    {
+        auto *v4 = this->get_actor();
         entity *v20 = 0;
         subdivision_node_obb_base *v21 = 0;
-        if ((v4->field_8 & 0x10000000) != 0) {
-            v4->update_abs_po(true);
-        }
 
-        auto *v5 = (float *) v4->my_abs_po;
+        auto &v5 = v4->get_abs_po();
 
-        auto *vtbl = bit_cast<thiscall_call(*)[1]>(this->field_C);
-        auto func = (*vtbl)[117];
+        auto v6 = this->field_C->get_render_scale()[1] * 0.5f;
+        auto v27 = UP * v6;
 
-        vector3d v27;
-        auto v6 = ((float *) func(this->field_C, &v27))[1] * 0.5f;
-
-        static Var<vector3d> stru_937D94{0x00937D94};
-
-        v27[1] = stru_937D94()[1] * v6;
-        v27[2] = stru_937D94()[2] * v6;
-        auto v22 = stru_937D94()[0] * v6 + v5[12];
-        auto v23 = v27[1] + v5[13];
-        auto v7 = v23;
-        auto v8 = v27[2] + v5[14];
-        a2.field_0[0] = v22;
-        a2.field_0[1] = v7;
-        auto v24 = v8;
-        a2.field_0[2] = v24;
+        a2.field_0 = v5.get_position() + v27;
 
         vector3d a1;
         vector3d a5;
@@ -285,25 +270,23 @@ bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3) {
         auto v10 = a1[1];
         auto v11 = a1[2];
         auto v12 = a1[0];
-        a2.field_C[0] = a1[0];
-        a2.field_C[1] = v10;
-        a2.field_C[2] = v11;
+
+        a2.field_C = a1;
+
         auto a2a = (v20 ? v20->get_my_handle() : 0);
         auto v13 = a5[0];
+
         a2.hit_entity = {a2a};
-        a2.hit_norm[0] = v13;
-        a2.hit_norm[1] = a5[1];
-        a2.hit_norm[2] = a5[2];
-        a2.hit_pos[0] = v12;
-        a2.hit_pos[1] = v10;
-        a2.hit_pos[2] = v11;
+
+        a2.hit_norm = a5;
+
+        a2.hit_pos = a1;
+
         auto v14 = v21;
         a2.field_4C = v14;
         a2.collision = true;
 
-        auto get_phys_ifc = (*vtbl)[74];
-
-        auto *v15 = (physical_interface *) get_phys_ifc(this->field_C);
+        auto *v15 = this->field_C->physical_ifc();
         auto *v16 = v15->field_84.get_volatile_ptr();
         entity *v17 = v20;
         entity *v18 = v16;
@@ -388,22 +371,21 @@ void hero_inode::set_surface_info(const line_info &a2)
     this->field_1B0.copy(a2);
 }
 
-void hero_inode::update_wall_run_als_params() {
-    if constexpr (1) {
+void hero_inode::update_wall_run_als_params()
+{
+    if constexpr (1)
+    {
         auto *v2 = this->field_8;
 
         auto *v3 = (als_inode *) v2->get_info_node(als_inode::default_id, true);
-        auto *v4 = this->field_C;
+        auto *v4 = this->get_actor();
         auto *v5 = v3;
-        if ((v4->field_8 & 0x10000000) != 0) {
-            v4->update_abs_po(1);
-        }
 
-        auto *v6 = this->field_C;
+        auto *v6 = this->get_actor();
 
-        float v8 = -calculate_xz_angle_relative_to_local_po(*v6->my_abs_po,
+        float v8 = -calculate_xz_angle_relative_to_local_po(v6->get_abs_po(),
                                                             YVEC,
-                                                            v4->get_abs_po().m.arr[2]);
+                                                            v4->get_abs_po().get_z_facing());
 
         constexpr float flt_882080 = PI / 4.0;
         constexpr float flt_8A48CC = -flt_882080;

@@ -124,7 +124,8 @@ void set_god_mode(int a1) {
     }
 }
 
-void colgeom_init_lists() {
+void colgeom_init_lists()
+{
     CDECL_CALL(0x00544E90);
 }
 
@@ -133,7 +134,9 @@ void colgeom_destroy_lists()
     CDECL_CALL(0x005489A0);
 }
 
-app::app() : m_vtbl(0x00891634), field_4(), field_34() {
+app::app() : field_4(), field_34()
+{
+    this->m_vtbl = 0x00891634;
     g_platform() = NL_PLATFORM_PC;
     if (link_system::use_link_system()) {
         /*
@@ -190,33 +193,23 @@ app::app() : m_vtbl(0x00891634), field_4(), field_34() {
     }
 }
 
-void app::destructor_internal() {
+app::~app()
+{
     this->m_vtbl = 0x00891634;
-    auto *p_game = this->m_game;
-    if (p_game != nullptr) {
-        delete p_game;
+
+    if (this->m_game != nullptr) {
+        delete this->m_game;
     }
 
     g_game_ptr() = nullptr;
     this->m_game = nullptr;
     cleanup();
     //debug_menu::deinit(); // link_system::un_init()
-    //physics_system_shutdown();
-
-    CDECL_CALL(0x00592CF0);
+    
+    physics_system_shutdown();
 
     //mString::destructor(&this->field_4.field_0);
     this->m_vtbl = 0x0088E4C8;
-}
-
-app::~app() {
-    sp_log("app::~app():");
-
-    if constexpr (1) {
-        this->destructor_internal();
-    } else {
-        THISCALL(0x005E99D0, this);
-    }
 }
 
 void app::internal::begin_screen_recording(const mString &a2, int a3) {
@@ -282,17 +275,18 @@ void app::tick()
 
         static Var<bool> byte_9682F0{0x009682F0};
 
-        if (time_inc <= 0.0f) {
+        if (time_inc <= 0.0f)
+        {
             byte_9682F0() = true;
-            cut_scene_player *v2 = nullptr;
 
             if (g_smoke_test() != nullptr) {
                 g_smoke_test()->frame_advance();
             }
 
-            if (g_game_ptr()->flag.level_is_loaded && !g_game_ptr()->field_165 ||
-                g_femanager().m_fe_menu_system != nullptr && g_femanager().m_fe_menu_system->sub_60C230() &&
-                    (v2 = g_cut_scene_player(), v2->is_playing())) {
+            if ( (g_game_ptr()->flag.level_is_loaded && !g_game_ptr()->field_165) ||
+                    g_femanager().m_fe_menu_system != nullptr
+                    && g_femanager().m_fe_menu_system->sub_60C230()
+                    && g_cut_scene_player()->is_playing()) {
                 comic_panels::render();
             } else if (g_femanager().m_fe_menu_system == nullptr || !g_femanager().m_fe_menu_system->sub_60C230()) {
                 game::render_empty_list();
@@ -413,9 +407,6 @@ void app_patch()
     }
 
     if constexpr (0) {
-        FUNC_ADDRESS(address, &app::destructor_internal);
-        //REDIRECT(0x005E99D3, address);
-
         //REDIRECT(0x005E10BF, tokenizer_unit_test);
         //REDIRECT(0x005E10BF, collide_unit_test);
         REDIRECT(0x005E10BF, mString_unit_test);

@@ -17,3 +17,8 @@ bool entity_tracker_manager::get_the_arrow_target_pos(vector3d *a2)
 {
     return (bool) THISCALL(0x0062EE10, this, a2);
 }
+
+void entity_tracker_manager::place_poi_reticles()
+{
+    THISCALL(0x0062EEB0, this);
+}

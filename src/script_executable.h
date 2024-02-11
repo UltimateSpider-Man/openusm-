@@ -85,7 +85,7 @@ struct script_executable {
     }
 
     //0x0059BBA0
-    bool has_threads();
+    bool has_threads() const;
 
     bool is_linked() const {
         return (this->flags & SCRIPT_EXECUTABLE_FLAG_LINKED) != 0;

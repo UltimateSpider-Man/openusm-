@@ -37,8 +37,36 @@ void trigger_manager::update() {
     THISCALL(0x00541F30, this);
 }
 
-trigger *trigger_manager::sub_51E5B0(entity_base *a2) {
-    return (trigger *) THISCALL(0x0051E5B0, this, a2);
+trigger *trigger_manager::find_instance(entity_base *ent)
+{
+    TRACE("trigger_manager::find_instance");
+
+    if constexpr (1)
+    {
+        if ( ent != nullptr )
+        {
+            for ( auto *t = this->m_triggers; t != nullptr; t = t->m_next_trigger )
+            {
+                if ( t->is_box_trigger() )
+                {
+                    if ( bit_cast<box_trigger *>(t)->get_box_ent() == ent) {
+                        return t;
+                    }
+                }
+                else if ( t->is_entity_trigger() )
+                {
+                    if ( bit_cast<entity_trigger *>(t)->get_ent() == ent) {
+                        return t;
+                    }
+                }
+            }
+        }
+
+        return nullptr;
+
+    } else {
+        return (trigger *) THISCALL(0x0051E5B0, this, ent);
+    }
 }
 
 void trigger_manager::remove(trigger **trem)
@@ -85,55 +113,50 @@ void trigger_manager::add_trigger(trigger *a2) {
     this->m_triggers = a2;
 }
 
-trigger *trigger_manager::new_point_trigger(vector3d a2, Float a5)
+point_trigger *trigger_manager::new_point_trigger(vector3d a2, Float a5)
 {
     TRACE("trigger_manager::new_point_trigger");
 
     auto *mem = mem_alloc(sizeof(point_trigger));
-
-#if 0
-    auto *t = new (mem) point_trigger{ANONYMOUS, a2, a5};
-#else
-    trigger * (__fastcall *func)(void *, void *, string_hash, const vector3d *, Float) = CAST(func, 0x0053C810);
-    auto *t = func(mem, nullptr, ANONYMOUS, &a2, a5);
-#endif
+    auto *t = new (mem) point_trigger {ANONYMOUS, a2, a5};
 
     this->add_trigger(t);
     return t;
 }
 
-trigger *trigger_manager::new_entity_trigger(entity_base *a2, Float a3) {
+entity_trigger *trigger_manager::new_entity_trigger(entity_base *a2, Float a3)
+{
     auto *mem = mem_alloc(sizeof(entity_trigger));
+    auto *t = new (mem) entity_trigger {ANONYMOUS, a2, a3};
 
-    auto *result = new (mem) entity_trigger{ANONYMOUS, a2, a3};
+    this->add_trigger(t);
 
-    this->add_trigger(result);
-
-    return result;
+    return t;
 }
 
-trigger *trigger_manager::new_box_trigger(string_hash a2, const vector3d &a3)
+box_trigger *trigger_manager::new_box_trigger(string_hash a2, const vector3d &a3)
 {
     TRACE("trigger_manager::new_box_trigger");
 
     auto *mem = mem_alloc(sizeof(box_trigger));
-    auto *result = new (mem) box_trigger{a2, a3};
+    auto *t = new (mem) box_trigger {a2, a3};
 
-    this->add_trigger(result);
-    return result;
+    this->add_trigger(t);
+    return t;
 }
 
-trigger *trigger_manager::new_box_trigger(string_hash a2, entity_base *a3) {
+box_trigger *trigger_manager::new_box_trigger(string_hash a2, entity_base *a3)
+{
     TRACE("trigger_manager::new_box_trigger");
 
     auto *mem = mem_alloc(sizeof(box_trigger));
-    auto *result = new (mem) box_trigger{a2, a3};
+    auto *t = new (mem) box_trigger{a2, a3};
 
-    this->add_trigger(result);
-    return result;
+    this->add_trigger(t);
+    return t;
 }
 
-trigger *trigger_manager::new_point_trigger(
+point_trigger *trigger_manager::new_point_trigger(
         string_hash a2,
         vector3d a3,
         Float a4)
@@ -141,13 +164,7 @@ trigger *trigger_manager::new_point_trigger(
     TRACE("trigger_manager::new_point_trigger");
 
     auto *mem = mem_alloc(sizeof(box_trigger));
-
-#if 0
-    auto *t= new (mem) point_trigger {a2, a3, a4};
-#else
-    trigger * (__fastcall *func)(void *, void *, string_hash, const vector3d *, Float) = CAST(func, 0x0053C810);
-    auto *t = func(mem, nullptr, a2, &a3, a4);
-#endif
+    auto *t = new (mem) point_trigger {a2, a3, a4};
 
     this->add_trigger(t);
     return t;
@@ -160,25 +177,25 @@ void trigger_manager_patch() {
     }
 
     {
-        trigger * (trigger_manager::*func)(vector3d, Float) = &trigger_manager::new_point_trigger;
+        point_trigger * (trigger_manager::*func)(vector3d, Float) = &trigger_manager::new_point_trigger;
         FUNC_ADDRESS(address, func);
         //SET_JUMP(0x00541B90, address);
     }
 
     {
-        trigger * (trigger_manager::*func)(string_hash, vector3d, Float) = &trigger_manager::new_point_trigger;
+        point_trigger * (trigger_manager::*func)(string_hash, vector3d, Float) = &trigger_manager::new_point_trigger;
         FUNC_ADDRESS(address, func);
         //SET_JUMP(0x00541C20, address);
     }
 
     {
-        trigger * (trigger_manager::*func)(string_hash, entity_base *) = &trigger_manager::new_box_trigger;
+        box_trigger * (trigger_manager::*func)(string_hash, entity_base *) = &trigger_manager::new_box_trigger;
         FUNC_ADDRESS(address, func);
         SET_JUMP(0x00541D70, address);
     }
 
     {
-        trigger * (trigger_manager::*func)(string_hash, const vector3d &) = &trigger_manager::new_box_trigger;
+        box_trigger * (trigger_manager::*func)(string_hash, const vector3d &) = &trigger_manager::new_box_trigger;
         FUNC_ADDRESS(address, func);
         SET_JUMP(0x00541E00, address);
     }

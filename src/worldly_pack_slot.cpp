@@ -277,7 +277,7 @@ _std::vector<box_trigger *> *worldly_pack_slot::get_box_trigger_instances()
     assert(g_world_ptr() != nullptr);
     if ( this->box_trigger_instances == nullptr )
     {
-        auto *mem = mem_alloc(16u);
+        auto *mem = mem_alloc(sizeof(_std::vector<box_trigger *>));
         this->box_trigger_instances = new (mem) _std::vector<box_trigger *> {};
     }
 

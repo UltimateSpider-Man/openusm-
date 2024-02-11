@@ -369,7 +369,10 @@ void sub_407E90(nglMesh *Mesh,
     }
 }
 
-void render_debug_hemisphere(const vector3d &a2, float scale, color32 a4) {
+void render_debug_hemisphere(const vector3d &a2, float scale, color32 a4)
+{
+    TRACE("render_debug_hemisphere");
+
     if (scale < 0.0049999999) {
         scale = 0.0049999999;
     }

@@ -112,7 +112,7 @@ struct script_object {
 
     bool has_threads() const;
 
-    void sub_5AB420();
+    void quick_un_mash();
 
     void dump_threads_to_file(FILE *a2);
 
@@ -125,10 +125,12 @@ struct script_object {
     //0x005ADC60
     void remove_instance(script_instance *a2);
 
-    script_instance *sub_5AB030(string_hash a2, int a3);
+    script_instance *add_game_init_instance(string_hash a2, int a3);
 
     //0x0059ECC0
     void add(script_instance *a2);
+
+	vm_thread *add_thread(script_instance *a2, int fidx);
 
     //0x00599530
     void link(const script_executable *a2);
@@ -160,8 +162,7 @@ struct script_object {
     static inline Var<int> usage_counter {0x00965ED4};
 };
 
-struct script_instance_callback_reason_t {
-    int field_0;
+enum script_instance_callback_reason_t {
 };
 
 struct script_instance {
@@ -218,6 +219,8 @@ struct script_instance {
     vm_thread *add_thread(const vm_executable *a2);
 
     vm_thread *add_thread(const vm_executable *a1, const char *a2);
+
+    void recursive_massacre_threads(vm_thread *root);
 
     //0x005ADB80
     void massacre_threads(const vm_executable *a2, const vm_thread *a3);

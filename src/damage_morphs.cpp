@@ -105,33 +105,17 @@ bool damage_morphs::is_subject_off_screen(actor *a1) {
         return false;
     }
 
-    if ((v2->field_8 & 0x10000000) != 0) {
-        v2->update_abs_po(1);
-    }
+    auto &v17 = v2->get_abs_po();
+    auto camera_facing = v17.get_z_facing();
 
-    po v17;
+    assert(camera_facing.length() > 0.999f && camera_facing.length() < 1.001f);
 
-    v17 = *v2->my_abs_po;
-    auto v7 = v17.m[2][1];
-    auto v6 = v17.m[2][0];
-    auto v14 = v17.m[3][1];
+    vector3d v13 = v17.m[3];
 
-    auto v8 = v17.m[2][2];
-    auto v13 = v17.m[3][0];
-    auto v15 = v17.m[3][2];
-    //auto v16 = v17.field_0[3][3];
-    if ((a1->field_8 & 0x10000000) != 0) {
-        a1->update_abs_po(1);
-    }
-
-    v17 = *a1->my_abs_po;
-
-    vector3d v5;
-    v5[0] = v17.m[3][0] - v13;
-    v5[1] = v17.m[3][1] - v14;
-    v5[2] = v17.m[3][2] - v15;
+    v17 = a1->get_abs_po();
+    vector3d v5 = v17.m[3] - v13;
     v5.normalize();
-    return v8 * v5[2] + v7 * v5[1] + v5[0] * v6 < 0.25f;
+    return 0.25f > dot(camera_facing, v5);
 }
 
 bool damage_morphs::unregister_mesh_copy(int a1) {

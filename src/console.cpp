@@ -15,6 +15,7 @@
 #include "os_file.h"
 #include "panelquad.h"
 #include "tokenizer.h"
+#include "trace.h"
 #include "variables.h"
 #include "vector2d.h"
 #include "vtbl.h"
@@ -74,8 +75,9 @@ void console_char_callback(char a1, void *a2) {
     }
 }
 
-Console::Console() {
-    sp_log("Console::Console(): start");
+Console::Console()
+{
+    TRACE("Console::Console");
 
     this->m_visible = false;
     this->oldCurrent[0] = '\0';
@@ -119,8 +121,6 @@ Console::Console() {
     this->hide();
     KB_register_event_callback(console_event_callback, nullptr);
     KB_register_char_callback(console_char_callback, nullptr);
-
-    sp_log("Console::Console(): end");
 }
 
 Console::~Console() {
@@ -305,7 +305,7 @@ void Console::processCommand(const char *a2, bool is_log) {
     }
 }
 
-bool Console::isVisible() {
+bool Console::isVisible() const {
     return this->m_visible;
 }
 
@@ -315,7 +315,8 @@ void Console::setHeight(Float a2) {
     this->field_248->SetPos(Float{0.0}, Float{0.0}, Float{640.0}, a2);
 }
 
-void Console::handle_char(char a2, void *) {
+void Console::handle_char(char a2, void *)
+{
     if (this->m_visible && a2 >= ' ' && a2 != 127 && a2 != '`' && a2 != '~') {
 
         if (a2 == '[')
@@ -637,13 +638,13 @@ void Console::handle_event(KeyEvent a2, Key_Axes a3, [[maybe_unused]] void *a4) 
     }
 }
 
-void Console::show() {
-
-    sp_log("Console::show");
+void Console::show()
+{
+    TRACE("Console::show");
     this->field_248->TurnOn(true);
 
     this->m_visible = true;
-    color32 v1{100, 100, 100, 100};
+    color32 v1 {100, 100, 100, 100};
 
     this->field_248->SetColor(v1);
 
@@ -661,10 +662,14 @@ void Console::setRenderCursor(bool a2) {
     this->field_24E = a2;
 }
 
-void Console::render() {
-    const color32 font_color{255, 255, 255, 255};
-    if (this->m_visible) {
 
+void Console::render()
+{
+    TRACE("Console::render");
+
+    const color32 font_color{255, 255, 255, 255};
+    if (this->m_visible)
+    {
         this->field_248->Draw();
 
         auto *font = g_femanager().GetFont(font_index{0});
@@ -673,7 +678,6 @@ void Console::render() {
         nglGetStringDimensions(font, &v26, &v25, "M");
         auto v24 = (float) v25;
         auto v23 = this->m_height - 20.0;
-        mString v22{};
 
         const char *v11;
         if (this->field_220) {
@@ -686,12 +690,13 @@ void Console::render() {
 
         auto v8 = v9 + v11;
 
-        v22 = v8;
+        mString v22 = v8;
 
         vector2di v2{10, (int) v23};
         render_console_text(v22, v2, font_color);
         v23 = v23 - v24;
-        if (this->lineNumber > 0) {
+        if (this->lineNumber > 0)
+        {
             mString v17{"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"};
 
             auto v3 = vector2di{10, (int) v23};

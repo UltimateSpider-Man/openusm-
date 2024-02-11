@@ -7,8 +7,7 @@
 #include "beam.h"
 #include "box_trigger.h"
 #include "camera.h"
-#include "scene_brew.h"
-#include "scene_entity_brew.h"
+#include "debug_render.h"
 #include "collide_aux.h"
 #include "collide_trajectories.h"
 #include "collision_trajectory_filter.h"
@@ -49,19 +48,26 @@
 #include "moved_entities.h"
 #include "nal_system.h"
 #include "nearby_hero_regions.h"
+#include "ped_spawner.h"
 #include "physical_interface.h"
+#include "poi.h"
 #include "polytube.h"
 #include "region.h"
 #include "region_intersect_visitor.h"
 #include "resource_key.h"
 #include "resource_manager.h"
+#include "scene_brew.h"
+#include "scene_entity_brew.h"
 #include "scene_spline_path_brew.h"
 #include "scratchpad_stack.h"
+#include "script.h"
+#include "script_lib_list.h"
 #include "script_manager.h"
 #include "sound_interface.h"
 #include "spawnable.h"
 #include "spiderman_camera.h"
 #include "stack_allocator.h"
+#include "thrown_item.h"
 #include "terrain.h"
 #include "time_interface.h"
 #include "trace.h"
@@ -156,8 +162,49 @@ world_dynamics_system::world_dynamics_system()
 #endif
 }
 
-world_dynamics_system::~world_dynamics_system() {
-    THISCALL(0x00555750, this);
+world_dynamics_system::~world_dynamics_system()
+{
+    if constexpr (0)
+    {
+        this->field_23C.clear();
+        debug_render_done();
+
+        for ( auto &gen : this->field_260 )
+        {
+            if ( gen != nullptr )
+            {
+                void (__fastcall *finalize)(void *, void *, int) = CAST(finalize, get_vfunc(gen->m_vtbl, 0x0));
+                finalize(gen, nullptr, 1);
+            }
+        }
+
+        this->field_260.clear();
+
+        this->field_230[0] = nullptr;
+
+        if ( this->the_terrain != nullptr )
+        {
+            this->the_terrain->~terrain();
+            operator delete(this->the_terrain);
+        }
+
+        this->field_230[0] = nullptr;
+        this->field_234[0] = nullptr;
+        g_spiderman_camera_ptr() = nullptr;
+        script::gso() = nullptr;
+        script::gsoi() = nullptr;
+        destroy_script_lists();
+
+        thrown_item::all_grenades().clear();
+
+        ped_spawner::cleanup();
+        poi_manager::cleanup();
+
+        this->num_players = 0;
+
+    } else {
+        THISCALL(0x00555750, this);
+    }
 }
 
 void world_dynamics_system::malor_point(const vector3d &a2, int a3, bool a4)

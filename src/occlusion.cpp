@@ -6,6 +6,7 @@
 #include "color32.h"
 #include "common.h"
 #include "debug_render.h"
+#include "func_wrapper.h"
 #include "game.h"
 #include "oldmath_po.h"
 #include "vector3d.h"
@@ -45,6 +46,11 @@ void occlusion::add_quad_to_database(const occlusion::quad &a1) {
     }
 }
 
+void occlusion::reset_active_occluders()
+{
+    num_active_shadow_volumes() = 0;
+}
+
 void occlusion::empty_quad_database() {
     assert(initialized());
 
@@ -82,4 +88,21 @@ void occlusion::debug_render_occluders()
 
         render_quad(v12->field_0[0], v12->field_0[1], v12->field_0[2], v12->field_0[3], green, true);
     }
+}
+
+void occlusion::init_frame(const vector3d &a1)
+{
+    ++init_frame_count;
+    update_based_on_scores(a1);
+    active_shadow_volumes_scratchpad_mirror() = active_shadow_volumes();
+}
+
+void occlusion::term_frame()
+{
+    //assert(init_frame_count == 0);
+}
+
+void occlusion::update_based_on_scores(const vector3d &a1)
+{
+    CDECL_CALL(0x00521850, &a1);
 }

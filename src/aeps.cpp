@@ -8,7 +8,8 @@
 
 Var<void *> aeps::s_activeStructs{0x0095B83C};
 
-void aeps::FrameAdvance(Float a1) {
+void aeps::FrameAdvance(Float a1)
+{
     if constexpr (0) {
 #if 0
         int v1;   // eax
@@ -43,6 +44,11 @@ void aeps::FrameAdvance(Float a1) {
     } else {
         CDECL_CALL(0x004D3980, a1);
     }
+}
+
+void aeps::FrameSetupRenderAndThenRender()
+{
+    CDECL_CALL(0x004EA9F0);
 }
 
 void aeps::RefreshDevOptions() {

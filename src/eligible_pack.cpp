@@ -17,8 +17,10 @@ eligible_pack::eligible_pack(const char *a2,
     THISCALL(0x0054CA90, this, a2, &a3, a4);
 }
 
-eligible_pack::~eligible_pack() {
-    THISCALL(0x0056BAB0, this);
+void eligible_pack::set_packfile_name(const char *a2)
+{
+	this->field_20 = fixedstring<8> {a2};
+	this->field_44 = string_hash {a2};
 }
 
 resource_pack_slot *eligible_pack::get_resource_pack_slot()

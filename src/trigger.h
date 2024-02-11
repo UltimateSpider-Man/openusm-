@@ -18,4 +18,13 @@ struct trigger : signaller {
 
     //0x0053C390
     void set_multiple_entrance(bool a2);
+
+    //virtual
+    bool is_point_trigger() const;
+
+    //virtual
+    bool is_box_trigger() const;
+
+    //virtual
+    bool is_entity_trigger() const;
 };

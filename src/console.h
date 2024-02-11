@@ -84,7 +84,7 @@ struct Console {
 
     virtual ConsoleVariable *getVariable(const mString &a1);
 
-    virtual bool isVisible();
+    virtual bool isVisible() const;
 
     virtual void show();
 

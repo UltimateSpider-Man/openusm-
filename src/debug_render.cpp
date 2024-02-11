@@ -436,7 +436,8 @@ void debug_render_init()
     }
 }
 
-void debug_render_done() {
+void debug_render_done()
+{
     if (!g_is_the_packer()) {
         if (s_debug_box != nullptr) {
             nglReleaseMeshFile(tlFixedString{"debugobj"});

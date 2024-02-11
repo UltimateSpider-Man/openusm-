@@ -302,7 +302,8 @@ game::game()
 
 game::~game()
 {
-    if constexpr (0) {
+    if constexpr (1)
+    {
         if ( this->gamefile != nullptr ) {
             void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(gamefile->m_vtbl, 0x4));
             finalize(this->gamefile, nullptr, true);
@@ -323,7 +324,8 @@ game::~game()
         }
 
         subtitles_kill();
-        if ( this->the_world != nullptr ) {
+        if ( this->the_world != nullptr )
+        {
             if ( !g_is_the_packer() ) {
                 this->unload_current_level();
             }
@@ -467,7 +469,8 @@ void game::render_intros() {
     }
 }
 
-void game::one_time_deinit_stuff() {
+void game::one_time_deinit_stuff()
+{
     {
         tlFixedString a1{"dropshadow"};
         nglReleaseMeshFile(a1);
@@ -569,10 +572,9 @@ void game::render_world()
                     geometry_manager::set_far_plane(12000.0);
                     nglCalculateMatrices(0);
 
-                    auto *v8 = this->the_world->field_23C.m_head;
-                    for (auto *i = v8->_Prev; i != v8; i = i->_Prev) {
-                        auto *v10 = i->_Myval;
-                        if ((v10->field_4 & 0x200) != 0) {
+                    for (auto &v10 : this->the_world->field_23C)
+                    {
+                        if (v10->is_visible()) {
                             v10->render(1.0f);
                         }
                     }
@@ -750,7 +752,6 @@ void game::one_time_init_stuff()
         a1 = tlFixedString{"vcl_car_shadow"};
         this->field_B8 = nglGetFirstMeshInFile(a1);
 
-
     } else {
         THISCALL(0x00552E50, this);
     }
@@ -891,8 +892,9 @@ void game::unpause() {
     }
 }
 
-void game::advance_state_paused(Float a1) {
-    //sp_log("game::advance_state_paused():");
+void game::advance_state_paused(Float a1)
+{
+    TRACE("game::advance_state_paused():");
 
     if constexpr (1) {
         auto *v3 = input_mgr::instance()->rumble_ptr;
@@ -1227,19 +1229,16 @@ void game::load_this_level()
         assert(script_manager::get_total_loaded() == 0);
 
         resource_key v14 = create_resource_key_from_path("init_gv", RESOURCE_KEY_TYPE_NONE);
-        if (script_manager::is_loadable(v14)) {
-            string_hash v15{"init_gv"};
-
+        if ( script_manager::is_loadable(v14) )
+		{
             resource_key v69{};
 
-            resource_key v73;
-            v73.set(v15, RESOURCE_KEY_TYPE_SCRIPT);
-            script_manager::load(v73, 0, common_slot, v69);
+            resource_key v73 {string_hash {"init_gv"}, RESOURCE_KEY_TYPE_SCRIPT};
+            script_manager::load(v73, 0u, common_slot, v69);
 
-            string_hash v16{"init_sv"};
+            v73 = resource_key {string_hash {"init_sv"}, RESOURCE_KEY_TYPE_SCRIPT};
+            script_manager::load(v73, 0u, common_slot, v69);
 
-            v73.set(v16, RESOURCE_KEY_TYPE_SCRIPT);
-            script_manager::load(v73, 0, common_slot, v69);
             script_manager::link();
             script_manager::run(0.0, false);
             script_manager::clear();
@@ -1254,7 +1253,6 @@ void game::load_this_level()
         assert(the_sin_res != nullptr);
 
         sin_container *the_sin = nullptr;
-
         auto allocated_mem = parse_generic_object_mash(the_sin,
                                                        the_sin_res,
                                                        nullptr,
@@ -1286,7 +1284,6 @@ void game::load_this_level()
         }
 
         gravity_generator *v30 = new gravity_generator{};
-
         g_world_ptr()->add_generator(v30);
 
         if (g_femanager().m_fe_menu_system != nullptr) {
@@ -1324,21 +1321,24 @@ void game::load_this_level()
 
         po v86;
 
-        if (g_game_ptr()->m_hero_start_enabled) {
+        if ( g_game_ptr()->m_hero_start_enabled )
+		{
             auto *marker_hero_start = find_marker(string_hash{"HERO_START"});
 
             v86 = marker_hero_start->get_abs_po();
 
             auto v73 = os_developer_options::instance()->get_string(os_developer_options::HERO_START_DISTRICT);
-            if (v73) {
+            if (v73)
+			{
                 auto *ter = g_world_ptr()->get_the_terrain();
                 assert(ter != nullptr);
 
                 fixedstring<4> v77{v73->c_str()};
                 auto v39 = ter->get_region_index_by_name(v77);
-                if (v39 != 65535) {
+                if (v39 != 65535)
+				{
                     region *reg = ter->get_region(v39);
-                    if ((reg->flags & 1) != 0) {
+                    if ( reg->is_locked() ) {
                         g_world_ptr()->the_terrain->unlock_district(reg->get_district_id());
                     }
 
@@ -1378,17 +1378,15 @@ void game::load_this_level()
             }
         }
 
-        static const vector3d stru_921F34 = YVEC;
-        static const Var<vector3d> stru_921F28{0x00921F28};
-        static const Var<vector3d> stru_921F40{0x00921F40};
 
-        if (v86.m[1][0] != stru_921F34[0] || v86.m[1][1] != stru_921F34[1] ||
-            v86.m[1][2] != stru_921F34[2]) {
+        if (v86.m[1][0] != YVEC[0] || v86.m[1][1] != YVEC[1] ||
+            v86.m[1][2] != YVEC[2])
+		{
             po v77;
 
-            v77.m[0] = stru_921F28();
-            v77.m[1] = stru_921F34;
-            v77.m[2] = stru_921F40();
+            v77.m[0] = vector3d {1.0};
+            v77.m[1] = YVEC;
+            v77.m[2] = ZVEC;
             v77.m[0][3] = 0.0;
             v77.m[1][3] = 0.0;
             v77.m[2][3] = 0.0;
@@ -1399,7 +1397,8 @@ void game::load_this_level()
         }
 
         auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
-        if (hero_ptr != nullptr) {
+        if ( hero_ptr != nullptr )
+		{
             *hero_ptr->my_rel_po = v86;
 
             hero_ptr->dirty_family(false);
@@ -1412,10 +1411,13 @@ void game::load_this_level()
 
             g_spiderman_camera_ptr()->autocorrect(Float{0});
 
-        } else {
+        }
+		else
+		{
             auto *cam_ptr = g_world_ptr()->field_28.field_44;
 
-            if (cam_ptr != nullptr) {
+            if ( cam_ptr != nullptr )
+			{
                 *cam_ptr->my_rel_po = v86;
 
                 cam_ptr->dirty_family(false);
@@ -1738,7 +1740,8 @@ void game::advance_state_load_level(Float a2)
     }
 }
 
-void game::frame_advance_game_overlays(Float a1) {
+void game::frame_advance_game_overlays(Float a1)
+{
     g_femanager().Update(a1);
 
     g_console->frame_advance(a1);
@@ -1992,10 +1995,10 @@ void game::render_ui()
 
         static Var<bool> g_disable_interface {0x0095C879};
 
-        if (g_disable_interface() || !this->flag.level_is_loaded ||
-            os_developer_options::instance()->get_flag(mString {"INTERFACE_DISABLE"}))
+        if ( g_disable_interface() || !this->flag.level_is_loaded ||
+            os_developer_options::instance()->get_flag(mString {"INTERFACE_DISABLE"}) )
         {
-            if (this->flag.level_is_loaded)
+            if ( this->flag.level_is_loaded )
             {
                 if (!EnableShader())
                 {
@@ -2023,11 +2026,10 @@ void game::render_ui()
                 }
 
                 mission_manager::s_inst()->render_fade();
-            } else
+            }
+            else
             {
-                if (g_femanager().m_fe_menu_system != nullptr) {
-                    g_femanager().m_fe_menu_system->RenderLoadMeter(true);
-                }
+                g_femanager().RenderLoadMeter(true);
             }
         }
         else
@@ -2088,7 +2090,8 @@ void game::render_ui()
         }
 
         nglListEndScene();
-        if (!spider_monkey::is_running()) {
+        if (!spider_monkey::is_running())
+        {
             if (os_developer_options::instance()->get_int(26) == 1 && byte_965BF5()) {
                 SYSTEMTIME SystemTime;
                 GetLocalTime(&SystemTime);
@@ -2126,6 +2129,13 @@ void game::render_ui()
     } else {
         THISCALL(0x0052B250, this);
     }
+}
+
+void hook_nglListEndScene()
+{
+    g_console->render();
+
+    nglCurScene() = nglCurScene()->field_30C;
 }
 
 void game::advance_state_running(Float a2) {
@@ -2313,8 +2323,12 @@ void sub_579290() {
 
 static Var<instance_bank<cg_mesh>> cg_mesh_bank{0x00960494};
 
-void game::unload_current_level() {
-    if constexpr (0) {
+void game::unload_current_level()
+{
+    TRACE("game::unload_current_level");
+
+    if constexpr (1)
+    {
         mem_print_stats("unload_current_level() start");
 
         this->field_170 = true;
@@ -2387,10 +2401,10 @@ void game::unload_current_level() {
         trigger_manager::instance()->purge();
 
         event_manager::clear();
-        auto *v14 = this->the_world;
-        if (v14 != nullptr) {
-            v14->~world_dynamics_system();
-            operator delete(v14);
+
+        if (this->the_world != nullptr) {
+            this->the_world->~world_dynamics_system();
+            operator delete(this->the_world);
         }
 
         this->the_world = nullptr;
@@ -2486,7 +2500,11 @@ void game__setup_input_registrations(game *a1) {
     CDECL_CALL(0x006063C0, a1);
 }
 
-void game_patch() {
+void game_patch()
+{
+    {
+        REDIRECT(0x0052B5D7, hook_nglListEndScene);
+    }
 
     {
         FUNC_ADDRESS(address, &game::load_hero_packfile);
@@ -2552,6 +2570,11 @@ void game_patch() {
         FUNC_ADDRESS(address, &game::set_camera);
         REDIRECT(0x00552FA3, address);
         REDIRECT(0x00552FC2, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &game::unload_current_level);
+        SET_JUMP(0x00557E10, address);
     }
 
     if constexpr (0) {

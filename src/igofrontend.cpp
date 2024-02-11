@@ -4,6 +4,7 @@
 #include "entity_tracker_manager.h"
 #include "fe_mini_map_widget.h"
 #include "func_wrapper.h"
+#include "igozoomoutmap.h"
 #include "trace.h"
 #include "utility.h"
 
@@ -13,6 +14,15 @@ VALIDATE_OFFSET(IGOFrontEnd, field_44, 0x44);
 IGOFrontEnd::IGOFrontEnd()
 {
     THISCALL(0x00648B40, this);
+}
+
+void IGOFrontEnd::UpdateInScene()
+{
+    if ( this->field_54 != nullptr ) {
+        this->field_54->place_poi_reticles();
+    }
+
+    this->field_44->UpdateInScene();
 }
 
 void IGOFrontEnd::Draw()

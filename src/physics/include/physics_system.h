@@ -46,6 +46,8 @@ struct phys_sys {
     static void destroy(rigid_body_constraint_distance *a1);
 
     static void destroy(user_rigid_body *a1);
+
+    static void phys_shutdown();
 };
 
 struct physics_system {
@@ -130,6 +132,8 @@ struct physics_system {
     //0x007AB870
     static void create_inst(const phys_mem_info &a1);
 
+    static void destroy_inst();
+
     //0x007AADD0
     static uint32_t get_buffer_size(const phys_mem_info &a1);
 
@@ -143,5 +147,7 @@ extern Var<physics_system *> g_physics_system;
 
 //0x0059F4D0
 extern void physics_system_init();
+
+extern void physics_system_shutdown();
 
 extern void physics_system_patch();

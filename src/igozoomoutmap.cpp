@@ -13,12 +13,26 @@
 
 VALIDATE_SIZE(IGOZoomOutMap, 0x82Cu);
 VALIDATE_SIZE(IGOZoomOutMap::internal, 0x1Cu);
+VALIDATE_SIZE(IGOZoomPOI, 0x14);
 VALIDATE_SIZE(zoom_map_ui, 0x240u);
 VALIDATE_OFFSET(IGOZoomOutMap, field_5CC, 0x5CC);
 VALIDATE_OFFSET(IGOZoomOutMap, field_5C4, 0x5C4);
 
 IGOZoomOutMap::IGOZoomOutMap() {
     THISCALL(0x006489A0, this);
+}
+
+void IGOZoomOutMap::UpdateInScene()
+{
+    if ( this->field_5C5 )
+    {
+        for ( int i = 0; i < this->field_5B4; ++i )
+        {
+            if ( this->field_5B8 == this->field_0[i].field_14 ) {
+                this->field_0[i].field_0.UpdateInScene();
+            }
+        }
+    }
 }
 
 void IGOZoomOutMap::DoneZoomingBack() {
@@ -64,6 +78,11 @@ void IGOZoomOutMap::SetZoomLevel(int a2) {
 
     this->field_578[1] = this->field_5B0 * 500.0f;
     this->field_5C3 = true;
+}
+
+void IGOZoomPOI::UpdateInScene()
+{
+    THISCALL(0x0062A160, this);
 }
 
 void IGOZoomOutMap_patch() {

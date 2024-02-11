@@ -6,10 +6,14 @@
 #include "os_developer_options.h"
 #include "potential_shadow.h"
 #include "terrain.h"
+#include "trace.h"
 #include "variables.h"
 #include "wds.h"
 
-void send_shadow_projectors() {
+void send_shadow_projectors()
+{
+    TRACE("send_shadow_projectors");
+
     CDECL_CALL(0x0059B220);
 
     renderDebugStrings();

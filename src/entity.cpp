@@ -73,8 +73,10 @@ bool entity::is_in_limbo() const
     return v1 && !sub_6A7DAB(this);
 }
 
-float entity::get_visual_radius() {
-    if constexpr (0) {
+float entity::get_visual_radius()
+{
+    if constexpr (0)
+    {
         if ((this->field_4 & 0x8004) == 0) {
             return 0.0f;
         }
@@ -93,7 +95,8 @@ float entity::get_visual_radius() {
     }
 }
 
-vector3d entity::get_visual_center() {
+vector3d entity::get_visual_center()
+{
     vector3d result;
     if ((this->field_4 & 0x8004) != 0) {
         auto *parent = this->get_conglom_owner();
@@ -135,8 +138,10 @@ void entity::clear_region(region *r, int i_know_what_i_am_doing) {
     THISCALL(0x004F54A0, this, r, i_know_what_i_am_doing);
 }
 
-entity *entity::compute_sector(terrain *a1, bool a2, entity *a3) {
-    if constexpr (0) {
+entity *entity::compute_sector(terrain *a1, bool a2, entity *a3)
+{
+    if constexpr (0)
+    {
         entity *result;
 
         if ((this->field_4 & 0x10000000) == 0) {
@@ -161,11 +166,11 @@ void entity::force_region(region *r)
     TRACE("entity::force_region");
 
     if constexpr (0) {
-        if ((this->field_4 & 0x10000000) == 0) {
+        if ( this->is_flagged(0x10000000) ) {
             this->remove_from_regions();
         }
 
-        this->field_4 |= 0x10000000u;
+        this->set_flag_recursive(static_cast<entity_flag_t>(0x10000000u), true);
         if (r != nullptr) {
             if (!this->is_in_region(r)) {
                 this->add_me_to_region(r);
@@ -178,13 +183,14 @@ void entity::force_region(region *r)
 }
 
 void entity::force_current_region() {
-    this->field_4 |= 0x10000000u;
+    this->set_flag_recursive(static_cast<entity_flag_t>(0x10000000u), true);
 }
 
-void entity::unforce_regions() {
-    if ((this->field_4 & 0x10000000) != 0) {
+void entity::unforce_regions()
+{
+    if ( this->is_flagged(0x10000000) ) {
         this->remove_from_regions();
-        this->field_4 &= 0xEFFFFFFF;
+        this->set_flag_recursive(static_cast<entity_flag_t>(0x10000000), false);
     }
 }
 
@@ -202,7 +208,7 @@ void entity::set_family_visible(bool a2) {
             this->set_visible(a2, false);
         }
 
-        for (auto *ent = this->m_child; ent != nullptr; ent = ent->field_28) {
+        for (auto *ent = this->get_first_child(); ent != nullptr; ent = ent->field_28) {
             if (ent->is_an_entity()) {
                 bit_cast<entity *>(ent)->set_family_visible(a2);
             }
@@ -213,8 +219,8 @@ void entity::set_family_visible(bool a2) {
     }
 }
 
-bool entity::is_renderable() {
-    return (this->field_4 >> 8) & 1;
+bool entity::is_renderable() const {
+    return this->is_flagged(0x100u);
 }
 
 bool entity::possibly_collide()
@@ -230,17 +236,18 @@ bool entity::possibly_collide()
     }
 }
 
-bool entity::possibly_camera_collide() {
-    auto *v1 = this->colgeom;
-
-    return v1 && (this->field_4 & 0x4000) != 0 && (v1->field_C & 0x10) != 0;
+bool entity::possibly_camera_collide()
+{
+    auto *v1 = this->get_colgeom();
+    return v1 != nullptr && this->are_collisions_active() && (v1->field_C & 0x10) != 0;
 }
 
-bool entity::possibly_walkable() {
+bool entity::possibly_walkable() const
+{
     bool result = false;
-    if (this->colgeom != nullptr) {
-        auto v1 = this->field_4;
-        if ((v1 & 0x4000) != 0 && (v1 & 0x80) != 0) {
+    if (this->colgeom != nullptr)
+    {
+        if (this->are_collisions_active() && this->is_walkable()) {
             result = true;
         }
     }
@@ -249,8 +256,8 @@ bool entity::possibly_walkable() {
 }
 
 bool entity::sub_4C08E0() {
-    return this->colgeom != nullptr && (this->field_4 & 0x4000) != 0 &&
-        (this->field_8 & 0x8000) == 0;
+    return this->colgeom != nullptr && this->are_collisions_active() &&
+        !this->is_ext_flagged(0x8000);
 }
 
 void entity::region_update_poss_collide() {
@@ -457,10 +464,9 @@ void entity::add_me_to_region(region *r)
         {
             if ( r->is_loaded() )
             {
-                auto v3 = 0;
-                auto **regions = this->regions;
                 int i = 0;
-                for (; i < 2; ++i) {
+                for (; i < 2; ++i)
+                {
                     if ( this->regions[i] == nullptr ) {
                         this->regions[i] = r;
                         break;
@@ -584,24 +590,16 @@ region *entity::get_primary_region()
 {
     TRACE("entity::get_primary_region");
 
-    uint32_t v1 = this->field_4;
-    if ((v1 & 0x8000) == 0) {
+    if ( !this->is_conglom_member() ) {
         return this->regions[0];
     }
 
-    while (1) {
-        entity *v2 = CAST(v2, this->get_conglom_owner());
-        if (v2 == nullptr) {
-            break;
-        }
-
-        uint32_t v3 = v2->field_4;
-        if ((v3 & 0x8000) == 0) {
-            return v2->regions[0];
-        }
+    entity *v2 = CAST(v2, this->get_conglom_owner());
+    if (v2 == nullptr) {
+        return nullptr;
     }
-    
-    return nullptr;
+
+    return v2->get_primary_region();
 }
 
 int entity::find_entities(int a1)

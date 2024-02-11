@@ -15,17 +15,21 @@ struct box_trigger : trigger {
     //0x0053C940
     box_trigger(string_hash a2, entity_base *a3);
 
-    void update_center();
+    entity_base *get_box_ent() const;
 
     void set_box_info(const convex_box &a2);
 
     /* virtual */ bool triggered(const vector3d &a2);
 
-    /* virtual */ bool is_point_trigger();
+    /* virtual */ bool _is_point_trigger();
 
-    /* virtual */ bool is_box_trigger();
+    /* virtual */ bool _is_box_trigger();
 
-    /* virtual */ bool is_entity_trigger();
+    /* virtual */ bool _is_entity_trigger();
 
     /* virtual */ bool get_bounding_sphere(vector3d *a2, float *a3);
+
+    //virtual
+    void update_center();
+
 };

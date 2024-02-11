@@ -8,13 +8,14 @@ struct eligible_pack_token;
 struct eligible_pack_category;
 struct ideal_pack_info;
 struct eligible_pack;
+struct pack_switch_info_t;
 
 struct eligible_pack_streamer {
     bool field_0;
     _std::vector<eligible_pack *> eligible_packs;
     _std::vector<eligible_pack_category *> field_14;
     void (*get_ideal_pack_info_callback)(_std::vector<ideal_pack_info> *a1);
-    _std::vector<void *> field_28;
+    _std::vector<pack_switch_info_t> field_28;
 
     //0x00547C50
     void init(int a2,
@@ -34,6 +35,9 @@ struct eligible_pack_streamer {
 
     eligible_pack *find_eligible_pack_by_packfile_name_hash(string_hash a2);
 
+	eligible_pack *find_eligible_pack_by_name(
+        string_hash a2);
+
     //0x00551290
     eligible_pack *add_eligible_pack(const char *a2,
                                      const eligible_pack_token &a3,
@@ -45,6 +49,15 @@ struct eligible_pack_streamer {
     void frame_advance(Float a2);
 
     bool sub_537F80();
+
+	eligible_pack *find_eligible_pack_by_token(
+        resource_pack_token &a2);
+
+	pack_switch_info_t *get_pack_switch_info(
+        string_hash a2);
+
+	resource_pack_slot *get_eligible_pack_slot(
+        eligible_pack *e_pack);
 };
 
 extern void eligible_pack_streamer_patch();

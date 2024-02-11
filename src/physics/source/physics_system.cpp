@@ -32,7 +32,8 @@ void calc_rb_mat_from_bone(void *a1, rigid_body *a2, int a3) {
     CDECL_CALL(0x0059AEC0, a1, a2, a3);
 }
 
-void physics_system_init() {
+void physics_system_init()
+{
     if constexpr (0) {
         phys_mem_info v1{};
         v1.field_0 += 122;
@@ -56,6 +57,11 @@ void physics_system_init() {
     } else {
         CDECL_CALL(0x0059F4D0);
     }
+}
+
+void physics_system_shutdown()
+{
+    phys_sys::phys_shutdown();
 }
 
 uint32_t physics_system::get_buffer_size(const phys_mem_info &a1) {
@@ -194,6 +200,15 @@ void physics_system::create_inst(const phys_mem_info &a1) {
     assert(addr == g_physics_system());
 }
 
+void physics_system::destroy_inst()
+{
+    g_physics_system()->~physics_system();
+    tlMemFree(g_physics_system());
+    g_physics_system() = nullptr;
+    g_physics_system_size() = 0;
+    g_physics_system_alignment() = 0;
+}
+
 uint32_t physics_system::get_buffer_alignment()
 {
     return 16u;
@@ -289,6 +304,11 @@ void phys_sys::destroy(rigid_body_constraint_distance *a1)
 void phys_sys::destroy(user_rigid_body *a1)
 {
     CDECL_CALL(0x007A25C0, a1);
+}
+
+void phys_sys::phys_shutdown()
+{
+    physics_system::destroy_inst();
 }
 
 void physics_system_patch() {

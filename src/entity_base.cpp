@@ -168,8 +168,10 @@ sound_and_pfx_interface *entity_base::sound_and_pfx_ifc() {
     return this->my_sound_and_pfx_interface;
 }
 
-void entity_base::release_mem() {
-    if constexpr (1) {
+void entity_base::release_mem()
+{
+    if constexpr (1)
+    {
         assert(!is_dynamic());
 
         auto v3 = ((this->field_8 & 0x400) != 0);
@@ -224,7 +226,8 @@ void entity_base::po_changed() {
     this->field_8 &= 0xF7FFFFFF;
 }
 
-void entity_base::set_flag_recursive(entity_flag_t a2, bool a3) {
+void entity_base::set_flag_recursive(entity_flag_t a2, bool a3)
+{
     if (a3) {
         this->field_4 |= a2;
     } else {
@@ -249,7 +252,8 @@ void entity_base::set_ext_flag_recursive(entity_ext_flag_t a2, bool a3) {
     this->set_ext_flag_recursive_internal(a2, a3);
 }
 
-void entity_base::set_active(bool a2) {
+void entity_base::set_active(bool a2)
+{
     if (a2) {
         this->field_4 |= 0x2000;
     } else {
@@ -257,7 +261,8 @@ void entity_base::set_active(bool a2) {
     }
 }
 
-void entity_base::set_visible(bool a2, bool) {
+void entity_base::set_visible(bool a2, bool)
+{
     if (a2) {
         this->field_4 |= 0x200;
     } else {
@@ -706,13 +711,14 @@ void entity_base::_un_mash(generic_mash_header *a1, void *a2, generic_mash_data_
 #endif
         }
 
-        if ( (this->field_4 & 0x400) != 0 )
+        if ( this->is_flagged(0x400) )
         {
-            auto v11 = 4 - ((int) a3->field_4 % 4u);
-            if ( v11 < 4 )
+            if ( auto v11 = 4 - ((int) a3->field_4 % 4u);
+                    v11 < 4 ) {
                 a3->field_4 += v11;
+            }
 
-            auto *v12 = (convex_box *) a3->field_4;
+            auto *v12 = bit_cast<convex_box *>(a3->field_4);
             a3->field_4 += sizeof(convex_box);
             auto *v13 = (box_trigger *) trigger_manager::instance()->new_box_trigger(this->field_10, this);
             v13->set_box_info(*v12);
@@ -846,20 +852,22 @@ void entity_base::sub_4E0DD0() {
     THISCALL(0x004E0DD0, this);
 }
 
-void entity_base::clear_parent(bool a1) {
-    if constexpr (0) {
-        if (this->m_parent != nullptr) {
-            auto *v2 = this->m_child;
-            for (this->field_8 |= 0x10000040u; v2; v2 = v2->field_28) {
-                if ((v2->field_8 & 0x10000000) == 0) {
-                    v2->dirty_family(false);
-                }
-            }
+void entity_base::clear_parent(bool a1)
+{
+    if constexpr (0)
+    {
+        if (this->m_parent != nullptr)
+        {
+            this->dirty_family(false);
 
-            if (a1 && (this->field_4 & 0x8000) == 0) {
+            assert(m_parent->get_first_child() != nullptr);
+
+            if ( a1 && !this->is_conglom_member() )
+            {
                 auto *v3 = this->m_parent;
-                if ((v3->field_4 & 0x8000) != 0)
+                if ( v3->is_conglom_member() ) {
                     v3 = v3->get_conglom_owner();
+                }
 
                 if (v3) {
                     v3->sub_4D3F60(this);
@@ -1184,7 +1192,8 @@ void entity_set_abs_po(entity_base *ent, const po &the_po) {
     }
 }
 
-void entity_base::common_destruct() {
+void entity_base::common_destruct()
+{
     if constexpr (1) {
         this->sub_4E0DD0();
         while (this->m_child != nullptr) {
@@ -1210,15 +1219,18 @@ void entity_base::common_destruct() {
             this->field_18 = nullptr;
         }
 
-        if ((this->field_4 & 0x400) != 0) {
-            auto *v4 = trigger_manager::instance()->sub_51E5B0(this);
+        if ( this->is_flagged(0x400) )
+        {
+            auto *v4 = trigger_manager::instance()->find_instance(this);
             if (v4 != nullptr) {
                 trigger_manager::instance()->delete_trigger(v4);
             }
         }
 
-        if ((this->field_8 & 0x20000) == 0) {
-            if ((this->field_8 & 0x40000000) == 0) {
+        if ( !this->is_ext_flagged(0x20000) )
+        {
+            if ( this->manage_abs_po() )
+            {
                 auto *v5 = this->my_abs_po;
                 if (v5 != this->my_rel_po) {
                     mem_dealloc(v5, sizeof(*v5));
@@ -1233,7 +1245,8 @@ void entity_base::common_destruct() {
         }
 
         this->has_sound_and_pfx_ifc();
-        if (this->has_sound_and_pfx_ifc()) {
+        if (this->has_sound_and_pfx_ifc())
+        {
             auto *v6 = this->my_sound_and_pfx_interface;
             if (v6->field_8) {
                 if (v6 != nullptr) {
@@ -1287,14 +1300,6 @@ po &entity_base::get_abs_po() {
     return *this->my_abs_po;
 }
 
-uint32_t entity_base::is_conglom_member() {
-    return this->field_4 & 0x8000;
-}
-
-uint32_t entity_base::is_a_conglomerate() {
-    return this->field_4 & 4;
-}
-
 bool entity_base::is_rel_po_dirty() const {
     return (this->field_8 & 0x8000000) != 0;
 }
@@ -1330,7 +1335,7 @@ bool entity_base::event_raised_last_frame(string_hash a2) {
     return (bool) THISCALL(0x004F3800, this, a2);
 }
 
-bool entity_base::sub_4CB240()
+bool entity_base::has_model_po() const
 {
     if ( !this->is_conglom_member() ) {
         return false;
@@ -1391,15 +1396,26 @@ entity_base *entity_base::get_first_child() {
     return this->m_child;
 }
 
-po *entity_base::sub_4CB220()
+po *entity_base::get_model_po() const
 {
+    assert(is_conglom_member());
+
+    assert((conglomerate*)this != this->my_conglom_root);
+
+    assert(this->rel_po_idx - 1 < this->my_conglom_root->all_model_po.size());
+
     return &this->my_conglom_root->all_model_po.m_data[uint16_t(this->rel_po_idx - 1)];
 }
 
-void entity_base::dirty_family(bool a2) {
-    if constexpr (1) {
-        auto *v2 = this->get_first_child();
-        for (this->field_8 |= 0x10000040u; v2 != nullptr; v2 = v2->field_28) {
+void entity_base::dirty_family(bool a2)
+{
+    if constexpr (1)
+    {
+        this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x10000000u), true);
+        this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x40u), true);
+
+        for (auto *v2 = this->get_first_child(); v2 != nullptr; v2 = v2->field_28)
+        {
             if (!v2->is_ext_flagged(0x10000000) || a2) {
                 v2->dirty_family(a2);
             }
@@ -1476,12 +1492,15 @@ bool entity_base::are_collisions_active() const {
     return this->is_flagged(0x4000);
 }
 
-void entity_base::dirty_model_po_family() {
-    if constexpr (1) {
-        if (!(this->field_4 & 4)) {
+void entity_base::dirty_model_po_family()
+{
+    if constexpr (1)
+    {
+        if ( !this->is_a_conglomerate() )
+        {
             this->field_8 |= 0x100u;
 
-            for (entity_base *v2 = this->m_child; v2 != nullptr; v2 = v2->field_28) {
+            for (entity_base *v2 = this->get_first_child(); v2 != nullptr; v2 = v2->field_28) {
                 if (v2->is_conglom_member() && v2->my_conglom_root == this->my_conglom_root) {
                     v2->dirty_model_po_family();
                 }

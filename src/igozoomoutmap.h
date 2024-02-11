@@ -1,5 +1,7 @@
 #pragma once
 
+#include "entity.h"
+#include "entity_base_vhandle.h"
 #include "float.hpp"
 #include "vector3d.h"
 
@@ -7,23 +9,24 @@ struct zoom_map_ui {
     int field_0[144];
 };
 
+struct IGOZoomPOI {
+    vhandle_type<entity> field_0;
+    vector3d field_4;
+    int *field_10;
+
+    void UpdateInScene();
+};
+
 struct IGOZoomOutMap {
     struct internal {
-        int field_0;
-        int field_4[3];
-        int field_10;
+        IGOZoomPOI field_0;
         int field_14;
         int field_18;
 
         internal() {
-            auto *v2 = this->field_4;
-            v2[0] = 0;
-            v2[1] = 0;
-            v2[2] = 0;
-            this->field_0 = 0;
             this->field_14 = 5;
             this->field_18 = 3;
-            this->field_10 = 0;
+            this->field_0.field_10 = nullptr;
         }
     };
 
@@ -60,6 +63,8 @@ struct IGOZoomOutMap {
 
     //0x006489A0
     IGOZoomOutMap();
+
+    void UpdateInScene();
 
     //0x0060C2D0
     void DoneZoomingBack();

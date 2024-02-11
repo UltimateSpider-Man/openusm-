@@ -86,9 +86,9 @@ struct entity_base : entity_base_vtable {
 
     float sub_57CB80();
 
-    bool sub_4CB240();
+    bool has_model_po() const;
 
-    po *sub_4CB220();
+    po *get_model_po() const;
 
     ////// VIRTUAL FUNCTIONS: START //////
 
@@ -321,9 +321,13 @@ struct entity_base : entity_base_vtable {
 
     bool are_collisions_active() const;
 
-    uint32_t is_conglom_member();
+    uint32_t is_conglom_member() const {
+        return this->field_4 & 0x8000;
+    }
 
-    uint32_t is_a_conglomerate();
+    uint32_t is_a_conglomerate() const {
+        return this->field_4 & 4;
+    }
 
     //0x0048AC20
     po &get_abs_po();

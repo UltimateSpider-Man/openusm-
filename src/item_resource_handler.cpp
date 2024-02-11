@@ -34,17 +34,21 @@ bool item_resource_handler::_handle_resource([[maybe_unused]] eBehavior behavior
 
     assert(behavior == UNLOAD);
 
-    if constexpr (1) {
-        if (g_world_ptr()->ent_mgr.items.get_vector_index(this->my_slot->item_instances) > 0) {
+    if constexpr (1)
+    {
+        if (g_world_ptr()->ent_mgr.items.get_vector_index(this->my_slot->item_instances) > 0)
+        {
             auto *v4 = this->my_slot->item_instances->at(this->field_C);
-            if (v4) {
+            if (v4 != nullptr)
+            {
                 auto *v5 = this->my_slot->item_instances->at(this->field_C);
-                if ((v4->field_4 & 0x80u) == 0) {
+                if ( v4->is_conglom_member() )
+                {
                     g_world_ptr()->ent_mgr.remove_entity_from_misc_lists(v4);
-                    if ((v5->field_8 & 0x80000000) == 0) {
-                        v5->release_mem();
-                    } else {
+                    if ( v5->is_dynamic() ) {
                         v5->~item();
+                    } else {
+                        v5->release_mem();
                     }
 
                     this->my_slot->item_instances->at(this->field_C) = nullptr;

@@ -13,6 +13,11 @@ motion_effect_struct::~motion_effect_struct() {
     THISCALL(0x004E56D0, this);
 }
 
+void motion_effect_struct::render_all_motion_fx(camera &a2, hull &a3)
+{
+    CDECL_CALL(0x004EFB20, &a2, &a3);
+}
+
 void motion_effect_struct::render_trail(vector3d a1,
                                         vector3d a4,
                                         vector3d a7,

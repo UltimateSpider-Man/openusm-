@@ -1,7 +1,10 @@
 #pragma once
 
 struct singleton {
-    singleton();
+    int m_vtbl;
 
-    virtual ~singleton() = default;
+    singleton() = default;
+
+    //virtual
+    ~singleton() = default;
 };

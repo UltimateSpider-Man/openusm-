@@ -15,13 +15,14 @@ ai_quad_path::ai_quad_path()
 
 }
 
-void ai_quad_path::un_mash(void *buffer_ptr, region *reg, int a4, int a5, int a6) {
+void ai_quad_path::un_mash(void *buffer_ptr, region *reg, int a4, int a5, int a6)
+{
     if constexpr (1) {
         this->field_18 = reg;
         if (reg->get_district_id() != this->field_1C) {
-            auto *scene_id = reg->get_scene_id(false);
+            auto &scene_id = reg->get_scene_id(false);
 
-            auto *str = scene_id->c_str();
+            auto *str = scene_id.c_str();
             auto district_id = this->field_18->get_district_id();
 
             sp_log(

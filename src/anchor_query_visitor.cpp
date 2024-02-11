@@ -25,7 +25,8 @@ anchor_query_visitor::anchor_query_visitor(fixed_vector<quick_anchor_info, 100> 
     this->field_14 = a4;
 }
 
-int anchor_query_visitor::visit(subdivision_node *a2) {
+int anchor_query_visitor::visit(subdivision_node *a2)
+{
     auto *v2 = (conglomerate *) a2;
     if (v2 == nullptr) {
         return 0;
@@ -40,9 +41,7 @@ int anchor_query_visitor::visit(subdivision_node *a2) {
         return 0;
     }
 
-    if ((v2->field_8 & 0x10000000) != 0) {
-        v2->update_abs_po(true);
-    }
+    v2->get_abs_po();
 
     if (this->field_20 && v2->is_a_conglomerate_clone()) {
         return 0;

@@ -16,4 +16,6 @@ struct entity_tracker_manager {
 
     //0x0062EE10
     bool get_the_arrow_target_pos(vector3d *);
+
+    void place_poi_reticles();
 };

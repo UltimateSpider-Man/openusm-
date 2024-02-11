@@ -21,8 +21,8 @@ enum slot_state_t {
 };
 
 struct resource_pack_slot {
-    enum callback_enum
-    {
+    enum callback_enum {
+		CALLBACK_LOAD_STARTED = 0,
         CALLBACK_CONSTRUCT = 3,
         CALLBACK_PRE_DESTRUCT = 4,
         CALLBACK_DESTRUCT = 5,
@@ -62,6 +62,12 @@ public:
     {
         return field_4;
     }
+
+	resource_pack_token &get_pack_token()
+	{
+		assert(m_slot_state != SLOT_STATE_EMPTY);
+	  	return this->field_78;
+	}
 
     auto *get_header_mem_addr()
     {

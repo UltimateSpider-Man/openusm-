@@ -29,6 +29,7 @@
 #include "os_developer_options.h"
 #include "potential_shadow.h"
 #include "script_data_interface.h"
+#include "region.h"
 #include "render_text.h"
 #include "skeleton_interface.h"
 #include "tentacle_interface.h"
@@ -57,7 +58,7 @@ void conglomerate::init_member_data() {
     this->field_104 = 0;
     this->field_108 = -1.0;
     this->field_10C = -1.0;
-    this->field_4 |= 4;
+    this->set_flag_recursive(static_cast<entity_flag_t>(4u), true);
     this->field_110 = 3;
 }
 
@@ -66,6 +67,17 @@ void conglomerate::create_parentage_tree()
     TRACE("conglomerate::create_parentage_tree");
 
     THISCALL(0x004E55E0, this);
+}
+
+void conglomerate::remove_member_lights_from_region(region *a2)
+{
+	if constexpr (0) {
+		for ( auto &v1 : (*this->field_100) ) {
+			a2->remove(v1);
+		}
+	} else {
+		THISCALL(0x004D27A0, this, a2);
+	}
 }
 
 void conglomerate::sub_4D0E00()
@@ -249,7 +261,11 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
         this->field_110 &= 0xFFFFFFF3;
         this->field_FC = nullptr;
         this->field_100 = nullptr;
-        this->field_4 = this->field_4 & 0xFFFFFFFC | 4;
+        this->set_flag_recursive(static_cast<entity_flag_t>(4), true);
+
+        this->set_flag_recursive(static_cast<entity_flag_t>(2), false);
+        this->set_flag_recursive(static_cast<entity_flag_t>(1), false);
+
         this->my_conglom_root = this;
 
         sp_log("members.size() = %d", this->members.size());
@@ -303,7 +319,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                 if ( tmp_ptr->get_colgeom() != nullptr )
                 {
                     this->field_110 |= 4u;
-                    this->field_4 |= 2;
+                    this->set_flag_recursive(static_cast<entity_flag_t>(2), true);
                     if ( tmp_ptr->possibly_collide() )
                     {
                         if ( this->field_FC == nullptr )
@@ -319,7 +335,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                 if ( tmp_ptr->get_ai_core() )
                 {
                     this->field_110 |= 8u;
-                    this->field_4 |= 1;
+                    this->set_flag_recursive(static_cast<entity_flag_t>(1), true);
                 }
 
                 if ( this->is_material_switching() ) {
@@ -397,7 +413,6 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
 
             this->skeleton_ifc->connect_bone_abs_po(tmp_ptr->get_bone_idx(), tmp_ptr);
 
-            tmp_ptr->field_8 |= 0x10000000u;
             bone = tmp_ptr;
         }
 
@@ -439,7 +454,8 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                             : (nglMesh **)this->field_90.field_0[this->field_90.field_4]
                         );
 
-        if ( v70 != nullptr ) {
+        if ( v70 != nullptr )
+        {
             if ( v70[4] != nullptr )
             {
                 auto *v72 = mem_alloc(sizeof(light_manager));
@@ -467,7 +483,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
                 }
 
                 this->field_F8->field_C = this->my_handle.field_0;
-                this->field_4 |= 0x2000u;
+                this->set_flag_recursive(static_cast<entity_flag_t>(0x2000u), true);
             }
         }
 
@@ -510,11 +526,6 @@ void conglomerate::_render(Float a2)
 {
     TRACE("conglomerate::render");
 
-    THISCALL(0x004F9930, this, a2);
-    return;
-
-    debug_render_set_ival(SKELETONS, 1);
-
     if (debug_render_get_ival(SKELETONS) <= 0)
     {
         THISCALL(0x004F9930, this, a2);
@@ -525,18 +536,18 @@ void conglomerate::_render(Float a2)
     }
 }
 
-static Var<camera*> g_camera_link {0x0095C720};
-
 void conglomerate::debug_render()
 {
     TRACE("conglomerate::debug_render");
+    if (g_camera_link() == nullptr) {
+        return;
+    }
 
     auto &v1 = this->get_abs_po();
     auto &v138 = v1.get_z_facing();
-    auto &v2 = this->get_abs_position();
-    auto v139 = v2 + v138 + YVEC;
+    auto v139 = this->get_abs_position() + v138 + YVEC;
     [[maybe_unused]] auto v5 = this->get_abs_position() + YVEC;
-    //render_beam(v5, v139, color32 {33, 134, 216, 128}, 0.1, false);
+    render_beam(v5, v139, color32 {33, 134, 216, 128}, 0.1, false);
 
     auto &v6 = this->get_abs_po();
     auto &v140 = v6.get_z_facing();
@@ -544,10 +555,7 @@ void conglomerate::debug_render()
     auto v9 = v8 + YVEC;
     render_debug_hemisphere(v9, 0.12, color32 {242, 124, 6, 128});
 
-    auto &v175 = this->get_abs_position();
-    auto *v10 = g_camera_link();
-    auto &v11 = v10->get_abs_position();
-    auto v12 = v11 - v175;
+    auto v12 = g_camera_link()->get_abs_position() - this->get_abs_position();
     auto v189 = v12.length2();
     auto v176 = this->get_visual_radius();
     auto v188 = (sqr(v176) > v189 && debug_render_get_ival(SKELETONS) == 1);
@@ -556,21 +564,21 @@ void conglomerate::debug_render()
     {
         auto v13 = this->get_id();
         auto *v177 = v13.to_string();
-        auto v141 = color32(255, 0, 0, 255);
+        auto v141 = color32 {255, 0, 0, 255};
         auto &v14 = this->get_abs_position();
         sub_6A2635(v14, v141, 0.5, "%s", v177);
     }
 
     for ( auto i = 0; i < this->members.size(); ++i )
     {
+        auto &member = this->members.at(i);
         if ( this->field_E8.at(i) < 0
             || this->field_E8.at(i) >= this->skin_bones.size() + this->members.size() )
         {
-            auto v165 = color32(33, 134, 216, 128);
+            color32 v165 {33, 134, 216, 128};
             auto &v143 = this->get_abs_position();
-            auto &v28 = this->members.at(i);
-            auto &v29 = v28->get_abs_position();
-            //render_beam(v29, v143, v165, 0.02, 0);
+            auto &v29 = member->get_abs_position();
+            render_beam(v29, v143, v165, 0.02, 0);
         }
         else
         {
@@ -589,64 +597,51 @@ void conglomerate::debug_render()
             }
 
             auto &a2 = v21->get_abs_position();
-            auto v164 = color32(33, 134, 216, 128);
-            auto &v25 = this->members.at(i);
-            auto &v26 = v25->get_abs_position();
-            //render_beam(v26, a2, v164, 0.02, 0);
+            color32 v164 {33, 134, 216, 128};
+            auto &v26 = member->get_abs_position();
+            render_beam(v26, a2, v164, 0.02, 0);
         }
 
-        auto v178 = color32(242, 124, 6, 128);
-        auto &v31 = this->members.at(i);
-        auto &v32 = v31->get_abs_position();
+        color32 v178 {242, 124, 6, 128};
+        auto &v32 = member->get_abs_position();
         render_debug_hemisphere(v32, 0.02, v178);
 
         if ( v245 )
         {
-            auto &v34 = this->members.at(i);
-            auto v35 = v34->get_id();
+            auto v35 = member->get_id();
             auto *v179 = v35.to_string();
-            auto v144 = color32(255, 0, 0, 255);
-            auto &v37 = this->members.at(i);
-            auto &v38 = v37->get_abs_position();
+            color32 v144 {255, 0, 0, 255};
+            auto &v38 = member->get_abs_position();
             sub_6A2635(v38, v144, 0.5, "%s", v179);
 
-            auto v166 = color32(255, 0, 0, 128);
-            auto &v40 = this->members.at(i);
-            auto &v41 = v40->get_rel_po();
+            color32 v166 {255, 0, 0, 128};
+            auto &v41 = member->get_rel_po();
             auto &v42 = v41.get_x_facing();
             auto v145 = v42 * 0.050000001;
-            auto *v44 = this->members.at(i);
-            auto &v45 = v44->get_abs_position();
+            auto &v45 = member->get_abs_position();
 
             auto v146 = v45 + v145;
-            auto &v47 = this->members.at(i);
-            auto &v48 = v47->get_abs_position();
-            //render_beam(v48, v146, v166, 0.0099999998, 0);
+            auto &v48 = member->get_abs_position();
+            render_beam(v48, v146, v166, 0.0099999998, 0);
 
-            auto v167 = color32(0, 255, 0, 128);
-            auto &v50 = this->members.at(i);
-            auto &v51 = v50->get_rel_po();
+            color32 v167 {0, 255, 0, 128};
+            auto &v51 = member->get_rel_po();
             auto &v52 = v51.get_y_facing();
             auto v147 = v52 * 0.050000001;
-            auto &v54 = this->members.at(i);
-            auto &v55 = v54->get_abs_position();
+            auto &v55 = member->get_abs_position();
             auto v148 = v55 + v147;
-            auto &v57 = this->members.at(i);
-            auto &v58 = v57->get_abs_position();
-            //render_beam(v58, v148, v167, 0.0099999998, 0);
+            auto &v58 = member->get_abs_position();
+            render_beam(v58, v148, v167, 0.0099999998, 0);
 
-            auto v168 = color32(0, 0, 255, 128);
-            auto &v60 = this->members.at(i);
-            auto &v61 = v60->get_rel_po();
+            color32 v168 {0, 0, 255, 128};
+            auto &v61 = member->get_rel_po();
             auto &v62 = v61.get_z_facing();
             auto v149 = v62 * 0.050000001;
-            auto &v64 = this->members.at(i);
-            auto &v65 = v64->get_abs_position();
+            auto &v65 = member->get_abs_position();
             auto v150 = v65 + v149;
 
-            auto &v67 = this->members.at(i);
-            auto &v68 = v67->get_abs_position();
-            //render_beam(v68, v150, v168, 0.0099999998, 0);
+            auto &v68 = member->get_abs_position();
+            render_beam(v68, v150, v168, 0.0099999998, 0);
         }
     }
 
@@ -659,11 +654,11 @@ void conglomerate::debug_render()
             v71 = this->members.size(),
             v70 >= this->skin_bones.size() + v71) )
         {
-            auto v170 = color32(33, 134, 216, 128);
+            color32 v170 {33, 134, 216, 128};
             auto &v152 = this->get_abs_position();
             auto &v82 = this->skin_bones.at(i);
             auto &v83 = v82->get_abs_position();
-            //render_beam(v83, v152, v170, 0.02, 0);
+            render_beam(v83, v152, v170, 0.02, 0);
         }
         else
         {
@@ -682,14 +677,14 @@ void conglomerate::debug_render()
             }
 
             auto &v214 = v75->get_abs_position();
-            auto v169 = color32(33, 134, 216, 128);
+            color32 v169 {33, 134, 216, 128};
             auto v151 = v214;
             auto &v79 = this->skin_bones.at(i);
             auto &v80 = v79->get_abs_position();
-            //render_beam(v80, v151, v169, 0.02, 0);
+            render_beam(v80, v151, v169, 0.02, 0);
         }
 
-        auto v180 = color32(242, 124, 6, 128);
+        color32 v180 {242, 124, 6, 128};
         auto &v85 = this->skin_bones.at(i);
         auto &v86 = v85->get_abs_position();
         render_debug_hemisphere(v86, 0.02, v180);
@@ -705,20 +700,19 @@ void conglomerate::debug_render()
             auto &v92 = v91->get_abs_position();
             sub_6A2635(v92, v153, 0.5, "%s", v181);
 
-            auto v171 = color32(255, 0, 0, 128);
+            color32 v171 {255, 0, 0, 128};
             auto &v94 = this->skin_bones.at(i);
             auto &v95 = v94->get_abs_po();
-            auto &v96 = v95.get_x_facing();
-            auto v154 = v96 * 0.050000001;
+            auto v154 = v95.get_x_facing() * 0.050000001;
 
             auto &v98 = this->skin_bones.at(i);
             auto &v99 = v98->get_abs_position();
             auto v155 = v99 + v154;
             auto &v101 = this->skin_bones.at(i);
             auto &v102 = v101->get_abs_position();
-            //render_beam(v102, v155, v171, 0.0099999998, 0);
-            auto v172 = color32(0, 255, 0, 128);
+            render_beam(v102, v155, v171, 0.0099999998, 0);
 
+            color32 v172 {0, 255, 0, 128};
             auto &v104 = this->skin_bones.at(i);
             auto &v105 = v104->get_abs_po();
             auto &v106 = v105.get_y_facing();
@@ -730,9 +724,9 @@ void conglomerate::debug_render()
 
             auto &v111 = this->skin_bones.at(i);
             auto &v112 = v111->get_abs_position();
-            //render_beam(v112, v157, v172, 0.0099999998, 0);
+            render_beam(v112, v157, v172, 0.0099999998, 0);
 
-            auto v173 = color32(0, 0, 255, 128);
+            color32 v173 {0, 0, 255, 128};
             auto &v114 = this->skin_bones.at(i);
             auto &v115 = v114->get_abs_po();
             auto &v116 = v115.get_z_facing();
@@ -744,7 +738,7 @@ void conglomerate::debug_render()
 
             auto &v121 = this->skin_bones.at(i);
             auto &v122 = v121->get_abs_position();
-            //render_beam(v122, v159, v173, 0.0099999998, 0);
+            render_beam(v122, v159, v173, 0.0099999998, 0);
         }
     }
 
@@ -857,10 +851,12 @@ vector3d conglomerate::get_colgeom_center() {
     return this->get_abs_position();
 }
 
-void conglomerate::radius_changed(bool a2) {
-    if (a2) {
+void conglomerate::radius_changed(bool a2)
+{
+    if (a2)
+    {
         this->field_110 |= 3u;
-        this->field_8 |= 0x40u;
+        actor::radius_changed(a2);
     }
 }
 

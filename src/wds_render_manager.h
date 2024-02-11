@@ -51,7 +51,7 @@ struct wds_render_manager {
     //0x0052A470
     int add_far_away_entity(vhandle_type<entity> a2);
 
-    void update_occluders(camera *a2);
+    void update_occluders(camera &a2);
 
     //0x0054B250
     void render(camera &a2, int a3);
@@ -59,18 +59,24 @@ struct wds_render_manager {
     //0x00550930
     void init_level(const char *a2);
 
+    void create_colorvol_scene();
+
+    void render_lowlods(camera &);
+
     //0x0054ADE0
     void frame_advance(Float a2);
 
     void render_stencil_shadows(const camera &a2);
 
     //0x00547000
-    void build_render_data_regions(render_data *arg0, camera *arg4);
+    void build_render_data_regions(render_data &a2, camera &a3);
 
     //0x00547250
-    void build_render_data_ents(render_data *a2, camera *a3, int a4);
+    void build_render_data_ents(render_data &a2, camera &a3, int a4);
 
-    void sub_53D560(const camera *a2);
+    void clear_colorvol_scene();
+
+    void sub_53D560(camera &a2);
 };
 
 extern nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base>::Iterator sub_CBFF50(int a3);

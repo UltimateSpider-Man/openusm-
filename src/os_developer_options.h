@@ -39,7 +39,8 @@ struct os_developer_options : singleton {
     os_developer_options();
 
     //0x005E2CB0
-    virtual ~os_developer_options();
+    //virtual
+    ~os_developer_options();
 
 	void toggle_flag(flags_t a2);
 

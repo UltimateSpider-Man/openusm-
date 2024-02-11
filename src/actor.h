@@ -168,7 +168,7 @@ struct actor : entity {
 	void create_adv_ptrs();
 
     //0x004C0E60
-    bool has_camera_collision();
+    bool has_camera_collision() const;
 
     //0x004C0E30
     bool has_entity_collision();
@@ -226,6 +226,9 @@ struct actor : entity {
 
     //virtual
     vector3d get_colgeom_center();
+
+    //virtual
+    void radius_changed(bool );
 
     //0x004E33B0
     void _render(Float a2);

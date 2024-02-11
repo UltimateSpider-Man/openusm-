@@ -11,6 +11,8 @@ namespace aeps {
     //0x004CDFC0
     void RefreshDevOptions();
 
+    void FrameSetupRenderAndThenRender();
+
     extern Var<void *> s_activeStructs;
 
     //0x004D91A0

@@ -52,6 +52,8 @@ struct IGOFrontEnd {
     //0x00648B40
     IGOFrontEnd();
 
+    void UpdateInScene();
+
     //0x00647DE0
     void Init();
 

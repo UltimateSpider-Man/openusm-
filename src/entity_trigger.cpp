@@ -16,3 +16,14 @@ entity_trigger::entity_trigger(string_hash a2, entity_base *a3, Float a4) : trig
     auto *v6 = v9.c_str();
     sp_log("constructing entity trigger tied to %s", v6);
 }
+
+entity_base *entity_trigger::get_ent()
+{
+    auto *ent= this->field_58.get_volatile_ptr();
+    if ( ent != nullptr ) {
+        return ent;
+    }
+
+    this->field_58.field_0 = 0;
+    return nullptr;
+}

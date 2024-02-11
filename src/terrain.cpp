@@ -103,12 +103,8 @@ terrain::terrain(const mString &a2)
             district_graph_container *dsg;
 
             auto allocated_mem =
-#if 1 
                 parse_generic_object_mash(dsg, res,
                     nullptr, nullptr, nullptr, 0u, 0u, nullptr);
-#else
-                CDECL_CALL(0x, dsg, res, nullptr, nullptr, nullptr, 0, 0, nullptr);
-#endif
             assert(!allocated_mem);
             assert(dsg != nullptr && "we have no dsg!!!");
 
@@ -117,24 +113,22 @@ terrain::terrain(const mString &a2)
 
         for (int idx = 0; idx < this->total_regions; ++idx)
         {
-            auto *v20 = this->get_region(idx);
+            auto *reg = this->get_region(idx);
             int v19 = 1;
             while ( 1 )
             {
-                auto v9 = v19;
-                auto *v4 = v20->get_scene_id(false);
-                auto *v5 = v4->c_str();
-                mString a1a {{0}, "%s_v%d", v5, v9};
-                auto *v6 = a1a.c_str();
-                auto v12 = create_resource_key_from_path(v6, RESOURCE_KEY_TYPE_PACK);
+                auto &v4 = reg->get_scene_id(false);
+                mString a1a {{0}, "%s_v%d", v4.c_str(), v19};
+                auto v12 = create_resource_key_from_path(a1a.c_str(), RESOURCE_KEY_TYPE_PACK);
                 auto v15 = !resource_manager::get_pack_file_stats(v12, nullptr, nullptr, nullptr);
-                if ( v15 )
+                if ( v15 ) {
                     break;
+				}
 
                 ++v19;
             }
 
-            v20->field_C8 = v19;
+            reg->field_C8 = v19;
         }
 
         resource_manager::add_resource_pack_modified_callback(terrain_packs_modified_callback);
@@ -150,7 +144,8 @@ terrain::terrain(const mString &a2)
     
 }
 
-terrain::~terrain() {
+terrain::~terrain()
+{
     THISCALL(0x0054E990, this);
 }
 
@@ -170,10 +165,11 @@ void terrain::update_region_pack_info()
         auto func = [](region *self, bool a2) -> void
         {
             uint32_t v2;
-            if ( a2 )
+            if ( a2 ) {
                 v2 = self->flags | 0x4000;
-            else
+            } else {
                 v2 = self->flags & 0xFFFFBFFF;
+			}
         
             self->flags = v2;
         };
@@ -182,11 +178,39 @@ void terrain::update_region_pack_info()
     }
 }
 
-bool terrain::district_load_callback(resource_pack_slot::callback_enum a1,
-                                     resource_pack_streamer *a2,
-                                     resource_pack_slot *a3,
-                                     limited_timer *a4) {
-    return (bool) CDECL_CALL(0x0055C350, a1, a2, a3, a4);
+bool terrain::district_load_callback(resource_pack_slot::callback_enum reason,
+                                     resource_pack_streamer *streamer,
+                                     resource_pack_slot *slot,
+                                     limited_timer *a4)
+{
+	TRACE("terrain::district_load_callback");
+
+	if constexpr (1) {
+
+		bool result = false;
+		switch ( reason )
+		{
+		case resource_pack_slot::CALLBACK_LOAD_STARTED:
+			result = terrain::district_load_started_callback(reason, streamer, slot);
+			break;
+		case resource_pack_slot::CALLBACK_CONSTRUCT:
+			result = terrain::district_construct_callback(reason, streamer, slot, a4);
+			break;
+		case resource_pack_slot::CALLBACK_PRE_DESTRUCT:
+			result = terrain::district_pre_destruct_callback(reason, streamer, slot);
+			break;
+		case resource_pack_slot::CALLBACK_DESTRUCT:
+			result = terrain::district_destruct_callback(reason, streamer, slot, a4);
+			break;
+		default:
+			result = false;
+			break;
+		}
+
+		return result;
+	} else {
+		return (bool) CDECL_CALL(0x0055C350, reason, streamer, slot, a4);
+	}
 }
 
 void terrain::unload_district_immediate(int a2)
@@ -285,7 +309,10 @@ int terrain::get_region_index_by_name(const fixedstring<4> &a2)
     return THISCALL(0x0054F670, this, &a2);
 }
 
-region *terrain::get_region(int idx) {
+region *terrain::get_region(int idx)
+{
+	TRACE("terrain::get_region");
+
     assert(idx >= 0);
     assert(idx < total_regions);
 
@@ -317,6 +344,28 @@ int terrain::find_strip(const mString &a2) {
     return -1;
 }
 
+bool terrain::district_pre_destruct_callback(
+		resource_pack_slot::callback_enum reason,
+        resource_pack_streamer *a2,
+        resource_pack_slot *which_pack_slot)
+{
+	assert(reason == resource_pack_slot::CALLBACK_PRE_DESTRUCT);
+
+	auto *ter = g_world_ptr()->get_the_terrain();
+	assert(ter != nullptr);
+
+	assert(which_pack_slot != nullptr);
+
+	auto &v3 = which_pack_slot->get_pack_token();
+	auto *epack = ter->field_24.find_eligible_pack_by_token(v3);
+	assert(epack != nullptr);
+
+	auto &v4 = epack->get_token();
+	auto *reg = ter->get_region(v4.field_4);
+	reg->unload_progress.clear();
+	return false;
+}
+
 bool terrain::district_construct_callback(resource_pack_slot::callback_enum reason,
                                           resource_pack_streamer *a2,
                                           resource_pack_slot *which_pack_slot,
@@ -325,6 +374,26 @@ bool terrain::district_construct_callback(resource_pack_slot::callback_enum reas
     assert(reason == resource_pack_slot::CALLBACK_CONSTRUCT);
 
     return (bool) CDECL_CALL(0x0055BFA0, reason, a2, which_pack_slot, a4);
+}
+
+bool terrain::district_load_started_callback(resource_pack_slot::callback_enum a1,
+											 resource_pack_streamer *a2,
+											 resource_pack_slot *a3)
+{
+	auto &v6 = a3->get_pack_token();
+	auto *the_terrain = g_world_ptr()->get_the_terrain();
+	auto *eligible_pack = the_terrain->field_24.find_eligible_pack_by_token(v6);
+	auto v7 = eligible_pack->get_token().field_4;
+	auto *reg = the_terrain->get_region(v7);
+	[](auto &v4)
+	{
+		v4.field_0.clear();
+	  	v4.field_4.clear();
+	  	v4.field_C.clear();
+	  	v4.field_10.clear();
+	  	v4.field_14.clear();
+	}(reg->field_118);
+	return false;
 }
 
 bool terrain::district_destruct_callback(resource_pack_slot::callback_enum reason,
@@ -486,10 +555,11 @@ void terrain::start_streaming(void (*callback)(void))
 
         int v8 = 0;
 
-        for (auto i = 0; i < this->total_regions; ++i) {
+        for (auto i = 0; i < this->total_regions; ++i)
+		{
             auto &reg = this->regions[i];
-
-            if (reg != nullptr) {
+            if (reg != nullptr)
+			{
                 if (reg->mash_info != nullptr) {
                     v8 += reg->get_multiblock_number();
                 }
@@ -520,21 +590,23 @@ void terrain::start_streaming(void (*callback)(void))
 
             string_hash hash{strip.field_0};
 
-            resource_key v24;
-            v24.set(hash, RESOURCE_KEY_TYPE_PACK);
+            resource_key v24 {hash, RESOURCE_KEY_TYPE_PACK};
 
-            if (resource_manager::get_pack_file_stats(v24, nullptr, nullptr, nullptr)) {
+            if (resource_manager::get_pack_file_stats(v24, nullptr, nullptr, nullptr))
+			{
                 eligible_pack_token a4{1, i};
-
                 this->field_24.add_eligible_pack(strip.field_0, a4, strip_streamer);
             }
         }
 
-        for (int reg_idx = 0; reg_idx < this->total_regions; ++reg_idx) {
+        for (int reg_idx = 0; reg_idx < this->total_regions; ++reg_idx)
+		{
             auto *reg = this->regions[reg_idx];
-            if (reg != nullptr) {
+            if (reg != nullptr)
+			{
                 auto *mash_info = reg->mash_info;
-                if (mash_info != nullptr) {
+                if (mash_info != nullptr)
+				{
                     auto *str = mash_info->field_0.to_string();
 
                     eligible_pack_token pack_token{2, reg_idx};
@@ -583,13 +655,67 @@ void terrain::start_streaming(void (*callback)(void))
         this->force_streamer_refresh();
 
     }
-    else {
+    else
+	{
         THISCALL(0x0055C3F0, this, callback);
     }
 }
 
-void terrain::set_district_variant(int a2, int a3, bool a4) {
-    THISCALL(0x00557480, this, a2, a3, a4);
+void terrain::set_district_variant(int district_id, int variant, bool a4)
+{
+	if constexpr (0) {
+		assert(variant >= 0);
+
+		auto *v5 = this->get_district(district_id);
+		if ( v5 != nullptr )
+		{
+			auto *v7 = v5->get_scene_id(false).c_str();
+			string_hash v23 {v7};
+
+			auto *epack = this->field_24.find_eligible_pack_by_name(v23);
+			if ( epack != nullptr )
+			{
+				for ( auto &v14 : this->field_70 )
+				{
+					if ( v14.field_0 == epack )
+					{
+						v14.field_8 = variant;
+						return;
+					}
+				}
+
+				auto &token = epack->get_token();
+				auto *reg = this->get_region(token.field_4);
+				if ( reg->get_district_variant() != variant )
+				{
+					auto *slot = this->field_24.get_eligible_pack_slot(epack);
+					if ( slot != nullptr )
+					{
+						pack_switch_info_t v26 {epack, slot, variant};
+						if constexpr (1) {
+							this->field_70.push_back(v26);
+						} else {
+							THISCALL(0x005700A0, &this->field_70, v26);
+						}
+						if ( a4 )
+						{
+							reg->flags |= 0x20000u;
+							this->unload_district_immediate(reg->get_district_id());
+						}
+					}
+					else
+					{
+						reg->set_district_variant(variant);
+						auto &v22 = reg->get_scene_id(true);
+						epack->set_packfile_name(v22.c_str());
+					}
+				}
+			}
+		}
+
+	} else {
+		THISCALL(0x00557480, this, district_id, variant, a4);
+	}
 }
 
 region *terrain::find_outermost_region(const vector3d &a2) {

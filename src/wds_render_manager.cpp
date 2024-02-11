@@ -2,22 +2,27 @@
 
 #include "GL/gl.h"
 
+#include "aeps.h"
 #include "beam.h"
 #include "bitvector.h"
 #include "camera.h"
 #include "camera_teleport_update_visitor.h"
 #include "city_lod.h"
+#include "comic_panels.h"
 #include "culling_params.h"
 #include "cut_scene_player.h"
 #include "debug_render.h"
+#include "femanager.h"
 #include "filespec.h"
 #include "func_wrapper.h"
 #include "game.h"
 #include "geometry_manager.h"
 #include "glass_house_manager.h"
 #include "hierarchical_entity_proximity_map.h"
+#include "igofrontend.h"
 #include "line_info.h"
 #include "loaded_regions_cache.h"
+#include "motion_effect_struct.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
 #include "render_text.h"
@@ -25,20 +30,23 @@
 #include "occlusion_visitor.h"
 #include "oldmath_po.h"
 #include "oriented_bounding_box_root_node.h"
+#include "os_developer_options.h"
+#include "physical_interface.h"
 #include "pcuv_shadermaterial.h"
 #include "proximity_map.h"
 #include "region.h"
 #include "renderoptimizations.h"
 #include "sector2d.h"
+#include "shadow.h"
 #include "subdivision_node_obb_base.h"
 #include "trace.h"
-#include "wds.h"
 #include "terrain.h"
+#include "us_colorvol.h"
+#include "utility.h"
+#include "variables.h"
 #include "vector2di.h"
 #include "vector2d.h"
-#include "utility.h"
-#include "physical_interface.h"
-#include "os_developer_options.h"
+#include "wds.h"
 
 #include "common.h"
 
@@ -78,7 +86,6 @@ wds_render_manager::wds_render_manager() {
     this->field_84 = 175.0f;
     this->field_88 = 250.0f;
 }
-
 
 void show_terrain_info()
 {
@@ -140,8 +147,8 @@ int wds_render_manager::add_far_away_entity(vhandle_type<entity> a2) {
     return THISCALL(0x0052A470, this, a2);
 }
 
-void wds_render_manager::init_level(const char *a2) {
-
+void wds_render_manager::init_level(const char *a2)
+{
     TRACE("wds_render_manager::init_level", a2);
     if constexpr (1) {
         if (this->field_5C == nullptr) {
@@ -159,38 +166,59 @@ void wds_render_manager::init_level(const char *a2) {
     }
 }
 
+void wds_render_manager::create_colorvol_scene()
+{
+    THISCALL(0x0053DA50, this);
+}
+
+void wds_render_manager::render_lowlods(camera &)
+{
+    if ( os_developer_options::instance()->get_flag(mString{"RENDER_LOWLODS"}) ) {
+        this->field_94->render();
+    }
+}
+
 static constexpr auto g_projected_fov_multiplier = 0.80000001f;
 
-void wds_render_manager::update_occluders(camera *a2) {
-    occlusion::empty_quad_database();
+void wds_render_manager::update_occluders(camera &a2)
+{
+    TRACE("wds_render_manager::update_occluders");
 
-    for (auto &i : this->field_30.field_0) {
-        auto *reg = i.field_0;
+    if constexpr (0) {
+        occlusion::empty_quad_database();
 
-        float v18 = reg->get_ground_level();
+        for (auto &i : this->field_30.field_0) {
+            auto *reg = i.field_0;
 
-        auto &v5 = a2->get_abs_po();
+            float v18 = reg->get_ground_level();
 
-        auto &v6 = a2->get_abs_position();
+            auto &v5 = a2.get_abs_po();
 
-        occlusion_visitor visitor{v6, v5.get_z_facing(), v18, reg};
+            auto &v6 = a2.get_abs_position();
 
-        ++subdivision_node_obb_base::visit_key();
+            occlusion_visitor visitor{v6, v5.get_z_facing(), v18, reg};
 
-        auto a4 = a2->compute_xz_projected_fov() * g_projected_fov_multiplier;
+            ++subdivision_node_obb_base::visit_key();
 
-        auto &v11 = a2->get_abs_po();
+            auto a4 = a2.compute_xz_projected_fov() * g_projected_fov_multiplier;
 
-        auto &v12 = a2->get_abs_po();
+            auto &v11 = a2.get_abs_po();
 
-        vector3d a2a = a2->get_abs_position() - v12.get_z_facing() * 20.f;
+            auto &v12 = a2.get_abs_po();
 
-        sector2d v26{a2a, v11.get_z_facing(), a4};
-        ++region::visit_key2();
-        auto *v16 = reg->field_98;
-        if (v16 != nullptr) {
-            v16->field_5C->traverse_sector_raster(v26, 100.0f, visitor);
+            vector3d a2a = a2.get_abs_position() - v12.get_z_facing() * 20.f;
+
+            sector2d v26{a2a, v11.get_z_facing(), a4};
+            ++region::visit_key2();
+            auto *v16 = reg->field_98;
+            if (v16 != nullptr) {
+                v16->field_5C->traverse_sector_raster(v26, 100.0f, visitor);
+            }
         }
+    }
+    else
+    {
+        THISCALL(0x00530500, this, &a2);
     }
 }
 
@@ -198,7 +226,7 @@ void update_camera_teleport(camera &cam)
 {
     TRACE("update_camera_teleport");
 
-    if constexpr (1) {
+    if constexpr (0) {
         auto *v1 = g_cut_scene_player();
         auto v17 = ( v1->is_playing() ? 1.0 : 25.0 );
 
@@ -248,6 +276,21 @@ void update_camera_teleport(camera &cam)
     }
 }
 
+void sub_520E60()
+{
+    CDECL_CALL(0x00520E60);
+}
+
+void update_spidey_interface()
+{
+    if ( g_world_ptr() != nullptr )
+    {
+        if ( g_world_ptr()->get_hero_ptr(0) != nullptr ) {
+            g_femanager().IGO->UpdateInScene();
+        }
+    }
+}
+
 #include "debug_menu.h"
 
 void wds_render_manager::render(camera &a2, int a3)
@@ -256,7 +299,102 @@ void wds_render_manager::render(camera &a2, int a3)
 
     assert(this->field_94 != nullptr);
 
-    THISCALL(0x0054B250, this, &a2, a3);
+    if constexpr (1)
+    {
+        sub_520E60();
+        update_camera_teleport(a2);
+        if ( g_disable_occlusion_culling() == 3 )
+        {
+            occlusion::reset_active_occluders();
+        }
+        else
+        {
+            this->update_occluders(a2);
+            occlusion::init_frame(a2.get_abs_position());
+        }
+
+        auto *panel_params = comic_panels::get_panel_params();
+        if ( panel_params == nullptr || (panel_params->field_0 & 0x20) != 0 )
+        {
+            this->create_colorvol_scene();
+            
+            if ( debug_render_get_bval(LOW_LODS) ) {
+                this->render_lowlods(a2);
+            }
+
+            g_camera_link() = &a2;
+
+            this->field_30.field_0.clear();
+            this->field_30.field_10.clear();
+
+            a2.compute_sector(g_world_ptr()->the_terrain, false, nullptr);
+            auto *prim_reg = a2.get_primary_region();
+
+            auto *reg = g_world_ptr()->the_terrain->find_region(a2.get_abs_position(), nullptr);
+            if ( reg != prim_reg )
+            {
+                auto *v10 = g_world_ptr()->get_hero_ptr(a3);
+                if ( v10 != nullptr )
+                {
+                    if ( v10->get_primary_region() == nullptr )
+                    {
+                        prim_reg = reg;
+                    }
+                }
+            }
+
+            if ( prim_reg == nullptr )
+            {
+                sp_log("no camera region!!!!");
+                if ( g_disable_occlusion_culling() != 3 ) {
+                    occlusion::term_frame();
+                }
+
+                return;
+            }
+
+            geometry_manager::rebuild_view_frame();
+            ++region::visit_key();
+            this->field_30.field_0.reserve(g_world_ptr()->the_terrain->get_num_regions() + 1);
+
+            a2.get_abs_position();
+
+            this->build_render_data_regions(this->field_30, a2);
+            this->sub_53D560(a2);
+        }
+
+        if ( debug_render_get_bval(ENTITIES) )
+        {
+            this->build_render_data_ents(this->field_30, a2, a3);
+            aeps::FrameSetupRenderAndThenRender();
+            if ( panel_params == nullptr || (panel_params->field_0 & 0x20) != 0 )
+            {
+                motion_effect_struct::render_all_motion_fx(a2, geometry_manager::world_space_frustum());
+                update_spidey_interface();
+                ++entity::visit_key();
+            }
+        }
+
+        if ( panel_params == nullptr || (panel_params->field_0 & 0x20) != 0 )
+        {
+            send_shadow_projectors();
+
+            if ( debug_render_get_bval(OCCLUSION) )
+            {
+                occlusion::debug_render_occluders();
+            }
+
+            this->debug_render();
+            this->clear_colorvol_scene();
+        }
+
+        if ( g_disable_occlusion_culling() != 3 ) {
+            occlusion::term_frame();
+        }
+
+    } else {
+        THISCALL(0x0054B250, this, &a2, a3);
+    }
 
     //_populate_missions();
 
@@ -285,25 +423,30 @@ void wds_render_manager::render_stencil_shadows(const camera &a2)
     THISCALL(0x0053D5E0, this, &a2);
 }
 
-void wds_render_manager::build_render_data_regions(render_data *arg0, camera *arg4)
+void wds_render_manager::build_render_data_regions(render_data &a2, camera &a3)
 {
     TRACE("wds_render_manager::build_render_data_regions");
 
-    THISCALL(0x00547000, this, arg0, arg4);
+    THISCALL(0x00547000, this, &a2, &a3);
 }
 
-void wds_render_manager::build_render_data_ents(render_data *a2, camera *a3, int a4)
+void wds_render_manager::build_render_data_ents(render_data &a2, camera &a3, int a4)
 {
     TRACE("wds_render_manager::build_render_data_ents");
 
-    THISCALL(0x00547250, this, a2, a3, a4);
+    THISCALL(0x00547250, this, &a2, &a3, a4);
 }
 
-void wds_render_manager::sub_53D560(const camera *a2)
+void wds_render_manager::clear_colorvol_scene()
+{
+    USColorVolShaderSpace::gUSColorVolScene() = nullptr;
+}
+
+void wds_render_manager::sub_53D560(camera &a2)
 {
     TRACE("wds_render_manager::sub_53D560");
 
-    THISCALL(0x0053D560, this, a2);
+    THISCALL(0x0053D560, this, &a2);
 }
 
 void wds_render_manager_patch() {

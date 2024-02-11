@@ -28,7 +28,27 @@ vm_executable::~vm_executable()
 
 void vm_executable::destroy()
 {
-    THISCALL(0x005AF2C0, this);
+	if constexpr (0)
+	{
+		if ( this->debug_info != nullptr )
+		{
+			if ( this->debug_info->parameters != nullptr ) {
+				operator delete[](this->debug_info->parameters);
+			}
+
+			if ( this->debug_info ) {
+				THISCALL(0x005B7C90, debug_info);
+				operator delete(this->debug_info);
+			}
+
+			this->debug_info = nullptr;
+		}
+
+		this->buffer = nullptr;
+		this->flags &= ~2u;
+	} else {
+		THISCALL(0x005AF2C0, this);
+	}
 }
 
 void vm_executable::un_mash(
@@ -39,7 +59,8 @@ void vm_executable::un_mash(
 {
     TRACE("vm_executable::un_mash");
 
-    assert(!is_un_mashed());
+    assert(!this->is_un_mashed());
+
     this->owner = CAST(owner, a3);
     assert((flags & VM_EXECUTABLE_FLAG_FROM_MASH ) != 0);
 
@@ -50,15 +71,19 @@ void vm_executable::un_mash(
     this->flags |= VM_EXECUTABLE_FLAG_UN_MASHED;
 
     assert(this->debug_info == nullptr);
+
+    sp_log("buffer_len = %d", this->buffer_len);
 }
 
-void vm_executable::link(const script_executable *a2) {
+void vm_executable::link(const script_executable *a2)
+{
     TRACE("vm_executable::link");
 
     this->link_un_mash(a2);
 }
 
-void vm_executable::link_un_mash(const script_executable *a2) {
+void vm_executable::link_un_mash(const script_executable *a2)
+{
     TRACE("vm_executable::link_un_mash", this->fullname.to_string());
 
     {
@@ -78,8 +103,11 @@ void vm_executable::link_un_mash(const script_executable *a2) {
         printf("\n");
     }
 
-    if constexpr (1) {
-        if (!this->is_linked()) {
+    if constexpr (1)
+	{
+        printf("buffer_len = %d", this->buffer_len);
+        if ( !this->is_linked() )
+		{
             uint16_t *buffer = this->buffer;
             this->flags |= VM_EXECUTABLE_FLAG_LINKED;
             auto *v5 = a2;
@@ -397,7 +425,8 @@ void vm_executable::link_un_mash(const script_executable *a2) {
     }
 }
 
-void vm_executable::write(chunk_file *file, const vm_executable *x, const std::set<string_hash> &set) {
+void vm_executable::write(chunk_file *file, const vm_executable *x, const std::set<string_hash> &set)
+{
     TRACE("vm_executable::serialize");
 
     assert(x->debug_info == nullptr);
@@ -530,7 +559,7 @@ void vm_executable::write(chunk_file *file, const vm_executable *x, const std::s
 void vm_executable::read(chunk_file *file, vm_executable *x) {
     TRACE("vm_executable::load");
 
-    auto *mem = mem_alloc(0x24);
+    auto *mem = mem_alloc(sizeof(debug_info_t));
     x->debug_info = new (mem) debug_info_t {};
 
     assert(x->debug_info != nullptr);

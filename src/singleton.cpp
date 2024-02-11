@@ -1,6 +1,6 @@
 #include "singleton.h"
 
-singleton::singleton()
-{
+#include "common.h"
 
-}
+VALIDATE_SIZE(singleton, 0x4);
+

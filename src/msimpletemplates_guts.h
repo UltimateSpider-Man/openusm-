@@ -1,5 +1,7 @@
 #pragma once
 
+#include "trace.h"
+
 #include <cstdint>
 
 template<typename T>
@@ -8,10 +10,18 @@ struct simple_list {
     T *_last_element;
     uint32_t m_size;
 
+    simple_list() : _first_element(nullptr),
+                    _last_element(nullptr),
+                    m_size(0) {}
+
     struct vars_t {
         T *_sl_next_element;
         T *_sl_prev_element;
         simple_list<T> *_sl_list_owner;
+        
+        vars_t() : _sl_next_element(nullptr),
+                    _sl_prev_element(nullptr),
+                    _sl_list_owner(nullptr) {}
     };
 
     struct iterator {
@@ -53,7 +63,10 @@ struct simple_list {
         return iterator {nullptr};
     }
 
-    iterator push_back(T *tmp) {
+    iterator push_back(T *tmp)
+    {
+        TRACE("simple_list::push_back");
+
         assert(tmp != nullptr);
 
         assert(tmp->simple_list_vars._sl_next_element == nullptr);
@@ -64,6 +77,7 @@ struct simple_list {
 
         tmp->simple_list_vars._sl_next_element = this->_first_element;
         tmp->simple_list_vars._sl_prev_element = nullptr;
+
         if ( this->_first_element != nullptr ) {
             this->_first_element->simple_list_vars._sl_prev_element = tmp;
         }
@@ -74,12 +88,17 @@ struct simple_list {
         }
 
         tmp->simple_list_vars._sl_list_owner = this;
+
         ++this->m_size;
+
         iterator a2{tmp};
         return a2;
     }
 
-    iterator emplace_back(T *tmp) {
+    iterator emplace_back(T *tmp)
+    {
+        TRACE("simple_list::emplace_back");
+
         assert(tmp != nullptr);
 
         assert(tmp->simple_list_vars._sl_next_element == nullptr);
@@ -88,8 +107,8 @@ struct simple_list {
 
         assert(tmp->simple_list_vars._sl_list_owner == nullptr);
 
-        if ( this->_last_element != nullptr ) {
-
+        if ( this->_last_element != nullptr )
+        {
             assert(_last_element->simple_list_vars._sl_next_element == nullptr);
 
             this->_last_element->simple_list_vars._sl_next_element = tmp;
@@ -117,8 +136,8 @@ struct simple_list {
             assert(this->contains(iter));
 
             result = (a3
-                    ? result = iter->simple_list_vars._sl_prev_element
-                    : result = iter->simple_list_vars._sl_next_element
+                        ? iter->simple_list_vars._sl_prev_element
+                        : iter->simple_list_vars._sl_next_element
                         );
 
             auto *sl_prev_element = iter->simple_list_vars._sl_prev_element;

@@ -1988,18 +1988,11 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
             auto *v35 = this->field_C;
 
-            if ((v35->field_8 & 0x10000000) != 0) {
-                v35->update_abs_po(1);
-            }
-
-            auto *v37 = v35->my_abs_po;
-            if ((v35->field_8 & 0x10000000) != 0) {
-                v35->update_abs_po(1);
-            }
+            auto &v37 = v35->get_abs_po();
 
             sweet_cone_t sweet_cone{anchor_finder,
-                                    v35->my_abs_po->get_position(),
-                                    v37->get_z_facing(),
+                                    v35->get_abs_po().get_position(),
+                                    v37.get_z_facing(),
                                     v60,
                                     vector3d{0}};
 
@@ -2082,8 +2075,10 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
     }
 }
 
-void swing_inode::setup_new_web() {
-    if constexpr (1) {
+void swing_inode::setup_new_web()
+{
+    if constexpr (1)
+    {
         constexpr float max_swing_length_mod = 3.0;
 
         this->field_54 = false;
@@ -2153,15 +2148,12 @@ void swing_inode::setup_new_web() {
 
         swingers()[0].field_4C = 0;
         entity_base *v25 = this->field_C;
-        if ((v25->field_8 >> 28) & 1) {
-            v25->update_abs_po(true);
-        }
 
         auto *_polytube = swingers()[0].field_90;
 
         //sp_log("Address of vtbl = 0x%08X", get_vtbl(_polytube));
 
-        entity_set_abs_po(_polytube, *v25->my_abs_po);
+        entity_set_abs_po(_polytube, v25->get_abs_po());
         entity_base *v26 = swingers()[0].field_3C;
 
         vector3d a2a = swingers()[0].field_40 + v26->get_abs_position();

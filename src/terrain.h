@@ -20,6 +20,12 @@ struct stack_allocator;
 struct traffic_path_graph;
 struct traffic_path_brew;
 
+struct pack_switch_info_t {
+	eligible_pack *field_0;
+	resource_pack_slot *field_4;
+	int field_8;
+};
+
 struct terrain {
     region **regions;
     proximity_map *region_map;
@@ -36,7 +42,7 @@ struct terrain {
     AvlTree<region_lookup_entry> field_5C;
     int field_68;
     traffic_path_graph *traffic_ptr;
-    _std::vector<void *> field_70;
+    _std::vector<pack_switch_info_t> field_70;
     _std::list<region *> field_80;
 
     //0x00559920
@@ -140,6 +146,16 @@ struct terrain {
                                             resource_pack_streamer *a2,
                                             resource_pack_slot *which_pack_slot,
                                             limited_timer *a4);
+
+	static bool district_load_started_callback(resource_pack_slot::callback_enum a1,
+											 resource_pack_streamer *a2,
+											 resource_pack_slot *a3);
+
+	static bool district_pre_destruct_callback(
+		resource_pack_slot::callback_enum reason,
+        resource_pack_streamer *a2,
+        resource_pack_slot *which_pack_slot);
+
 
     //0x0055C350
     static bool district_load_callback(resource_pack_slot::callback_enum a1,

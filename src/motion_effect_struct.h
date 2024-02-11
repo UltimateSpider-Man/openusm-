@@ -5,6 +5,8 @@
 #include "vector2d.h"
 #include "vector3d.h"
 
+struct camera;
+struct hull;
 struct mString;
 
 struct motion_effect_struct {
@@ -15,6 +17,8 @@ struct motion_effect_struct {
     motion_effect_struct(entity_base_vhandle a2, const mString &a3);
 
     ~motion_effect_struct();
+
+    static void render_all_motion_fx(camera &a2, hull &a3);
 
     //0x004DC820
     void render_trail(vector3d a1,

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "trace.h"
+#include "vtbl.h"
 
 VALIDATE_SIZE(trigger, 0x58);
 
@@ -32,4 +33,22 @@ trigger::~trigger() {
 
 void trigger::set_multiple_entrance(bool a2) {
     THISCALL(0x0053C390, this, a2);
+}
+
+bool trigger::is_point_trigger() const
+{
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x170));
+    return func(this);
+}
+
+bool trigger::is_box_trigger() const
+{
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x174));
+    return func(this);
+}
+
+bool trigger::is_entity_trigger() const
+{
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x178));
+    return func(this);
 }

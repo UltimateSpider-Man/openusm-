@@ -32,6 +32,10 @@ struct camera : actor {
 
     //0x00577AF0
     /* virtual */ void adjust_geometry_pipe(bool a2);
+
+
 };
+
+inline Var<camera*> g_camera_link {0x0095C720};
 
 extern void camera_patch();
