@@ -392,6 +392,11 @@ void app::cleanup()
 
 void app_patch()
 {
+    if constexpr (1)
+    {
+        REDIRECT(0x005E10BF, unit_tests);
+    }
+
 
     REDIRECT(0x005AD2E9, app::create_inst);
 
@@ -404,12 +409,6 @@ void app_patch()
     {
         FUNC_ADDRESS(address, &app::internal::sub_5B8670);
         SET_JUMP(0x005B8670, address);
-    }
-
-    if constexpr (0) {
-        //REDIRECT(0x005E10BF, tokenizer_unit_test);
-        //REDIRECT(0x005E10BF, collide_unit_test);
-        REDIRECT(0x005E10BF, mString_unit_test);
     }
 
     REDIRECT(0x005E10EE, init_shadow_targets);

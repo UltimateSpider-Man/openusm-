@@ -122,6 +122,39 @@ bool actor::has_skeleton_ifc() const {
     return func(this);
 }
 
+color32 actor::_get_render_color() const
+{
+    TRACE("actor::get_render_color");
+
+    color32 result = (this->adv_ptrs != nullptr && this->adv_ptrs->field_8 != nullptr
+                        ? this->adv_ptrs->field_8->field_0
+                        : color32 {255, 255, 255, 255}
+                    );
+
+    auto c = result.to_color();
+    sp_log("result = %f %f %f %f", c.r, c.g, c.b, c.a);
+    return result;
+}
+
+color32 * __fastcall actor_get_render_color(const actor *self, void *, color32 *out)
+{
+    *out = self->_get_render_color();
+    return out;
+}
+
+float actor::_get_render_alpha_mod() const
+{
+    TRACE("actor::get_render_alpha_mod");
+
+    float alpha_mod =  ( this->adv_ptrs != nullptr && this->adv_ptrs->field_8 != nullptr
+                            ? this->adv_ptrs->field_8->field_14
+                            : 1.0f
+                        );
+
+    sp_log("alpha_mod = %f", alpha_mod);
+    return alpha_mod;
+}
+
 void actor::set_render_scale(const vector3d &s)
 {
 	assert(s.is_valid());
@@ -882,10 +915,13 @@ void actor::_render(Float a2)
 {
     TRACE("actor::render");
 
+    sp_log("%f", float{a2});
+
     if constexpr (0)
     {
         auto *mesh = this->get_mesh();
-        if (mesh != nullptr) {
+        if (mesh != nullptr)
+        {
             assert(mesh != nullptr && is_visible() && is_renderable());
 
             nglParamSet<nglShaderParamSet_Pool> ShaderParams{1};
@@ -937,7 +973,6 @@ void actor::_render(Float a2)
 
             FastListAddMesh(mesh, *v21, &g_MeshParams, &ShaderParams);
         }
-
     }
     else
     {
@@ -1241,6 +1276,15 @@ void setup_hero_capsule(actor *act) {
 
 void actor_patch()
 {
+    {
+        SET_JUMP(0x004B8D00, actor_get_render_color);
+    }
+
+    {
+        FUNC_ADDRESS(address, &actor::_get_render_alpha_mod);
+        SET_JUMP(0x004B8DF0, address);
+    }
+
     {
         FUNC_ADDRESS(address, &actor::_un_mash);
         set_vfunc(0x00884304, address);

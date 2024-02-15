@@ -10,9 +10,11 @@ Var<int> nglShaderParamSet_Pool::NextID = {0x00971E8C};
 Var<int> nglSceneParamSet_Pool::NextID = (0x00971E88);
 
 template<>
-void nglParamSet<nglShaderParamSet_Pool>::set_color(color32 a2) {
-    auto white = color32{255, 255, 255, 255};
-    if (a2 != white) {
+void nglParamSet<nglShaderParamSet_Pool>::set_color(color32 a2)
+{
+    const color32 white {255, 255, 255, 255};
+    if (a2 != white)
+    {
         color v9 = a2.to_color();
         auto *mem = nglListAlloc(16, 16);
         vector4d *v4 = new (mem) vector4d{v9.r, v9.g, v9.b, v9.a};

@@ -38,7 +38,10 @@ static Var<char *> nglListWork {0x00971F08};
 
 static Var<int> dword_93AED4 {0x0093AED4};
 
-void nglVif1RenderScene() {
+void nglVif1RenderScene()
+{
+    TRACE("nglVif1RenderScene");
+
     CDECL_CALL(0x0077D060);
 }
 
@@ -413,7 +416,8 @@ void nglListSend(bool Flip)
 {
     TRACE("nglListSend");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ( EnableShader() ) {
             float v10[4] {0, 0, 1, 1};
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 90, v10, 1);

@@ -9,12 +9,10 @@ struct game_button;
 namespace ai {
 
 struct controller_inode : info_node {
-    struct eControllerButton {
-        int field_0;
+    enum eControllerButton {
     };
 
-    struct eControllerAxis {
-        int field_0;
+    enum eControllerAxis {
     };
 
     controller_inode();

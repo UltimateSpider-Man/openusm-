@@ -124,24 +124,24 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
                     g_Direct3DDevice(), dword_9738E0()[9]);
         }
 
-        float v18[4] {};
+        color v18 {};
         if ( EnableShader() )
         {
             SetPixelShader(&dword_970770());
-            auto *v6 = sub_413F80(v18, (int)this->field_14, (uint32_t *)&this->field_C->field_8C, 9u);
-            v17.field_0[0] = v6[0];
-            v17.field_0[1] = v6[1];
-            v17.field_0[2] = v6[2];
-            v17.field_0[3] = v6[3];
+            sub_413F80(&v18, this->field_14, &this->field_C->field_8C, 9u);
+            v17.field_0[0] = v18.r;
+            v17.field_0[1] = v18.g;
+            v17.field_0[2] = v18.b;
+            v17.field_0[3] = v18.a;
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    (const float *)&v17,
+                    v17.field_0,
                     1);
         }
         else
         {
-            sub_413F80(v18, (int)this->field_14, (uint32_t *)&this->field_C->field_8C, 9u);
+            sub_413F80(&v18, this->field_14, &this->field_C->field_8C, 9u);
             SetTextureStageState(0, D3DTSS_COLOROP, 4u);
             SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
             SetTextureStageState(0, D3DTSS_COLORARG2, 3u);

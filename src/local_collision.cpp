@@ -104,12 +104,12 @@ bool find_intersection(const vector3d &a1,
 void closest_point_line_segment_point(const vector3d &a1,
                                       const vector3d &a2,
                                       const vector3d &a3,
-                                      float *a4) {
+                                      float &a4)
+{
     vector3d v5 = a2 - a1;
+    auto v4 = closest_point_infinite_line_point(a1, v5, a3);
 
-    auto v4 = sub_5B8DB0(a1, v5, a3);
-
-    *a4 = std::clamp(v4, 0.0f, 1.0f);
+    a4 = std::clamp(v4, 0.0f, 1.0f);
 }
 
 namespace local_collision {

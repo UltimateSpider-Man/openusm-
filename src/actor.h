@@ -99,6 +99,12 @@ struct actor : entity {
 
     bool has_skeleton_ifc() const;
 
+    //virtual
+    color32 _get_render_color() const;
+
+    //virtual
+    float _get_render_alpha_mod() const;
+
 	//virtual
 	void set_render_scale(const vector3d &s);
 

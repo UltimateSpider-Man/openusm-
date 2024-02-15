@@ -8,11 +8,11 @@ color color32::to_color() {
     return result;
 }
 
-int color32::to_int(color32 color) {
-    auto v1 = (color[3] << 24);
-    auto v2 = (color[2] << 16) | v1;
-    auto v3 = (color[1] << 8) | v2;
-    return (color[0] | v3);
+int color32::to_int(color32 c) {
+    auto v1 = (c[3] << 24);
+    auto v2 = (c[2] << 16) | v1;
+    auto v3 = (c[1] << 8) | v2;
+    return (c[0] | v3);
 }
 
 uint8_t color32::get_alpha() {

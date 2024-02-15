@@ -190,7 +190,7 @@ extern bool find_intersection(const vector3d &a1,
 extern void closest_point_line_segment_point(const vector3d &a1,
                                              const vector3d &a2,
                                              const vector3d &a3,
-                                             float *a4);
+                                             float &a4);
 
 extern bool sub_50D220(const vector3d &a1, const vector3d &a2, entity *a3);
 

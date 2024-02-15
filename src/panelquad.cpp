@@ -4,6 +4,7 @@
 #include "from_mash_in_place_constructor.h"
 #include "func_wrapper.h"
 #include "mash_info_struct.h"
+#include "ngl_mesh.h"
 #include "panelquadsection.h"
 #include "panelmeshsection.h"
 #include "trace.h"
@@ -103,10 +104,11 @@ void PanelQuad::SetTexture(nglTexture *a2) {
     THISCALL(0x00616290, this, a2);
 }
 
-void PanelQuad::Draw() {
-    auto &func = get_vfunc(m_vtbl, 0x58);
+void PanelQuad::Draw()
+{
+    TRACE("PanelQuad::Draw");
 
-    func(this);
+    THISCALL(0x00616090, this);
 }
 
 void PanelQuad::TurnOn(bool a2) {
@@ -166,6 +168,14 @@ void PanelQuad::GetPos(float *a2, float *a3)
 
 void PanelQuad_patch()
 {
+    {
+        FUNC_ADDRESS(address, &PanelQuad::Draw);
+        set_vfunc(0x0087B9E8, address);
+        set_vfunc(0x0087BAB8, address);
+
+        REDIRECT(0x00615F99, nglListAddMesh);
+    }
+
     {
         REDIRECT(0x00429C61, PanelQuad_constructor);
     }

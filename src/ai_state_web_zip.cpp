@@ -36,20 +36,15 @@ web_zip_state::web_zip_state(from_mash_in_place_constructor *a2) {
     THISCALL(0x0044C560, this, a2);
 }
 
-int web_zip_state::frame_advance(Float a2) {
+state_trans_messages web_zip_state::frame_advance(Float a2)
+{
     if constexpr (1) {
         auto *v2 = this->field_3C->field_3C;
-        auto *v3 = this->get_actor()->m_player_controller;
-        auto v4 = v3->field_C;
-        if (v4 != 9) {
-            v3->field_10 = v4;
-        }
-
-        v3->field_C = 9;
+        this->get_actor()->m_player_controller->set_spidey_loco_mode(static_cast<eHeroLocoMode>(9));
         v2->process_zip(a2);
-        return 75;
+        return TRANS_TOTAL_MSGS;
     } else {
-        return THISCALL(0x0047DEF0, this, a2);
+        return static_cast<state_trans_messages>(THISCALL(0x0047DEF0, this, a2));
     }
 }
 
@@ -136,8 +131,10 @@ bool web_zip_inode::can_go_to(string_hash a2)
 
 static Var<string_hash> loco_allow_web_zip_id{0x00958E64};
 
-bool web_zip_inode::is_eligible(string_hash a2) {
-    if constexpr (1) {
+bool web_zip_inode::is_eligible(string_hash a2)
+{
+    if constexpr (1)
+    {
         auto *v3 = &this->field_8->field_50;
 
         if (v3->get_pb_int(loco_allow_web_zip_id()) == 0) {
@@ -145,7 +142,7 @@ bool web_zip_inode::is_eligible(string_hash a2) {
         }
 
         game_button v10 = this->field_DC->field_24->get_button(
-            controller_inode::eControllerButton{13});
+            static_cast<controller_inode::eControllerButton>(13));
         auto v4 = v10.m_flags;
         auto v5 = ((v4 & 0x20) == 0 && (v4 & 2) != 0);
 

@@ -19,7 +19,17 @@ void FastListAddMesh(nglMesh *Mesh,
 {
     TRACE("FastListAddMesh");
 
-    if constexpr (1) {
+    if (ShaderParams != nullptr)
+    {
+        if (ShaderParams->IsSetParam<nglTintParam>()) {
+
+            auto *col = bit_cast<color *>(ShaderParams->Get<nglTintParam>()->field_0);
+            sp_log("color = %f %f %f %f", col->r, col->g, col->b, col->a);
+        }
+    }
+
+    if constexpr (1)
+    {
         assert(Mesh != nullptr && "NULL mesh passed to FastListAddMesh.\n");
 
         assert((Mesh->Flags & NGLMESH_PROCESSED) ||
@@ -39,24 +49,18 @@ void FastListAddMesh(nglMesh *Mesh,
 
         assert(MeshParams != nullptr && "NULL MeshParams in FastListAddMesh.\n");
 
-        math::VecClass<3, 1> v18;
+        if (Mesh->NLODs != 0)
+        {
+            math::VecClass<3, 1> v5 = ( (MeshParams->Flags & 1) != 0
+                                            ? Mesh->field_20
+                                            : sub_414360(Mesh->field_20, LocalToWorld)
+                                        );
 
-        if (Mesh->NLODs != 0) {
-            float *v5;
-            if ((MeshParams->Flags & 1) != 0) {
-                v5 = Mesh->field_20.field_0;
-            } else {
-                v18 = sub_414360(Mesh->field_20, LocalToWorld);
-                v5 = v18.field_0;
-            }
+            math::VecClass<3, 1> a2a = v5;
 
-            math::VecClass<3, 1> a2a;
-            a2a[0] = v5[0];
-            a2a[1] = v5[1];
-            a2a[2] = v5[2];
-            a2a[3] = v5[3];
+            auto v18 = sub_414360(a2a, nglCurScene()->field_14C);
 
-            v18 = sub_414360(a2a, nglCurScene()->field_14C);
+#if 0
             auto v9 = Mesh->NLODs - 1;
             if (v9 >= 0) {
                 auto *v10 = Mesh->LODs;
@@ -71,6 +75,19 @@ void FastListAddMesh(nglMesh *Mesh,
 
                 Mesh = v10[v9].field_0;
             }
+#else
+            Mesh = [](nglMesh *a1, float a2) -> nglMesh *
+            {
+                for ( int i = a1->NLODs - 1; i >= 0; --i )
+                {
+                    if ( a2 > a1->LODs[i].field_4 ) {
+                        return a1->LODs[i].field_0;
+                    }
+                }
+
+                return a1;
+            }(Mesh, v18.field_0[2]);
+#endif
         }
 
     LABEL_11:
@@ -104,10 +121,7 @@ void FastListAddMesh(nglMesh *Mesh,
 
         assert(ShaderParams != nullptr && "NULL ShaderParams in FastListAddMesh.\n");
 
-        sp_log("Debug");
-        auto tmp = *ShaderParams;
-        sp_log("Debug");
-        v12->field_8C = tmp;
+        v12->field_8C = *ShaderParams;
 
         for (auto i = 0u; i < Mesh->NSections; ++i) {
             auto *MeshSection = Mesh->Sections[i].Section;

@@ -343,12 +343,23 @@ void physics_inode::set_stationary(bool a2) {
     }
 }
 
+bool physics_inode::get_collided_last_frame() const
+{
+    return this->field_1C->is_flag(0x20u);
+}
+
 vector3d physics_inode::get_abs_position() {
     entity_base *v1 = this->get_actor();
     auto result = v1->get_abs_position();
 
     return result;
 }
+
+vector3d physics_inode::get_last_collision_normal() const
+{
+    return this->field_1C->field_5C;
+}
+
 } // namespace ai
 
 void physics_inode_patch() {

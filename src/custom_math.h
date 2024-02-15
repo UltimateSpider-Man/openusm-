@@ -9,9 +9,13 @@ extern inline constexpr auto half_PI = PI * 0.5f;
 struct po;
 struct vector3d;
 
-extern float DEG_TO_RAD(float deg);
+inline constexpr float DEG_TO_RAD(float deg) {
+    return (PI / 180.0 * deg);
+}
 
-extern float RAD_TO_DEG(float rad);
+inline constexpr float RAD_TO_DEG(float rad) {
+    return (180.0 / PI) * rad;
+}
 
 //0x00588DB0
 extern void fast_sin_cos_approx(Float a1, float *s, float *c);
@@ -28,6 +32,8 @@ extern bool approx_equals(Float a1, Float a2, Float epsilon);
 extern float sub_5038D0(float a1, float a2);
 
 extern float clamp_and_acos(float a1);
+
+extern float sub_48A720(float a1, float a2);
 
 extern float sub_4ADC40(float a1);
 

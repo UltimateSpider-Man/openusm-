@@ -37,7 +37,7 @@ struct plr_loco_crawl_state : ai::enhanced_state {
     //virtual
     ai::state_trans_messages frame_advance(Float );
 
-    int set_player_mode(actor *a1);
+    void set_player_mode(actor *a1);
 
     //0x0044B760
     //virtual

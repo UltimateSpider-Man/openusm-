@@ -114,8 +114,6 @@ Var<nglTexture *> nglDefaultTex{0x00973838};
 
 Var<tlInstanceBank> nglVertexDefBank{0x009728A0};
 
-Var<int> nglTintParam::ID{0x00971E94};
-
 Var<D3DFORMAT[50]> d3d_format_array{0x0093C008};
 
 static int nglTexLocked{0};

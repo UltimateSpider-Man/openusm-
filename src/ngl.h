@@ -135,6 +135,7 @@ struct nglMaterialBase
 #else
     tlFixedString *field_18;
 #endif
+
     nglTexture *field_1C;
     nglTexture *field_20;
     nglTexture *field_24;
@@ -336,14 +337,6 @@ struct nglMeshFile {
     void un_mash_start(generic_mash_header *header, void *, generic_mash_data_ptrs *a3, void *);
 
     static tlFixedString *get_string(nglMeshFile *a1);
-};
-
-struct nglTintParam {
-    nglTintParam(vector4d *arg) : field_0(arg) {}
-
-    vector4d *field_0;
-
-    static Var<int> ID;
 };
 
 //0x0077F0C0

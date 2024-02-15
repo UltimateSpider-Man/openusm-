@@ -13,6 +13,11 @@ struct vector2d {
         return arr[idx];
     }
 
+    vector2d operator-(const vector2d &a3) const
+    {
+        return {this->arr[0] - a3[0], this->arr[1] - a3[1]};
+    }
+
     const char *to_string() const;
 
     float length2() const;

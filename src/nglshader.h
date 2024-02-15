@@ -6,10 +6,16 @@
 
 #include <cstdint>
 
+struct color;
 struct nglMeshNode;
 struct nglMeshSection;
 struct nglMaterialBase;
 struct tlFixedString;
+
+template<typename>
+struct nglParamSet;
+
+struct nglShaderParamSet_Pool;
 
 struct nglShader {
     std::intptr_t m_vtbl;
@@ -48,4 +54,6 @@ struct nglShaderNode : nglRenderNode {
     void Render();
 };
 
-extern float *sub_413F80(float *a1, int a2, uint32_t *a3, uint32_t a4);
+extern color *sub_413F80(color *a1, nglMaterialBase *a2, nglParamSet<nglShaderParamSet_Pool> *a3, uint32_t a4);
+
+extern void nglShader_patch();

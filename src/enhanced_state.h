@@ -30,7 +30,8 @@ struct enhanced_state : base_state {
     bool can_handle_message(ai::state_trans_messages a2, bool a3);
 
     //0x006BD5A0
-    /* virtual */ ai::state_trans_messages frame_advance(Float dt);
+    /* virtual */
+    state_trans_messages frame_advance(Float dt);
 
     //0x006CE1D0
     /* virtual */ void activate(ai_state_machine *a2,

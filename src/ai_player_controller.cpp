@@ -18,6 +18,15 @@ ai_player_controller::ai_player_controller(actor *a2)
     THISCALL(0x004728D0, this, a2);
 }
 
+void ai_player_controller::set_spidey_loco_mode(eHeroLocoMode a2)
+{
+    if ( a2 != this->m_spidey_loco_mode ) {
+        this->m_prev_spidey_loco_mode = this->m_spidey_loco_mode;
+    }
+
+    this->m_spidey_loco_mode = a2;
+}
+
 hero_type_enum ai_player_controller::find_hero_type() const
 {
     if constexpr (0) {
@@ -56,7 +65,7 @@ anchor_storage_class ai_player_controller::get_poleswing_anchor() const
 
 int ai_player_controller::get_spidey_loco_mode() const
 {
-    return this->field_C;
+    return this->m_spidey_loco_mode;
 }
 
 void ai_player_controller::set_player_num(int a2) {
@@ -147,8 +156,10 @@ vector3d ai_player_controller::compute_left_stick_from_camera() {
     }
 }
 
-void ai_player_controller::update_controls(Float a2, bool a3) {
-    if (a3 || (this->field_3DC && this->field_C != 14)) {
+void ai_player_controller::update_controls(Float a2, bool a3)
+{
+    if (a3 || this->field_3DC && is_a_controllable_mode(this->m_spidey_loco_mode))
+    {
         this->gb_jump.update(a2);
         this->field_4C.update(a2);
         this->gb_attack.update(a2);

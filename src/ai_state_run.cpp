@@ -61,8 +61,10 @@ bool run_state::check_for_fence_hop(Float a2, vector3d *a3) {
     }
 }
 
-int run_state::frame_advance(Float a2) {
-    if constexpr (0) {
+ai::state_trans_messages run_state::_frame_advance(Float a2)
+{
+    if constexpr (0)
+    {
         vector3d v92;
         vector3d move_dir;
         vector3d norm_stick_dir;
@@ -97,20 +99,13 @@ int run_state::frame_advance(Float a2) {
             }
         }
 
-        auto *v11 = this->get_actor()->m_player_controller;
-        auto v12 = v11->field_C;
-        if (v12 != 1) {
-            v11->field_10 = v12;
+        this->get_actor()->m_player_controller->set_spidey_loco_mode(static_cast<eHeroLocoMode>(1));
+
+        if ( !v83->is_layer_interruptable(static_cast<als::layer_types>(0)) ) {
+            return TRANS_TOTAL_MSGS;
         }
 
-        auto *v13 = v83;
-        v11->field_C = 1;
-        auto *v14 = v13->get_als_layer(static_cast<als::layer_types>(0));
-        if (!v14->is_interruptable()) {
-            return 75;
-        }
-
-        auto v16 = v5->get_axis_2d(controller_inode::eControllerAxis{0});
+        auto v16 = v5->get_axis_2d(static_cast<controller_inode::eControllerAxis>(0));
 
         static string_hash loco_allow_walk_run_id{to_hash("loco_allow_walk_run")};
 
@@ -119,7 +114,7 @@ int run_state::frame_advance(Float a2) {
         auto *v19 = this->get_core();
 
         auto opt_int = v19->field_50.get_optional_pb_int(loco_allow_walk_run_id, 0, nullptr);
-        float v20 = ((opt_int && !v5->is_axis_neutral({0})) ? tmp : 0.0f);
+        float v20 = ((opt_int && !v5->is_axis_neutral(static_cast<controller_inode::eControllerAxis>(0))) ? tmp : 0.0f);
 
         this->field_48 = v20 * 7.0f;
 
@@ -196,7 +191,7 @@ int run_state::frame_advance(Float a2) {
 
         vector3d *v51;
 
-        if (opt_int == 0 || v5->is_axis_neutral({0})) {
+        if (opt_int == 0 || v5->is_axis_neutral(static_cast<controller_inode::eControllerAxis>(0))) {
             auto *v52 = this->get_actor();
 
             auto &abs_po = v52->get_abs_po();
@@ -263,7 +258,7 @@ int run_state::frame_advance(Float a2) {
             p_list.add_param(27u, curr_player_dir);
 
         } else {
-            norm_stick_dir = v5->get_axis(controller_inode::eControllerAxis{0});
+            norm_stick_dir = v5->get_axis(static_cast<controller_inode::eControllerAxis>(0));
             norm_stick_dir.normalize();
             move_dir = norm_stick_dir;
             if (v81) {
@@ -313,13 +308,14 @@ int run_state::frame_advance(Float a2) {
 
         return retVal;
     } else {
-        return THISCALL(0x00473650, this, a2);
+        return static_cast<state_trans_messages>(THISCALL(0x00473650, this, a2));
     }
 }
 
 } // namespace ai
 
-void run_state_patch() {
-    FUNC_ADDRESS(address, &ai::run_state::frame_advance);
+void run_state_patch()
+{
+    FUNC_ADDRESS(address, &ai::run_state::_frame_advance);
     set_vfunc(0x00877498, address);
 }

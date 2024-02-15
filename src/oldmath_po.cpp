@@ -349,7 +349,7 @@ void po::set_po(const vector3d &p_zdest, const vector3d &p_ydest, const vector3d
 
     assert(pos.is_valid());
 
-    assert(!vector3d::is_colinear(zdest, ydest));
+    assert(!is_colinear(zdest, ydest));
 
     vector3d xdest = vector3d::cross(ydest, zdest);
     xdest.normalize();

@@ -1,13 +1,75 @@
 #include "unit_tests.h"
 
 #include "custom_math.h"
+#include "func_wrapper.h"
 #include "mstring.h"
+#include "quaternion.h"
+#include "variable.h"
 #include "vector3d.h"
 
 #include <cassert>
 #include <cstdio>
 
-void mString_unit_test() {
+void quaternion_unit_test()
+{
+    quaternion a2 {0.867351, -0.396007, -0.089976, 0.287723};
+    quaternion a3 {0.856533, -0.408080, -0.231215, 0.215320};
+    float lambda = 0.0f;
+
+    void (__cdecl *func)(quaternion *, const quaternion *, const quaternion *, Float) = CAST(func, 0x00588630);
+
+    quaternion res;
+    func(&res, &a2, &a3, lambda);
+
+    quaternion res1 = slerp(a2, a3, lambda);
+
+    assert(res == res1);
+
+    sp_log("%s", res1.to_string().c_str());
+
+    assert(res1 == quaternion(0.867352, -0.396084, -0.090612, 0.287417));
+}
+
+void vector3d_unit_test()
+{
+    {
+        vector3d forward {0.985648, -0.0516526, 0.160719};
+        vector3d up {0, 0, 0};
+        vector3d a1 {0.981168, -0.0855519, 0.173175};
+        vector3d a4 {0.158808, 0.867648, -0.471135};
+        vector3d a10 {0.123463, 0.869854,-0.47761};
+
+        reorient_vectors(a1,
+                        a4,
+                        forward,
+                        a10,
+                        forward, up, 0.5f);
+
+        assert(approx_equals(forward, vector3d(0.983571, -0.0686128, 0.166977), LARGE_EPSILON));
+        assert(approx_equals(up, vector3d(0.141156, 0.868903, -0.474428), LARGE_EPSILON));
+    }
+
+    if (1)
+    {
+        vector3d a2 {6.716872, -32.072525, 14.798354};
+        vector3d a3 {0.606163, 0.554652, 0.570024};
+        auto res = sub_444A60(a2, a3);
+
+        sp_log("%s", res.to_string().c_str());
+
+        assert(approx_equals(res, vector3d (9.918718, -29.142769, 17.809311), LARGE_EPSILON));
+
+        a2 = {16.458485, -15.374539, 26.640459};
+        a3 = {0.563501, 0.673320, 0.478650};
+
+        res = sub_444A60(a2, a3);
+
+        assert(approx_equals(res, vector3d (9.880253, -23.234779, 21.052763), LARGE_EPSILON));
+    }
+}
+
+void mString_unit_test()
+{
     for (int i = 0; i < 10; ++i) {
         assert(mString(1).to_int() == 1);
 
@@ -156,4 +218,13 @@ void mString_unit_test() {
         s8 = test_strings[i];
         assert(s8 == test_strings[i]);
     }
+}
+
+void unit_tests()
+{
+    vector3d_unit_test();
+    
+    quaternion_unit_test();
+
+    mString_unit_test();
 }

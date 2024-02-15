@@ -28,6 +28,7 @@
 #include "hit_react_state.h"
 #include "info_node_desc_list.h"
 #include "info_node_descriptor.h"
+#include "interaction_inode.h"
 #include "layer_state_machine.h"
 #include "marker.h"
 #include "oldmath_po.h"
@@ -37,6 +38,7 @@
 #include "physics_inode.h"
 #include "pick_up_state.h"
 #include "polytube.h"
+#include "quaternion.h"
 #include "region.h"
 #include "sampling_window.h"
 #include "spiderman_camera.h"
@@ -154,6 +156,9 @@ void find_best_anchor_result_t::set_entity(entity_base *a2) {
     this->valid_flags |= ENT_IS_VALID;
 }
 
+
+static Var<vector3d> s_initial_heading {0x00958154};
+
 namespace ai {
 
 VALIDATE_SIZE(swing_state, 0x40);
@@ -170,33 +175,31 @@ uint32_t swing_state::get_virtual_type_enum() {
     return 319;
 }
 
-void swing_state::activate(ai_state_machine *a2,
+void swing_state::_activate(ai_state_machine *a2,
                            const mashed_state *arg4,
                            const mashed_state *a4,
                            const param_block *a5,
-                           base_state::activate_flag_e a6) {
-    //sp_log("swing_state::activate:");
+                           base_state::activate_flag_e a6)
+{
+    TRACE("ai::swing_state::activate");
 
-    if constexpr (1) {
+    if constexpr (0)
+    {
         enhanced_state::activate(a2, arg4, a4, a5, a6);
 
         auto *v7 = this->get_core();
-        this->field_3C = (hero_inode *) v7->get_info_node(hero_inode::default_id, true);
+        this->field_3C = bit_cast<hero_inode *>(v7->get_info_node(hero_inode::default_id, true));
+
         auto *v8 = this->get_actor()->m_player_controller;
-        auto v9 = v8->field_C;
-        if (v9 != 3) {
-            v8->field_10 = v9;
-        }
+        v8->set_spidey_loco_mode(static_cast<eHeroLocoMode>(3));
 
-        v8->field_C = 3;
-
-        auto *v10 = &g_world_ptr()->field_1B0;
-        if (!v10->field_8.is_set()) {
+        auto &v10 = g_world_ptr()->field_1B0;
+        if (!v10.field_8.is_set()) {
             g_world_ptr()->activate_web_splats();
         }
 
-        auto *v11 = &g_world_ptr()->field_1F0;
-        if (!v11->field_8.is_set()) {
+        auto &v11 = g_world_ptr()->field_1F0;
+        if (!v11.field_8.is_set()) {
             g_world_ptr()->activate_corner_web_splats();
         }
 
@@ -224,38 +227,30 @@ void swing_state::activate(ai_state_machine *a2,
         static constexpr auto swing_up = 0.2f;
         static constexpr auto swing_front = 0.0f;
 
-        static Var<vector3d> stru_958154{0x00958154};
-        stru_958154() = abs_po.m.arr[2];
+        s_initial_heading() = abs_po.get_z_facing();
 
-        vector3d v33;
-        v33[0] = abs_po.m.arr[3][0] + abs_po.m.arr[2][0] * swing_front +
-            abs_po.m.arr[1][0] * swing_up;
-        v33[1] = abs_po.m.arr[3][1] + abs_po.m.arr[2][1] * swing_front +
-            abs_po.m.arr[1][1] * swing_up;
-        v33[2] = abs_po.m.arr[1][2] * swing_up +
-            (abs_po.m.arr[3][2] + abs_po.m.arr[2][2] * swing_front);
+        vector3d v33 = abs_po.get_position() + abs_po.get_z_facing() * swing_front +
+            abs_po.get_y_facing() * swing_up;
 
         auto *v17 = this->get_actor();
         entity_set_abs_position(v17, v33);
 
         vector3d v30 = something_to_swing_to_data().field_C - abs_po.get_position();
-        v30[1] = LARGE_EPSILON;
+        v30.y = LARGE_EPSILON;
         v30.normalize();
 
         auto *v21 = v35;
         auto v22 = v35->get_velocity();
 
-        v15->field_80 = RAD_TO_DEG(calculate_xz_angle_relative_to_local_po(abs_po, v30, v22));
+        v15->m_anchor_angle = RAD_TO_DEG(calculate_xz_angle_relative_to_local_po(abs_po, v30, v22));
 
         als::param_list v29{};
 
-        v29.add_param({13, v15->field_80});
+        v29.add_param({13, v15->m_anchor_angle});
 
-        auto *v23 = v32->get_als_layer(static_cast<als::layer_types>(0));
-        v23->set_desired_params(v29);
+        v32->set_desired_params(v29, static_cast<als::layer_types>(0));
 
-        if constexpr (1)
-        //( SHOW_LOCOMOTION_INFO )
+        if ( os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
         {
             line_info v56;
 
@@ -267,12 +262,12 @@ void swing_state::activate(ai_state_machine *a2,
 
             v56.field_0 = abs_po.get_position();
 
-            float v67 = 3.0;
+            constexpr float v67 = 3.0;
             auto v52 = v35->get_velocity() * v67;
             auto v32 = abs_po.get_position();
             v56.field_C = v32 + v52;
             v56.render(21, false);
-            auto v40 = mString{0, "anchor ang %.2f", v15->field_80};
+            mString v40 {0, "anchor ang %.2f", v15->m_anchor_angle};
 
             auto v34 = color32{255, 255, 255, 255};
             insertDebugString(2, v40, v34);
@@ -286,25 +281,26 @@ void swing_state::activate(ai_state_machine *a2,
     }
 }
 
-void swing_state::deactivate(const ai::mashed_state *a1) {
+void swing_state::deactivate(const ai::mashed_state *a1)
+{
     base_state::deactivate(a1);
-    if (this->get_actor() != nullptr) {
+    if (this->get_actor() != nullptr)
+    {
         auto *v3 = this->get_actor();
-        if (v3->has_physical_ifc())
+        if (v3->has_physical_ifc()) {
             this->field_3C->field_28->cleanup_from_swing();
+        }
     }
 }
 
-int swing_state::frame_advance(Float a2) {
-    //sp_log("swing_state::frame_advance():");
-    if constexpr (1) {
+ai::state_trans_messages swing_state::_frame_advance(Float a2)
+{
+    TRACE("ai::swing_state::frame_advance()");
+    
+    if constexpr (0)
+    {
         auto *v3 = this->get_actor()->m_player_controller;
-        auto v4 = v3->field_C;
-        if (v4 != 3) {
-            v3->field_10 = v4;
-        }
-
-        v3->field_C = 3;
+        v3->set_spidey_loco_mode(static_cast<eHeroLocoMode>(3));
 
         auto *hero_ptr = this->field_3C;
         auto *swing_inode_ptr = hero_ptr->field_40;
@@ -319,40 +315,44 @@ int swing_state::frame_advance(Float a2) {
 
         if (swing_inode_ptr->field_24)
         {
-            if (os_developer_options::instance()->get_int_from_name(mString{"SWING_DEBUG_TRAILS"}) >
-                0) {
-                auto v15 = color32{0x80, 0xFF, 0xFF, 0x40};
-                float v14 = bit_cast<float>(0x3E4CCCCD);
+            if (os_developer_options::instance()->get_int(mString{"SWING_DEBUG_TRAILS"}) >
+                0)
+            {
+                color32 v15 {128, 255, 255, 64};
+                constexpr float radius = 0.2f;
                 auto *v9 = this->get_actor();
                 auto v13 = v9->get_abs_position();
 
-                add_debug_sphere(v13, v14, v15);
+                add_debug_sphere(v13, radius, v15);
             }
 
             swing_inode_ptr->field_24 = false;
 
-        } else {
+        }
+        else
+        {
             if (!swing_inode_ptr->field_54 &&
                 als_inode_ptr->get_eta_of_combat_signal(static_cast<als::layer_types>(0)) <= 0.0f) {
                 swing_inode_ptr->fire_new_web(true);
             }
 
             swing_inode_ptr->update_mode_swinging(a2);
-            if (swing_inode_ptr->m_constraint <= minimum_web_length) {
+            if (swing_inode_ptr->m_constraint <= minimum_web_length)
+            {
                 if (this->field_3C->crawl_is_eligible(auto_crawl_attach_id, false)) {
-                    return 73;
+                    return static_cast<state_trans_messages>(73);
                 }
 
                 if (this->field_3C->oldcrawl_is_eligible(auto_crawl_attach_id, false)) {
-                    return 1;
+                    return TRANS_SUCCESS_MSG;
                 }
             }
         }
 
-        return 75;
+        return TRANS_TOTAL_MSGS;
 
     } else {
-        return THISCALL(0x0047DDD0, this, a2);
+        return static_cast<state_trans_messages>(THISCALL(0x0047DDD0, this, a2));
     }
 }
 
@@ -378,28 +378,27 @@ swing_inode::swing_inode() {
     this->field_54 = false;
 }
 
-vector3d sub_444A60(const vector3d &a2, const vector3d &a3);
+static const string_hash state_id_sticky_hang_left {int(to_hash("SwingStickyHangLeft"))};
+static const string_hash state_id_sticky_hang_right {int(to_hash("SwingStickyHangRight"))};
 
-Var<string_hash> state_id_sticky_hang_left{0x00958798};
-Var<string_hash> state_id_sticky_hang_right{0x00958374};
-
-Var<string_hash> cat_id_sticky_hang_right_push_off{0x00958580};
-Var<string_hash> cat_id_sticky_hang_left_push_off{0x00958378};
+static const string_hash cat_id_sticky_hang_right_push_off {int(to_hash("Swing_Sticky_Hang_Right_Push_Off"))};
+static const string_hash cat_id_sticky_hang_left_push_off {int(to_hash("Swing_Sticky_Hang_Left_Push_Off"))};
 
 void swing_inode::update_mode_swinging(Float a2)
 {
     TRACE("swing_inode::update_mode_swinging");
 
-    if constexpr (1)
+    if constexpr (0)
     {
         auto *v174 = this->field_20->field_24;
         auto *v173 = this->field_20->field_20;
         auto *v172 = this->field_20->field_28;
-        this->field_74 += a2;
-        if (this->field_38 == 1) {
-            constexpr auto sticky_exit_threshhold = 0.0099999998f;
+        this->field_84 += a2;
+        if (this->field_38 == 1)
+        {
+            static constexpr auto sticky_exit_threshhold = 0.0099999998f;
 
-            vector3d v171 = v174->get_axis(controller_inode::eControllerAxis{0});
+            vector3d v171 = v174->get_axis(static_cast<controller_inode::eControllerAxis>(0));
             if (v171.length2() <= sticky_exit_threshhold) {
                 v172->set_velocity(ZEROVEC, false);
 
@@ -409,35 +408,31 @@ void swing_inode::update_mode_swinging(Float a2)
                 po v170;
                 v170.set_po(v15, v76, this->field_58);
                 auto *v17 = this->get_actor();
-
                 v17->set_abs_po(v170);
                 return;
             }
 
             auto v83 = v173->get_state_id(static_cast<als::layer_types>(0));
 
-            string_hash v81;
+            auto v84 = (v83 == state_id_sticky_hang_left
+                        || v83 == state_id_sticky_hang_right);
 
-            auto v84 = v83 == state_id_sticky_hang_left() ||
-                (v81 = v173->get_state_id(static_cast<als::layer_types>(0)), v81 == state_id_sticky_hang_right());
-
-            if (v84) {
+            if (v84)
+            {
                 string_hash hash_id = (this->field_7C < 0.0
-                                        ? cat_id_sticky_hang_right_push_off()
-                                        : cat_id_sticky_hang_left_push_off()
+                                        ? cat_id_sticky_hang_right_push_off
+                                        : cat_id_sticky_hang_left_push_off
                                         );
 
                 v173->request_category_transition(hash_id, static_cast<als::layer_types>(0), true, false, false);
 
                 auto *v83 = this->get_actor();
 
-                auto v76 = 5.0f;
-                auto *v6 = this->get_actor();
-                auto &v7 = v6->get_abs_po();
+                auto &v7 = v83->get_abs_po();
                 auto v8 = v7.get_z_facing();
 
                 auto *v9 = v83->physical_ifc();
-                v9->set_velocity(v8 * v76, false);
+                v9->set_velocity(v8 * 5.0f, false);
             } else {
                 v173->request_category_transition(cat_id_swing, static_cast<als::layer_types>(0), true, false, false);
 
@@ -453,14 +448,13 @@ void swing_inode::update_mode_swinging(Float a2)
         }
 
         this->check_for_collision();
+
         vector3d norm_move_dir;
         vector3d up;
-
         this->compute_forward_and_up_directions(norm_move_dir, up);
+        assert(!is_colinear(norm_move_dir, up));
+
         als::param_list v167{};
-
-        assert(!vector3d::is_colinear(norm_move_dir, up));
-
         v167.add_param(27, norm_move_dir);
         v167.add_param(24, up);
 
@@ -469,10 +463,10 @@ void swing_inode::update_mode_swinging(Float a2)
         auto vel = v172->get_velocity();
         auto speed = vel.length();
 
-        vel[1] = 0.0;
+        vel.y = 0.0;
         auto lateral = vel.length();
-        if constexpr (0) { //SHOW_LOCOMOTION_INFO
-
+        if (os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}))
+        {
             insertDebugString(7, mString{0, "speed   %.2f", speed}, color32{255, 255, 255, 255});
 
             insertDebugString(8, mString{0, "lateral %.2f", lateral}, color32{255, 255, 255, 255});
@@ -481,14 +475,33 @@ void swing_inode::update_mode_swinging(Float a2)
         this->clip_web(a2);
         this->update_pendulums(a2);
 
+        if (os_developer_options::instance()->get_int(mString {"SWING_DEBUG_TRAILS"}) > 1)
         {
-            auto *v19 = v173->get_als_layer(static_cast<als::layer_types>(0));
-            v19->set_desired_params(v167);
+            auto *v21 = this->get_actor();
+            auto abs_pos = v21->get_abs_position();
+
+            static constexpr auto v78 = 0.039999999f;
+            color32 v77 {0, 255, 255, 255};
+            auto v23 = norm_move_dir * 0.5;
+            auto v76 = abs_pos + v23;
+            add_debug_line(abs_pos, v76, v77, v78);
+
+            v77 = color32 {255, 0, 255, 255};
+            v76 = abs_pos + up * 0.5f;
+            add_debug_line(abs_pos, v76, v77, v78);
+
+            v77 = color32 {255, 255, 0, 255};
+            auto v25 = vector3d::cross(up, norm_move_dir);
+            v76 = abs_pos + v25 * 0.5f;
+            add_debug_line(abs_pos, v76, v77, v78);
         }
+
+        v173->set_desired_params(v167, static_cast<als::layer_types>(0));
 
         for (int i = 0; i < 2; ++i)
         {
-            if (swingers()[i].field_0.field_34) {
+            if (swingers()[i].field_0.field_34)
+            {
                 auto *v28 = this->get_actor();
 
                 auto *v29 = swingers()[i].field_90;
@@ -649,15 +662,17 @@ double generic_compute_swing_angle(const vector3d &forward,
     return wrap_angle(ang);
 }
 
-void sub_44BCD0(entity_base *a1) {
+float sub_44BCD0(entity_base *a1)
+{
     vector3d v3 = -YVEC;
 
     auto &v2 = a1->get_abs_po();
 
-    generic_compute_swing_angle(v2.m[2], v2.m[1], v3);
+    return generic_compute_swing_angle(v2.get_z_facing(), v2.get_y_facing(), v3);
 }
 
-vector3d swing_inode::get_desired_up_facing() {
+vector3d swing_inode::get_desired_up_facing() const
+{
     vector3d v8 = swingers()[0].m_visual_point - this->field_20->field_28->get_abs_position();
 
     if (v8.length2() >= LARGE_EPSILON) {
@@ -666,14 +681,6 @@ vector3d swing_inode::get_desired_up_facing() {
     }
 
     return YVEC;
-}
-
-vector3d sub_444A60(const vector3d &a2, const vector3d &a3) {
-    auto v1 = vector3d::cross(a2, a3);
-
-    vector3d result = vector3d::cross(a2, v1);
-
-    return result;
 }
 
 bool swing_inode::is_eligible(string_hash a2, Float a3) {
@@ -702,8 +709,6 @@ bool swing_inode::is_eligible(string_hash a2, Float a3) {
         };
 
         bool cond;
-
-        uint32_t local_flag = 0;
 
         if (!hero_inode::is_a_crawl_state(a2, true)) {
             auto *hero_inode_ptr = this->field_20;
@@ -742,26 +747,12 @@ bool swing_inode::is_eligible(string_hash a2, Float a3) {
 
             const float a6 = (a2 == run_state::default_id ? 15.f : 10.f);
 
-            game_button v31 = cntrl_inode_ptr->get_button(controller_inode::eControllerButton{11});
-
-            local_flag |= 4;
+            game_button v31 = cntrl_inode_ptr->get_button(static_cast<controller_inode::eControllerButton>(11));
 
             game_button v30;
             cond = func(v31) &&
-                (v30 = cntrl_inode_ptr->get_button(controller_inode::eControllerButton{4}),
-                 local_flag = 12,
+                (v30 = cntrl_inode_ptr->get_button(static_cast<controller_inode::eControllerButton>(4)),
                  !func(v30));
-
-            if ((local_flag & 8) != 0) {
-                local_flag &= 0xFFFFFFF7;
-
-                v30.~game_button();
-            }
-
-            if ((local_flag & 4) != 0) {
-                local_flag &= 0xFFFFFFFB;
-                v31.~game_button();
-            }
 
             if (cond) {
                 float sweet_spot_ground_level;
@@ -785,27 +776,13 @@ bool swing_inode::is_eligible(string_hash a2, Float a3) {
 
         auto *v6 = this->field_20->field_24;
 
-        game_button v32 = v6->get_button(controller_inode::eControllerButton{11});
-
-        local_flag |= 1u;
+        game_button v32 = v6->get_button(static_cast<controller_inode::eControllerButton>(11));
 
         game_button v33;
 
         cond = func(v32) &&
-            (v33 = v6->get_button(controller_inode::eControllerButton{4}),
-             local_flag = 3,
+            (v33 = v6->get_button(static_cast<controller_inode::eControllerButton>(4)),
              !func(v33));
-
-        if ((local_flag & 2) != 0) {
-            local_flag &= 0xFFFFFFFD;
-
-            v33.~game_button();
-        }
-
-        if ((local_flag & 1) != 0) {
-            local_flag &= 0xFFFFFFFE;
-            v32.~game_button();
-        }
 
         return cond;
     } else {
@@ -817,7 +794,8 @@ void swing_inode::play_fire_web_sound() {
     THISCALL(0x0045C7B0, this);
 }
 
-void swing_inode::frame_advance(Float a2) {
+void swing_inode::frame_advance(Float a2)
+{
     auto v2 = this->field_1C;
     this->m_swing_time += a2;
     if (!v2) {
@@ -874,8 +852,12 @@ void swing_inode::cleanup_swingers() {
     }
 }
 
-void swing_inode::clip_web(Float a2) {
-    if constexpr (0) {
+void swing_inode::clip_web(Float a2)
+{
+    TRACE("ai::swing_inode::clip_web");
+
+    if constexpr (0)
+    {
         auto *v3 = this->field_20->field_28;
 
         for (swinger_t &v4 : swingers()) {
@@ -952,15 +934,13 @@ void swing_inode::fire_new_web(bool is_play_fire_web_sound) {
         }
 
         swingers()[0].field_50 = -1.0;
-        if (std::abs(this->field_80) > magic_velocity_cancelling_angle_in_degrees()) {
+        if (std::abs(this->m_anchor_angle) > magic_velocity_cancelling_angle_in_degrees())
+        {
             auto *act = this->get_actor();
 
             auto *v15 = act->physical_ifc();
             v15->cancel_all_velocity();
-
-            new_velocity = -YVEC;
-            auto *v18 = act->physical_ifc();
-            v18->set_velocity(new_velocity, false);
+            v15->set_velocity(-YVEC, false);
         }
 
         do_web_splat(something_to_swing_to_data().m_visual_point,
@@ -975,29 +955,27 @@ void swing_inode::fire_new_web(bool is_play_fire_web_sound) {
 [[nodiscard]] vector3d average_direction(
     Float a2, const vector3d &a3, const vector3d &a4, Float a5, direction_sampling_window &a7)
 {
+    TRACE("average_direction");
+
     vector3d a3a = a7.average(a5);
     a3a.normalize();
 
-    static const float flt_9591B8 = std::cos(DEG_TO_RAD(60.0)) * (-1.f);
+    static constexpr float flt_9591B8 = std::cos(DEG_TO_RAD(60.0)) * (-1.f);
 
     auto v17 = a3;
     auto v15 = dot(v17, a3a);
     if ( flt_9591B8 > v15 )
     {
         auto v10 = dot(a3a, YVEC);
-        if ( std::abs(v10) <= 0.99000001 )
-        {
+        if ( std::abs(v10) <= 0.99000001 ) {
             v17 = vector3d::cross(YVEC, a3a);
-        }
-        else
-        {
+        } else {
             v17 = vector3d::cross(ZVEC, a3a);
         }
     }
 
     auto v14 = dot(v17, a4);
-    if ( v14 < -0.30000001 )
-    {
+    if ( v14 < -0.30000001 ) {
         v17 = a4;
     }
 
@@ -1011,6 +989,13 @@ void swing_inode::fire_new_web(bool is_play_fire_web_sound) {
     return v17;
 }
 
+vector3d * average_direction_original(vector3d *out,
+    Float a2, const vector3d &a3, const vector3d &a4, Float a5, direction_sampling_window &a7)
+{
+    *out = average_direction(a2, a3, a4, a5, a7);
+    return out;
+}
+
 static constexpr float triggered_reel_in_factor = 11.0f;
 
 static constexpr float reel_in_factor = 10.f;
@@ -1019,67 +1004,68 @@ void swing_inode::update_pendulums(Float a2)
 {
     TRACE("swing_inode::update_pendulums");
 
-    if constexpr (0) {
-#if 0
-        auto *v3 = this->field_20;
-        auto *controller_ptr = v3->field_24;
-        auto *v5 = v3->field_28;
-        auto *als_inode_ptr = v3->field_20;
-        auto v118 = 0u;
-        auto *v124 = v5;
-        auto v6 = *v5->get_abs_po()->get_z_facing();
+    if constexpr (0)
+    {
+        auto *the_hero_inode = this->field_20;
+        auto *controller_ptr = the_hero_inode->field_24;
+        auto *physics_inode_ptr = the_hero_inode->field_28;
+        auto *als_inode_ptr = the_hero_inode->field_20;
+        auto *v124 = physics_inode_ptr;
+        vector3d v6 = physics_inode_ptr->get_abs_po().get_z_facing();
 
-        vector3d v121;
-        v121.arr[0] = v6[0];
-        v121.arr[1] = v6[1];
-        v121.arr[2] = v6[2];
+        vector3d v121 = v6;
 
-        vector3d v117;
-        controller_ptr->get_axis(&v117, controller_inode::eControllerAxis{2});
+        vector3d v117 = controller_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(2));
 
-        auto v113 = this->get_desired_up_facing();
+        vector3d v113 = this->get_desired_up_facing();
         v113.normalize();
 
-        auto v10 = *v5->get_y_facing();
+        vector3d v10 = physics_inode_ptr->get_y_facing();
 
-        vector3d v127 = average_direction(a2, &v113, &v10, 0.30000001, &up_sampling_window());
+        v113 = average_direction(a2, v113, v10, 0.30000001, up_sampling_window());
 
-        float tmp;
-
-        float v9;
-
-        int i = 0;
-        do {
-            if (i == 0) {
+        for (int i = 0; i < 2; ++i)
+        {
+            if (0 || i == 0)
+            {
                 auto *v11 = v124;
                 auto v12 = v124->get_abs_position();
-                auto v13 = swingers()[0].field_0.get_pivot_abs_pos();
+                vector3d v13 = swingers()[0].field_0.get_pivot_abs_pos();
 
-                auto v14 = v13[2] - v12[2];
-                auto v15 = v13[1] - v12[1];
-                auto v16 = v13[0] - v12[0];
+                auto v16 = v13 - v12;
 
-                auto v109 = sqrt(v16 * v16 + v15 * v15 + v14 * v14);
-                auto v17 = 1.f / v109;
-                this->_constraint = v109;
+                auto len = v16.length();
+                this->m_constraint = len;
 
-                auto v119 = v17 * v14;
-                float v116 = v17 * v15;
-                auto v129 = v17 * v16;
+                auto div_result = v16 / len;
 
-                tmp = std::abs(v119 * YVEC().arr[2] + v116 * YVEC().arr[1] + v129 * YVEC().arr[0]);
+                auto abs_result = std::abs(dot(div_result, YVEC));
 
-                vector3d v131;
-                v131[0] = -v129;
-                v131[1] = -v116;
-                v131[2] = -v119;
+                vector3d v131 = -div_result;
 
                 auto v18 = v11->get_velocity();
-                auto v113 = sub_444A60(v18.arr, v131.arr);
+                auto v113 = sub_444A60(v18, v131);
                 v113.normalize();
 
+                if ( os_developer_options::instance()->get_int(mString {"SWING_DEBUG_TRAILS"}) > 0 )
+                {
+                    auto v76 = v16 * (this->field_2C / this->m_constraint);
+                    auto v9 = swingers()[i].field_0.get_pivot_abs_pos();
+                    auto v75 = v9 - v76;
+                    add_debug_sphere(v75, 0.1f, color32 {0, 0, 255, 128});
+
+                    v75 = physics_inode_ptr->get_abs_position();
+                    add_debug_sphere(v75, 0.2f, color32 {128, 255, 255, 64});
+
+                    auto length = swingers()[i].field_0.get_constraint();
+                    v76 = v16 * (length / this->m_constraint);
+                    auto v11 = swingers()[i].field_0.get_pivot_abs_pos();
+                    v75 = v11 - v76;
+                    add_debug_sphere(v75, 0.1f, color32 {255, 0, 0, 255});
+                }
+
                 if (swingers()[0].field_50 < 0.f) {
-                    swingers()[0].field_50 = this->_constraint;
+                    swingers()[0].field_50 = this->m_constraint;
                 }
 
                 float v31;
@@ -1088,260 +1074,233 @@ void swing_inode::update_pendulums(Float a2)
                     if (this->field_2C + LARGE_EPSILON > swingers()[0].field_50) {
                         this->field_3C = 2;
                     }
-
-                    Var<string_hash> swing_ground_avoidance_height_multiplier_id{0x009585F0};
-
-                    if (this->field_3C == 1 &&
-                        this->field_2C + LARGE_EPSILON < swingers()[0].field_50) {
-                        auto *v21 = &this->field_8->field_50;
-
-                        auto v22 = v21->get_pb_float(swing_ground_avoidance_height_multiplier_id());
-                        auto *v23 = this->field_C;
-
-                        auto v114 = v22 * this->field_2C;
-                        auto v125 = 0.0;
-
-                        vector3d v128 = YVEC() * 15.0f;
-
-                        auto v25 = *v23->get_abs_position();
-
-                        vector3d a2a = v25 - v128;
-
-                        auto *v26 = this->field_C;
-
-                        float v30;
-
-                        vector3d a5;
-                        vector3d a6;
-                        if (find_intersection(*v26->get_abs_position(),
-                                              a2a,
-                                              *local_collision::entfilter_entity_no_capsules(),
-                                              *local_collision::obbfilter_lineseg_test(),
-                                              &a5,
-                                              &a6,
-                                              nullptr,
-                                              nullptr,
-                                              nullptr,
-                                              false)) {
-                            auto *v29 = this->field_C;
-
-                            auto abs_pos = *v29->get_abs_position();
-
-                            v30 = abs_pos[1] - a5[1];
-                            if (v30 <= 0.0f) {
-                                goto LABEL_22;
-                            }
-
-                        } else {
-                            v30 = v114 + EPSILON;
-                        }
-
-                        if (v30 > 0.0f && v30 < v114) {
-                            v31 = 1.0f - v30 / v114;
-                            goto LABEL_29;
-                        }
-
-                        if (v30 > 0.0f) {
-                            v31 = v125;
-                            goto LABEL_29;
-                        }
-                    LABEL_22:
-                        v31 = 1.0f;
-                    LABEL_29:
-                        v116 = swingers()[0].field_50 - this->field_2C;
-                        const auto *v32 = &v116;
-
-                        const auto flt_91F710 = 0.1f;
-
-                        if (flt_91F710 >= (double) v116) {
-                            v32 = &flt_91F710;
-                        }
-
-                        auto v123 = *v32;
-
-                        const float flt_91F70C = 20.0f;
-                        auto *v33 = &flt_91F70C;
-                        if (flt_91F70C >= (double) v123) {
-                            v33 = &v123;
-                        }
-
-                        auto v34 = v31 * *v33 * 4.5 * a2;
-                        swingers()[0].field_0.field_1C = swingers()[0].field_0.field_1C - v34;
-                        this->_constraint = this->_constraint - v34;
-                        if (swingers()[0].field_50 > v34)
-                            swingers()[0].field_50 = swingers()[0].field_50 - v34;
-                        goto LABEL_35;
-                    }
                 }
 
-                if (swingers()[0].field_50 <= 0.0f) {
-                    auto v40 = a2 * 0.80000001;
+                if (this->field_3C == 1
+                        && (swingers()[0].field_50 > this->field_2C + LARGE_EPSILON) )
+                {
+                    static string_hash swing_ground_avoidance_height_multiplier_id {int(to_hash("swing_ground_avoidance_height_multiplier"))};
 
-                    auto v119 = swingers()[0].m_visual_point.arr[2] * v40;
-                    auto v111 = swingers()[0].m_visual_point.arr[1] * v40;
-                    auto tmp = swingers()[0].m_visual_point.arr[0] * v40;
+                    auto *v21 = &this->field_8->field_50;
+
+                    auto v22 = v21->get_pb_float(swing_ground_avoidance_height_multiplier_id);
+                    auto *v23 = this->field_C;
+
+                    auto v114 = v22 * this->field_2C;
+
+                    vector3d v128 = YVEC * 15.0f;
+
+                    vector3d v25 = v23->get_abs_position();
+
+                    vector3d a2a = v25 - v128;
+
+                    auto *v26 = this->field_C;
+
+                    float v30;
+
+                    vector3d point;
+                    vector3d normal;
+                    if (find_intersection(v26->get_abs_position(),
+                                          a2a,
+                                          *local_collision::entfilter_entity_no_capsules(),
+                                          *local_collision::obbfilter_lineseg_test(),
+                                          &point,
+                                          &normal,
+                                          nullptr,
+                                          nullptr,
+                                          nullptr,
+                                          false))
+                    {
+                        auto *v29 = this->get_actor();
+
+                        vector3d abs_pos = v29->get_abs_position();
+
+                        v30 = std::max(abs_pos.y - point.y, 0.0f);
+                    } else {
+                        v30 = v114 + EPSILON;
+                    }
+
+                    if (v30 <= 0.0f || v114 <= v30) {
+                        if ( v30 <= 0.0 ) {
+                            v31 = 1.0;
+                        }
+                    } else {
+                        v31 = 1.0f - v30 / v114;
+                    }
+
+                    auto v116 = swingers()[0].field_50 - this->field_2C;
+
+                    auto v32 = std::max(0.1f, v116);
+                    auto v33 = std::min(v32, 20.0f);
+
+                    auto v34 = (v33 * 4.5f) * v31 * a2;
+                    swingers()[0].field_0.set_constraint(swingers()[0].field_0.get_constraint() - v34);
+                    this->m_constraint = this->m_constraint - v34;
+                    if (swingers()[0].field_50 > v34) {
+                        swingers()[0].field_50 = swingers()[0].field_50 - v34;
+                    }
+                }
+                else if (swingers()[0].field_50 <= 0.0f)
+                {
+                    auto tmp = swingers()[0].m_visual_point * (a2 * 0.80000001f);
                     auto *v41 = static_cast<entity_base *>(swingers()[0].field_0.get_volatile_ptr());
 
-                    auto v43 = 1.f - v40;
-                    auto v44 = *v41->get_abs_position();
+                    auto v43 = 1.f - (a2 * 0.80000001f);
+                    vector3d abs_pos = v41->get_abs_position();
 
-                    vector3d v136;
-                    v136[0] = v43 * v44[0] + tmp;
-                    v136[1] = v43 * v44[1] + v111;
-                    v136[2] = v43 * v44[2] + v119;
+                    vector3d v136 = abs_pos * v43 + tmp;
                     auto *v45 = static_cast<entity_base *>(swingers()[0].field_0.get_volatile_ptr());
                     entity_set_abs_position(v45, v136);
-                } else if (a3.arr[2] > 0.85000002f &&
-                           swingers()[0].field_50 * 1.2f > this->_constraint) {
+                } else if (abs_result > 0.85000002f &&
+                           swingers()[0].field_50 * 1.2f > this->m_constraint) {
                     swingers()[0].field_50 = 0.0;
                 }
 
-            LABEL_35:
-                if (v109 + 0.1f < swingers()[0].field_50) {
-                    swingers()[0].field_50 = (swingers()[0].field_50 + v109) * 0.5f;
-                    swingers()[0].field_0.field_1C = swingers()[0].field_50;
+                if ( swingers()[0].field_50 > len + 0.1f ) {
+                    swingers()[0].field_50 = (swingers()[0].field_50 + len) * 0.5f;
+                    swingers()[0].field_0.set_constraint(swingers()[0].field_50);
                 }
 
-                Var<string_hash> swing_entry_smoothing_id{0x0095813C};
+                static const string_hash swing_entry_smoothing_id {int(to_hash("swing_entry_smoothing"))};
 
-                auto *v35 = &this->field_8->field_50;
-                auto v36 = v35->get_pb_float(swing_entry_smoothing_id());
-                auto v111 = (1.0f - v117) * v36 * 50.0f;
+                auto &v35 = this->field_8->field_50;
+                auto swing_entry_smoothing = v35.get_pb_float(swing_entry_smoothing_id);
+                auto v111 = (1.0f - abs_result) * swing_entry_smoothing * 50.0f;
                 swingers()[0].field_0.set_constraint_lenience(v111);
 
                 auto v110 = 0.0f;
 
-                auto *v37 = &this->field_8->field_50;
+                static const string_hash reel_buttons_delay_id {int(to_hash("reel_buttons_delay"))};
+                auto &v37 = this->field_8->field_50;
+                auto reel_buttons_delay = v37.get_optional_pb_float(reel_buttons_delay_id, v110, nullptr);
 
-                Var<string_hash> reel_buttons_delay_id{0x00958E60};
-                a3.arr[2] = v37->get_optional_pb_float(reel_buttons_delay_id(), v110, nullptr);
-
-                game_button v38;
-                controller_ptr->get_button(&v38, controller_inode::eControllerButton{14});
+                game_button v38 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(14));
 
                 uint32_t v39 = ((v38.m_flags & 0x20) != 0 ? 0 : v38.m_flags & 1);
 
-                if (v39) {
-                    game_button v46;
-                    controller_ptr->get_button(&v46, controller_inode::eControllerButton{14});
+                if (v39)
+                {
+                    game_button v46 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(14));
                     auto v47 = (v46.m_flags & 0x20) != 0 ? 0.0f : v46.field_1C;
-                    auto v48 = v47 < v117;
+                    auto v48 = v47 < reel_buttons_delay;
 
                     auto v49 = v48 ? triggered_reel_in_factor : reel_in_factor;
                     auto v50 = v49 * a2 * 1.1f;
-                    swingers()[0].field_0.field_1C = swingers()[0].field_0.field_1C + v50;
-                    if (swingers()[0].field_50 > (double) 0.0f)
-                        swingers()[0].field_50 = swingers()[0].field_50 + v50;
+                    swingers()[0].field_0.m_constraint += v50;
+                    if (swingers()[0].field_50 > 0.0f) {
+                        swingers()[0].field_50 += v50;
+                    }
                 }
 
-                game_button v51;
-                controller_ptr->get_button(&v51, controller_inode::eControllerButton{10});
+                game_button v51 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(10));
 
-                v118 |= 1u;
+                static string_hash cat_id_swing_reel_up{int(to_hash("Swing_Reel_Up"))};
+
                 bool v53 = false;
                 if ((v51.m_flags & 0x20) == 0) {
                     auto v112 = v51.m_flags & 1;
                     if (v112) {
-                        if (swingers()[0].field_0.field_1C > minimum_web_length) {
+                        if (swingers()[0].field_0.get_constraint() > minimum_web_length) {
                             v53 = true;
                         }
                     }
                 }
 
-                if ((v118 & 1) != 0) {
-                    v118 &= 0xFFFFFFFE;
-                }
+                if (v53)
+                {
+                    auto v54 = this->field_20->field_34->is_in_master_mode();
 
-                if (!v53) {
-                    if (this->field_40 == 3) {
-                        v111 = COERCE_FLOAT(v106);
-                        als_inode_ptr->request_category_transition(cat_id_swing,
-                                                                   als::layer_types{0},
+                    game_button v55 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(10));
+
+                    float v56 = ((v55.m_flags & 0x20) != 0 ? 0.0f : v55.field_1C);
+
+                    auto v112 = v56 < reel_buttons_delay;
+                    if (v112) {
+                        auto v57 = triggered_reel_in_factor * a2;
+                        swingers()[0].field_0.m_constraint = swingers()[0].field_0.m_constraint - v57;
+                        if (swingers()[0].field_50 > 0.0f) {
+                            swingers()[0].field_50 = swingers()[0].field_50 - v57;
+                        }
+
+                        if (!v54)
+                        {
+                            als_inode_ptr->request_category_transition(cat_id_swing_reel_up,
+                                                                       static_cast<als::layer_types>(0),
+                                                                       true,
+                                                                       false,
+                                                                       false);
+                            this->field_40 = 3;
+                        }
+
+                    } else {
+                        auto v58 = 10.0f * a2;
+                        swingers()[0].field_0.m_constraint = swingers()[0].field_0.m_constraint- v58;
+                        if (swingers()[0].field_50 > 0.0f) {
+                            swingers()[0].field_50 = swingers()[0].field_50 - v58;
+                        }
+
+                        if (!v54)
+                        {
+                            als_inode_ptr->request_category_transition(cat_id_swing_reel_up,
+                                                                       static_cast<als::layer_types>(0),
+                                                                       true,
+                                                                       false,
+                                                                       false);
+                            this->field_40 = 3;
+                        }
+                    }
+                }
+                else if (this->field_40 == 3)
+                {
+                    als_inode_ptr->request_category_transition(cat_id_swing,
+                                                                   static_cast<als::layer_types>(0),
                                                                    true,
                                                                    false,
                                                                    false);
-                    }
-                    goto LABEL_78;
                 }
 
-                auto v54 = this->field_20->field_34->field_24 == 2;
-
-                game_button v55;
-                controller_ptr->get_button(&v55, controller_inode::eControllerButton{10});
-
-                float v56 = ((v55.m_flags & 0x20) != 0 ? 0.0f : v55.field_1C);
-
-                auto v112 = v56 < v117;
-                if (v112) {
-                    auto v57 = triggered_reel_in_factor * a2;
-                    swingers()[0].field_0.field_1C = swingers()[0].field_0.field_1C - v57;
-                    if (swingers()[0].field_50 > 0.0f) {
-                        swingers()[0].field_50 = swingers()[0].field_50 - v57;
-                    }
-
-                    if (v54) {
-                        goto LABEL_78;
-                    }
-
-                } else {
-                    auto v58 = 10.0f * a2;
-                    swingers()[0].field_0.field_1C = swingers()[0].field_0.field_1C - v58;
-                    if (swingers()[0].field_50 > 0.0f) {
-                        swingers()[0].field_50 = swingers()[0].field_50 - v58;
-                    }
-                    if (v54) {
-                        goto LABEL_78;
-                    }
+                if (minimum_web_length > this->m_constraint ) {
+                    this->m_constraint = minimum_web_length;
+                    swingers()[0].field_0.set_constraint(this->m_constraint);
                 }
-
-                v111 = COERCE_FLOAT(v106);
-
-                Var<string_hash> cat_id_swing_reel_up{0x00958BD4};
-                als_inode_ptr->request_category_transition(cat_id_swing_reel_up(),
-                                                           als::layer_types{0},
-                                                           true,
-                                                           false,
-                                                           false);
-                this->field_40 = 3;
-            LABEL_78:
-                v9 = this->_constraint;
-                if (v9 < minimum_web_length) {
-                    v59 = minimum_web_length;
-                    this->_constraint = minimum_web_length;
-                    swingers()[0].field_0.field_1C = v59;
-                }
-
-                ++i;
             }
-        } while (i < 2);
+        }
 
         auto *v60 = v124;
         auto v110 = 1.0f;
         auto v126 = v124->get_velocity();
-        sub_44BCD0(this->field_C);
-        this->field_8C = v9;
+        this->field_8C = sub_44BCD0(this->field_C);
         if (this->field_88 < 0.0f) {
-            this->field_88 = v9;
+            this->field_88 = this->field_8C;
         }
 
-        auto v61 = std::sqrt(v126.arr[2] * v126.arr[2] + v126.arr[1] * v126.arr[1] +
-                             v126.arr[0] * v126.arr[0]);
+        auto v61 = v126.length();
         auto v123 = v61;
 
         float v62;
-        if (v61 >= 15.0) {
-            v62 = v110;
-        } else {
-            v62 = v60->get_abs_po()->field_0.arr[1].arr[1];
+        if (v61 < 15.0)
+        {
+            auto v171 = std::abs(270.0f - (this->field_8C * (180.0 / 3.1415927)));
+            if ( v171 >= 5.0 ) {
+                v62 = (v171 <= 45.0f
+                        ? 1.0f - (v171 / 45.0f)
+                        : 1.0f);
+            } else {
+                v62 = 1.0;
+            }
+
+            v62 *= v62;
+            v62 = physics_inode_ptr->get_abs_po().get_y_facing().y;
             if (v62 < EPSILON) {
                 v62 = 0.0f;
             }
         }
 
-        v114 = v62 * 20.0f;
-        auto v63 = v117.arr[2] * v117.arr[2];
-        auto v64 = v117.arr[0] * v117.arr[0];
-        if (v117.arr[1] * v117.arr[1] + v64 + v63 <= LARGE_EPSILON) {
+        static constexpr auto swing_horiz_thrust = 20.0f;
+
+        auto v114 = v62 * swing_horiz_thrust;
+        if (v117.length2() <= LARGE_EPSILON)
+        {
             if (this->field_3C != 1) {
                 float v110 = 0.0;
                 float v111 = 0.0;
@@ -1355,233 +1314,287 @@ void swing_inode::update_pendulums(Float a2)
                                initial_boost_factor,
                                v110);
             }
-        } else {
-            v65 = v63 + v64;
-            v117.arr[1] = 0.0;
-            if (v65 > flt_86F854) {
-                v66 = float_ONE / sqrt(v65);
-                v117.arr[0] = v117.arr[0] * v66;
-                v117.arr[1] = 0.0f * v66;
-                v117.arr[2] = v117.arr[2] * v66;
-            }
         }
-        if (v117.arr[1] * v117.arr[1] + v117.arr[2] * v117.arr[2] + v117.arr[0] * v117.arr[0] >
-            LARGE_EPSILON) {
-            v67 = &v60->get_abs_po()->field_0.arr[1];
-            v113.arr[0] = v67->base.arr[0];
-            v113.arr[2] = v67->base.arr[2];
-            v113.arr[1] = 0.0;
-            v109 = v113.arr[2] * swingers()[0].field_0.field_1C;
-            v68 = v113.arr[0] * swingers()[0].field_0.field_1C;
-            v69 = v109;
-            v70 = v68 * v68 + v109 * v109;
-            if (v70 >= EPSILON) {
-                v110 = v70;
-                if (v70 > flt_86F854) {
-                    v74 = float_ONE / sqrt(v110);
-                    v68 = v68 * v74;
-                    v113.arr[1] = 0.0f * v74;
-                    v69 = v74 * v109;
-                }
+        else
+        {
+            v117.y = 0.0;
+            v117.normalize();
+        }
+
+        if (v117.length2() > LARGE_EPSILON)
+        {
+            auto v113 = physics_inode_ptr->get_abs_po().get_y_facing();
+            auto v68 = v113 * swingers()[0].field_0.get_constraint();
+            v68.y = 0.0f;
+
+            if (v68.length2() >= EPSILON) {
+                v68.normalize();
             } else {
-                v71 = v67->base.arr[0];
-                v72 = v67->base.arr[1];
-                v73 = v67->base.arr[2];
-                v113.arr[0] = v71;
-                v68 = v71;
-                v113.arr[2] = v73;
-                v69 = v73;
-                v113.arr[1] = v72;
+                v68 = v113;
             }
-            v111 = 0.0;
-            v75 = v113.arr[1] * v117.arr[1] + v69 * v117.arr[2] + v68 * v117.arr[0];
-            a3.arr[2] = v75;
+
+            float v110;
+            auto v75 = dot(v117, v68);
+
+            static constexpr auto mag_of_thrust_b = 0.5f;
+            static constexpr auto mag_of_thrust_f = 1.5f;
+            static constexpr auto mag_of_thrust_lr = 1.0f;
+
+            float v108;
             if (v75 <= 0.0f) {
                 v110 = -1.0;
-                LODWORD(v108.field_4) = &stru_91F494;
+                v108 = mag_of_thrust_b;
             } else {
                 v110 = 1.0;
-                LODWORD(v108.field_4) = &stru_91F490;
+                v108 = mag_of_thrust_f;
             }
-            v109 = sub_48C0C0(&a3.arr[2], &v111, &v110, &flt_91F498, (float *) LODWORD(v108.field_4));
-            v111 = 1.0;
-            v110 = 3.5;
-            v125 = 60.0;
-            a3.arr[2] = 15.0;
-            v76 = sub_48C0C0(&this->field_2C, &a3.arr[2], &v125, &v111, &v110);
-            v109 = v76 * v109;
-            v127.arr[0] = v117.arr[0] * a2;
-            v110 = v117.arr[2] * a2 * v114;
-            v111 = v117.arr[1] * a2 * v114;
-            out.arr[0] = out.arr[0] * v114;
-            v113.arr[0] = out.arr[0] * v109;
-            v113.arr[1] = v111 * v109;
-            v113.arr[2] = v110 * v109;
-            v121 = v113;
-            v77 = v60->get_abs_po();
-            v78 = sub_444A60((vector3d *) &a6.arr[2], v121.arr, v77->field_0.arr[1].base.arr);
-            v79 = v78->arr[0];
-            v108.field_4 = 0.0;
-            v121.arr[0] = v79;
-            v80 = v78->arr[1];
-            v108.field_0 = (int) &IGNORE_LOC_13;
-            v107 = 1;
-            v121.arr[1] = v80;
-            v121.arr[2] = v78->arr[2];
-            v60->apply_force_increment(&v121, (physical_interface::force_type) 1, &IGNORE_LOC_13, 0);
+
+            auto v109 = sub_48C0C0(v75, 0.0f, v110, mag_of_thrust_lr, v108);
+
+            sp_log("angle: %.1f, thrust: %.1f", v75, v114 * v109);
+
+            auto v76 = sub_48C0C0(this->field_2C, 15.0f, 60.0f, 1.0f, 3.5f);
+            v109 *= v76;
+            vector3d v121 = (((v117 * a2) * v114) * v109);
+
+            auto &v77 = v60->get_abs_po();
+            v121 = sub_444A60(v121, v77.get_y_facing());
+
+            physics_inode_ptr->apply_force_increment(v121, static_cast<physical_interface::force_type>(1), IGNORE_LOC, 0);
         }
-        actor::get_velocity(this->field_C, &v122);
-        v81 = ai::physics_inode::get_abs_po(v60);
-        v82 = average_direction((vector3d *) &a6.arr[2],
-                                a2,
-                                &v122,
-                                &v81->field_0.arr[2].base,
-                                0.30000001,
-                                &heading_sampling_window);
-        v83 = this->m_swing_time;
-        v122 = *v82;
-        v84 = v82->arr[0];
-        v130 = v82->arr[1];
-        v85 = v82->arr[2];
-        v130 = 0.0;
-        if (v83 <= flt_91F6FC) {
-            stru_958154.arr[0] = v84;
-            stru_958154.arr[1] = v130;
-            stru_958154.arr[2] = v85;
+
+        auto v122 = this->field_C->get_velocity();
+        auto &v81 = physics_inode_ptr->get_abs_po();
+        auto v82 = average_direction(a2,
+                                    v122,
+                                    v81.get_z_facing(),
+                                    0.30000001f,
+                                    heading_sampling_window());
+        v122 = v82;
+        auto v84 = v122;
+        v84.y = 0.0;
+        static constexpr auto initial_swing_time = 0.5f;
+        if (this->m_swing_time <= initial_swing_time) {
+            s_initial_heading() = v84;
         }
-        v110 = v122.arr[2] * stru_958154.arr[2] + v122.arr[1] * stru_958154.arr[1] +
-            v122.arr[0] * stru_958154.arr[0];
-        sampling_window::push_sample(&stru_958610, a2, v110);
-        als::param_list::param_list(&v120);
+
+        v110 = dot(v122, s_initial_heading());
+        heading_change_sampling_window().push_sample(a2, v110);
+        als::param_list v120 {};
+
+        als::param v108;
         v108.field_4 = this->m_swing_time;
-        v143 = 0.0;
         v108.field_0 = 17;
-        als::param_list::add_param_0(&v120, v108);
-        v108.field_4 = this->field_8C * flt_87E734;
+        v120.add_param(v108);
+
+        v108.field_4 = this->field_8C * (180.0 / 3.1415927);
         v108.field_0 = 10;
-        als::param_list::add_param_0(&v120, v108);
-        v108.field_4 = sampling_window::average(&stru_958610, dword_91F6F8);
+        v120.add_param(v108);
+
+        v108.field_4 = heading_change_sampling_window().average(0.30000001f);
         v108.field_0 = 12;
-        als::param_list::add_param_0(&v120, v108);
+        v120.add_param(v108);
+
         v108.field_4 = v123;
         v108.field_0 = 0;
-        als::param_list::add_param_0(&v120, v108);
-        v86 = ai::als_inode::get_als_layer_0((ai::als_inode *) LODWORD(a3.arr[1]), 0);
-        v86->base.m_vtbl->set_desired_params(v86, &v120);
-        if (v122.arr[2] * v122.arr[2] + v122.arr[1] * v122.arr[1] + v122.arr[0] * v122.arr[0] <
-            EPSILON)
-            v122 = ai::physics_inode::get_abs_po(v60)->field_0.arr[2].base;
-        v87 = pendulum::get_pivot_abs_pos((pendulum *) swingers, (vector3d *) &a6.arr[2]);
-        v88 = ai::physics_inode::get_abs_position(v124, (vector3d *) &v137.field_14);
-        v89 = v88->arr[2] - v87->arr[2];
-        a3.arr[1] = v88->arr[1] - v87->arr[1];
-        v90 = v88->arr[0] - v87->arr[0];
-        v113.arr[1] = a3.arr[1];
-        v113.arr[0] = v90;
-        v113.arr[2] = v89;
-        v91 = v113.arr[0] * v113.arr[0] + a3.arr[1] * a3.arr[1] + v89 * v89;
-        if (v91 > flt_86F854) {
-            v92 = float_ONE / sqrt(v91);
-            v113.arr[0] = v113.arr[0] * v92;
-            v113.arr[1] = a3.arr[1] * v92;
-            v113.arr[2] = v92 * v89;
+        v120.add_param(v108);
+
+        als_inode_ptr->set_desired_params(v120, static_cast<als::layer_types>(0));
+        if (v122.length2() < EPSILON) {
+            v122 = physics_inode_ptr->get_abs_po().get_z_facing();
         }
-        LODWORD(v108.field_4) = (string_hash) stru_958174.source_hash_code;
+
+        auto v87 = swingers()[0].field_0.get_pivot_abs_pos();
+        auto v88 = physics_inode_ptr->get_abs_position();
+        auto v89 = v88 - v87;
+        v89.normalize();
 
         auto *v93 = &this->field_8->field_50;
-        v110 = COERCE_FLOAT((als::param *) &v108.field_4);
 
-        Var<string_hash> boost_force_id{0x00958174};
-        a3.arr[2] = v93->get_pb_float(boost_force_id());
-        LODWORD(v108.field_4) = (string_hash) stru_958884.source_hash_code;
+        static string_hash boost_force_id {int(to_hash("boost_force"))};
+        auto boost_force = v93->get_pb_float(boost_force_id);
 
-        v110 = COERCE_FLOAT((als::param *) &v108.field_4);
+        static string_hash boost_cooldown_id {int(to_hash("boost_cooldown"))};
+        v110 = v93->get_pb_float(boost_cooldown_id);
 
-        Var<string_hash> boost_cooldown_id{0x00958884};
-        v110 = v93->get_pb_float(boost_cooldown_id());
+        static string_hash boost_min_angle_id {int(to_hash("boost_min_angle"))};
+        auto boost_min_angle = v93->get_pb_float(boost_min_angle_id);
 
-        LODWORD(v108.field_4) = (string_hash) stru_958140.source_hash_code;
+        static string_hash boost_max_angle_id {int(to_hash("boost_max_angle"))};
+        auto boost_max_angle = v93->get_pb_float(boost_max_angle_id);
+        boost_min_angle = boost_min_angle * (3.1415927 / 180.0);
+        v114 = boost_max_angle * (3.1415927 / 180.0);
 
-        v111 = COERCE_FLOAT((als::param *) &v108.field_4);
-
-        Var<string_hash> boost_min_angle_id{0x00958140};
-        auto boost_min_angle = v93->get_pb_float(boost_min_angle_id());
-
-        v111 = COERCE_FLOAT((als::param *) &v108.field_4);
-
-        Var<string_hash> boost_max_angle_id{0x009587D0};
-        auto boost_max_angle = v93->get_pb_float(boost_max_angle_id());
-        v109 = boost_min_angle * 0.017453292f;
-        v114 = boost_max_angle * 0.017453292f;
-        auto v98 = -YVEC().arr[2] * v113.arr[2] + v113.arr[1] * (-YVEC().arr[1]) +
-            (-YVEC().arr[0]) * v113.arr[0];
-        if (v98 <= 1.f) {
-            if (v98 < -1.f) {
-                v98 = -1.f;
-            }
-
-        } else {
+        auto v98 = dot(v89, -YVEC);
+        if (v98 > 1.f) {
             v98 = 1.0f;
         }
 
-        auto a3 = v98;
-        if (v100 | v101) {
-            a3 = -1.0;
-        } else if (v98 > 1.0f) {
-            a3 = 1.0;
+        if (v98 < -1.f) {
+            v98 = -1.f;
         }
 
-        a3 = std::acos(a3);
+        v98 = bounded_acos(v98);
 
         Var<float> boost_cooldown_timer{0x00958100};
-        v102 = boost_cooldown_timer - a2;
-        boost_cooldown_timer = v102;
-        if (v102 < 0.0f)
-            boost_cooldown_timer = 0.0;
-        if (a3.arr[0] > (double) v114) {
-            boost_cooldown_timer = 0.0;
-        } else {
-            v103 = v4->base.m_vtbl
-                       ->get_button(v4, &v139, (ai::controller_inode::eControllerButton) 9)
-                       ->m_flags;
-            v118 |= 2u;
-            v104 = 0;
-            if ((v103 & 0x20) == 0) {
-                v112 = (v103 & 2) != 0;
-                if ((v103 & 2) != 0 && boost_cooldown_timer <= (double) 0.0f)
-                    v104 = 1;
-            }
-            if ((v118 & 2) != 0)
-                game_button::~game_button(&v139);
-            if (v104) {
-                this->field_C->base.base.base.m_vtbl->has_sound_and_pfx_ifc(this->field_C);
-                a3.arr[1] = a3.arr[2];
-                if (a3.arr[0] > (double) v109 && v114 > (double) v109) {
-                    v105 = (a3.arr[0] - v109) / (v114 - v109);
-                    a3.arr[1] = (float_ONE - v105 * v105) * a3.arr[2];
+        auto v102 = boost_cooldown_timer() - a2;
+        boost_cooldown_timer() = v102;
+        if (v102 < 0.0f) {
+            boost_cooldown_timer() = 0.0;
+        }
+
+        if (v98 > v114) {
+            boost_cooldown_timer() = 0.0;
+        }
+        else
+        {
+            auto v103 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(9)).m_flags;
+            bool v104 = false;
+            if ((v103 & 0x20) == 0)
+            {
+                if ((v103 & 2) != 0 && boost_cooldown_timer() <= 0.0f) {
+                    v104 = true;
                 }
-                v128.arr[0] = v122.arr[0] * a3.arr[1];
-                v128.arr[1] = v122.arr[1] * a3.arr[1];
-                v128.arr[2] = v122.arr[2] * a3.arr[1];
-                ai::physics_inode::apply_force_increment(v124,
-                                                         &v128,
-                                                         (physical_interface::force_type) 1,
-                                                         &IGNORE_LOC_13,
-                                                         0);
-                boost_cooldown_timer = v110;
+            }
+
+            if (v104)
+            {
+                this->field_C->has_sound_and_pfx_ifc();
+                auto v149  = boost_force;
+                if (v98 > boost_min_angle && v114 > boost_min_angle) {
+                    auto v105 = (v98 - boost_min_angle) / (v114 - boost_min_angle);
+                    v105 *= v105;
+                    v105 = 1.0f - v105;
+                    v149 = v105 * boost_force;
+                }
+                
+                auto v128 = v122 * v149;
+                v124->apply_force_increment(v128,
+                                             static_cast<physical_interface::force_type>(1),
+                                             IGNORE_LOC,
+                                             0);
+                boost_cooldown_timer() = v110;
             }
         }
-        v143 = NAN;
-        als::param_list::~param_list(&v120);
-#endif
 
     } else {
         THISCALL(0x0045B110, this, a2);
     }
 }
 
-void swing_inode::check_for_collision() {
-    THISCALL(0x0045C3C0, this);
+void swing_inode::check_for_collision()
+{
+    TRACE("swing_inode::check_for_collision");
+
+    if constexpr (1)
+    {
+        auto *v2 = this->field_20;
+        auto *v3 = v2->field_20;
+        auto *v4 = v2->field_28;
+        if ( v4->get_collided_last_frame()
+            && v3->get_category_id(static_cast<als::layer_types>(0)) == cat_id_swing )
+        {
+            this->field_40 = 0;
+            float hit_angle = -1.0f;
+            this->field_84 = 0.0;
+
+            auto last_collision_normal = v4->get_last_collision_normal();
+            auto &abs_po = v4->get_abs_po();
+            hit_angle = dot(last_collision_normal, abs_po.get_z_facing());
+
+            auto &v6 = v4->get_abs_po();
+            auto v38 = dot(v6.get_x_facing(), last_collision_normal);
+            hit_angle = sub_48A720(v38, hit_angle);
+            hit_angle = wrap_angle(hit_angle);
+            hit_angle = (180.0 / 3.1415927) * hit_angle;
+
+            assert(hit_angle >= -0.1f);
+            assert(hit_angle <= 360.1f);
+
+            sp_log("hit_angle: %.1f", hit_angle);
+
+            static constexpr auto hard_coded_sticky_hang_distance = 0.57999998f;
+
+            auto *v9 = this->field_C;
+            auto v11 = v9->physical_ifc()->field_68;
+            this->field_58 = v11 + last_collision_normal * hard_coded_sticky_hang_distance;
+            this->field_70 = last_collision_normal;
+            this->field_64 = ( is_colinear(last_collision_normal, YVEC, 0.0099999998)
+                                ? v4->get_abs_po().get_z_facing()
+                                : vector3d::cross(last_collision_normal, YVEC)
+                            );
+
+            auto &v21 = v4->get_abs_po();
+            this->field_7C = dot(this->field_64, v21.get_z_facing());
+            if ( this->field_7C >= 0.0f ) {
+                this->field_64 = -this->field_64;
+            }
+
+            auto abs_position = v4->get_abs_position();
+            vector2d v27 {abs_position[0], abs_position[2]};
+
+            auto pivot_abs_pos = swingers()[0].field_0.get_pivot_abs_pos();
+            vector2d v29 {pivot_abs_pos[0], pivot_abs_pos[2]};
+
+            auto v39 = (v29 - v27).length();
+            auto velocity = v4->get_velocity();
+            auto v32 = velocity.length();
+            if ( v39 >= 1.2f || v32 >= 10.0f )
+            {
+                if ( v32 > 10.0f )
+                {
+                    static const string_hash cat_id_swing_bounce_right {int(to_hash("Swing_Bounce_Right"))};
+                    static const string_hash cat_id_swing_bounce_left {int(to_hash("Swing_Bounce_Left"))};
+
+                    if ( hit_angle < 225.0f || hit_angle > 315.0f )
+                    {
+                        if ( hit_angle >= 45.0f || hit_angle <= 135.0f )
+                        {
+                            v3->request_category_transition(
+                                cat_id_swing_bounce_right,
+                                static_cast<als::layer_types>(0),
+                                true,
+                                false,
+                                false);
+                            this->field_40 = 2;
+                        }
+                    }
+                    else
+                    {
+                        v3->request_category_transition(
+                            cat_id_swing_bounce_left,
+                            static_cast<als::layer_types>(0),
+                            true,
+                            false,
+                            false);
+                        this->field_40 = 2;
+                    }
+                }
+            }
+            else
+            {
+                static const string_hash cat_id_swing_sticky_hang_left {int(to_hash("Swing_Sticky_Hang_Left"))};
+                static const string_hash cat_id_swing_sticky_hang_right {int(to_hash("Swing_Sticky_Hang_Right"))};
+
+                string_hash v40 = (this->field_7C < 0.0f
+                                    ? cat_id_swing_sticky_hang_right
+                                    : cat_id_swing_sticky_hang_left
+                                    );
+
+                v3->request_category_transition(
+                    v40,
+                    static_cast<als::layer_types>(0),
+                    true,
+                    false,
+                    false);
+
+                this->field_40 = 1;
+            }
+
+        }
+    } else {
+        THISCALL(0x0045C3C0, this);
+    }
 }
 
 void sub_44C3B0(line_info *a1) {
@@ -1663,7 +1676,7 @@ void swing_inode::do_web_splat(vector3d target_point,
                     axis = YVEC;
                 }
 
-                vector3d local_vec3 = vector3d::sub_401870(line.hit_norm, YVEC);
+                vector3d local_vec3 = vector3d::cross(line.hit_norm, YVEC);
 
                 auto float_from_world = g_world_ptr()->field_1B0.field_2C * 0.5f;
 
@@ -1725,7 +1738,7 @@ void swing_inode::do_web_splat(vector3d target_point,
                         line.hit_pos = line.hit_pos + tmp;
 
                         if (line.hit_norm != YVEC) {
-                            line.hit_norm = vector3d::sub_401870(line.hit_norm, YVEC);
+                            line.hit_norm = vector3d::cross(line.hit_norm, YVEC);
                             sub_44C430(&line);
                         }
                     }
@@ -1751,57 +1764,80 @@ void swing_inode::do_web_splat(vector3d target_point,
 
 void swing_inode::compute_forward_and_up_directions(vector3d &forward, vector3d &up)
 {
-    physical_interface *v4 = this->field_C->physical_ifc();
+    TRACE("ai::swing_inode::compute_forward_and_up_directions");
 
-    forward = v4->get_velocity();
+    if constexpr (1)
+    {
+        physical_interface *v4 = this->get_actor()->physical_ifc();
 
-    vector3d v26;
-    up = this->get_desired_up_facing();
+        forward = v4->get_velocity();
 
-    this->field_48 = up;
+        up = this->get_desired_up_facing();
 
-    forward = sub_444A60(forward, up);
-
-    if (forward.length2() < EPSILON) {
-        auto *v13 = this->field_C;
-
-        forward = v13->get_abs_po().get_z_facing();
+        this->field_48 = up;
 
         forward = sub_444A60(forward, up);
+
+        if (forward.length2() < EPSILON)
+        {
+            auto *v13 = this->get_actor();
+
+            forward = v13->get_abs_po().get_z_facing();
+
+            forward = sub_444A60(forward, up);
+        }
+
+        forward.normalize();
+
+        assert(up.is_normal());
+        assert(forward.is_normal());
+
+        assert(std::abs(dot(forward, up)) < LARGE_EPSILON);
+
+        float slerp;
+        if (this->m_swing_time >= 1.0f) {
+            slerp = 0.5f;
+        } else {
+            float v16 = this->m_swing_time / 1.0f;
+            slerp = v16 * v16;
+        }
+
+        po &v19 = this->get_actor()->get_abs_po();
+
+        vector3d v23 = v19.get_y_facing();
+        vector3d v24 = v19.get_z_facing();
+
+        vector3d a14;
+        reorient_vectors(v24, v23, forward, up, forward, a14, slerp);
+
+        forward = sub_444A60(forward, up);
+        forward.normalize();
+
+        if ( os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
+        {
+            auto v46 = forward * 2.0f;
+            auto *v35 = this->get_actor();
+            v46 += v35->get_abs_position();
+
+            auto v39 = v35->get_abs_position();
+            line_info v75 {v39, v46};
+            v75.render(25, false);
+        }
+
+        if (os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}))
+        {
+            mString v47 {0, "slerp %.2f", slerp};
+
+            color32 v40 {255, 255, 255, 255};
+            insertDebugString(9, v47, v40);
+        }
+    }
+    else
+    {
+        THISCALL(0x0044BEB0, this, &forward, &up);
     }
 
-    forward.normalize();
-
-    assert(up.is_normal());
-    assert(forward.is_normal());
-
-    //assert(std::abs(dot(forward, up)) < LARGE_EPSILON);
-
-    float slerp;
-    if (this->m_swing_time >= 1.0f) {
-        slerp = 0.5f;
-    } else {
-        float v16 = this->m_swing_time / 1.0f;
-        slerp = v16 * v16;
-    }
-
-    po &v19 = this->field_C->get_abs_po();
-
-    vector3d v23 = v19.get_y_facing();
-    vector3d v24 = v19.get_z_facing();
-
-    vector3d a14;
-    reorient_vectors(v24, v23, forward, up, forward, a14, slerp);
-
-    forward = sub_444A60(forward, up);
-    forward.normalize();
-
-    if constexpr (1) {
-        mString v47 = {0, "slerp %.2f", slerp};
-
-        auto v40 = color32{255, 255, 255, 255};
-        insertDebugString(9, v47, v40);
-    }
+    assert(!is_colinear(forward, up));
 }
 
 float swing_inode::compute_ground_level_at_sweet_spot_position(const vector3d &a1,
@@ -1851,12 +1887,12 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
         a2.normalize();
 
-        vector3d v60 = cntrl_inode_ptr->get_axis(controller_inode::eControllerAxis{0});
+        vector3d v60 = cntrl_inode_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(0));
         if (v60.length() < EPSILON) {
             v60 = this->get_actor()->get_abs_po().get_z_facing();
 
         } else {
-            v60 = cntrl_inode_ptr->get_axis(controller_inode::eControllerAxis{0});
+            v60 = cntrl_inode_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(0));
         }
 
         auto a1 = v60;
@@ -2077,7 +2113,9 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
 void swing_inode::setup_new_web()
 {
-    if constexpr (1)
+    TRACE("ai::swing_inode::setup_new_web");
+
+    if constexpr (0)
     {
         constexpr float max_swing_length_mod = 3.0;
 
@@ -2181,7 +2219,7 @@ void swing_inode::setup_new_web()
         assert(norm_move_dir.is_valid());
         assert(up.is_normal());
         assert(up.is_valid());
-        assert(!vector3d::is_colinear(norm_move_dir, up));
+        assert(!is_colinear(norm_move_dir, up));
 
         als::param_list v44;
         v44.add_param(27u, norm_move_dir);
@@ -2191,9 +2229,7 @@ void swing_inode::setup_new_web()
 
         auto *v41 = v40->get_als_layer(static_cast<als::layer_types>(0));
 
-        //als::param_list v43;
         v41->set_desired_params(v44);
-        v44.clear();
     } else {
         THISCALL(0x004783B0, this);
     }
@@ -2219,10 +2255,10 @@ void swing_inode::propose_something_to_swing_to(vector3d a1,
 
             something_to_swing_to_data().field_38 = a5;
             something_to_swing_to_data().field_34 = a4a;
-            something_to_swing_to_data().field_44 = normal;
+            something_to_swing_to_data().m_normal = normal;
             something_to_swing_to_data().m_visual_point = visual_point;
             something_to_swing_to_data().m_target_length = a12;
-            something_to_swing_to_data().field_5C = a11;
+            something_to_swing_to_data().m_best_distance = a11;
             something_to_swing_to_data().field_64 = (no_swing_timer() > no_swing_lockout_time());
         }
 
@@ -2265,9 +2301,11 @@ bool swing_inode::can_go_to(string_hash a2) {
             auto &v11 = this->field_8->field_50;
 
             auto v12 = v11.get_pb_int(loco_allow_swing_id);
-            if (!this->field_44) {
-                if (v12 != 0) {
-                    auto v13 = v6->get_button(controller_inode::eControllerButton{11});
+            if (!this->field_44)
+            {
+                if (v12 != 0)
+                {
+                    auto v13 = v6->get_button(static_cast<controller_inode::eControllerButton>(11));
                     auto v14 = v13.sub_48B270();
                     v13.~game_button();
                     if (v14) {
@@ -2288,8 +2326,71 @@ bool swing_inode::can_go_to(string_hash a2) {
     }
 }
 
-void swing_inode::update_something_to_swing_to(Float a2) {
-    if constexpr (0) {
+void swing_inode::update_something_to_swing_to(Float a2)
+{
+    TRACE("ai::swing_inode::update_something_to_swing_to");
+
+    if constexpr (1)
+    {
+        auto v2 = something_to_swing_to_data().field_0 - a2;
+        something_to_swing_to_data().field_0 = v2;
+        if ( v2 >= 0.0f )
+        {
+            if ( something_to_swing_to_data().field_0 > 0.0f ) {
+                return;
+            }
+        }
+        else
+        {
+            something_to_swing_to_data().field_0 = 0.0;
+        }
+
+        auto v4 = something_to_swing_to_data().field_4 - a2;
+        something_to_swing_to_data().field_4 = v4;
+        if ( v4 >= 0.0f )
+        {
+            if ( something_to_swing_to_data().field_4 > 0.0f ) {
+                return;
+            }
+        }
+        else
+        {
+            something_to_swing_to_data().field_4 = 0.0;
+        }
+
+        if ( something_to_swing_to_data().field_64 )
+        {
+            static Var<float> dword_958050 {0x00958050};
+            something_to_swing_to_data().field_4 = dword_958050();
+            if ( something_to_swing_to_data().field_8.field_0 != something_to_swing_to_data().field_34 )
+                something_to_swing_to_data().field_8.field_0 = something_to_swing_to_data().field_34;
+
+            something_to_swing_to_data().field_C = something_to_swing_to_data().field_38;
+            auto v5 = something_to_swing_to_data().field_38.y - -1.0e10;
+            something_to_swing_to_data().goal_constraint = v5;
+            something_to_swing_to_data().field_18 = something_to_swing_to_data().m_normal;
+            if ( v5 < 5.0f )
+            {
+                if ( this->field_C->is_in_limbo() || this->field_C->get_primary_region() == nullptr )
+                {
+                    something_to_swing_to_data().goal_constraint = something_to_swing_to_data().field_C.y;
+                }
+                else
+                {
+                    auto *reg = this->field_C->get_primary_region();
+                    something_to_swing_to_data().goal_constraint = something_to_swing_to_data().field_C.y - reg->get_ground_level();
+                }
+
+                if ( something_to_swing_to_data().goal_constraint < 2.0f )
+                {
+                    auto v8 = something_to_swing_to_data().field_C - this->field_C->get_abs_position();
+                    something_to_swing_to_data().goal_constraint = v8.length();
+                }
+            }
+
+            something_to_swing_to_data().goal_constraint *= 0.89999998f;
+            assert(something_to_swing_to_data().goal_constraint > 0.0f);
+        }
     } else {
         THISCALL(0x0045AD80, this, a2);
     }
@@ -2371,19 +2472,26 @@ void swing_inode::find_best_anchor_point(const vector3d &a1,
 
 } // namespace ai
 
-void swing_state_patch() {
-
-    return;
+void swing_state_patch()
+{
     {
-        FUNC_ADDRESS(address, &ai::swing_state::activate);
-        SET_JUMP(0x0047DA60, address);
+        REDIRECT(0x0045B206, ai::average_direction_original);
+        REDIRECT(0x0045BEEB, ai::average_direction_original);
     }
 
+    {
+        FUNC_ADDRESS(address, &ai::swing_state::_activate);
+        set_vfunc(0x008774D0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::swing_state::_frame_advance);
+        set_vfunc(0x008774D8, address);
+    }
+
+    return;
+
     if constexpr (0) {
-        {
-            FUNC_ADDRESS(address, &ai::swing_state::frame_advance);
-            set_vfunc(0x008774D8, address);
-        }
 
         {
             {
@@ -2425,8 +2533,8 @@ void swing_state_patch() {
     }
 }
 
-void swing_inode_patch() {
-
+void swing_inode_patch()
+{
     {
         FUNC_ADDRESS(address, &ai::swing_inode::update_pendulums);
         REDIRECT(0x00477BCB, address);
@@ -2438,13 +2546,16 @@ void swing_inode_patch() {
         REDIRECT(0x004787A6, address);
     }
 
-    return;
+    {
+        FUNC_ADDRESS(address, &ai::swing_inode::update_something_to_swing_to);
+        REDIRECT(0x0048863F, address);
+    }
 
     {
-        FUNC_ADDRESS(address, &ai::swing_inode::clip_web);
-        REDIRECT(0x00477BC3, address);
+        FUNC_ADDRESS(address, &ai::swing_inode::check_for_collision);
+        REDIRECT(0x00477B4D, address);
     }
-    
+
     {
         FUNC_ADDRESS(address, &ai::swing_inode::update_mode_swinging);
         REDIRECT(0x0047DE7E, address);
@@ -2455,6 +2566,13 @@ void swing_inode_patch() {
         REDIRECT(0x0047DD94, address);
     }
 
+    return;
+
+    {
+        FUNC_ADDRESS(address, &ai::swing_inode::clip_web);
+        REDIRECT(0x00477BC3, address);
+    }
+    
 #if 0
     {
         FUNC_ADDRESS(address, &ai::swing_inode::frame_advance);
@@ -2476,11 +2594,6 @@ void swing_inode_patch() {
     {
         FUNC_ADDRESS(address, &ai::swing_inode::fire_new_web);
         REDIRECT(0x0047DE72, address);
-    }
-
-    {
-        FUNC_ADDRESS(address, &ai::swing_inode::check_for_collision);
-        REDIRECT(0x00477B4D, address);
     }
 
     {

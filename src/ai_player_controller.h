@@ -12,12 +12,14 @@
 struct actor;
 struct conglomerate;
 
+enum eHeroLocoMode {};
+
 struct ai_player_controller {
     std::intptr_t m_vtbl = 0x0;
 
     conglomerate *field_4[2];
-    int field_C;
-    int field_10;
+    eHeroLocoMode m_spidey_loco_mode;
+    eHeroLocoMode m_prev_spidey_loco_mode;
     int field_14;
     game_button gb_jump;
     game_button field_4C;
@@ -43,6 +45,8 @@ struct ai_player_controller {
 
     //0x004728D0
     ai_player_controller(actor *a2);
+
+    void set_spidey_loco_mode(eHeroLocoMode a2);
 
     hero_type_enum find_hero_type() const;
 
@@ -93,6 +97,11 @@ struct ai_player_controller {
 
     //virtual
     float get_motion_force();
+
+    static bool is_a_controllable_mode(eHeroLocoMode a1)
+    {
+        return a1 != 14;
+    }
 };
 
 extern void ai_player_controller_patch();

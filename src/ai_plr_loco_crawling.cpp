@@ -175,7 +175,7 @@ line_info *check_exterior_transition(
                     *local_collision::obbfilter_lineseg_test(),
                     nullptr);
                 if ( line1.collision
-                    || vector3d::is_colinear(YVEC, the_actor->get_abs_po().get_y_facing(), 0.0099999998) )
+                    || is_colinear(YVEC, the_actor->get_abs_po().get_y_facing(), 0.0099999998) )
                 {
                     auto a4 = line1.field_0 - line1.hit_pos;
                     if ( a4.length2() < 0.64000005 )
@@ -195,7 +195,7 @@ line_info *check_exterior_transition(
             bool cond0 = ( a5 || sub_66024E(surface_info()) );
 
             vector3d a2 = -the_actor->get_abs_po().get_y_facing();
-            if ( vector3d::is_colinear(a2, surface_info().hit_norm, 0.0099999998) ) {
+            if ( is_colinear(a2, surface_info().hit_norm, 0.0099999998) ) {
                 a2 = the_actor->get_abs_po().get_z_facing();
             }
 

@@ -92,7 +92,7 @@ bool collide_sphere_geometry(const vector3d &a2,
         auto a2a = bit_cast<collision_capsule *>(cg)->sub_48AE70(a4);
 
         float v23;
-        closest_point_line_segment_point(a2a.base, a2a.end, a2, &v23);
+        closest_point_line_segment_point(a2a.base, a2a.end, a2, v23);
         auto a1 = sub_48B5B0(a2a.base, a2a.end, v23);
 
         auto radius = a2a.radius + a3;
@@ -250,13 +250,14 @@ int collide_segment_hollow_sphere(
     }
 }
 
-float dist_point_segment_sq_opt(const vector3d &a1, const vector3d &a2, const vector3d &a3) {
+float dist_point_segment_sq_opt(const vector3d &a1, const vector3d &a2, const vector3d &a3)
+{
     auto &v3 = a3;
     auto &v4 = a2;
     auto &v5 = a1;
 
     float tmp;
-    closest_point_line_segment_point(a2, a3, a1, &tmp);
+    closest_point_line_segment_point(a2, a3, a1, tmp);
     auto v13 = v3[2] - v4[2];
     auto v8 = (v3[0] - v4[0]) * tmp;
     auto v11 = v8 + v4[0];

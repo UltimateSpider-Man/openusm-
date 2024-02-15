@@ -25,6 +25,7 @@
 #include "motion_effect_struct.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
+#include "ngl_support.h"
 #include "render_text.h"
 #include "occlusion.h"
 #include "occlusion_visitor.h"
@@ -115,12 +116,26 @@ void show_terrain_info()
     }
 }
 
+void sub_6A9863()
+{
+    if ( debug_render_get_bval(SPHERES) ) {
+        render_debug_spheres();
+    }
+
+    if ( debug_render_get_bval(LINES) ) {
+        render_debug_lines();
+    }
+
+    render_debug_lines();
+    render_debug_spheres();
+}
+
 void wds_render_manager::debug_render()
 {
     TRACE("wds_render_manager::debug_render");
 
-    if constexpr (1) {
-
+    if constexpr (0)
+    {
         if (os_developer_options::instance()->get_flag(mString{"SHOW_TERRAIN_INFO"}))
         {
             show_terrain_info();
@@ -141,6 +156,17 @@ void wds_render_manager::debug_render()
 
         debug_render_line_info();
     }
+
+    sub_6A9863();
+}
+
+void wds_render_manager::render_region_mesh(nglMesh *a2, Float fade)
+{
+    TRACE("wds_render_manager::render_region_mesh");
+
+    sp_log("fade = %f", fade);
+
+    THISCALL(0x00537390, this, a2, fade);
 }
 
 int wds_render_manager::add_far_away_entity(vhandle_type<entity> a2) {
@@ -449,7 +475,15 @@ void wds_render_manager::sub_53D560(camera &a2)
     THISCALL(0x0053D560, this, &a2);
 }
 
-void wds_render_manager_patch() {
+void wds_render_manager_patch()
+{
+    {
+        FUNC_ADDRESS(address, &wds_render_manager::render_region_mesh);
+        REDIRECT(0x0053D234, address);
+
+        REDIRECT(0x00537465, FastListAddMesh);
+    }
+
     REDIRECT(0x0054B410, debug_render_get_bval);
 
     {

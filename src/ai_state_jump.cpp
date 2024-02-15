@@ -115,10 +115,11 @@ void jump_state::initiate_from_wall() {
         auto v36 = YVEC;
 
         vector3d a2;
-        if (std::abs(dot(YVEC, v27)) < 0.80000001f) {
+        if (std::abs(dot(YVEC, v27)) < 0.80000001f)
+        {
             a2 = v27;
 
-            auto v27 = v4->get_axis(controller_inode::eControllerAxis{0});
+            auto v27 = v4->get_axis(static_cast<controller_inode::eControllerAxis>(0));
             if (v27.length2() > EPSILON) {
                 a2 += vector3d{v27[0], 0.0f, v27[2]} * 5.f;
 

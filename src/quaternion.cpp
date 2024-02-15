@@ -4,7 +4,9 @@
 
 #include "custom_math.h"
 #include "log.h"
+#include "trace.h"
 #include "variable.h"
+#include "vector3d.h"
 
 #include <cmath>
 
@@ -70,6 +72,21 @@ float quaternion::dot(const quaternion &quat0, const quaternion &quat1)
         quat0[3] * quat1[3];
 
     return dot;
+}
+
+bool quaternion::operator==(const quaternion &v) const {
+    return approx_equals(this->arr[0], v[0], LARGE_EPSILON)
+            && approx_equals(this->arr[1], v[1], LARGE_EPSILON)
+            && approx_equals(this->arr[2], v[2], LARGE_EPSILON)
+            && approx_equals(this->arr[3], v[3], LARGE_EPSILON);
+}
+
+mString quaternion::to_string() const {
+return mString {0, "quat {%f, %f, %f, %f}",
+                    this->arr[0],
+                    this->arr[1],
+                    this->arr[2],
+                    this->arr[3]};
 }
 
 #ifndef USE_GLM

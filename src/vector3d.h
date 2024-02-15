@@ -169,11 +169,10 @@ struct vector3d
     //0x00401870
     static vector3d cross(const vector3d &a2, const vector3d &a3);
 
-    static vector3d sub_401870(const vector3d &a2, const vector3d &a3);
-
-    //0x005BF0B0
-    static bool is_colinear(vector3d a1, vector3d a4, Float epsilon = LARGE_EPSILON);
 };
+
+//0x005BF0B0
+extern bool is_colinear(vector3d a1, vector3d a4, Float epsilon = LARGE_EPSILON);
 
 inline constexpr vector3d UP {0.0, 1.0, 0.0};
 
@@ -184,6 +183,8 @@ extern vector3d YVEC;
 extern vector3d ZVEC;
 
 extern vector3d ZEROVEC;
+
+inline constexpr vector3d IGNORE_LOC {9.9999998e10, 9.9999998e10, 9.9999998e10};
 
 extern float dot(const vector3d &a1, const vector3d &a2);
 
@@ -214,6 +215,9 @@ extern float compute_angle_between_vectors(const vector3d &a1, const vector3d &a
 extern bool collide_line_with_plane_infinite(
     const vector3d &a1, const vector3d &a2, Float a3, Float a4, Float a5, Float a6, vector3d &a7);
 
-extern float sub_5B8DB0(const vector3d &a1, const vector3d &a2, const vector3d &a3);
+extern float closest_point_infinite_line_point(const vector3d &a1, const vector3d &a2, const vector3d &a3);
 
 extern vector3d sub_48B5B0(const vector3d &a2, const vector3d &a3, Float a4);
+
+extern vector3d sub_444A60(const vector3d &a2, const vector3d &a3);
+

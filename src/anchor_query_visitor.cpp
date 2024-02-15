@@ -173,7 +173,7 @@ void anchor_query_visitor::add_quick_anchor(conglomerate *anchor, conglomerate_c
         if (!this->field_20 || (v16 = this->field_14[1] + 5.0f, target[1] >= v16) ||
             origin[1] >= v16) {
             float tmp;
-            closest_point_line_segment_point(target, origin, this->field_8, &tmp);
+            closest_point_line_segment_point(target, origin, this->field_8, tmp);
 
             vector3d v20 = (origin - target) * tmp + target;
 

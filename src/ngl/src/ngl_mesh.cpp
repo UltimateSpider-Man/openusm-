@@ -196,8 +196,10 @@ bool sub_755520(math::VecClass<3, 1> a1, Float radius)
     return true;
 }
 
-int sub_76F3E0(math::VecClass<3, 1> a1, Float radius, char a6) {
-    if constexpr (1) {
+int sub_76F3E0(math::VecClass<3, 1> a1, Float radius, uint8_t a6)
+{
+    if constexpr (1)
+    {
         if ((a6 & 0x40) != 0 || sub_755520(a1, radius)) {
             return 0;
         }
@@ -216,9 +218,21 @@ void nglListAddMesh(nglMesh *Mesh,
 {
     TRACE("nglListAddMesh");
 
-    if constexpr (1) {
-        if (Mesh != nullptr) {
+    if (a3 != nullptr) {
+        sp_log("%f", a3->Scale[3]);
+    }
 
+    if (a4 != nullptr)
+    {
+        if (a4->IsSetParam<nglTintParam>()) {
+            sp_log("color = %f", bit_cast<color *>(a4->Get<nglTintParam>()->field_0)->a );
+        }
+    }
+
+    if constexpr (0)
+    {
+        if (Mesh != nullptr)
+        {
             assert(((Mesh->Flags & NGLMESH_PROCESSED) || (Mesh->Flags & NGLMESH_SCRATCH_MESH)) &&
                "Mesh missing NGLMESH_PROCESSED flag.");
 
@@ -269,7 +283,8 @@ void nglListAddMesh(nglMesh *Mesh,
             meshNode->field_84 = 0;
             meshNode->field_80 = 0;
             meshNode->field_94 = v9;
-            if (a3 != nullptr) {
+            if (a3 != nullptr)
+            {
                 if (v20 >= 0) {
                     meshNode->field_90 = static_cast<nglMeshParams *>(
                         nglListAlloc(sizeof(nglMeshParams), 16));
@@ -382,18 +397,14 @@ void render_debug_hemisphere(const vector3d &a2, float scale, color32 a4)
 
     paramSet.set_color(a4);
     meshParams.Flags |= 2u;
-    meshParams.Scale = math::VecClass<3, 1>{{scale, scale, scale, 1.f}};
+    meshParams.Scale = math::VecClass<3, 1> {scale, scale, scale};
 
-    static constexpr vector3d LEFT{1.0, 0.0, 0.0};
-    static constexpr vector3d UP{0.0, 1.0, 0.0};
-    static constexpr vector3d FORWARD{0.0, 0.0, 1.0};
-
-    math::MatClass<4, 3> v13 = {LEFT, UP, FORWARD, a2};
+    matrix4x4 v13 {XVEC, YVEC, ZVEC, a2};
 
     nglListAddMesh(s_debug_hemisphere, v13, &meshParams, &paramSet);
 
-    v13.arr[1] = -UP;
-    v13.arr[2] = -FORWARD;
+    v13[1] = -YVEC;
+    v13[2] = -ZVEC;
 
     nglListAddMesh(s_debug_hemisphere, v13, &meshParams, &paramSet);
 }
@@ -402,11 +413,9 @@ tlHashString *nglMesh::get_string(nglMesh *Mesh) {
     return &Mesh->Name;
 }
 
-void nglMesh_patch() {
-    {
-        REDIRECT(0x00615F99, nglListAddMesh);
-        REDIRECT(0x004F9BB3, nglListAddMesh);
-    }
+void nglMesh_patch()
+{
+    //SET_JUMP(0x00770360, nglListAddMesh);
 
     REDIRECT(0x005A62C5, sub_407F10);
 

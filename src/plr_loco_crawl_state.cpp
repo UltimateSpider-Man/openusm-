@@ -123,8 +123,7 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
         auto *player_controller = this->get_actor()->m_player_controller;
         if ( player_controller->get_spidey_loco_mode() == 14 && this->field_1C > 1.0 )
         {
-            player_controller->field_10 = 14;
-            player_controller->field_C = 2;
+            player_controller->set_spidey_loco_mode(static_cast<eHeroLocoMode>(2));
         }
 
         this->update_wallrun(a2);
@@ -231,22 +230,14 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
     }
 }
 
-int plr_loco_crawl_state::set_player_mode(actor *a1)
+void plr_loco_crawl_state::set_player_mode(actor *a1)
 {
     TRACE("plr_loco_crawl_state::set_player_mode");
 
-    auto *player_controller = a1->m_player_controller;
-    auto result = player_controller->field_C;
-    if ( result != 14 )
-    {
-        if ( result != 2 ) {
-            player_controller->field_10 = result;
-        }
-
-        player_controller->field_C = 2;
+    auto *player_controller = a1->get_player_controller();
+    if ( player_controller->get_spidey_loco_mode() != 14 ) {
+        player_controller->set_spidey_loco_mode(static_cast<eHeroLocoMode>(2));
     }
-
-    return result;
 }
 
 void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {

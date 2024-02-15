@@ -13,14 +13,14 @@ struct nglMesh;
 
 enum debug_render_items_e 
 {
-    CAPSULE_HISTORY,
-    LIGHTS,
-    BOX_TRIGGERS,
-    WATER_EXCLUSION_TRIGGERS,
-    POINT_TRIGGERS,
-    ENTITY_TRIGGERS,
-    INTERACTABLE_TRIGGERS,
-    OCCLUSION,
+    CAPSULE_HISTORY = 0,
+    LIGHTS = 1,
+    BOX_TRIGGERS = 2,
+    WATER_EXCLUSION_TRIGGERS = 3,
+    POINT_TRIGGERS = 4,
+    ENTITY_TRIGGERS = 5,
+    INTERACTABLE_TRIGGERS = 6,
+    OCCLUSION = 7,
     LEGOS = 8,
     REGION_MESHES = 9,
     ENTITIES = 10,
@@ -129,6 +129,8 @@ extern void add_debug_sphere(vector3d a1, Float a4, color32 a5);
 
 extern void render_debug_spheres();
 
+extern void render_debug_lines();
+
 //0x00578480
 extern int debug_render_get_ival(debug_render_items_e item);
 
@@ -159,7 +161,9 @@ extern void debug_render_line_info(line_info *a1, [[maybe_unused]] char a2, int 
 
 extern void debug_render_line_info();
 
-extern void sub_6A2635(const vector3d &arg0, color32 arg4, float a3, const char *a2, ...);
+extern void print_3d_text(const vector3d &arg0, color32 arg4, float a3, const char *a2, ...);
+
+extern void print_3d_text(const vector3d &arg0, color32 arg4, const char *a2, ...);
 
 extern void sub_CB3F80(const vector3d &a1,
                 const vector3d &a2,

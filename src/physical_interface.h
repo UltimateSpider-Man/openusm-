@@ -19,12 +19,10 @@ struct entity_base_vhandle;
 extern inline constexpr auto PHYS_IFC_MAX_PENDULUM_CONSTRAINTS = 5;
 
 struct physical_interface {
-    struct biped_physics_body_types {
-        uint32_t field_0;
+    enum biped_physics_body_types {
     };
 
-    struct force_type {
-        uint32_t field_0;
+    enum force_type {
     };
 
     std::intptr_t m_vtbl;
@@ -112,6 +110,11 @@ struct physical_interface {
     //0x004DF020
     physical_interface(actor *a2);
 
+    bool is_flag(uint32_t a2) const
+    {
+        return (a2 & this->field_C) != 0;
+    }
+
     //0x004C93E0
     void get_parent_terrain_type(string_hash *a2);
 
@@ -142,7 +145,7 @@ struct physical_interface {
     void add_to_phys_ifc_list();
 
     //0x004CA0D0
-    vector3d get_velocity();
+    vector3d get_velocity() const;
  
     //0x004D19E0
     void set_pendulum(int a2, pendulum *a3);

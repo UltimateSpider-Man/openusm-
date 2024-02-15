@@ -27,7 +27,7 @@ struct web_zip_state : enhanced_state {
 
     //0x0047DEF0
     //virtual
-    int frame_advance(Float a2);
+    state_trans_messages frame_advance(Float a2);
 
     //0x0044C6E0
     //virtual

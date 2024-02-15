@@ -27,7 +27,7 @@ struct run_state : enhanced_state {
     bool check_for_fence_hop(Float a2, vector3d *a3);
 
     //0x00473650
-    int frame_advance(Float a2);
+    state_trans_messages _frame_advance(Float a2);
 
     static inline const string_hash default_id{to_hash("RUN")};
 };

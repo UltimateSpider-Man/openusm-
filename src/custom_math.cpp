@@ -3,6 +3,7 @@
 #include "func_wrapper.h"
 #include "log.h"
 #include "oldmath_po.h"
+#include "trace.h"
 #include "vector3d.h"
 
 #ifdef USE_GLM
@@ -12,39 +13,43 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/vector_query.hpp>
 #else
+#include <algorithm>
 #include <cmath>
 #endif
 
 #include <cassert>
-
-float DEG_TO_RAD(float deg) {
-    return (PI / 180.0 * deg);
-}
-
-float RAD_TO_DEG(float rad) {
-    return (180.0 / PI) * rad;
-}
 
 void fast_sin_cos_approx(Float a1, float *s, float *c) {
     *c = std::cos(a1);
     *s = std::sin(a1);
 }
 
-float bounded_acos(float a1) {
-#if 0
-    if (a1 < -1.0) {
-        a1 = -1.0;
-    }
+float bounded_acos(float a1)
+{
+    TRACE("bounded_acos");
 
-    if (a1 > 1.0) {
-        a1 = 1.0;
-    }
-#else
-
-    a1 = std::clamp(a1, -1.f, -1.f);
-#endif
+    a1 = std::clamp(a1, -1.f, 1.f);
 
     return std::acos(a1);
+}
+
+float sub_48A720(float a1, float a2)
+{
+    if ( !approx_equals(a2, 0.0, 0.001) ) {
+        return atan2(a1, a2);
+    }
+
+    if ( approx_equals(a1, 0.0, 0.001) ) {
+        return 0.0;
+    }
+
+    static constexpr auto flt_91F4D8 = 3.1415927 * 0.5f;
+
+    if ( a1 <= 0.0f ) {
+        return -flt_91F4D8;
+    }
+
+    return flt_91F4D8;
 }
 
 float sub_4ADC40(float a1) {
@@ -132,6 +137,20 @@ float sub_48C0C0(
     }
 
     return result;
+}
+
+double sub_48C0C0(float a1, float a2, float a3, float a4, float a5)
+{
+    if ( a3 == a2 ) { 
+        return a4;
+    }
+
+    auto v6 = (((a1 - a2) * (a5 - a4)) / (a3 - a2)) + a4;
+    if ( a4 <= a5 ) {
+        return std::clamp(v6, a4, a5);
+    } else {
+        return std::clamp(v6, a5, a4);
+    }
 }
 
 float calculate_xz_angle_relative_to_local_po(const vector3d &a1,

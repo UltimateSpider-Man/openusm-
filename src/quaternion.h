@@ -1,6 +1,7 @@
 #pragma once
 
 #include "float.hpp"
+#include "mstring.h"
 
 struct matrix4x4;
 
@@ -48,11 +49,14 @@ struct quaternion {
         return quat;
     }
 
+    bool operator==(const quaternion &v) const;
+
     static float dot(const quaternion &quat0, const quaternion &quat1);
 
     //0x00588550
     void to_matrix(matrix4x4 &mat) const;
 
+    mString to_string() const;
 };
 
 //sub_588630

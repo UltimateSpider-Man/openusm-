@@ -19,7 +19,7 @@ game_button player_controller_inode::get_button(controller_inode::eControllerBut
     game_button result;
 
     auto v3 = this->field_C->m_player_controller;
-    switch (a3.field_0) {
+    switch (a3) {
     case 0:
     case 7:
         result = v3->gb_jump;

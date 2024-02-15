@@ -28,6 +28,17 @@ struct nglSceneParamSet_Pool {
     static Var<int> NextID;
 };
 
+struct vector4d;
+
+struct nglTintParam {
+    nglTintParam(vector4d *arg) : field_0(arg) {}
+
+    vector4d *field_0;
+
+    static inline Var<int> ID{0x00971E94};
+};
+
+
 struct USSectionIFLParam {
     struct {
         uint32_t NSections;
@@ -78,9 +89,12 @@ public:
 
     nglParamSet() = default;
 
-    nglParamSet(int a2) {
-        if (a2 != 0) {
-            if (a2 == 1) {
+    nglParamSet(int a2)
+    {
+        if (a2 != 0)
+        {
+            if (a2 == 1)
+            {
                 auto v2 = 4 * T::NextID() + 8;
                 this->field_0 = static_cast<decltype(field_0)>(nglListAlloc(v2, 8));
 
@@ -101,7 +115,8 @@ public:
         return this->IsSet(Param::ID());
     }
 
-    void *Get(int id) {
+    void *Get(int id)
+    {
         struct {
             int field_0;
             int field_4;
@@ -109,7 +124,6 @@ public:
                 int field_0;
             } field_8[1];
         } *temp = CAST(temp, this->field_0);
-
         return &temp->field_8[id];
     }
 

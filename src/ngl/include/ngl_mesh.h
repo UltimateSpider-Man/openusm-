@@ -13,7 +13,6 @@ struct nglMeshParams {
     int NBones;
     math::MatClass<4, 3> *field_8;
     int field_C;
-
     math::VecClass<3, 1> Scale;
 
     nglMeshParams() = default;
@@ -38,7 +37,7 @@ struct nglMesh {
     int NLODs;
     struct Lod {
         nglMesh *field_0;
-        int field_4;
+        float field_4;
     };
 
     Lod *LODs;

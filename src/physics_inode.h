@@ -18,8 +18,12 @@ struct physics_inode : info_node {
     //0x006A1BE0
     physics_inode(from_mash_in_place_constructor *a2);
 
+    bool get_collided_last_frame() const;
+
     //0x0068AFF0
     vector3d get_abs_position();
+
+    vector3d get_last_collision_normal() const;
 
     //0x0068B030
     po &get_abs_po();

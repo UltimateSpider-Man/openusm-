@@ -63,6 +63,8 @@ struct wds_render_manager {
 
     void render_lowlods(camera &);
 
+    void render_region_mesh(nglMesh *a2, Float fade);
+
     //0x0054ADE0
     void frame_advance(Float a2);
 

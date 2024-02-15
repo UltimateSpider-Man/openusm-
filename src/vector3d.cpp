@@ -5,6 +5,7 @@
 #include "func_wrapper.h"
 #include "matrix4x4.h"
 #include "quaternion.h"
+#include "trace.h"
 #include "vector4d.h"
 
 #ifdef USE_GLM
@@ -55,15 +56,6 @@ bool vector3d::operator==(const vector3d &v) const {
     }
 }
 
-vector3d vector3d::sub_401870(const vector3d &a2, const vector3d &a3) {
-    vector3d result;
-    result[0] = a2[1] * a3[2] - a3[1] * a2[2];
-    result[1] = a2[2] * a3[0] - a3[2] * a2[0];
-    result[2] = a2[0] * a3[1] - a3[0] * a2[1];
-
-    return result;
-}
-
 //0x00501AB0
 bool vector3d::is_valid() const {
     return x > -1.0e10 && x < 1.0e10 &&
@@ -74,7 +66,7 @@ bool vector3d::is_valid() const {
 }
 
 mString vector3d::to_string() const {
-    auto str = mString{0, "vec3{%.2f, %.2f, %.2f}", x, y, z};
+    auto str = mString{0, "vec3{%f, %f, %f}", x, y, z};
 
     //sprintf(str, "vector3d{%.2f, %.2f, %.2f}", arr[0], arr[1], arr[2]);
 
@@ -91,7 +83,6 @@ mString vector3d::to_string() const {
     return str;
 }
 
-//0x004ACE20
 bool vector3d::is_normal() const {
     return std::abs(this->length2() - 1.0) < LARGE_EPSILON;
 }
@@ -122,7 +113,7 @@ inline bool abs(const vector3d &a1, const vector3d &a2) {
     return std::isless(v1, LARGE_EPSILON);
 }
 
-float sub_5B8DB0(const vector3d &a1, const vector3d &a2, const vector3d &a3) {
+float closest_point_infinite_line_point(const vector3d &a1, const vector3d &a2, const vector3d &a3) {
     auto result = 0.f;
 
     auto v3 = dot(a2, a2);
@@ -143,21 +134,40 @@ vector3d::vector3d(const vector4d &v)
                     : x(v[0]), y(v[1]), z(v[2])
 {}
 
+vector3d sub_444A60(const vector3d &a2, const vector3d &a3)
+{
+    auto v1 = vector3d::cross(a2, a3);
+    auto result = vector3d::cross(a3, v1);
+
+    sp_log("a2 = %s, a3 = %s", a2.to_string().c_str(), a3.to_string().c_str());
+    return result;
+}
+
+
 void reorient_vectors(vector3d a1,
                         vector3d a4,
                         vector3d a7,
                         vector3d a10,
-                        vector3d &a13,
-                        vector3d &a14,
+                        vector3d &forward,
+                        vector3d &up,
                         Float a15)
 {
+    bool v1 = false;
     if ( a7.is_normal()
          && a10.is_normal()
          && a1.is_normal()
          && a4.is_normal()
-         && ::abs(a10, a7)
-         && ::abs(a4, a1)
        )
+    {
+        if ( std::abs(dot(a7, a10)) < LARGE_EPSILON )
+        {
+            if ( std::abs(dot(a1, a4)) < LARGE_EPSILON ) {
+                v1 = true;
+            }
+        }
+    }
+
+    if (v1)
     {
         a7.normalize();
         a10.normalize();
@@ -175,11 +185,11 @@ void reorient_vectors(vector3d a1,
         matrix4x4 mat3;
         a2.to_matrix(mat3);
 
-        a13 = mat3[2];
-        a14 = mat3[1];
+        forward = mat3[2];
+        up = mat3[1];
     } else {
-        a13 = a1;
-        a14 = a4;
+        forward = a1;
+        up = a4;
     }
 }
 
@@ -275,7 +285,7 @@ vector3d vector3d::normalized() const {
 }
 
 #ifndef USE_GLM
-bool vector3d::is_colinear(vector3d a1, vector3d a4, Float epsilon) {
+bool is_colinear(vector3d a1, vector3d a4, Float epsilon) {
 #if 0       
     long double v3;  // st7
     long double v4;  // st6
@@ -319,7 +329,7 @@ bool vector3d::is_colinear(vector3d a1, vector3d a4, Float epsilon) {
 #endif
 }
 #else
-bool vector3d::is_colinear(vector3d a1, vector3d a4, Float epsilon) {
+bool is_colinear(vector3d a1, vector3d a4, Float epsilon) {
     return glm::areCollinear(glm::vec3{a1[0], a1[1], a1[2]},
                              glm::vec3{a4[0], a4[1], a4[2]},
                              epsilon.value);
@@ -343,7 +353,8 @@ vector3d orthogonal_projection_onto_plane(const vector3d &a2, const vector3d &a3
 }
 
 bool collide_line_with_plane_infinite(
-    const vector3d &a1, const vector3d &a2, Float a3, Float a4, Float a5, Float a6, vector3d &a7) {
+    const vector3d &a1, const vector3d &a2, Float a3, Float a4, Float a5, Float a6, vector3d &a7)
+{
     auto v7 = a2[0] - a1[0];
     auto v13 = a2[1] - a1[1];
     auto v8 = a2[2] - a1[2];

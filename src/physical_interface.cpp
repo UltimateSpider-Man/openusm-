@@ -317,11 +317,12 @@ void physical_interface::set_velocity(const vector3d &new_velocity, bool a3) {
     }
 }
 
-vector3d physical_interface::get_velocity()
+vector3d physical_interface::get_velocity() const
 {
     vector3d result;
 
-    if (this->field_C & 0x80000) {
+    if (this->field_C & 0x80000)
+    {
         auto &v3 = this->m_bp_sys->field_0.m_list_rigid_body.m_data[0]->field_D0;
 
         auto &v8 = v3;
@@ -546,14 +547,16 @@ void physical_interface::set_gravity(bool a2) {
 }
 
 void physical_interface::apply_force_increment_in_biped_physics_mode(
-    const vector3d &a2, physical_interface::force_type a3, const vector3d &a4, int a5) {
-    if constexpr (1) {
+    const vector3d &a2, physical_interface::force_type a3, const vector3d &a4, int a5)
+{
+    if constexpr (1)
+    {
         biped_system *v5 = nullptr;
         if ((this->field_C & 0x80000) != 0) {
             v5 = this->m_bp_sys;
         }
 
-        if (a3.field_0 == 1) {
+        if (a3 == 1) {
             phys_vector3d a2a;
             phys_vector3d a3a;
             float a4a;

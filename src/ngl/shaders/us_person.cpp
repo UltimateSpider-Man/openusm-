@@ -320,7 +320,8 @@ void USPersonSolidShader::sub_41E290(nglMeshNode *a1, nglMeshSection *a2, nglMat
     THISCALL(0x0041E290, this, a1, a2, a3);
 }
 
-void USPersonSolidShader::AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3) {
+void USPersonSolidShader::AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3)
+{
     auto *v9 = &USPersonShaderSpace::DefaultParams();
     if (a1->field_8C.IsSetParam<USPersonParam>()) {
         auto *param = a1->field_8C.Get<USPersonParam>();

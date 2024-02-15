@@ -3,6 +3,8 @@
 #include "common.h"
 #include "fixedstring.h"
 #include "log.h"
+#include "ngl_params.h"
+#include "vector4d.h"
 #include "vtbl.h"
 
 #include "tl_instance_bank.h"
@@ -112,7 +114,24 @@ void nglShaderNode::sub_413AF0() {
     THISCALL(0x00413AF0, this);
 }
 
+void sub_413850(nglMaterialBase *a1, nglParamSet<nglShaderParamSet_Pool> *a2, color *a3)
+{
+    if (a2->IsSetParam<nglTintParam>()) {
+        auto *c = bit_cast<color *>(a2->Get<nglTintParam>()->field_0);
+        sp_log("TintParam = %f", c->a);
+    }
 
-float *sub_413F80(float *a1, int a2, uint32_t *a3, uint32_t a4) {
-    return (float *) CDECL_CALL(0x00413F80, a1, a2, a3, a4);
+    CDECL_CALL(0x00413850, a1, a2, a3);
+}
+
+color *sub_413F80(color *a1, nglMaterialBase *a2, nglParamSet<nglShaderParamSet_Pool> *a3, uint32_t a4)
+{
+    return (color *) CDECL_CALL(0x00413F80, a1, a2, a3, a4);
+}
+
+void nglShader_patch()
+{
+    REDIRECT(0x00413F93, sub_413850);
+    REDIRECT(0x00418C84, sub_413850);
+    REDIRECT(0x00419F34, sub_413850);
 }

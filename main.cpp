@@ -2411,6 +2411,8 @@ BOOL install_redirects()
 
     swing_inode_patch();
 
+    swing_state_patch();
+
     comic_panels_patch();
 
     polytube_patch();
@@ -2552,6 +2554,8 @@ BOOL install_redirects()
     us_translucentshader_patch();
 
     us_simpleshader_patch();
+
+    nglShader_patch();
 
     mission_manager_patch();
 
@@ -2809,8 +2813,6 @@ BOOL install_redirects()
         TextureInputPack_patch();
 
         FEMenuEntry_patch();
-
-        swing_state_patch();
 
         IGOZoomOutMap_patch();
 

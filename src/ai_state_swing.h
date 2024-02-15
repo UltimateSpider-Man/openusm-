@@ -84,7 +84,7 @@ struct swing_state : enhanced_state {
 
     //0x0047DA60
     //virtual
-    void activate(ai_state_machine *a2,
+    void _activate(ai_state_machine *a2,
                   const mashed_state *arg4,
                   const mashed_state *a4,
                   const param_block *a5,
@@ -95,7 +95,7 @@ struct swing_state : enhanced_state {
     void deactivate(const ai::mashed_state *a1);
 
     //0x0047DDD0
-    /* virtual */ int frame_advance(Float a2);
+    /* virtual */ state_trans_messages _frame_advance(Float a2);
 
     /* virtual */ void get_info_node_list(info_node_desc_list &a1);
 
@@ -122,11 +122,9 @@ struct swing_inode : info_node {
     bool field_54;
     vector3d field_58;
     vector3d field_64;
-    int field_70;
-    float field_74;
-    float field_78;
+    vector3d field_70;
     float field_7C;
-    float field_80;
+    float m_anchor_angle;
     float field_84;
     float field_88;
     float field_8C;
@@ -157,7 +155,7 @@ struct swing_inode : info_node {
     void compute_forward_and_up_directions(vector3d &forward, vector3d &up);
 
     //0x0044BB80
-    vector3d get_desired_up_facing();
+    vector3d get_desired_up_facing() const;
 
     //0x0044C280
     float compute_ground_level_at_sweet_spot_position(const vector3d &a1,
@@ -232,9 +230,9 @@ struct something_to_swing_to_data_t {
     vector3d field_28;
     int field_34;
     vector3d field_38;
-    vector3d field_44;
+    vector3d m_normal;
     vector3d m_visual_point;
-    float field_5C;
+    float m_best_distance;
     float m_target_length;
     bool field_64;
 };

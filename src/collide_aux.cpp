@@ -134,14 +134,14 @@ void closest_point_line_segment_line_segment(
     auto v6 = v39 * v20 - v34 * v34;
     if ( v6 < 0.000001f ) {
         *a5 = 0.0;
-        closest_point_line_segment_point(a3, a4, a1, a6);
+        closest_point_line_segment_point(a3, a4, a1, *a6);
         return;
     }
 
     if ( std::abs(v39) < 0.000001f )
     {
         *a6 = 0.0;
-        closest_point_line_segment_point(a1, a2, a3, a5);
+        closest_point_line_segment_point(a1, a2, a3, *a5);
         return;
     }
 
@@ -197,7 +197,7 @@ void closest_point_line_segment_line_segment(
     else
     {
         *a5 = 0.0;
-        closest_point_line_segment_point(a3, a4, a1, a6);
+        closest_point_line_segment_point(a3, a4, a1, *a6);
     }
 }
 
