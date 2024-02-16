@@ -42,7 +42,8 @@ struct visitor_t : subdivision_visitor
 visitor_t::visitor_t()
 {
     auto &func = get_vfunc(m_vtbl, 0x0);
-    func = (thiscall_call) &visitor_t::visit;
+    FUNC_ADDRESS(address, &visitor_t::visit);
+    func = bit_cast<void *>(address);
 }
 
 void oriented_bounding_box_root_node::set_color(color32 a2)

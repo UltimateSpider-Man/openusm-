@@ -20,7 +20,7 @@ VALIDATE_OFFSET(TextureInputPack, field_5AC, 0x5AC);
 
 TextureInputPack::TextureInputPack() {}
 
-void __thiscall sub_585BE0(void *self, void *a2, int a3, int a4, int a5, int a6, Float a7) {
+void __fastcall sub_585BE0(void *self, void *, void *a2, int a3, int a4, int a5, int a6, Float a7) {
     THISCALL(0x00585BE0, self, a2, a3, a4, a5, a6, a7);
 }
 
@@ -63,9 +63,21 @@ void TextureInputPack::sub_5871D0() {
                 auto v10 = v8 + v3 - 1;
                 auto *v11 = this->field_1C;
 
-                auto &func4 = get_vfunc(v11->m_vtbl, 0x4);
+                void (__fastcall *func4)(void *, void *, void *, int, int, int, int, color32, int, Float, Float, int) = CAST(func4, get_vfunc(v11->m_vtbl, 0x4));
 
-                func4(v11, v46, v2, v3, v48 - 1, v10, v38, v9, Float{1.0}, Float{1.0}, 0);
+                func4(v11,
+                        nullptr,
+                        v46,
+                        v2,
+                        v3,
+                        v48 - 1,
+                        v10,
+                        v38,
+                        v9,
+                        Float{1.0},
+                        Float{1.0},
+                        0);
+
                 v2 = v48;
                 ++v7;
 
@@ -107,9 +119,10 @@ void TextureInputPack::sub_5871D0() {
                     auto *v24 = &v46[v21];
                     auto v52 = (int) &v46[v54[v20] - v21 - 1];
                     if (v20 <= 0) {
-                        auto &func4 = get_vfunc(this->field_1C->m_vtbl, 0x4);
+                        void (__fastcall *func4)(void *, void *, char *, int, int, int, int, color32, int, Float, Float, int) = CAST(func4, get_vfunc(this->field_1C->m_vtbl, 0x4));
 
                         func4(this->field_1C,
+                              nullptr,
                               (char *) v44 + 8,
                               (int) v46 + v21,
                               v22,
@@ -131,8 +144,9 @@ void TextureInputPack::sub_5871D0() {
                             v25 = this->field_3F4;
                         }
 
-                        auto &func4 = get_vfunc(this->field_1C->m_vtbl, 0x4);
+                        void (__fastcall *func4)(void *, void *, const char *, int, int, int, int, color32, int, Float, Float, int) = CAST(func4, get_vfunc(this->field_1C->m_vtbl, 0x4));
                         func4(this->field_1C,
+                              nullptr,
                               "?????",
                               (int) v24,
                               v22,
@@ -183,6 +197,7 @@ void TextureInputPack::sub_5871D0() {
                                 switch (v29) {
                                 case 3:
                                     sub_585BE0(this->field_1C,
+                                               nullptr,
                                                this->field_78,
                                                v30,
                                                v22,
@@ -192,6 +207,7 @@ void TextureInputPack::sub_5871D0() {
                                     break;
                                 case 4:
                                     sub_585BE0(this->field_1C,
+                                               nullptr,
                                                this->field_7C,
                                                v30,
                                                v22,
@@ -201,6 +217,7 @@ void TextureInputPack::sub_5871D0() {
                                     break;
                                 case 5:
                                     sub_585BE0(this->field_1C,
+                                               nullptr,
                                                this->field_80,
                                                v30,
                                                v22,
@@ -210,6 +227,7 @@ void TextureInputPack::sub_5871D0() {
                                     break;
                                 case 6:
                                     sub_585BE0(this->field_1C,
+                                               nullptr,
                                                this->field_84,
                                                v30,
                                                v22,
@@ -233,11 +251,12 @@ void TextureInputPack::sub_5871D0() {
                             }
 
                             auto *v33 = this->field_1C;
-                            auto &func4 = get_vfunc(v33->m_vtbl, 0x4);
+                            void (__fastcall *func4)(void *, void *, const char *, int, int, int, int, color32, int, Float, Float, int) = CAST(func4, get_vfunc(v33->m_vtbl, 0x4));
                             if (v42 == ' ') {
                                 func4(v33,
+                                      nullptr,
                                       (char *) v48,
-                                      v24,
+                                      (int) v24,
                                       v22,
                                       (int) v52,
                                       v23,
@@ -248,6 +267,7 @@ void TextureInputPack::sub_5871D0() {
                                       0);
                             } else {
                                 func4(v33,
+                                      nullptr,
                                       (char *) &v42,
                                       (int) v24,
                                       v22,
@@ -270,8 +290,9 @@ void TextureInputPack::sub_5871D0() {
                                 v35 = this->field_3F8;
                             }
 
-                            auto &func4 = get_vfunc(this->field_1C->m_vtbl, 0x4);
+                            void (__fastcall *func4)(void *, void *, const char *, int, int, int, int, color32, int, Float, Float, int) = CAST(func4, get_vfunc(this->field_1C->m_vtbl, 0x4));
                             func4(this->field_1C,
+                                  nullptr,
                                   this->field_5AC,
                                   (int) v24,
                                   v22,

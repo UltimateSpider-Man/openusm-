@@ -113,26 +113,26 @@ float astar_search_record::get_cost_estimate_to_goal(void *a1, void *a2)
 
 void * astar_search_record::reset_neighbor_iterator(void *a1)
 {
-    auto &func = get_vfunc(m_vtbl, 0x8);
-    return (void *) func(this, a1);
+    void * (__fastcall *func)(astar_search_record *, void *, void *) = CAST(func, get_vfunc(m_vtbl, 0x8));
+    return func(this, nullptr, a1);
 }
 
 int astar_search_record::get_next_neighbor(void *a1, void *a2)
 {
-    auto &func = get_vfunc(m_vtbl, 0xC);
-    return func(this, a1, a2);
+    int (__fastcall *func)(astar_search_record *, void *, void *, void *) = CAST(func, get_vfunc(m_vtbl, 0xC));
+    return func(this, nullptr, a1, a2);
 }
 
 float astar_search_record::get_travel_cost(void *a1, void *a2)
 {
-    float __thiscall (*func)(void *, void *, void *) = CAST(func ,get_vfunc(m_vtbl, 0x10));
-    return func(this, a1, a2);
+    float (__fastcall *func)(astar_search_record *, void *, void *, void *) = CAST(func ,get_vfunc(m_vtbl, 0x10));
+    return func(this, nullptr, a1, a2);
 }
 
 int astar_search_record::get_astar_node_handle(void *a1)
 {
-    auto &func = get_vfunc(m_vtbl, 0x4);
-    return func(this, a1);
+    int (__fastcall *func)(astar_search_record *, void *, void *) = CAST(func, get_vfunc(m_vtbl, 0x4));
+    return func(this, nullptr, a1);
 }
 
 void astar_search_record::clean_up()

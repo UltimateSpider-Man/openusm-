@@ -353,11 +353,13 @@ int state_machine::get_parameter_data_type(string_hash a2) const
     return 9;
 }
 
-double state_machine::get_time_to_end_of_anim() const
+//TODO
+float state_machine::get_time_to_end_of_anim() const
 {
     TRACE("als::state_machine::get_time_to_end_of_anim");
 
-    if constexpr (1) {
+    if constexpr (0)
+    {
         auto &the_handle = this->get_anim_handle();
         assert(the_handle.is_anim_active());
 
@@ -367,11 +369,11 @@ double state_machine::get_time_to_end_of_anim() const
             return -1.0f;
         }
 
-        float v1 = the_handle.get_anim_time_in_sec(); 
-        auto v11 = anim_ptr->field_38 - v1;
+        auto v11 = anim_ptr->field_38 - the_handle.get_anim_time_in_sec();
         return v11 * (1.0f / the_handle.get_anim_speed());
     } else {
-        double (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x50));
+        float (__fastcall *func)(const void *) = CAST(func, 0x004993C0);
+                //get_vfunc(m_vtbl, 0x50));
         return func(this);
     }
 }
@@ -504,7 +506,8 @@ string_hash state_machine::get_state_id() const
 {
     TRACE("als::state_machine::get_state_id");
 
-    if constexpr (1) {
+    if constexpr (0)
+    {
         if ( this->is_active() )
         {
             auto *curr_state = this->get_curr_state();
@@ -550,8 +553,8 @@ int state_machine::get_optional_pb_int(
         const string_hash &a2,
         int a3,
         bool *a4) {
-    auto func = get_vfunc(m_vtbl, 0x68);
-    return func(this, &a2, a3, a4);
+    int (__fastcall *func)(state_machine *, void *, const string_hash *, int, bool *) = CAST(func, get_vfunc(m_vtbl, 0x68));
+    return func(this, nullptr, &a2, a3, a4);
 }
 
 layer_types state_machine::get_layer_id() {
@@ -833,16 +836,13 @@ void als_state_machine_patch()
 
     REPLACE(0x004934F0, &als::state_machine::did_transition_succeed);
 
+    if constexpr (0)
     {
         auto address = int(&als_state_machine_get_state_id);
         SET_JUMP(0x00499320, address);
     }
 
-
-    {
-        FUNC_ADDRESS(address, &als::state_machine::is_request_satisfied);
-        SET_JUMP(0x00493500, address);
-    }
+    REPLACE(0x00493500, &als::state_machine::is_request_satisfied);
 
     {
         FUNC_ADDRESS(address, &als::state_machine::find_external_param);
@@ -858,8 +858,12 @@ void als_state_machine_patch()
 
     {
         FUNC_ADDRESS(address, &als::state_machine::get_time_to_end_of_anim);
-        SET_JUMP(0x004993C0, address);
+        set_vfunc(0x00881428, address);
+        set_vfunc(0x00881500, address);
+        set_vfunc(0x00881588, address);
     }
+
+    return;
 
     {
         FUNC_ADDRESS(address, &als::state_machine::get_time_to_signal);

@@ -32,10 +32,10 @@ void collision_geometry::get_colgeom_radius() {
 
 vector3d collision_geometry::get_local_space_bounding_sphere_center() {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x18);
+        void (__fastcall *func)(collision_geometry *, void *, vector3d *) = CAST(func, get_vfunc(m_vtbl, 0x18));
 
         vector3d out;
-        func(this, &out);
+        func(this, nullptr, &out);
 
         return out;
 
@@ -65,7 +65,7 @@ vector3d *collision_geometry::get_pivot() {
 }
 
 int collision_geometry::get_type() {
-    auto &func = get_vfunc(m_vtbl, 0x2C);
+    int (__fastcall *func)(collision_geometry *) = CAST(func, get_vfunc(m_vtbl, 0x2C));
 
     return func(this);
 }

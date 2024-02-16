@@ -455,9 +455,9 @@ void debug_render_done()
         }
 
         if (debug_material != nullptr) {
-            auto &finalize = get_vfunc(debug_material->m_vtbl, 0x0);
+            void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(debug_material->m_vtbl, 0x0));
 
-            finalize(debug_material, 1);
+            finalize(debug_material, nullptr, true);
         }
 
         debug_material = nullptr;

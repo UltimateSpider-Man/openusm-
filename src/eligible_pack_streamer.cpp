@@ -36,11 +36,12 @@ void eligible_pack_streamer::init(
         assert(num_streamers > 0);
         assert(streamers != nullptr);
 
-        thiscall_call reserve = CAST(reserve, 0x0056E660);
+        void (__fastcall *reserve)(void *, void *, int) = CAST(reserve, 0x0056E660);
 
-        reserve(&this->field_14, num_streamers);
+        reserve(&this->field_14, nullptr, num_streamers);
         {
-            for (int i = 0; i < num_streamers; ++i) {
+            for (int i = 0; i < num_streamers; ++i)
+			{
                 eligible_pack_category *the_category = new eligible_pack_category{this,
                                                                                   streamers[i],
                                                                                   callbacks[i]};
@@ -50,9 +51,9 @@ void eligible_pack_streamer::init(
                     *v13 = the_category;
                     this->field_14.m_last = v13 + 1;
                 } else {
-                    thiscall_call _Insert_n = CAST(_Insert_n, 0x0056A260);
+                    void (__fastcall *_Insert_n)(void *, void *, void *, int, void *) = CAST(_Insert_n, 0x0056A260);
 
-                    _Insert_n(&this->field_14, this->field_14.m_last, 1, &the_category);
+                    _Insert_n(&this->field_14, nullptr, this->field_14.m_last, 1, &the_category);
                 }
             };
         }
@@ -165,9 +166,9 @@ eligible_pack *eligible_pack_streamer::add_eligible_pack(const char *a2,
             *v12 = v9;
             this->eligible_packs.m_last = v12 + 1;
         } else {
-            thiscall_call _Insert_n = CAST(_Insert_n, 0x0056A260);
+            void (__fastcall *_Insert_n)(void *, void *, void *, int, void *) = CAST(_Insert_n, 0x0056A260);
 
-            _Insert_n(&this->eligible_packs, this->eligible_packs.m_last, 1, &v9);
+            _Insert_n(&this->eligible_packs, nullptr, this->eligible_packs.m_last, 1, &v9);
         }
 
         auto v14 = this->eligible_packs.size();

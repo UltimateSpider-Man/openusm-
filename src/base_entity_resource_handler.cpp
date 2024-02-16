@@ -50,13 +50,13 @@ void base_entity_resource_handler::post_handle_resources(worldly_resource_handle
 }
 
 int base_entity_resource_handler::get_num_resources() {
-    auto &func = get_vfunc(m_vtbl, 0x8);
+    int (__fastcall *func)(base_entity_resource_handler *) = CAST(func, get_vfunc(m_vtbl, 0x8));
 
-    return (bool) func(this);
+    return func(this);
 }
 
 bool base_entity_resource_handler::handle_resource(eBehavior behavior) {
-    auto &func = get_vfunc(m_vtbl, 0xC);
+    bool (__fastcall *func)(base_entity_resource_handler *, void *, eBehavior) = CAST(func, get_vfunc(m_vtbl, 0xC));
 
-    return (bool) func(this, behavior);
+    return func(this, nullptr, behavior);
 }

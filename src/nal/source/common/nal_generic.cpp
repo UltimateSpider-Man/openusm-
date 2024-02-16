@@ -84,8 +84,8 @@ void nalGenericSkeleton::Process()
         auto v37 = v29;
         if (this->field_88 > 0) {
             for (int i = 0; i < this->field_88; ++i) {
-                auto &Process = get_vfunc(v30->field_20->m_vtbl, 0x10);
-                Process(v30->field_20, v30, &v38, &v37);
+                void (__fastcall *Process)(void *, void *, void *, void *, void *) = CAST(Process, get_vfunc(v30->field_20->m_vtbl, 0x10));
+                Process(v30->field_20, nullptr, v30, &v38, &v37);
 
                 ++v30;
             }
@@ -98,9 +98,9 @@ void nalGenericSkeleton::Process()
         v37 = v34;
         if (this->field_A4 > 0) {
             for (int i = 0; i < this->field_A4; ++i) {
-                auto &Process = get_vfunc(v35->field_20->m_vtbl, 0x10);
+                void (__fastcall *Process)(void *, void *, void *, void *, void *) = CAST(Process, get_vfunc(v35->field_20->m_vtbl, 0x10));
 
-                Process(v35->field_20, v35, &v38, &v37);
+                Process(v35->field_20, nullptr, v35, &v38, &v37);
 
                 ++v35;
             }

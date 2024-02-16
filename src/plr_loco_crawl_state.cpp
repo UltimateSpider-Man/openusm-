@@ -10,10 +10,12 @@
 #include "base_ai_core.h"
 #include "colgeom_alter_sys.h"
 #include "common.h"
+#include "debug_user_render.h"
 #include "func_wrapper.h"
 #include "game.h"
 #include "game_settings.h"
 #include "oldmath_po.h"
+#include "os_developer_options.h"
 #include "param_list.h"
 #include "physical_interface.h"
 #include "state_machine.h"
@@ -240,24 +242,27 @@ void plr_loco_crawl_state::set_player_mode(actor *a1)
     }
 }
 
-void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {
+void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2)
+{
     TRACE("plr_loco_crawl_state::update_wallrun");
 
     auto *v3 = this->get_core();
     auto *v4 = (ai::als_inode *) v3->get_info_node(ai::als_inode::default_id, true);
-    auto v5 = this->m_wallrun_deviation;
     auto *v6 = v4;
 
     static constexpr auto deviance_forgiveness_timeout = 0.1f;
 
-    if (v5 < 0.0f || this->field_1C < deviance_forgiveness_timeout) {
-        auto *v9 = this->get_actor();
-        this->field_38 = v9->get_abs_po().get_z_facing();
-        this->m_wallrun_deviation = 0.0;
-    } else {
+    if (this->m_wallrun_deviation >= 0.0f && this->field_1C >= deviance_forgiveness_timeout)
+    {
         auto *v7 = this->get_actor();
         this->m_wallrun_deviation = 1.0f -
             std::abs(dot(this->field_38, v7->get_abs_po().get_z_facing()));
+
+        sp_log("wallrun_deviation: %.1f", this->m_wallrun_deviation);
+    } else {
+        auto *v9 = this->get_actor();
+        this->field_38 = v9->get_abs_po().get_z_facing();
+        this->m_wallrun_deviation = 0.0;
     }
 
     auto *v10 = this->get_actor();
@@ -307,8 +312,18 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2) {
     list.add_param({72, this->m_wallrun_deviation});
     list.add_param({16, v21});
 
-    auto *v15 = v6->get_als_layer(static_cast<als::layer_types>(0));
-    v15->set_desired_params(list);
+    v6->set_desired_params(list, static_cast<als::layer_types>(0));
+
+    if ( os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
+    {
+        mString v25 {0, "wallrun dev %.2f %.2f", this->m_wallrun_deviation, a2};
+        color32 v20 {255, 255, 255, 255};
+        insertDebugString(7, v25, v20);
+
+        v25 = mString {0, "crawl time  %.2fs", this->field_1C};
+        color32 v21 {255, 255, 255, 255};
+        insertDebugString(8, v25, v21);
+    }
 
     auto *v16 = this->get_core();
     auto *v17 = (ai::hero_inode *) v16->get_info_node(ai::hero_inode::default_id, true);

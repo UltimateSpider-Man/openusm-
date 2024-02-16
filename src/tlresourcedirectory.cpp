@@ -109,10 +109,10 @@ nglTexture *tlResourceDirectory<nglTexture, tlFixedString>::StandardLoad(const t
 
     LABEL_19:
 
-        auto *vtbl = bit_cast<thiscall_call(*)[1]>(this->m_vtbl);
-        auto Add = (*vtbl)[4];
+        auto *vtbl = bit_cast<fastcall_call(*)[1]>(this->m_vtbl);
+        void (__fastcall *Add)(void *, void *, nglTexture *) = CAST(Add, (*vtbl)[4]);
 
-        Add(this, tex);
+        Add(this, nullptr, tex);
         return tex;
     } else {
         return (nglTexture *) THISCALL(0x0077A8A0, this, &str);
@@ -149,7 +149,7 @@ nglFont *tlResourceDirectory<nglFont, tlFixedString>::StandardLoad(const tlFixed
 
         auto *font = create_and_parse_fdf(a1, fileBuf.Buf);
         tlReleaseFile(&fileBuf);
-        auto *vtbl = bit_cast<thiscall_call(*)[5]>(this->m_vtbl);
+        auto *vtbl = bit_cast<fastcall_call(*)[5]>(this->m_vtbl);
 
         auto *func = (*vtbl)[4];
         assert(bit_cast<std::intptr_t>(func) == 0x00773F60);
@@ -215,9 +215,9 @@ nglMeshFile *tlResourceDirectory<nglMeshFile, tlFixedString>::StandardLoad(const
 #endif
                         ))
             {
-                auto &Add = get_vfunc(this->m_vtbl, 0x10);
+                bool (__fastcall *Add)(void *, void *, nglMeshFile *) = CAST(Add, get_vfunc(this->m_vtbl, 0x10));
 
-                if (Add(this, MeshFile)) {
+                if (Add(this, nullptr, MeshFile)) {
                     auto *v5 = a1.to_string();
                     sp_log("Attempt to load already loaded MeshFile %s\n", v5);
                 }

@@ -90,7 +90,7 @@ float entity::get_visual_radius()
 
         return parent->get_visual_radius();
     } else {
-        float __thiscall (*func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x28));
+        float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x28));
         return func(this);
     }
 }
@@ -177,8 +177,8 @@ void entity::force_region(region *r)
             }
         }
     } else {
-        auto func = get_vfunc(m_vtbl, 0x174);
-        func(this, r);
+        void (__fastcall *func)(entity *, void *, region *) = CAST(func, get_vfunc(m_vtbl, 0x174));
+        func(this, nullptr, r);
     }
 }
 
@@ -273,9 +273,9 @@ bool entity::is_still_visible() {
 }
 
 void entity::render(Float a2) {
-    auto &func = get_vfunc(m_vtbl, 0x1AC);
+    void (__fastcall *func)(entity *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x1AC));
 
-    func(this, a2);
+    func(this, nullptr, a2);
 }
 
 nglMesh *entity::get_mesh() {
@@ -298,10 +298,11 @@ void entity::set_render_color() {
     ;
 }
 
-color32 entity::get_render_color() {
+color32 entity::get_render_color() const
+{
     if constexpr (1)
     {
-        auto &func = get_vfunc(m_vtbl, 0x1C4);
+        color32 (__fastcall *func)(const entity *) = CAST(func, get_vfunc(m_vtbl, 0x1C4));
 
         auto result = func(this);
         color32 col;
@@ -322,9 +323,10 @@ void entity::set_render_alpha_mod(Float) {
     ;
 }
 
-float entity::get_render_alpha_mod() {
+float entity::get_render_alpha_mod() const
+{
     if constexpr (1) {
-        float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x1CC));
+        float (__fastcall *func)(const entity *) = CAST(func, get_vfunc(m_vtbl, 0x1CC));
 
         return func(this);
 
@@ -337,7 +339,8 @@ void entity::set_render_scale(const vector3d &) {
     ;
 }
 
-vector3d entity::get_render_scale() {
+vector3d entity::get_render_scale() const
+{
     vector3d result;
     result[0] = 1.0;
     result[1] = 1.0;
@@ -350,7 +353,7 @@ void entity::set_render_zbias(Float) {
     ;
 }
 
-float entity::get_render_zbias() {
+float entity::get_render_zbias() const {
     return 0.0;
 }
 
@@ -371,9 +374,9 @@ bool entity::is_a_dynamic_conglomerate_clone() {
 }
 
 void entity::set_collisions_active(bool a1, bool a2) {
-    auto &func = get_vfunc(m_vtbl, 0x1F0);
+    void (__fastcall *func)(entity *, void *, bool, bool) = CAST(func, get_vfunc(m_vtbl, 0x1F0));
 
-    func(this, a1, a2);
+    func(this, nullptr, a1, a2);
 }
 
 bool entity::are_character_collisions_active() {

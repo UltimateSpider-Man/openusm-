@@ -562,11 +562,11 @@ event_type *event_manager::register_event_type(string_hash a1, bool a2) {
             assert(the_type != nullptr &&
                    "Need to increase the fixed pool on events (increase MAX_EVENT_TYPES)!!!");
 
-            thiscall_call push_back = CAST(push_back, 0x005E7330);
+            void (__fastcall *push_back)(void *, void *, void *) = CAST(push_back, 0x005E7330);
 
             int (*compare)(const void *, const void *) = CAST(compare, 0x005034D0);
 
-            push_back(&event_types(), &the_type);
+            push_back(&event_types(), nullptr, &the_type);
             if (event_types().size() > 1) {
                 qsort(event_types().m_first, event_types().size(), 4u, compare);
             }

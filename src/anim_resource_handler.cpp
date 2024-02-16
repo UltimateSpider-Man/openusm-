@@ -39,7 +39,7 @@ bool anim_resource_handler::_handle_resource(worldly_resource_handler::eBehavior
             {
                 auto *v8 = (nalChar::nalCharAnim *) v7->field_4;
 
-                auto &Release = get_vfunc(v7->m_vtbl, 0x8);
+                void (__fastcall *Release)(nalChar::nalCharAnim *) = CAST(Release, get_vfunc(v7->m_vtbl, 0x8));
                 Release(v7);
 
                 v7 = v8;

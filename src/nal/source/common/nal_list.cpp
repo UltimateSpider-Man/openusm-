@@ -32,7 +32,7 @@ tlInstanceBank::Node *nalComponentInitList::Register() {
 void nalInitListInit() {
     nalInitList *v0 = static_cast<decltype(v0)>(nalInitList::head());
     while (v0 != nullptr) {
-        auto &Register = get_vfunc(v0->m_vtbl, 0x0);
+        void (__fastcall *Register)(void *) = CAST(Register, get_vfunc(v0->m_vtbl, 0x0));
 
         Register(v0);
 

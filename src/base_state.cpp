@@ -22,7 +22,7 @@ base_state::base_state() {
     this->field_14 = nullptr;
 }
 
-base_state::base_state(int a2) {
+base_state::base_state(int ) {
     this->field_C = nullptr;
     this->my_mashed_state = nullptr;
     this->field_18 = nullptr;
@@ -48,10 +48,10 @@ bool base_state::is_flag_set(int a2) const {
 }
 
 state_trans_action base_state::check_transition(Float a3) {
-    auto &func = get_vfunc(m_vtbl, 0x2C);
+    void (__fastcall *func)(base_state *, void *, state_trans_action *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2C));
 
     state_trans_action action;
-    func(this, &action, a3);
+    func(this, nullptr, &action, a3);
 
     return action;
 }
@@ -122,8 +122,8 @@ void base_state::activate(ai_state_machine *the_state_machine,
 }
 
 void base_state::deactivate(const mashed_state *a2) {
-    auto func = get_vfunc(m_vtbl, 0x1C);
-    func(this, a2);
+    void (__fastcall *func)(base_state *, void *, const mashed_state *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
+    func(this, nullptr, a2);
 }
 
 uint32_t base_state::get_virtual_type_enum() {
@@ -132,7 +132,7 @@ uint32_t base_state::get_virtual_type_enum() {
 
 int base_state::get_mash_sizeof()
 {
-    auto &func = get_vfunc(m_vtbl, 0x34);
+    int (__fastcall *func)(base_state *) = CAST(func, get_vfunc(m_vtbl, 0x34));
     return func(this);
 }
 

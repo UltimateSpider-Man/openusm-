@@ -15,38 +15,38 @@ uint8_t input_device::normalize(int a1) {
 }
 
 bool input_device::is_connected() {
-    auto &is_connected = get_vfunc(m_vtbl, 0x2C);
+    bool (__fastcall *is_connected)(void *) = CAST(is_connected, get_vfunc(m_vtbl, 0x2C));
 
-    return (bool) is_connected(this);
+    return is_connected(this);
 }
 
 int input_device::get_axis_id(int a1) {
-    auto &get_axis_id = get_vfunc(m_vtbl, 0x10);
+    int (__fastcall *get_axis_id)(void *, void *, int) = CAST(get_axis_id, get_vfunc(m_vtbl, 0x10));
 
-    return get_axis_id(this, a1);
+    return get_axis_id(this, nullptr, a1);
 }
 
 float input_device::get_axis_delta(int a2, int a3) {
-    auto &get_axis_delta = get_vfunc(m_vtbl, 0x1C);
+    float (__fastcall *get_axis_delta)(void *, void *, int, int) = CAST(get_axis_delta, get_vfunc(m_vtbl, 0x1C));
 
-    return (float) get_axis_delta(this, a2, a3);
+    return get_axis_delta(this, nullptr, a2, a3);
 }
 
 float input_device::get_axis_old_state(int a2, int a3) {
-    auto &get_axis_old_state = get_vfunc(m_vtbl, 0x18);
+    float (__fastcall *get_axis_old_state)(void *, void *, int, int) = CAST(get_axis_old_state, get_vfunc(m_vtbl, 0x18));
 
-    return (float) get_axis_old_state(this, a2, a3);
+    return get_axis_old_state(this, nullptr, a2, a3);
 }
 
 float input_device::get_axis_state(int a2, int a3) {
-    auto &get_axis_state = get_vfunc(m_vtbl, 0x14);
+    float (__fastcall *get_axis_state)(void *, void *, int, int) = CAST(get_axis_state, get_vfunc(m_vtbl, 0x14));
 
-    return (float) get_axis_state(this, a2, a3);
+    return get_axis_state(this, nullptr, a2, a3);
 }
 
 int input_device::get_id() const
 {
-    auto &get_id = get_vfunc(m_vtbl, 0x8);
+    int (__fastcall *get_id)(const input_device *) = CAST(get_id, get_vfunc(m_vtbl, 0x8));
 
     return get_id(this);
 }

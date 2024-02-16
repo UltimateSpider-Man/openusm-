@@ -29,7 +29,7 @@ void combo_system_move::link_info::_unmash(mash_info_struct *a1, void *a3)
 
 int combo_system_move::link_info::get_mash_sizeof()
 {
-    auto &func = get_vfunc(m_vtbl, 0x18);
+    int (__fastcall *func)(combo_system_move::link_info *) = CAST(func, get_vfunc(m_vtbl, 0x18));
     return func(this);
 }
 
@@ -96,7 +96,7 @@ void combo_system_move::_unmash(mash_info_struct *a2, void *a3)
 
 int combo_system_move::get_mash_sizeof()
 {
-    auto &func = get_vfunc(m_vtbl, 0x18);
+    int (__fastcall *func)(combo_system_move *) = CAST(func, get_vfunc(m_vtbl, 0x18));
     return func(this);
 }
 

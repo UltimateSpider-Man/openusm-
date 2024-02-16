@@ -244,8 +244,8 @@ void input_mgr::poll_devices() {
         auto begin = this->field_8.begin();
         if (begin != end) {
             do {
-                auto &pool = get_vfunc(begin->second->m_vtbl, 0x20);
-                pool(begin->second);
+                void (__fastcall *poll)(void *) = CAST(poll, get_vfunc(begin->second->m_vtbl, 0x20));
+                poll(begin->second);
 
                 ++begin;
 

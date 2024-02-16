@@ -8,7 +8,7 @@
 
 VALIDATE_SIZE(spawnable, 0x8);
 
-spawnable::spawnable(vhandle_type<entity> a2)
+spawnable::spawnable(vhandle_type<entity> )
 {
     this->m_vtbl = 0x008A59FC;
     if ( spawnable_lanes() == nullptr )

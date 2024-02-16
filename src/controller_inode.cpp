@@ -13,19 +13,19 @@ bool controller_inode::is_axis_neutral(controller_inode::eControllerAxis a2) {
 }
 
 vector3d controller_inode::get_axis(controller_inode::eControllerAxis a3) {
-    auto &func = get_vfunc(m_vtbl, 0x50);
+    void (__fastcall *func)(controller_inode *, void *, vector3d *, controller_inode::eControllerAxis) = CAST(func, get_vfunc(m_vtbl, 0x50));
 
     vector3d result;
-    func(this, &result, a3);
+    func(this, nullptr, &result, a3);
 
     return result;
 }
 
 game_button controller_inode::get_button(controller_inode::eControllerButton a3) {
-    auto &func = get_vfunc(m_vtbl, 0x58);
+    void (__fastcall *func)(controller_inode *, void *, game_button *, controller_inode::eControllerButton) = CAST(func, get_vfunc(m_vtbl, 0x58));
 
     game_button result;
-    func(this, &result, a3);
+    func(this, nullptr, &result, a3);
 
     return result;
 }

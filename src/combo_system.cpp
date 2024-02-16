@@ -19,7 +19,7 @@ void combo_system_chain::telegraph_info::_unmash(mash_info_struct *a1, void *a2)
 
 int combo_system_chain::telegraph_info::get_mash_sizeof()
 {
-    auto &func = get_vfunc(m_vtbl, 0x18);
+    int (__fastcall *func)(combo_system_chain::telegraph_info *) = CAST(func, get_vfunc(m_vtbl, 0x18));
     return func(this);
 }
 

@@ -468,19 +468,19 @@ void resource_pack_streamer::load(const char *a2,
             auto iterator = this->field_6C.end();
             auto *_Pnode = iterator._Mynode();
 
-            thiscall_call Buynode = CAST(Buynode, 0x00566AB0);
-
             using list_t = _std::list<resource_pack_queue_entry>;
 
             static_assert(std::is_same_v<decltype(_Pnode), list_t::_Nodeptr>);
             static_assert(std::is_same_v<decltype(_Pnode->_Prev), list_t::_Nodeptr>);
 
-            auto *_Newnode = (list_t::_Nodeptr)
-                Buynode(&this->field_6C, _Pnode, _Pnode->_Prev, &v16);
+            list_t::_Nodeptr (__fastcall *Buynode)(void *, void *, list_t::_Nodeptr, list_t::_Nodeptr, resource_pack_queue_entry *) = CAST(Buynode, 0x00566AB0);
 
-            thiscall_call Incsize = CAST(Incsize, 0x00566AE0);
+            auto *_Newnode =
+                Buynode(&this->field_6C, nullptr, _Pnode, _Pnode->_Prev, &v16);
 
-            Incsize(&this->field_6C, 1u);
+            void (__fastcall *Incsize)(void *, void *, uint32_t) = CAST(Incsize, 0x00566AE0);
+
+            Incsize(&this->field_6C, nullptr, 1u);
             list_t::_Prevnode(_Pnode) = _Newnode;
             list_t::_Nextnode(list_t::_Prevnode(_Newnode)) = _Newnode;
         }

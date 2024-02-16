@@ -16,7 +16,7 @@ namespace als
 
     int transition_group_base::get_mash_sizeof() const
     {
-        auto &func = get_vfunc(m_vtbl, 0x1C);
+        int (__fastcall *func)(const transition_group_base *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
         return func(this);
     }
 }

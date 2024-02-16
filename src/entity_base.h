@@ -72,10 +72,7 @@ struct entity_base : entity_base_vtable {
     //0x004F3400
     entity_base(const string_hash &a2, uint32_t a3, bool a4);
 
-    bool has_region_idx() const
-    {
-        return this->field_3C != 0xFFFF;
-    }
+    bool has_region_idx() const;
 
     uint16_t get_region_idx() const
     {

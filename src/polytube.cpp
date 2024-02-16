@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "memory.h"
 #include "oldmath_po.h"
 #include "pcuv_shadermaterial.h"
 #include "slab_allocator.h"
@@ -136,15 +137,15 @@ void polytube::frame_advance_all_polytubes(Float a1) {
     CDECL_CALL(0x0059B490, a1);
 }
 
-void polytube::set_material(string_hash a2) {
+void polytube::set_material(string_hash a2)
+{
     auto *v3 = this->field_D0;
-    if (v3 != nullptr) {
-        auto *vtbl = bit_cast<thiscall_call(*)[1]>(v3->m_vtbl);
+    if (v3 != nullptr)
+    {
+        void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(v3->m_vtbl, 0x0));
+        finalize(v3, nullptr, false);
 
-        auto &func = (*vtbl)[0];
-        func(v3, false);
-
-        slab_allocator::deallocate(v3, nullptr);
+        mem_dealloc(v3, sizeof(*v3));
         this->field_D0 = nullptr;
     }
 

@@ -485,8 +485,8 @@ int tlResourceDirectory<nglTexture, tlFixedString>::StandardRelease(nglTexture *
         }
 
         if (tex->field_60.field_4[0]) {
-            auto &Del = get_vfunc(this->m_vtbl, 0x14);
-            Del(this, tex);
+            void (__fastcall *Del)(void *, void *, nglTexture *) = CAST(Del, get_vfunc(this->m_vtbl, 0x14));
+            Del(this, nullptr, tex);
         }
 
         nglDestroyTexture(tex);
@@ -843,7 +843,7 @@ void tlInitListInit()
         for (auto *shader = static_cast<nglShader *>(tlInitList::head());
                 shader != nullptr;
                 shader = shader->field_4) {
-            auto &Register = get_vfunc(shader->m_vtbl, 0x0);
+            void (__fastcall *Register)(void *) = CAST(Register, get_vfunc(shader->m_vtbl, 0x0));
             Register(shader);
         }
     } else {

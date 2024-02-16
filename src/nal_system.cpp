@@ -67,9 +67,9 @@ char *nalComponentStringBase::GetType() {
 }
 
 nalBaseSkeleton *nalGetSkeleton(const tlFixedString &a1) {
-    auto &Find = get_vfunc(nalSkeletonDirectory()->m_vtbl, 0xC);
+    nalBaseSkeleton * (__fastcall *Find)(void *, void *, const tlFixedString *) = CAST(Find, get_vfunc(nalSkeletonDirectory()->m_vtbl, 0xC));
 
-    return (nalBaseSkeleton *) Find(nalSkeletonDirectory(), &a1);
+    return Find(nalSkeletonDirectory(), nullptr, &a1);
 }
 
 struct nalHeap {
@@ -238,15 +238,15 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
     if constexpr (1)
     {
         auto *v1 = &anim_file->field_48;
-        auto **skeletons = (nalBaseSkeleton **) tlMemAlloc(4 * anim_file->num_skeletons,
+        auto **skeletons = static_cast<nalBaseSkeleton **>(tlMemAlloc(4 * anim_file->num_skeletons,
                                                            8,
-                                                           0x2000000u);
+                                                           0x2000000u));
 
         for (auto i = 0; i < anim_file->num_skeletons; ++i)
         {
-            auto &Find = get_vfunc(nalSkeletonDirectory()->m_vtbl, 0xC);
+            nalBaseSkeleton * (__fastcall *Find)(void *, void *, const tlFixedString *) = CAST(Find, get_vfunc(nalSkeletonDirectory()->m_vtbl, 0xC));
 
-            skeletons[i] = (nalBaseSkeleton *) Find(nalSkeletonDirectory(), &v1[i]);
+            skeletons[i] = Find(nalSkeletonDirectory(), nullptr, &v1[i]);
             if (skeletons[i] == nullptr)
             {
                 auto v8 = anim_file->field_10.to_string();
@@ -267,7 +267,8 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
             anim_class = CAST(anim_class, anim_file->field_34);
         }
 
-        while (anim_class != nullptr) {
+        while (anim_class != nullptr)
+        {
             if (anim_class->field_4) {
                 anim_class->field_4 += (unsigned int) anim_class;
             }
@@ -282,7 +283,7 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
             auto vtbl = static_cast<nalInitListAnimType *>(instance->field_20)->anim_vtbl_ptr;
             anim_class->m_vtbl = vtbl;
 
-            auto &CheckVersion = get_vfunc(anim_class->m_vtbl, 0xC);
+            bool (__fastcall *CheckVersion)(void *) = CAST(CheckVersion, get_vfunc(anim_class->m_vtbl, 0xC));
 
             if (!CheckVersion(anim_class)) {
                 auto *v3 = &anim_class->field_8;
@@ -293,11 +294,11 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
 
             anim_class->InstanceCount = 0;
 
-            auto &Process = get_vfunc(anim_class->m_vtbl, 0x4);
+            void (__fastcall *Process)(void *) = CAST(Process, get_vfunc(anim_class->m_vtbl, 0x4));
             Process(anim_class);
 
-            auto &Add = get_vfunc(nalAnimDirectory()->m_vtbl, 0x10);
-            if (Add(nalAnimDirectory(), anim_class)) {
+            bool (__fastcall *Add)(void *, void *, nalAnimClass<nalAnyPose> *) = CAST(Add, get_vfunc(nalAnimDirectory()->m_vtbl, 0x10));
+            if (Add(nalAnimDirectory(), nullptr, anim_class)) {
                 auto *v6 = anim_class->field_8.to_string();
                 sp_log("Duplicate anim %s found.\n", v6);
             }

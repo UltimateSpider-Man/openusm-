@@ -82,10 +82,10 @@ void resource_partition::clear()
             assert(delete_me->is_empty());
 
             if (delete_me != nullptr) {
-                auto &func = get_vfunc(delete_me->m_vtbl, 0x8);
+                void (__fastcall *func)(void *, void *, bool) = CAST(func, get_vfunc(delete_me->m_vtbl, 0x8));
 
                 //THISCALL(vtbl[2], v4, true);
-                func(delete_me, true);
+                func(delete_me, nullptr, true);
             }
         }
 
@@ -172,9 +172,9 @@ void resource_partition::push_pack_slot(int memory_amount_to_reserve, void *a3) 
                 *v13 = slot;
                 pack_slots->m_last = v13 + 1;
             } else {
-                thiscall_call _Insert_n = CAST(_Insert_n, 0x0056A260);
+                void (__fastcall *_Insert_n)(void *, void *, void *, int, worldly_pack_slot **) = CAST(_Insert_n, 0x0056A260);
 
-                _Insert_n(pack_slots, pack_slots->m_last, 1, &slot);
+                _Insert_n(pack_slots, nullptr, pack_slots->m_last, 1, &slot);
             }
         }
     }

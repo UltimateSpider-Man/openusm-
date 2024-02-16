@@ -39,7 +39,8 @@ VALIDATE_OFFSET(entity_base, my_abs_po, 0x14);
 
 int DEBUG_foster_conglom_warning{};
 
-entity_base::entity_base(bool a2) {
+entity_base::entity_base(bool a2)
+{
     if constexpr (1) {
         this->field_10 = 0;
         this->my_sound_and_pfx_interface = nullptr;
@@ -126,6 +127,11 @@ entity_base * __fastcall entity_base_constructor(void *self, int, const string_h
     TRACE("entity_base::entity_base");
 
     return new (self) entity_base {*a2, a3, a4};
+}
+
+bool entity_base::has_region_idx() const
+{
+    return this->field_3C != 0xFFFF;
 }
 
 uint16_t entity_base::get_bone_idx() const
@@ -293,7 +299,7 @@ bool entity_base::is_alive() {
 int entity_base::get_flavor() {
     if constexpr (1)
     {
-        auto &func = get_vfunc(m_vtbl, 0x54);
+        int (__fastcall *func)(entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x54));
         return func(this);
 
     } else {
@@ -311,8 +317,8 @@ bool entity_base::is_a_signaller() {
 
 bool entity_base::is_an_entity() {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x60);
-        return (bool) func(this);
+        bool (__fastcall *func)(entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x60));
+        return func(this);
     } else {
         return false;
     }
@@ -321,8 +327,8 @@ bool entity_base::is_an_entity() {
 bool entity_base::is_an_actor() const {
     if constexpr (1)
     {
-        auto &func = get_vfunc(m_vtbl, 0x64);
-        return (bool) func(this);
+        bool (__fastcall *func)(const entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x64));
+        return func(this);
 
     } else {
         return false;
@@ -343,9 +349,9 @@ bool entity_base::is_a_station_camera() {
 
 bool entity_base::is_a_game_camera() {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x74);
+        bool (__fastcall *func)(entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x74));
 
-        return (bool) func(this);
+        return func(this);
 
     } else {
         return false;
@@ -456,8 +462,8 @@ bool entity_base::is_a_mic() {
 bool entity_base::is_a_pfx_entity() const {
     if constexpr(1)
     {
-        auto &func = get_vfunc(m_vtbl, 0xD4);
-        return (bool) func(this);
+        bool (__fastcall *func)(const entity_base *) = CAST(func, get_vfunc(m_vtbl, 0xD4));
+        return func(this);
     }
     else
     {
@@ -516,8 +522,8 @@ bool entity_base::is_a_trigger() {
 bool entity_base::is_material_switching() {
     if constexpr (1)
     {
-        auto &func = get_vfunc(m_vtbl, 0x108);
-        return (bool) func(this);
+        bool (__fastcall *func)(entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x108));
+        return func(this);
     } else {
         return false;
     }
@@ -552,8 +558,8 @@ facial_expression_interface *entity_base::facial_expression_ifc() {
 
 bool entity_base::has_physical_ifc() {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x124);
-        return (bool) func(this);
+        bool (__fastcall *func)(entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x124));
+        return func(this);
 
     } else {
         return false;
@@ -564,8 +570,8 @@ physical_interface *entity_base::physical_ifc() {
     //assert(0 && "Accessing an invalid interface");
     //return nullptr;
 
-    auto &func = get_vfunc(m_vtbl, 0x128);
-    return (physical_interface *) func(this);
+    physical_interface * (__fastcall *func)(entity_base *) = CAST(func, get_vfunc(m_vtbl, 0x128));
+    return func(this);
 }
 
 bool entity_base::has_skeleton_ifc() {
@@ -975,10 +981,11 @@ void entity_base::add_adopted_child(entity_base *child_arg) {
 
         auto it = std::find(this->adopted_children->begin(), end, child_arg);
 
-        if (it == end) {
-            thiscall_call push_back = CAST(push_back, 0x005E7330);
+        if (it == end)
+		{
+            void (__fastcall *push_back)(void *, void *, void *) = CAST(push_back, 0x005E7330);
 
-            push_back(this->adopted_children, &child_arg);
+            push_back(this->adopted_children, nullptr, &child_arg);
         }
 
     } else {
@@ -1250,12 +1257,12 @@ void entity_base::common_destruct()
             auto *v6 = this->my_sound_and_pfx_interface;
             if (v6->field_8) {
                 if (v6 != nullptr) {
-                    auto &finalize = get_vfunc(v6->m_vtbl, 0x0);
-                    finalize(v6, 1);
+                    void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(v6->m_vtbl, 0x0));
+                    finalize(v6, nullptr, true);
                 }
 
             } else {
-                auto &func24 = get_vfunc(v6->m_vtbl, 0x24);
+                void (__fastcall *func24)(void *) = CAST(func24, get_vfunc(v6->m_vtbl, 0x24));
                 func24(v6);
             }
 

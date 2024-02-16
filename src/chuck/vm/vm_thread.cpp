@@ -32,7 +32,7 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
     if constexpr (1) {
         this->ex = a3;
         this->inst = a2;
-        this->field_14 = 0;
+        this->field_14 = nullptr;
         this->field_18 = 0;
         this->flags = 2;
 
@@ -52,10 +52,11 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
 {
     TRACE("vm_thread::vm_thread");
 
-    if constexpr(1) {
+    if constexpr(1)
+    {
         this->ex = a3;
         this->inst = a2;
-        this->field_14 = 0;
+        this->field_14 = nullptr;
         this->field_18 = 0;
         this->flags = 2;
 

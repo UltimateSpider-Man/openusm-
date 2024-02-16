@@ -14,7 +14,7 @@ fe_mini_map_dot::fe_mini_map_dot(mini_map_dot_type a2, vector3d a3) {
 
 void fe_mini_map_dot::Draw() {
     if (this->field_24 && this->field_25) {
-        auto &Draw = get_vfunc(this->field_0->m_vtbl, 0x58);
+        void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->field_0->m_vtbl, 0x58));
         Draw(this->field_0);
 
         if (this->field_8 != nullptr) {
@@ -30,7 +30,7 @@ void fe_mini_map_dot::Draw() {
         }
 
         if (this->field_28) {
-            auto &Draw = get_vfunc(this->field_4->m_vtbl, 0x58);
+            void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->field_4->m_vtbl, 0x58));
             Draw(this->field_4);
         }
     }

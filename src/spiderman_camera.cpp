@@ -52,8 +52,8 @@ void spiderman_camera::adjust_geometry_pipe(bool a1) {
 
 void spiderman_camera::autocorrect(Float a2)
 {
-    auto &func = get_vfunc(m_vtbl, 0x2D0);
-    func(this, a2);
+    void (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2D0));
+    func(this, nullptr, a2);
 }
 
 void spiderman_camera::_autocorrect(Float a2)

@@ -43,10 +43,10 @@ ai_path::ai_path() {
     auto v3 = dword_958168()[1];
     auto a3 = (int) this;
 
-    thiscall_call sub_6B78D0 = CAST(sub_6B78D0, 0x006B78D0);
-    thiscall_call sub_48E040 = CAST(sub_48E040, 0x0048E040);
+    int ** (__fastcall *sub_6B78D0)(void *, void *, int, int, void *) = CAST(sub_6B78D0, 0x006B78D0);
+    fastcall_call sub_48E040 = CAST(sub_48E040, 0x0048E040);
 
-    auto v4 = (int **) sub_6B78D0(&dword_958164(), (int) dword_958168(), v3, &a3);
+    auto v4 = sub_6B78D0(&dword_958164(), nullptr, (int) dword_958168(), v3, &a3);
     dword_958164()._Incsize(1u);
     v2[1] = (int) v4;
     *v4[1] = (int) v4;
@@ -59,14 +59,15 @@ void ai_path::frame_advance_all_ai_paths(Float a1) {
     CDECL_CALL(0x00479ED0, a1);
 }
 
-ai_path::~ai_path() {
+ai_path::~ai_path()
+{
     [[maybe_unused]] int v4 = 3;
 
-    thiscall_call sub_5058F0 = CAST(sub_5058F0, 0x005058F0);
+    void (__fastcall *sub_5058F0)(void *, void *, void *) = CAST(sub_5058F0, 0x005058F0);
 
     auto *v1 = this;
 
-    sub_5058F0(&dword_958164(), &v1);
+    sub_5058F0(&dword_958164(), nullptr, &v1);
 
     this->field_30 = {};
 
@@ -77,7 +78,8 @@ ai_path::~ai_path() {
     this->field_0 = {};
 }
 
-void ai_path::set_status(ai_path *a1, ai_path::eAIPathStatus a2, const char *Format, ...) {
+void ai_path::set_status(ai_path *a1, ai_path::eAIPathStatus a2, const char *Format, ...)
+{
     char Dest[2048];
 
     va_list Args;
@@ -341,9 +343,9 @@ bool ai_path::find_region_route(region *a1, region *a2, _std::vector<region *> *
         }
 
         if (a1 == a2) {
-            thiscall_call sub_48F990 = CAST(sub_48F990, 0x0048F990);
+            void (__fastcall *sub_48F990)(void *, void *, void *) = CAST(sub_48F990, 0x0048F990);
 
-            sub_48F990(route, &a1);
+            sub_48F990(route, nullptr, &a1);
             return true;
         }
 
@@ -356,8 +358,8 @@ bool ai_path::find_region_route(region *a1, region *a2, _std::vector<region *> *
             return false;
         }
 
-        thiscall_call sub_48FE90 = CAST(sub_48FE90, 0x0048FE90);
-        sub_48FE90(route, &v6.field_24);
+        void (__fastcall *sub_48FE90)(void *, void *, void *) = CAST(sub_48FE90, 0x0048FE90);
+        sub_48FE90(route, nullptr, &v6.field_24);
 
         return true;
 

@@ -41,7 +41,7 @@ void *nalConstructSkeleton(void *a1)
         skel->m_vtbl = vtbl;
         sp_log("0x%08X", vtbl);
 
-        auto &CheckVersion = get_vfunc(skel->m_vtbl, 0x10);
+        bool (__fastcall *CheckVersion)(void *) = CAST(CheckVersion, get_vfunc(skel->m_vtbl, 0x10));
         if ( !CheckVersion(a1) )
         {
 #ifdef TARGET_XBOX
@@ -52,7 +52,7 @@ void *nalConstructSkeleton(void *a1)
 #endif
         }
 
-        auto &Process = get_vfunc(skel->m_vtbl, 0x8);
+        void (__fastcall *Process)(void *) = CAST(Process, get_vfunc(skel->m_vtbl, 0x8));
         Process(a1);
 
         skel->field_50 = 0;

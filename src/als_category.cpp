@@ -35,7 +35,7 @@ namespace als
 
     int category::get_mash_sizeof() const
     {
-        auto &func = get_vfunc(m_vtbl, 0x34);
+        int (__fastcall *func)(const category *) = CAST(func, get_vfunc(m_vtbl, 0x34));
         return func(this);
     }
 

@@ -19,9 +19,15 @@ PanelAnimObject::PanelAnimObject(int) {
     this->field_4 = 1.0;
 }
 
+void PanelAnimObject::Update(Float a2)
+{
+    void (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x18));
+    func(this, nullptr, a2);
+}
+
 void PanelAnimObject::StartAnim(bool a1) {
-    auto &func = get_vfunc(m_vtbl, 0x20);
-    func(this, a1);
+    void (__fastcall *func)(void *, void *, bool) = CAST(func, get_vfunc(m_vtbl, 0x20));
+    func(this, nullptr, a1);
 }
 
 double PanelAnimObject::GetZvalue()
@@ -40,7 +46,7 @@ void PanelAnimObject::SetZvalue(Float a1, panel_layer a2)
 
 int PanelAnimObject::get_mash_sizeof()
 {
-    auto &func = get_vfunc(m_vtbl, 0x4C);
+    int (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x4C));
     return func(this);
 }
 
@@ -49,7 +55,7 @@ bool PanelAnimObject::IsShown() {
 }
 
 void PanelAnimObject::SetShown(bool a2) {
-    auto &func = get_vfunc(m_vtbl, 0x64);
+    void (__fastcall *func)(void *, void *, bool) = CAST(func, get_vfunc(m_vtbl, 0x64));
 
-    func(this, a2);
+    func(this, nullptr, a2);
 }

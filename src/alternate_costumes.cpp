@@ -154,9 +154,9 @@ void alternate_costumes::onActivate() {
 
         float v24, v25;
         {
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(this->field_4C[20]->m_vtbl);
-            auto GetCenterPos = (*vtbl)[42];
-            GetCenterPos(this->field_4C[20], &v25, &v24);
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(this->field_4C[20]->m_vtbl);
+            void (__fastcall *GetCenterPos)(void *, void*, float *, float *) = CAST(GetCenterPos, (*vtbl)[42]);
+            GetCenterPos(this->field_4C[20], nullptr, &v25, &v24);
         };
 
         auto *v11 = this->field_4C[20];
@@ -181,11 +181,11 @@ void alternate_costumes::onActivate() {
         if (!g_world_ptr()->field_28.field_48) {
             g_game_ptr()->enable_marky_cam(true, true, -1000.0, 0.0);
             auto *v18 = g_world_ptr()->field_28.field_44;
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(v18->m_vtbl);
-            auto sync = (*vtbl)[165];
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(v18->m_vtbl);
+            void (__fastcall *sync)(void *, void *, void *) = CAST(sync, (*vtbl)[165]);
 
             auto *v20 = g_game_ptr()->get_current_view_camera(0);
-            sync(v18, v20);
+            sync(v18, nullptr, v20);
         }
 
         this->sub_640510(this->field_114);
@@ -246,25 +246,27 @@ void alternate_costumes::sub_614C60(int a2) {
                 v2 = this->field_A8;
             }
 
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(p.field_0->m_vtbl);
-            auto SetTexture = (*vtbl)[29];
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(p.field_0->m_vtbl);
+            void (__fastcall *SetTexture)(void *, void *, void *) = CAST(SetTexture, (*vtbl)[29]);
 
-            SetTexture(p.field_0, v2);
+            SetTexture(p.field_0, nullptr, v2);
         }
     } else {
         THISCALL(0x00614C60, this, a2);
     }
 }
 
-void alternate_costumes::update_selected(int a2) {
-    if constexpr (0) {
+void alternate_costumes::update_selected(int a2)
+{
+    if constexpr (0)
+	{
         for (auto &p : this->field_C4) {
             auto v7 = (float) (a2 * this->field_10C);
 
-            auto vtbl = bit_cast<thiscall_call(*)[1]>(p.field_0->m_vtbl);
-            auto field_C0 = (*vtbl)[48];
+            auto vtbl = bit_cast<fastcall_call(*)[1]>(p.field_0->m_vtbl);
+            void (__fastcall *field_C0)(void *, void *, Float, Float) = CAST(field_C0, (*vtbl)[48]);
 
-            field_C0(p.field_0, 0.0, v7);
+            field_C0(p.field_0, nullptr, 0.0, v7);
         }
 
         int v6;
@@ -280,9 +282,9 @@ void alternate_costumes::update_selected(int a2) {
 
         auto *panel = this->field_C4[v6].field_0;
 
-        auto vtbl = bit_cast<thiscall_call(*)[1]>(panel->m_vtbl);
-        auto field_C0 = (*vtbl)[48];
-        field_C0(panel, 0.0, v8);
+        auto vtbl = bit_cast<fastcall_call(*)[1]>(panel->m_vtbl);
+        void (__fastcall *field_C0)(void *, void *, Float, Float) = CAST(field_C0, (*vtbl)[48]);
+        field_C0(panel, nullptr, 0.0, v8);
 
         this->sub_640740(this->field_118);
         this->sub_640510(this->field_114);

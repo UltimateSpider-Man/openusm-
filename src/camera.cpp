@@ -28,9 +28,9 @@ camera::camera([[maybe_unused]] entity *a2, const string_hash &a3)
 
 void camera::sync(camera &a2) {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x294);
+        void (__fastcall *func)(camera *, void *, camera *) = CAST(func, get_vfunc(m_vtbl, 0x294));
 
-        func(this, &a2);
+        func(this, nullptr, &a2);
 
     } else {
         THISCALL(0x0057EFD0, this, &a2);
@@ -38,12 +38,12 @@ void camera::sync(camera &a2) {
 }
 
 float camera::get_fov() {
-    float __thiscall (*func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x2A0));
+    float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x2A0));
     return func(this);
 }
 
 float camera::get_far_plane_factor() {
-    float __thiscall (*func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x2A8));
+    float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x2A8));
     return func(this);
 }
 

@@ -90,7 +90,7 @@ void fe_mini_map_widget::Draw()
              reg == nullptr) ||
             !reg->is_interior()) {
             if (v3) {
-                auto &Draw = get_vfunc(this->map_frame_map_placeholder->m_vtbl, 0x58);
+                void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->map_frame_map_placeholder->m_vtbl, 0x58));
 
                 Draw(this->map_frame_map_placeholder);
             } else {
@@ -102,8 +102,8 @@ void fe_mini_map_widget::Draw()
 
                 float local_vec0[4], local_vec1[4];
 
-                auto &GetPos = get_vfunc(this->map_frame_map_placeholder->m_vtbl, 0xA4);
-                GetPos(this->map_frame_map_placeholder, local_vec0, local_vec1);
+                void (__fastcall *GetPos)(void *, void *, float *, float *) = CAST(GetPos, get_vfunc(this->map_frame_map_placeholder->m_vtbl, 0xA4));
+                GetPos(this->map_frame_map_placeholder, nullptr, local_vec0, local_vec1);
                 auto v10 = local_vec0[0];
                 auto v13 = local_vec0[3];
 
@@ -132,20 +132,20 @@ void fe_mini_map_widget::Draw()
                     this->field_364[i]->Draw();
                 }
 
-                auto &Draw = get_vfunc(this->compass_arrow->m_vtbl, 0x58);
+                void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->compass_arrow->m_vtbl, 0x58));
                 Draw(this->compass_arrow);
             }
 
-            auto &Draw = get_vfunc(this->map_frame_black->m_vtbl, 0x58);
+            void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->map_frame_black->m_vtbl, 0x58));
             Draw(this->map_frame_black);
 
-            Draw = get_vfunc(this->map_frame_white->m_vtbl, 0x58);
+            Draw = CAST(Draw, get_vfunc(this->map_frame_white->m_vtbl, 0x58));
             Draw(this->map_frame_white);
 
-            Draw = get_vfunc(this->map_frame_white_stub->m_vtbl, 0x58);
+            Draw = CAST(Draw, get_vfunc(this->map_frame_white_stub->m_vtbl, 0x58));
             Draw(this->map_frame_white_stub);
 
-            Draw = get_vfunc(this->compass_base->m_vtbl, 0x58);
+            Draw = CAST(Draw, get_vfunc(this->compass_base->m_vtbl, 0x58));
             Draw(this->compass_base);
         }
     }

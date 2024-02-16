@@ -67,8 +67,9 @@ void FEMenu::AddEntry(int a2, global_text_enum a3) {
     this->field_4[a2] = new (mem) FEMenuEntry{a3, this, false, font_index{6}, 1};
 }
 
-void FEMenu::Init() {
-    auto &func = get_vfunc(m_vtbl, 0xC);
+void FEMenu::Init()
+{
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xC));
 
     func(this);
 }
@@ -93,15 +94,15 @@ void FEMenu::Update(Float a2) {
 }
 
 void FEMenu::OnActivate() {
-    auto &func = get_vfunc(m_vtbl, 0x2C);
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x2C));
 
     func(this);
 }
 
 void FEMenu::OnDeactivate(FEMenu *a2) {
-    auto &func = get_vfunc(m_vtbl, 0x30);
+    void (__fastcall *func)(FEMenu *, void *, FEMenu *) = CAST(func, get_vfunc(m_vtbl, 0x30));
 
-    func(this, a2);
+    func(this, nullptr, a2);
 }
 
 void FEMenu::OnAnyButtonPress(int a2, int a3) {
@@ -203,13 +204,13 @@ void FEMenu::SetVis(int a2) {
 }
 
 void FEMenu::Up() {
-    auto &func = get_vfunc(m_vtbl, 0xA4);
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xA4));
 
     func(this);
 }
 
 void FEMenu::Down() {
-    auto &func = get_vfunc(m_vtbl, 0xA8);
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xA8));
 
     func(this);
 }

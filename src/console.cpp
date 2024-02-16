@@ -127,8 +127,8 @@ Console::~Console() {
     sp_log("Console::~Console()");
 
     if (field_248 != nullptr) {
-        auto &finalize = get_vfunc(field_248->m_vtbl, 0x8);
-        finalize(field_248, 1);
+        void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(field_248->m_vtbl, 0x8));
+        finalize(field_248, nullptr, true);
     }
 }
 

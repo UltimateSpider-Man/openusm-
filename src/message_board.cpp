@@ -30,8 +30,8 @@ void message_board::post(string a1, Float a2, color32 a3) {
         v1.field_68 = a3;
 
         if (i == v10.size()) {
-            thiscall_call push_back = CAST(push_back, 0x005E7330);
-            push_back(&v10, &v1);
+            void (__fastcall *push_back)(void *, void *, void *) = CAST(push_back, 0x005E7330);
+            push_back(&v10, nullptr, &v1);
         } else {
             v10.at(i) = v1;
         }

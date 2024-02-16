@@ -57,9 +57,9 @@ bool path_resource_handler::_handle_resource(worldly_resource_handler::eBehavior
 
             mash_info_struct::construct_class(pg);
 
-            thiscall_call push_back = CAST(push_back, 0x00542220);
+            void (__fastcall *push_back)(void *, void *, const path_graph *) = CAST(push_back, 0x00542220);
 
-            push_back(&g_world_ptr()->field_14.path_graph_list, pg);
+            push_back(&g_world_ptr()->field_14.path_graph_list, nullptr, pg);
         }
 
         ++this->field_C;

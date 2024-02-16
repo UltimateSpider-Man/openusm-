@@ -167,7 +167,7 @@ struct state_machine {
     int get_parameter_data_type(string_hash a2) const;
 
     //virtual
-    double get_time_to_end_of_anim() const;
+    float get_time_to_end_of_anim() const;
 
     bool is_cat_our_prev_cat(string_hash a2) const;
 

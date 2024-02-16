@@ -21,7 +21,7 @@ txSlotPool::Slot *txSlotPoolGetSlot(txSlotPool *a1, int id)
         return nullptr;
     }
 
-    auto v3 = a1->max_value & id;
+    int v3 = a1->max_value & id;
     if ( v3 >= a1->m_count )
     {
         return nullptr;
@@ -78,8 +78,9 @@ bool txSlotPoolInit(txSlotPool *a1, void *entries, uint32_t count, uint32_t size
 
     if constexpr (1)
     {
-        if ((count > 0) && (count <= 0xFFFFF) && (size >= 12)) {
-            uint32_t num_bits = 0;
+        if ((count > 0) && (count <= 0xFFFFF) && (size >= 12))
+		{
+            int num_bits = 0;
 
             for (auto v5 = count; v5 != 0; v5 >>= 1) {
                 ++num_bits;

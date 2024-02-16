@@ -4,6 +4,7 @@
 #include "func_wrapper.h"
 #include "mstring.h"
 #include "quaternion.h"
+#include "simple_classes.h"
 #include "variable.h"
 #include "vector3d.h"
 
@@ -49,7 +50,6 @@ void vector3d_unit_test()
         assert(approx_equals(up, vector3d(0.141156, 0.868903, -0.474428), LARGE_EPSILON));
     }
 
-    if (1)
     {
         vector3d a2 {6.716872, -32.072525, 14.798354};
         vector3d a3 {0.606163, 0.554652, 0.570024};
@@ -227,4 +227,7 @@ void unit_tests()
     quaternion_unit_test();
 
     mString_unit_test();
+
+    //binary_search_array_unit_test();
 }
+

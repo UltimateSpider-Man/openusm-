@@ -306,8 +306,8 @@ nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2
     {
         auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
 
-        nglTexture * (__fastcall *find)(void *, int, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
-        v3 = find(system_dir(), 0, a2);
+        nglTexture * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
+        v3 = find(system_dir(), nullptr, a2);
         if ( v3 != nullptr )
         {
             if ( SHOW_RESOURCE_SPAM )
@@ -380,8 +380,8 @@ nglMesh *tlresource_directory<nglMesh, tlHashString>::Find(uint32_t a2)
         }
 
         if (v3 == nullptr && system_dir() != nullptr) {
-            auto &Find = get_vfunc(system_dir()->m_vtbl, 0x8);
-            auto *v3 = (nglMesh *) Find(system_dir(), a2);
+            nglMesh * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(system_dir()->m_vtbl, 0x8));
+            auto *v3 = Find(system_dir(), nullptr, a2);
             if (v3 != nullptr) {
                 //if (byte_15B2C1A)
                 sp_log("found tlresource %08x in system directory", a2);

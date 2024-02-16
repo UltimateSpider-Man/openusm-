@@ -104,19 +104,19 @@ struct entity : signaller {
 
     void set_render_color();
 
-    color32 get_render_color();
+    color32 get_render_color() const;
 
     void set_render_alpha_mod(Float);
 
-    float get_render_alpha_mod();
+    float get_render_alpha_mod() const;
 
     void set_render_scale(const vector3d &);
 
-    vector3d get_render_scale();
+    vector3d get_render_scale() const;
 
     void set_render_zbias(Float);
 
-    float get_render_zbias();
+    float get_render_zbias() const;
 
     int get_light_set();
 

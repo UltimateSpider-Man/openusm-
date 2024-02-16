@@ -98,9 +98,9 @@ void FEManager::Draw() {
             if (v2->m_index < 0) {
                 this->IGO->Draw();
             } else {
-                auto *vtbl = bit_cast<thiscall_call(*)[9]>(v2->m_vtbl);
+                auto *vtbl = bit_cast<fastcall_call(*)[9]>(v2->m_vtbl);
 
-                auto *func = (*vtbl)[8];
+                void (__fastcall *func)(void *) = CAST(func, (*vtbl)[8]);
                 func(v2);
                 //v6->Draw(this->field_1C);
             }
@@ -112,16 +112,18 @@ void FEManager::Draw() {
     }
 }
 
-void FEManager::Update(Float a2) {
-    if constexpr (1) {
+void FEManager::Update(Float a2)
+{
+    if constexpr (1)
+	{
         if (fe_controller_disconnect::update()) {
             auto *v3 = this->m_pause_menu_system;
             if (v3->m_index < 0) {
                 this->IGO->Update(a2);
             } else {
-                auto *vtbl = bit_cast<thiscall_call(*)[6]>(v3->m_vtbl);
+                auto *vtbl = bit_cast<fastcall_call(*)[6]>(v3->m_vtbl);
 
-                auto *Update = (*vtbl)[5];
+                void (__fastcall *Update)(void *, void *, Float) = CAST(Update, (*vtbl)[5]);
 
                 //sp_log("FEManager::Update(): 0x%08X", func);
 
@@ -131,7 +133,7 @@ void FEManager::Update(Float a2) {
                     pause_menu_system->Update(a2);
 
                 } else {
-                    Update(this->m_pause_menu_system, a2);
+                    Update(this->m_pause_menu_system, nullptr, a2);
                 }
 
                 //this->field_1C->Update(this->field_1C, a2);

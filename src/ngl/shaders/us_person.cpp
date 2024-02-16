@@ -572,8 +572,8 @@ tlFixedString USPersonShader::GetName() {
     tlFixedString result;
 
     if constexpr (0) {
-        auto &GetName = get_vfunc(this->m_vtbl, 0x4);
-        GetName(this, &result);
+        void (__fastcall *GetName)(void *, void *, tlFixedString *) = CAST(GetName, get_vfunc(this->m_vtbl, 0x4));
+        GetName(this, nullptr, &result);
     } else {
         result = this->field_C;
     }

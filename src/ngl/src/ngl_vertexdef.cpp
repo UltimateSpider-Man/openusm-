@@ -15,7 +15,7 @@ VALIDATE_SIZE(def_t, 0x8);
 VALIDATE_SIZE(iterator_type, 0xC);
 
 void nglVertexDef::Destroy() {
-    auto &func = get_vfunc(m_vtbl, 0xC);
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xC));
     func(this);
 }
 

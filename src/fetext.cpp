@@ -42,8 +42,8 @@ void FEText::_unmash(mash_info_struct *a1, void *a3)
     }
     else
     {
-        auto &func = get_vfunc(m_vtbl, 0x4);
-        func(this, a1, a3);
+        void (__fastcall *func)(void *, void *, mash_info_struct *, void *) = CAST(func, get_vfunc(m_vtbl, 0x4));
+        func(this, nullptr, a1, a3);
     }
 }
 
@@ -60,7 +60,7 @@ void FEText::Draw() {
     //sp_log("Draw:");
 
     if constexpr (0) {
-        if (auto &IsShown = get_vfunc(this->m_vtbl, 0x44);
+        if (bool (__fastcall *IsShown)(FEText *) = CAST(IsShown, get_vfunc(this->m_vtbl, 0x44));
             IsShown(this) && !(this->field_1C == mString{""})) {
             auto color = this->field_4C;
             if ((this->field_64 & 8) != 0) {
@@ -82,8 +82,8 @@ void FEText::Draw() {
             auto a3 = this->field_34[0];
 
             {
-                auto &field_108 = get_vfunc(this->m_vtbl, 0x108);
-                field_108(this, &a3, &a4);
+                void (__fastcall *field_108)(FEText *, void *, void *, void *) = CAST(field_108, get_vfunc(this->m_vtbl, 0x108));
+                field_108(this, nullptr, &a3, &a4);
             }
 
             nglFont *font = g_femanager().GetFont(this->field_18);
@@ -91,8 +91,8 @@ void FEText::Draw() {
             auto v10 = this->field_40;
             auto v9 = this->field_3C;
 
-            auto &GetZvalue = get_vfunc(this->m_vtbl, 0x3C);
-            auto a5 = (float) GetZvalue(this);
+            float (__fastcall *GetZvalue)(FEText *) = CAST(GetZvalue, get_vfunc(this->m_vtbl, 0x3C));
+            auto a5 = GetZvalue(this);
 
             auto v14 = color32::to_int(color);
             auto *str = this->field_1C.c_str();
@@ -110,14 +110,14 @@ mString FEText::GetName() {
 void FEText::Update(Float a2) {
     sp_log("0x%08X", m_vtbl);
 
-    auto &func = get_vfunc(m_vtbl, 0x18);
-    func(this, a2);
+    void (__fastcall *func)(FEText *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x18));
+    func(this, nullptr, a2);
 }
 
 void FEText::SetText(global_text_enum a2) {
     if constexpr (0) {
-        auto &func = get_vfunc(m_vtbl, 0x88);
-        func(this, a2);
+        void (__fastcall *func)(FEText *, void *, global_text_enum) = CAST(func, get_vfunc(m_vtbl, 0x88));
+        func(this, nullptr, a2);
 
     } else {
         mString v3{g_game_ptr()->field_7C->field_0->field_0[a2.field_0]};
@@ -126,8 +126,8 @@ void FEText::SetText(global_text_enum a2) {
 }
 
 void FEText::SetPos(Float a2, Float a3) {
-    auto &func = get_vfunc(m_vtbl, 0x90);
-    func(this, a2, a3);
+    void (__fastcall *func)(FEText *, void *, Float, Float) = CAST(func, get_vfunc(m_vtbl, 0x90));
+    func(this, nullptr, a2, a3);
 }
 
 void FEText::SetNoFlash(color32 a2) {
@@ -139,8 +139,8 @@ void FEText::SetScale(Float a2, Float a3)
 {
     if constexpr (1)
     {
-        float __fastcall (*func)(void *, int edx, Float, Float) = CAST(func, get_vfunc(m_vtbl, 0x78));
-        func(this, 0, a2, a3);
+        float (__fastcall *func)(FEText *, void *, Float, Float) = CAST(func, get_vfunc(m_vtbl, 0x78));
+        func(this, nullptr, a2, a3);
     }
     else
     {
@@ -191,17 +191,17 @@ void FEText::AdjustForJustification(float *a2, float *a3) {
 
         //sp_log("%f %f", v8, v7);
 
-        auto &GetFlag = get_vfunc(this->m_vtbl, 0xE4);
+        bool (__fastcall *GetFlag)(FEText *, void *, int) = CAST(GetFlag, get_vfunc(this->m_vtbl, 0xE4));
 
-        if ((bool) GetFlag(this, 32)) {
+        if (GetFlag(this, nullptr, 32)) {
             *a2 = *a2 - v7;
-        } else if (!(bool) GetFlag(this, 16)) {
+        } else if (!GetFlag(this, nullptr, 16)) {
             *a2 = *a2 - (v7 * 0.5);
         }
 
-        if ((bool) GetFlag(this, 128)) {
+        if (GetFlag(this, nullptr, 128)) {
             *a3 = *a3 - v8;
-        } else if (!(bool) GetFlag(this, 64)) {
+        } else if (!GetFlag(this, nullptr, 64)) {
             *a3 = *a3 - (v8 * 0.5);
         }
     } else {
@@ -222,13 +222,13 @@ void FEText::SetFlash(color32 a2, color32 a3, Float a4) {
 }
 
 float FEText::GetX() {
-    float __fastcall (*func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xD4));
+    float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xD4));
 
     return func(this);
 }
 
 float FEText::GetY() {
-    float __fastcall (*func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xD8));
+    float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0xD8));
 
     return func(this);
 }

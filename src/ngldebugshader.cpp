@@ -17,10 +17,10 @@ int nglDebugShader::Register() {
     if constexpr (0) {
         this->field_8 = nglShader::NextID()++;
 
-        auto &GetName = get_vfunc(this->m_vtbl, 0x4);
+        void (__fastcall *GetName)(void *, void *, tlFixedString *) = CAST(GetName, get_vfunc(this->m_vtbl, 0x4));
 
         tlFixedString v2;
-        GetName(this, &v2);
+        GetName(this, nullptr, &v2);
 
         static Var<nglDebugShader> gnglDebugShader{0x009469B0};
 

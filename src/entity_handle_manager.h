@@ -1,7 +1,7 @@
 #pragma once
 
 #include "string_hash.h"
-#include "simple_queue.h"
+#include "simple_classes.h"
 
 #include <hash_map.hpp>
 

@@ -417,20 +417,21 @@ void actor::kill_interact_anim() {
     if constexpr (1) {
         auto *v2 = this->anim_ctrl;
         if (v2 != nullptr && (v2->field_10 & 1) != 0) {
-            auto &finalize = get_vfunc(v2->m_vtbl, 0x0);
-            finalize(v2, true);
+            void (__fastcall *finalize)(generic_anim_controller *, void *, bool) = CAST(finalize, get_vfunc(v2->m_vtbl, 0x0));
+            finalize(v2, nullptr, true);
             this->anim_ctrl = nullptr;
         }
 
-        if (this->is_a_conglomerate()) {
+        if (this->is_a_conglomerate())
+        {
             conglomerate *self = CAST(self, this);
 
             auto *v3 = self->field_114;
             if (v3 != nullptr) {
                 auto *v4 = v3->field_8;
                 if (v4 != nullptr) {
-                    auto &suspend_logic_system = get_vfunc(v4->m_vtbl, 0x8);
-                    suspend_logic_system(v4, 0);
+                    void (__fastcall *suspend_logic_system)(void *, void *, int) = CAST(suspend_logic_system, get_vfunc(v4->m_vtbl, 0x8));
+                    suspend_logic_system(v4, nullptr, 0);
                 }
             }
         }
@@ -452,21 +453,24 @@ void actor::create_adv_ptrs()
 }
 
 physical_interface *actor::physical_ifc() {
-    auto &func = get_vfunc(m_vtbl, 0x128);
+    physical_interface * (__fastcall *func)(actor *) = CAST(func, get_vfunc(m_vtbl, 0x128));
 
-    return (physical_interface *) func(this);
+    return func(this);
 }
 
 void actor::create_physical_ifc() {
     this->m_physical_interface = new physical_interface(this);
 }
 
-void actor::destroy_player_controller() {
-    if constexpr (1) {
+void actor::destroy_player_controller()
+{
+    if constexpr (1)
+    {
         auto *v2 = this->m_player_controller;
-        if (v2 != nullptr) {
-            auto &finalize = get_vfunc(v2->m_vtbl, 0x0);
-            finalize(v2, true);
+        if (v2 != nullptr)
+        {
+            void (__fastcall *finalize)(ai_player_controller *, void *, bool) = CAST(finalize, get_vfunc(v2->m_vtbl, 0x0));
+            finalize(v2, nullptr, true);
         }
 
         this->m_player_controller = nullptr;
@@ -894,10 +898,10 @@ void actor::swap_all_mesh_buffers() {
 }
 
 vector3d actor::get_colgeom_center() {
-    auto &func = get_vfunc(m_vtbl, 0x258);
+    void (__fastcall *func)(actor *, void *, vector3d *) = CAST(func, get_vfunc(m_vtbl, 0x258));
 
     vector3d result;
-    func(this, &result);
+    func(this, nullptr, &result);
 
     return result;
 }
@@ -983,8 +987,8 @@ void actor::_render(Float a2)
 damage_interface *actor::damage_ifc() {
     //return this->my_damage_interface;
 
-    auto &func = get_vfunc(m_vtbl, 0x118);
-    return (damage_interface *) func(this);
+    damage_interface * (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x118));
+    return func(this);
 }
 
 void actor::create_damage_ifc() {
@@ -992,8 +996,8 @@ void actor::create_damage_ifc() {
 }
 
 double actor::get_colgeom_radius() {
-    auto &func = get_vfunc(m_vtbl, 0x254);
-    return (float) func(this);
+    float (__fastcall *func)(actor *) = CAST(func, get_vfunc(m_vtbl, 0x254));
+    return func(this);
 };
 
 bool actor::is_frame_delta_valid() const {

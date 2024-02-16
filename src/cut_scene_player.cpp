@@ -30,16 +30,16 @@ cut_scene_player::cut_scene_player() {
     auto vector_constructor = [](void *a1,
                                  uint32_t size,
                                  int count,
-                                 thiscall_call a4,
-                                 [[maybe_unused]] thiscall_call a5) -> void {
+                                 void (__fastcall *a4)(void *),
+                                 [[maybe_unused]] fastcall_call a5) -> void {
         for (int i = 0; i < count; ++i) {
             a4(static_cast<int *>(a1));
             a1 = static_cast<char *>(a1) + size;
         }
     };
 
-    thiscall_call sub_682D80 = CAST(sub_682D80, 0x00682D80);
-    thiscall_call sub_5E46C0 = CAST(sub_5E46C0, 0x005E46C0);
+    void (__fastcall *sub_682D80)(void *) = CAST(sub_682D80, 0x00682D80);
+    fastcall_call sub_5E46C0 = CAST(sub_5E46C0, 0x005E46C0);
     vector_constructor(&this->field_68, 16u, 5, sub_682D80, sub_5E46C0);
 
     this->field_B8 = 0;

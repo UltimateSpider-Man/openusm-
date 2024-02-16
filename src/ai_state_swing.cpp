@@ -183,7 +183,7 @@ void swing_state::_activate(ai_state_machine *a2,
 {
     TRACE("ai::swing_state::activate");
 
-    if constexpr (0)
+    if constexpr (1)
     {
         enhanced_state::activate(a2, arg4, a4, a5, a6);
 
@@ -264,12 +264,11 @@ void swing_state::_activate(ai_state_machine *a2,
 
             constexpr float v67 = 3.0;
             auto v52 = v35->get_velocity() * v67;
-            auto v32 = abs_po.get_position();
-            v56.field_C = v32 + v52;
+            v56.field_C = abs_po.get_position() + v52;
             v56.render(21, false);
             mString v40 {0, "anchor ang %.2f", v15->m_anchor_angle};
 
-            auto v34 = color32{255, 255, 255, 255};
+            color32 v34 {255, 255, 255, 255};
             insertDebugString(2, v40, v34);
         }
 
@@ -904,10 +903,12 @@ void swing_inode::clip_web(Float a2)
     }
 }
 
-void swing_inode::fire_new_web(bool is_play_fire_web_sound) {
-    //sp_log("fire_new_web:");
+void swing_inode::fire_new_web(bool is_play_fire_web_sound)
+{
+    TRACE("swing_inode::fire_new_web:");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         this->field_54 = true;
 
         vector3d new_velocity = swingers()[0].field_40 + swingers()[0].field_3C->get_abs_position();
@@ -1613,19 +1614,15 @@ void sub_44C3B0(line_info *a1) {
     }
 }
 
-void sub_44C430(line_info *a1) {
-    if constexpr (1) {
-        auto v1 = a1->hit_norm[0] * 0.1f;
-        auto v2 = a1->hit_norm[1] * 0.1f;
-        auto v6 = a1->hit_norm[2] * 0.1f;
-        auto *v3 = &g_world_ptr()->field_1F0;
-
-        vector3d arg4;
-        arg4[0] = v1 + a1->hit_pos[0];
-        arg4[1] = v2 + a1->hit_pos[1];
-        arg4[2] = v6 + a1->hit_pos[2];
+void sub_44C430(line_info *a1)
+{
+    if constexpr (1)
+    {
+        vector3d v5 = a1->hit_norm * 0.1f + a1->hit_pos;
         auto *v4 = a1->hit_entity.get_volatile_ptr();
-        v3->spawn(false, arg4, a1->hit_norm, nullptr, nullptr, v4, ZEROVEC, false, true);
+
+        auto *v3 = &g_world_ptr()->field_1F0;
+        v3->spawn(false, v5, a1->hit_norm, nullptr, nullptr, v4, ZEROVEC, false, true);
 
     } else {
         CDECL_CALL(0x0044C430, a1);
@@ -1634,16 +1631,18 @@ void sub_44C430(line_info *a1) {
 
 void swing_inode::do_web_splat(vector3d target_point,
                                vector3d target_normal,
-                               const local_collision::entfilter_base &entfilter_arg) {
-    //sp_log("do_web_splat: %s, %s", target.to_string(), a4.to_string());
+                               const local_collision::entfilter_base &entfilter_arg)
+{
+    TRACE("swing_inode::do_web_splat");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         vector3d array_vectors[6];
 
         array_vectors[0] = target_point + target_normal;
         array_vectors[1] = target_point - target_normal;
 
-        static constexpr auto halfUp = vector3d{0.0, 0.5, 0.0};
+        static constexpr vector3d halfUp {0.0, 0.5, 0.0};
 
         array_vectors[2] = array_vectors[0] + halfUp;
         array_vectors[3] = array_vectors[1] - halfUp;
@@ -1653,13 +1652,15 @@ void swing_inode::do_web_splat(vector3d target_point,
         line_info line{};
 
         static Var<bool> byte_958044{0x00958044};
+        byte_958044() = true;
 
-        //byte_958044() = true;
-
-        for (int i = 0; i < 6; i += 2) {
-            line.clear();
-            line.field_0 = array_vectors[i];
-            line.field_C = array_vectors[i + 1];
+        for (int i = 0; i < 6; i += 2)
+        {
+            {
+                line.clear();
+                line.field_0 = array_vectors[i];
+                line.field_C = array_vectors[i + 1];
+            }
 
             if (byte_958044()) {
                 line.render(i / 2, false);
@@ -1667,7 +1668,8 @@ void swing_inode::do_web_splat(vector3d target_point,
 
             if (line.check_collision(entfilter_arg,
                                      *local_collision::obbfilter_lineseg_test(),
-                                     nullptr)) {
+                                     nullptr))
+            {
                 vector3d axis;
 
                 if (line.hit_norm == YVEC) {
@@ -2566,6 +2568,11 @@ void swing_inode_patch()
         REDIRECT(0x0047DD94, address);
     }
 
+    {
+        FUNC_ADDRESS(address, &ai::swing_inode::fire_new_web);
+        REDIRECT(0x0047DE72, address);
+    }
+
     return;
 
     {
@@ -2589,11 +2596,6 @@ void swing_inode_patch()
     {
         FUNC_ADDRESS(address, &ai::swing_inode::find_best_anchor_point);
         REDIRECT(0x00488627, address);
-    }
-
-    {
-        FUNC_ADDRESS(address, &ai::swing_inode::fire_new_web);
-        REDIRECT(0x0047DE72, address);
     }
 
     {

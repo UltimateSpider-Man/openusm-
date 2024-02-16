@@ -324,7 +324,7 @@ void sub_76F320() {
     if constexpr (1) {
         struct Vtbl {
             int empty[7];
-            thiscall_call field_1C;
+            void (__fastcall *field_1C)(void *, void *, int, int, int);
         };
 
         auto address = get_vtbl(nglMeshFileDirectory());
@@ -339,7 +339,7 @@ void sub_76F320() {
 
         Vtbl *vtbl = CAST(vtbl, address);
 
-        vtbl->field_1C(nglMeshFileDirectory(), 1, 1, 1); // 0x008B8180 -> sub_560770
+        vtbl->field_1C(nglMeshFileDirectory(), nullptr, 1, 1, 1); // 0x008B8180 -> sub_560770
     } else {
         CDECL_CALL(0x0076F320);
     }
@@ -639,11 +639,11 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
 
                 auto *pause_menu_system = g_femanager().m_pause_menu_system;
 
-                auto *vtbl = bit_cast<thiscall_call(*)[10]>(pause_menu_system->m_vtbl);
+                auto *vtbl = bit_cast<fastcall_call(*)[10]>(pause_menu_system->m_vtbl);
 
                 auto *func = (*vtbl)[9];
 
-                func(pause_menu_system, 257, wParam, lParam);
+                func(pause_menu_system, nullptr, 257, wParam, lParam);
 
                 return DefWindowProcA(hWnd, Msg, wParam, lParam);
             }
@@ -652,10 +652,10 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                 if (g_femanager().m_pause_menu_system->m_index == -1) {
                     auto *frontend_menu_system = g_femanager().m_fe_menu_system;
 
-                    auto *vtbl = bit_cast<thiscall_call(*)[10]>(frontend_menu_system->m_vtbl);
+                    auto *vtbl = bit_cast<fastcall_call(*)[10]>(frontend_menu_system->m_vtbl);
 
                     auto *func = (*vtbl)[9];
-                    func(frontend_menu_system, 257, wParam, lParam);
+                    func(frontend_menu_system, nullptr, 257, wParam, lParam);
 
                     return DefWindowProcA(hWnd, Msg, wParam, lParam);
                 }
@@ -681,24 +681,24 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                     if (g_femanager().m_pause_menu_system->m_index == -1) {
                         auto *frontend_menu_system = g_femanager().m_fe_menu_system;
 
-                        auto *vtbl = bit_cast<thiscall_call(*)[10]>(frontend_menu_system->m_vtbl);
+                        auto *vtbl = bit_cast<fastcall_call(*)[10]>(frontend_menu_system->m_vtbl);
 
                         auto *func = (*vtbl)[9];
                         //assert(bit_cast<std::intptr_t>(func) == 0x0060B6E0);
 
-                        func(frontend_menu_system, Msg, wParam, lParam);
+                        func(frontend_menu_system, nullptr, Msg, wParam, lParam);
 
                     } else {
                     LABEL_43:
 
                         auto *pause_menu_system = g_femanager().m_pause_menu_system;
 
-                        auto *vtbl = bit_cast<thiscall_call(*)[10]>(pause_menu_system->m_vtbl);
+                        auto *vtbl = bit_cast<fastcall_call(*)[10]>(pause_menu_system->m_vtbl);
 
                         auto *func = (*vtbl)[9];
                         //assert(bit_cast<std::intptr_t>(func) == 0x0060B6E0);
 
-                        func(pause_menu_system, Msg, wParam, lParam);
+                        func(pause_menu_system, nullptr, Msg, wParam, lParam);
                     }
                 }
 
@@ -2489,39 +2489,48 @@ BOOL install_redirects()
 
     meta_anim_interact_patch();
 
-    als_meta_anim_base_patch();
+    //als
+    {
+        als_meta_anim_base_patch();
 
-    als_meta_anim_swing_patch();
+        als_meta_anim_swing_patch();
 
-    als_meta_aimed_shot_vert_patch();
+        als_meta_aimed_shot_vert_patch();
 
-    als_meta_anim_table_shared_patch();
+        als_animation_logic_system_interface_patch();
 
-    als_transition_group_base_patch();
+        als_inode_patch();
 
-    als_state_machine_patch();
+        als_state_machine_patch();
 
-    als_state_machine_shared_patch();
+        als_meta_anim_table_shared_patch();
 
-    als_scripted_category_patch();
+        als_state_machine_shared_patch();
 
-    als_category_patch();
+        als_transition_group_base_patch();
 
-    als_simple_orientation_patch();
+        als_scripted_category_patch();
 
-    als_scripted_state_patch();
+        als_category_patch();
 
-    als_state_patch();
+        als_simple_orientation_patch();
 
-    als_layer_state_machine_shared_patch();
-    
-    als_basic_rule_data_patch();
-    
-    als_res_data_patch();
+        als_scripted_state_patch();
 
-    als_mocomp_patch();
+        als_state_patch();
 
-    als_motion_compensator_patch();
+        als_layer_state_machine_shared_patch();
+
+        als_basic_rule_data_patch();
+        
+        als_res_data_patch();
+
+        als_mocomp_patch();
+
+        als_motion_compensator_patch();
+
+        als_resource_handler_patch();
+    }
 
     input_mgr_patch();
 
@@ -2635,8 +2644,6 @@ BOOL install_redirects()
 
     gab_database_resource_handler_patch();
 
-    als_resource_handler_patch();
-
     mash_info_struct_patch();
 
     string_hash_dictionary_patch();
@@ -2677,8 +2684,6 @@ BOOL install_redirects()
     
     interactable_interface_patch();
 
-    als_animation_logic_system_interface_patch();
-
     animation_logic_system_patch();
 
     event_manager_patch();
@@ -2691,8 +2696,6 @@ BOOL install_redirects()
 
     hero_inode_patch();
 
-    als_inode_patch();
-    
     nal_anim_controller_patch();
 
     character_anim_controller_patch();

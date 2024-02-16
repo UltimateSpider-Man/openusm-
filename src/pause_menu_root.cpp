@@ -164,9 +164,9 @@ void pause_menu_root::Update(Float a2) {
                 auto *v3 = this->field_AC;
                 this->field_2C = false;
 
-                auto &MakeActive = get_vfunc(v3->m_vtbl, 0x8);
+                void (__fastcall *MakeActive)(void *, void *, int) = CAST(MakeActive, get_vfunc(v3->m_vtbl, 0x8));
 
-                MakeActive(v3, 8);
+                MakeActive(v3, nullptr, 8);
                 //->MakeActive(v3, 8);
 
                 comic_panels::game_play_panel()->field_67 = true;

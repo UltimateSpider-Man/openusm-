@@ -127,15 +127,14 @@ PanelQuad *PanelFile::GetPQ(const char *a2) {
     return g_femanager().GetDefaultPQ();
 }
 
-void PanelFile::Update(Float a2) {
-    if constexpr (1) {
-        for (uint16_t i = 0; i < this->pquads.m_size; ++i) {
+void PanelFile::Update(Float a2)
+{
+    if constexpr (1)
+    {
+        for (uint16_t i = 0; i < this->pquads.m_size; ++i)
+        {
             auto *v4 = this->pquads.m_data[i];
-
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(v4->m_vtbl);
-            auto func = (*vtbl)[6];
-
-            func(v4, a2);
+            v4->Update(a2);
         }
 
         for (uint16_t j = 0; j < this->field_28.m_size; ++j) {
@@ -146,7 +145,8 @@ void PanelFile::Update(Float a2) {
     }
 }
 
-void PanelFile::PostUnmashFixup(panel_layer a3) {
+void PanelFile::PostUnmashFixup(panel_layer a3)
+{
     if constexpr (1)
     {
         for ( auto i = 0; i < this->pquads.m_size; ++i )

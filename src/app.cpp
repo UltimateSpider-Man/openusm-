@@ -137,6 +137,9 @@ void colgeom_destroy_lists()
 app::app() : field_4(), field_34()
 {
     this->m_vtbl = 0x00891634;
+
+    unit_tests();
+    mem_print_stats("after unit tests");
     g_platform() = NL_PLATFORM_PC;
     if (link_system::use_link_system()) {
         /*
@@ -203,12 +206,12 @@ app::~app()
 
     g_game_ptr() = nullptr;
     this->m_game = nullptr;
-    cleanup();
+
+    this->cleanup();
     //debug_menu::deinit(); // link_system::un_init()
     
     physics_system_shutdown();
 
-    //mString::destructor(&this->field_4.field_0);
     this->m_vtbl = 0x0088E4C8;
 }
 
@@ -338,11 +341,14 @@ void app::create_inst()
 {
     TRACE("app::create_inst");
 
-#if 0
-    app::instance() = new app{};
-#else
-    CDECL_CALL(0x005B2450);
-#endif
+    assert(instance() == nullptr);
+
+    if constexpr (1) {
+        auto *mem = mem_alloc(sizeof(app));
+        app::instance() = new (mem) app{};
+    } else {
+        CDECL_CALL(0x005B2450);
+    }
 }
 
 void app::cleanup()

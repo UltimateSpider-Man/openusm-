@@ -67,8 +67,8 @@ void PanelQuad::_unmash(mash_info_struct *a1, void *a3)
     }
     else
     {
-        auto &func = get_vfunc(m_vtbl, 0x4);
-        func(this, a1, a3);
+        void (__fastcall *func)(void *, void *, mash_info_struct *, void *) = CAST(func, get_vfunc(m_vtbl, 0x4));
+        func(this, nullptr, a1, a3);
     }
 }
 
@@ -112,31 +112,31 @@ void PanelQuad::Draw()
 }
 
 void PanelQuad::TurnOn(bool a2) {
-    auto &func = get_vfunc(m_vtbl, 0x5C);
+    void (__fastcall *func)(void *, void *, bool) = CAST(func, get_vfunc(m_vtbl, 0x5C));
 
-    func(this, a2);
+    func(this, nullptr, a2);
 }
 
 void PanelQuad::SetColor(color32 a2) {
-    auto &func = get_vfunc(m_vtbl, 0x7C);
-    func(this, a2);
+    void (__fastcall *func)(void *, void *, color32) = CAST(func, get_vfunc(m_vtbl, 0x7C));
+    func(this, nullptr, a2);
 }
 
 void PanelQuad::SetPos(float *a2, float *a3)
 {
-    void (__fastcall *func)(void *, int edx, float *, float *) = CAST(func, get_vfunc(m_vtbl, 0x94));
-    func(this, 0, a2, a3);
+    void (__fastcall *func)(void *, void *, float *, float *) = CAST(func, get_vfunc(m_vtbl, 0x94));
+    func(this, nullptr, a2, a3);
 }
 
 void PanelQuad::SetPos(Float a2, Float a3, Float a4, Float a5) {
-    auto &func = get_vfunc(m_vtbl, 0x90);
-    func(this, a2, a3, a4, a5);
+    void (__fastcall *func)(void *, void *, Float, Float, Float, Float) = CAST(func, get_vfunc(m_vtbl, 0x90));
+    func(this, nullptr, a2, a3, a4, a5);
 }
 
 void PanelQuad::Init(vector2d *a2, color32 *a3, panel_layer a4, Float a5, const char *a6) {
-    auto &func = get_vfunc(m_vtbl, 0x54);
+    void (__fastcall *func)(void *, void *, vector2d *, color32 *, panel_layer, Float, const char *) = CAST(func, get_vfunc(m_vtbl, 0x54));
 
-    func(this, a2, a3, a4, a5, a6);
+    func(this, nullptr, a2, a3, a4, a5, a6);
 }
 
 double PanelQuad::GetCenterX() {

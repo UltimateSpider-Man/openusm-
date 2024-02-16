@@ -26,7 +26,7 @@ void anim_record::_unmash(mash_info_struct *a2, void *a3)
 
 int anim_record::get_mash_sizeof()
 {
-    auto &func = get_vfunc(m_vtbl, 0x1C);
+    int (__fastcall *func)(anim_record *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
     return func(this);
 }
 

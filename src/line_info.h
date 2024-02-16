@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "entity_base_vhandle.h"
 #include "local_collision.h"
-#include "simple_queue.h"
+#include "simple_classes.h"
 #include "variable.h"
 #include "vector3d.h"
 

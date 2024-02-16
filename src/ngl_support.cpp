@@ -130,8 +130,8 @@ void FastListAddMesh(nglMesh *Mesh,
 
             nglMaterialBase *v15 = sub_8EA2E0(&v12->field_8C, MeshSection->Material);
 
-            auto &AddNode = get_vfunc(MeshSection->Material->field_4->m_vtbl, 0x8);
-            AddNode(MeshSection->Material->field_4, v12, MeshSection, v15);
+            void (__fastcall *AddNode)(void *, void *, void *, nglMeshSection *, nglMaterialBase *) = CAST(AddNode, get_vfunc(MeshSection->Material->field_4->m_vtbl, 0x8));
+            AddNode(MeshSection->Material->field_4, nullptr, v12, MeshSection, v15);
         }
 
         nglPerfInfo().m_num_polys += Mesh->field_3C;

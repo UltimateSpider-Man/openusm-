@@ -137,9 +137,9 @@ void fe_dialog_text::set_title(string a2) {
     //sp_log("set_title: %d", a2.m_size);
 
     if constexpr (1) {
-        auto SetTextNoLocalize = get_vfunc(this->field_78->m_vtbl, 0x8C);
+        void (__fastcall *SetTextNoLocalize)(void *, void *, string) = CAST(SetTextNoLocalize, get_vfunc(this->field_78->m_vtbl, 0x8C));
 
-        SetTextNoLocalize(this->field_78, a2);
+        SetTextNoLocalize(this->field_78, nullptr, a2);
     } else {
         THISCALL(0x0060DB30, this, a2);
     }

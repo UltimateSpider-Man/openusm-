@@ -18,6 +18,9 @@ struct PanelAnimObject : mash_virtual_base {
     //0x00615D40
     PanelAnimObject(int);
 
+    //virtual
+    void Update(Float a2);
+
     /* virtual */ void StartAnim(bool a1);
 
     //0x00401050

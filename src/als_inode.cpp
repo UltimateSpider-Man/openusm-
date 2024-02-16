@@ -134,27 +134,12 @@ bool als_inode::anim_finished(string_hash a2, als::layer_types a3)
             return !the_layer->is_requesting_category(a2);
         }
     } else {
-        auto result = [this, a2, a3]() -> bool {
-            auto *the_layer = this->field_1C->get_als_layer(a3);
-            if ( the_layer->is_cat_our_prev_cat(a2) ) {
-                return true;
-            }
 
-            sp_log("%s", the_layer->get_category_id().to_string());
-
-            if ( the_layer->get_category_id() == a2 )
-            {
-                return std::abs(the_layer->get_time_to_end_of_anim()) < EPSILON;
-            }
-            else
-            {
-                return !the_layer->is_requesting_category(a2);
-            }
-        }();
-
+        bool (__fastcall *func)(void *, void *, string_hash, als::layer_types) = CAST(func, 0x00689E10);
+        auto result = func(this, nullptr, a2, a3);
         sp_log("result = %d", result);
 
-        return false;
+        return result;
     }
 }
 
@@ -168,6 +153,7 @@ void als_inode_patch() {
 
     {
         FUNC_ADDRESS(address, &ai::als_inode::anim_finished);
-        SET_JUMP(0x00689E10, address);
+        REDIRECT(0x0045AB02, address);
+        REDIRECT(0x006ABB52, address);
     }
 }

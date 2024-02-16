@@ -73,7 +73,7 @@ namespace als {
     {
         if constexpr (1)
         {
-            auto &func = get_vfunc(m_vtbl, 0x38);
+            int (__fastcall *func)(const state *) = CAST(func, get_vfunc(m_vtbl, 0x38));
             return func(this);
         }
 

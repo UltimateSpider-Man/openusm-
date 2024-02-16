@@ -20,7 +20,7 @@ int item_resource_handler::get_num_resources() {
     return this->my_slot->item_instances->size();
 }
 
-bool item_resource_handler::_handle(worldly_resource_handler::eBehavior behavior, int a4, limited_timer *a5)
+bool item_resource_handler::_handle(worldly_resource_handler::eBehavior behavior, int , limited_timer *a5)
 {
     TRACE("item_resource_handler::handle");
 

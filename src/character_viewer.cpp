@@ -241,8 +241,8 @@ void character_viewer::OnActivate() {
         resource_manager::push_resource_context(v2);
 
         {
-            auto *vtbl = bit_cast<thiscall_call(*)[4]>(this->m_vtbl);
-            auto *func = (*vtbl)[3];
+            auto *vtbl = bit_cast<fastcall_call(*)[4]>(this->m_vtbl);
+            void (__fastcall *func)(void *) = CAST(func, (*vtbl)[3]);
             sp_log("func = 0x%08X", func);
 
             func(this);
@@ -264,9 +264,9 @@ void character_viewer::OnActivate() {
         }
 
         {
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(v4->text_box->m_vtbl);
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(v4->text_box->m_vtbl);
 
-            auto *func = (*vtbl)[35];
+            void (__fastcall *func)(void *) = CAST(func, (*vtbl)[35]);
             sp_log("func = 0x%08X", func);
 
             func(v4->text_box);
@@ -278,9 +278,9 @@ void character_viewer::OnActivate() {
         }
 
         {
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(v4->text_box->m_vtbl);
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(v4->text_box->m_vtbl);
 
-            auto *func = (*vtbl)[35];
+            void (__fastcall *func)(void *) = CAST(func, (*vtbl)[35]);
 
             func(v4->text_box);
         }
@@ -309,12 +309,12 @@ void character_viewer::OnActivate() {
 
         float v28, v27;
         {
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(this->field_88->m_vtbl);
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(this->field_88->m_vtbl);
 
-            auto *func = (*vtbl)[42];
+            void (__fastcall *func)(void *, void *, float *, float *) = CAST(func, (*vtbl)[42]);
             sp_log("func = 0x%08X", func);
 
-            func(this->field_88, &v28, &v27);
+            func(this->field_88, nullptr, &v28, &v27);
         }
 
         auto *v13 = this->field_88;
@@ -335,16 +335,17 @@ void character_viewer::OnActivate() {
         v33[2] = 10.0;
         v19->set_loc(v33);
         this->field_2D8->field_68 = 1;
-        if (!g_world_ptr()->field_28.field_48) {
+        if (!g_world_ptr()->field_28.field_48)
+		{
             g_game_ptr()->enable_marky_cam(true, true, -1000.0, 0.0);
             auto *v20 = g_world_ptr()->field_28.field_44;
 
             auto *v22 = g_game_ptr()->get_current_view_camera(0);
 
-            auto *vtbl = bit_cast<thiscall_call(*)[1]>(v20->m_vtbl);
-            auto *func = (*vtbl)[165];
+            auto *vtbl = bit_cast<fastcall_call(*)[1]>(v20->m_vtbl);
+            void (__fastcall *func)(void *, void *, void *) = CAST(func, (*vtbl)[165]);
 
-            func(v20, v22);
+            func(v20, nullptr, v22);
         }
 
         g_cursor()->sub_5A6790();

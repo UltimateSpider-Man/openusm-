@@ -7,7 +7,6 @@
 
 typedef int(__cdecl *cdecl_call)(...);
 typedef int(__stdcall *stdcall_call)(...);
-typedef int(__thiscall *thiscall_call)(...);
 typedef int(__fastcall *fastcall_call)(...);
 
 template<typename... Args>

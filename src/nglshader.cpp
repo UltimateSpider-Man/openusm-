@@ -25,42 +25,42 @@ void nglShader::Register() {
     this->field_8 = nglShader::NextID()++;
     auto v4 = this->field_8;
 
-    auto &GetName = get_vfunc(this->m_vtbl, 0x4);
+    void (__fastcall *GetName)(void *, void *, tlFixedString *) = CAST(GetName, get_vfunc(this->m_vtbl, 0x4));
 
     tlFixedString v1;
-    GetName(this, &v1);
+    GetName(this, nullptr, &v1);
 
     auto *v2 = v1.to_string();
     sp_log("Registering shader %s, ID: %d\n", v2, v4);
 
     tlFixedString v3;
-    GetName(this, &v3);
+    GetName(this, nullptr, &v3);
     nglShaderBank().Insert(v3, this);
 }
 
 tlFixedString nglShader::GetName() {
-    auto &func = get_vfunc(m_vtbl, 0x4);
+    void (__fastcall *func)(void *, void *, tlFixedString *) = CAST(func, get_vfunc(m_vtbl, 0x4));
 
     tlFixedString result;
-    func(this, &result);
+    func(this, nullptr, &result);
 
     return result;
 }
 
 void nglShader::BindMaterial(nglMaterialBase *mat) {
-    auto &func = get_vfunc(m_vtbl, 0xC);
+    void (__fastcall *func)(void *, void *, nglMaterialBase *) = CAST(func, get_vfunc(m_vtbl, 0xC));
 
-    func(this, mat);
+    func(this, nullptr, mat);
 }
 
 void nglShader::ReleaseMaterial(nglMaterialBase *mat) {
-    auto &func = get_vfunc(m_vtbl, 0x10);
+    void (__fastcall *func)(void *, void *, nglMaterialBase *) = CAST(func, get_vfunc(m_vtbl, 0x10));
 
-    func(this, mat);
+    func(this, nullptr, mat);
 }
 
 void nglShader::RebaseMaterial(nglMaterialBase *Material, unsigned int a2) {
-    void (__fastcall *func)(void *, int edx, nglMaterialBase *, uint32_t)
+    void (__fastcall *func)(void *, void *, nglMaterialBase *, uint32_t)
         = CAST(func, get_vfunc(m_vtbl, 0x14));
 
     if constexpr (1)
@@ -68,14 +68,14 @@ void nglShader::RebaseMaterial(nglMaterialBase *Material, unsigned int a2) {
         sp_log("0x%08X 0x%08X", m_vtbl, (int) func);
     }
 
-    func(this, 0, Material, a2);
+    func(this, nullptr, Material, a2);
 }
 
 bool nglShader::CheckMaterialVersion(nglMaterialBase *mat) {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x18);
+        bool (__fastcall *func)(nglShader *, void *, nglMaterialBase *) = CAST(func, get_vfunc(m_vtbl, 0x18));
 
-        return (bool) func(this, mat);
+        return func(this, nullptr, mat);
     } else {
         return true;
     }
@@ -83,30 +83,30 @@ bool nglShader::CheckMaterialVersion(nglMaterialBase *mat) {
 
 bool nglShader::CheckVertexDefVersion(nglMeshSection *Section) {
     if constexpr (1) {
-        auto &func = get_vfunc(m_vtbl, 0x1C);
+        bool (__fastcall *func)(void *, void *, nglMeshSection *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
 
-        return (bool) func(this, Section);
+        return func(this, nullptr, Section);
     } else {
         return true;
     }
 }
 
 void nglShader::BindSection(nglMeshSection *Section) {
-    auto &func = get_vfunc(m_vtbl, 0x20);
+    void (__fastcall *func)(void *, void *, nglMeshSection *) = CAST(func, get_vfunc(m_vtbl, 0x20));
 
-    func(this, Section);
+    func(this, nullptr, Section);
 }
 
 bool nglShader::IsSwitchable() {
-    auto &func = get_vfunc(m_vtbl, 0x24);
+    bool (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x24));
 
-    return (bool) func(this);
+    return func(this);
 }
 
 void nglShaderNode::Render() {
     auto *vtbl = get_vtbl(this);
 
-    auto &func = get_vfunc((int) vtbl, 0x0);
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc((int) vtbl, 0x0));
     func(this);
 }
 

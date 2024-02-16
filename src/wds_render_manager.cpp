@@ -126,6 +126,11 @@ void sub_6A9863()
         render_debug_lines();
     }
 
+    if ( debug_render_get_ival(LINE_INFO) ) {
+        debug_render_line_info();
+    }
+
+
     render_debug_lines();
     render_debug_spheres();
 }

@@ -452,10 +452,11 @@ void game::push_lores()
     this->push_process(lores_game_process());
 }
 
-void game::push_process(game_process &process) {
-    void __thiscall (*sub_570FD0)(void *, void *) = CAST(sub_570FD0, 0x00570FD0);
+void game::push_process(game_process &process)
+{
+    void (__fastcall *sub_570FD0)(void *, void *, void *) = CAST(sub_570FD0, 0x00570FD0);
 
-    sub_570FD0(&this->process_stack, &process);
+    sub_570FD0(&this->process_stack, nullptr, &process);
 
     auto &last_proc = this->process_stack.back();
     last_proc.index = 0;
@@ -733,9 +734,10 @@ void game::one_time_init_stuff()
                 game_packs_modified_callback;
             ++resource_manager::resource_pack_modified_callbacks().m_last;
         } else {
-            thiscall_call _Insert_n = CAST(_Insert_n, 0x0056A260);
+            void (__fastcall *_Insert_n)(void *, void *, void *, int, void (*)(_std::vector<resource_key> &) ) = CAST(_Insert_n, 0x0056A260);
 
             _Insert_n(&resource_manager::resource_pack_modified_callbacks(),
+					  nullptr,
                       resource_manager::resource_pack_modified_callbacks().m_last,
                       1,
                       &a4);
@@ -1726,9 +1728,9 @@ void game::advance_state_load_level(Float a2)
         }
 
         if (g_femanager().m_fe_menu_system != nullptr) {
-            auto &Update = get_vfunc(g_femanager().m_fe_menu_system->m_vtbl, 0x14);
+            void (__fastcall *Update)(void *, void *, Float) = CAST(Update, get_vfunc(g_femanager().m_fe_menu_system->m_vtbl, 0x14));
 
-            Update(g_femanager().m_fe_menu_system, a2);
+            Update(g_femanager().m_fe_menu_system, nullptr, a2);
 
             g_femanager().m_fe_menu_system->RenderLoadMeter(false);
         }

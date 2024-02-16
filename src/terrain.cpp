@@ -346,7 +346,7 @@ int terrain::find_strip(const mString &a2) {
 
 bool terrain::district_pre_destruct_callback(
 		resource_pack_slot::callback_enum reason,
-        resource_pack_streamer *a2,
+        resource_pack_streamer *,
         resource_pack_slot *which_pack_slot)
 {
 	assert(reason == resource_pack_slot::CALLBACK_PRE_DESTRUCT);
@@ -376,8 +376,8 @@ bool terrain::district_construct_callback(resource_pack_slot::callback_enum reas
     return (bool) CDECL_CALL(0x0055BFA0, reason, a2, which_pack_slot, a4);
 }
 
-bool terrain::district_load_started_callback(resource_pack_slot::callback_enum a1,
-											 resource_pack_streamer *a2,
+bool terrain::district_load_started_callback(resource_pack_slot::callback_enum ,
+											 resource_pack_streamer *,
 											 resource_pack_slot *a3)
 {
 	auto &v6 = a3->get_pack_token();
@@ -430,12 +430,12 @@ void terrain::register_region_change_callback(void (*a3)(bool, region *)) {
         auto *v4 = v2->m_head;
         auto *v5 = v2;
 
-        thiscall_call _Buynode = CAST(_Buynode, 0x006B78D0);
+        decltype(v4) (__fastcall *_Buynode)(void *, void *, decltype(v4), decltype(v4), void (**) (bool, region*) ) = CAST(_Buynode, 0x006B78D0);
 
-        auto *v6 = (decltype(v4)) _Buynode(v2, v4, v4->_Prev, &a3);
+        auto *v6 = _Buynode(v2, nullptr, v4, v4->_Prev, &a3);
 
-        thiscall_call sub_566E00 = CAST(sub_566E00, 0x00566E00);
-        sub_566E00(v5, 1u);
+        void (__fastcall *sub_566E00)(void *, void *, uint32_t) = CAST(sub_566E00, 0x00566E00);
+        sub_566E00(v5, nullptr, 1u);
         v4->_Prev = v6;
         v6->_Prev->_Next = v6;
 
@@ -617,9 +617,9 @@ void terrain::start_streaming(void (*callback)(void))
 
                     _std::vector<eligible_pack *> eps{};
 
-                    thiscall_call _Insert_n = CAST(_Insert_n, 0x0056A260);
+                    void (__fastcall *_Insert_n)(void *, void *, void *, int, void *) = CAST(_Insert_n, 0x0056A260);
 
-                    _Insert_n(&eps, nullptr, 1, &new_pack);
+                    _Insert_n(&eps, nullptr, nullptr, 1, &new_pack);
 
                     for (auto j = 1; j < this->regions[reg_idx]->get_multiblock_number(); ++j)
                     {
@@ -637,15 +637,15 @@ void terrain::start_streaming(void (*callback)(void))
                             *eps.m_last = v18;
                             eps.m_last = v19 + 1;
                         } else {
-                            _Insert_n(&eps, eps.m_last, 1, &v18);
+                            _Insert_n(&eps, nullptr, eps.m_last, 1, &v18);
                         }
                     }
 
                     assert(eps.size() == regions[reg_idx]->get_multiblock_number());
 
-                    thiscall_call copy = CAST(copy, 0x0056C880);
+                    void (__fastcall *copy)(void *, void *, void *) = CAST(copy, 0x0056C880);
 
-                    copy(&this->regions[reg_idx]->field_108, &eps);
+                    copy(&this->regions[reg_idx]->field_108, nullptr, &eps);
                 }
             }
         }
@@ -891,7 +891,7 @@ void terrain::unlock_district_pack_slot(int slot_idx) {
         assert(district_partition != nullptr);
 
         auto &pack_slots = district_partition->get_pack_slots();
-        assert(slot_idx >= 0 && slot_idx < pack_slots.size());
+        assert(slot_idx >= 0 && slot_idx < (int) pack_slots.size());
 
         assert(pack_slots[slot_idx]->is_empty() || pack_slots[slot_idx]->is_pack_unloading());
 
@@ -906,8 +906,8 @@ void terrain::unlock_district_pack_slot(int slot_idx) {
                 if ((*v3)->my_resource_pack_streamer == &v4->field_88->streamer) {
                     slot = v4;
 
-                    thiscall_call sub_5058F0 = CAST(sub_5058F0, 0x005058F0);
-                    sub_5058F0(&v5->field_1C, &slot);
+                    void (__fastcall *sub_5058F0)(void *, void *, resource_pack_slot **) = CAST(sub_5058F0, 0x005058F0);
+                    sub_5058F0(&v5->field_1C, nullptr, &slot);
                 }
 
                 ++v3;

@@ -884,8 +884,8 @@ void configure_packs_by_memory_map(int idx)
                     *v30 = new_partition;
                     partitions()->m_last = v30 + 1;
                 } else {
-                    thiscall_call _Insert_n = CAST(_Insert_n, 0x0056A260);
-                    _Insert_n(partitions(), partitions()->m_last, 1, &new_partition);
+                    void (__fastcall *_Insert_n)(void *, void *, void *, int, resource_partition **) = CAST(_Insert_n, 0x0056A260);
+                    _Insert_n(partitions(), nullptr, partitions()->m_last, 1, &new_partition);
                 }
             }
 #else

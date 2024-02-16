@@ -12,8 +12,8 @@ void *&get_vtbl(T p) {
     return reinterpret_cast<void *&>((bit_cast<int *>(p))[0]);
 }
 
-inline auto *&get_vfunc(std::intptr_t vtbl, int offset) {
-    auto *v = bit_cast<thiscall_call(*)[1]>(vtbl);
+inline void *&get_vfunc(std::intptr_t vtbl, int offset) {
+    auto *v = bit_cast<void * (*)[1]>(vtbl);
 
     return ((*v)[offset / 4]);
 }

@@ -1405,7 +1405,7 @@ void nglInitWhiteTexture()
         nglWhiteTex()->field_60 = tlFixedString{"nglwhite"};
         nglWhiteTex()->field_34 |= 2u;
 
-        auto &Add = get_vfunc(nglTextureDirectory()->m_vtbl, 0x10);
+        void (__fastcall *Add)(void *) = CAST(Add, get_vfunc(nglTextureDirectory()->m_vtbl, 0x10));
 
         Add(nglWhiteTex());
     } else {
@@ -1669,20 +1669,20 @@ nglMeshFile *nglLoadMeshFile(const tlFixedString &a1)
 
     if constexpr (1)
     {
-        nglMeshFile * (__fastcall *Find)(void *, int edx, const tlFixedString *) =
+        nglMeshFile * (__fastcall *Find)(void *, void *, const tlFixedString *) =
             CAST(Find, get_vfunc(nglMeshFileDirectory()->m_vtbl, 0xC));
 
-        nglMeshFile *MeshFile = Find(nglMeshFileDirectory(), 0, &a1);
+        nglMeshFile *MeshFile = Find(nglMeshFileDirectory(), nullptr, &a1);
 
         sp_log("%s", MeshFile != nullptr ? "mesh file is found" : "mesh file is not found");
 
         if (MeshFile == nullptr) {
-            nglMeshFile *(__fastcall *Load)(void *, int edx, const tlFixedString *) =
+            nglMeshFile *(__fastcall *Load)(void *, void *, const tlFixedString *) =
                 CAST(Load, get_vfunc(nglMeshFileDirectory()->m_vtbl, 0x24));
 
             sp_log("0x%08X", Load);
 
-            return Load(nglMeshFileDirectory(), 0, &a1);
+            return Load(nglMeshFileDirectory(), nullptr, &a1);
         }
 
         ++MeshFile->field_120;
@@ -1953,11 +1953,11 @@ void nglProcessMorph(nglMeshFile *MeshFile, nglDirectoryEntry *a2, int base) {
             tmp->field_10 = base;
         }
 
-        auto &Add = get_vfunc(nglMorphDirectory()->m_vtbl, 0x10);
+        nglMorphSet * (__fastcall *Add)(void *, void *, nglMorphSet *) = CAST(Add, get_vfunc(nglMorphDirectory()->m_vtbl, 0x10));
 
         nglMorphSet *Morph = CAST(Morph, tmp);
 
-        auto duplicate_morph = (nglMorphSet *) Add(nglMorphDirectory(), Morph);
+        auto duplicate_morph = Add(nglMorphDirectory(), nullptr, Morph);
         if (duplicate_morph != nullptr) {
             auto *v7 = duplicate_morph->field_C->field_0.to_string();
             auto *v6 = duplicate_morph->field_C->field_20;
@@ -2346,8 +2346,8 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                 sp_log("%s", Mesh->Name.c_str());
 
                 {
-                    void (__fastcall *Add)(void *, int edx, nglMesh *) = CAST(Add, get_vfunc(nglMeshDirectory()->m_vtbl, 0x10));
-                    Add(nglMeshDirectory(), 0, Mesh);
+                    void (__fastcall *Add)(void *, void *edx, nglMesh *) = CAST(Add, get_vfunc(nglMeshDirectory()->m_vtbl, 0x10));
+                    Add(nglMeshDirectory(), nullptr, Mesh);
                 }
 
                 Mesh->File = MeshFile;
@@ -2848,8 +2848,8 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
 
                 nglMesh *Mesh= CAST(Mesh, tmp);
 
-                auto &Add = get_vfunc(nglMeshDirectory()->m_vtbl, 0x10);
-                Add(nglMeshDirectory(), Mesh);
+                void (__fastcall *Add)(void *, void *edx, nglMesh *) = CAST(Add, get_vfunc(nglMeshDirectory()->m_vtbl, 0x10));
+                Add(nglMeshDirectory(), nullptr, Mesh);
 
                 Mesh->File = MeshFile;
                 if (MeshFile->FirstMesh == nullptr) {
@@ -3261,8 +3261,8 @@ nglTexture *nglGetTexture(uint32_t a1) {
 }
 
 nglTexture *nglGetTexture(const tlFixedString &a1) {
-    auto &Find = get_vfunc(nglTextureDirectory()->m_vtbl, 0x8);
-    return (nglTexture *) Find(nglTextureDirectory(), a1.m_hash);
+    nglTexture * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(nglTextureDirectory()->m_vtbl, 0x8));
+    return Find(nglTextureDirectory(), nullptr, a1.m_hash);
 }
 
 static constexpr auto NGLFONT_TOKEN_COLOR = '\1';
@@ -3737,12 +3737,12 @@ nglTexture *nglLoadTexture(const tlHashString &a1)
 
     auto v1 = a1.GetHash();
 
-    auto &Find = get_vfunc(nglTextureDirectory()->m_vtbl, 0x8);
+    nglTexture * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(nglTextureDirectory()->m_vtbl, 0x8));
 
-    auto *tex = (nglTexture *) Find(nglTextureDirectory(), v1);
+    auto *tex = Find(nglTextureDirectory(), nullptr, v1);
     if (tex == nullptr) {
-        auto &Load = get_vfunc(nglTextureDirectory()->m_vtbl, 0x20);
-        return (nglTexture *) Load(nglTextureDirectory(), a1);
+        nglTexture * (__fastcall *Load)(void *, void *, const tlHashString *) = CAST(Load, get_vfunc(nglTextureDirectory()->m_vtbl, 0x20));
+        return Load(nglTextureDirectory(), nullptr, &a1);
     }
 
     ++tex->field_8;
@@ -3998,8 +3998,8 @@ bool nglLoadTextureTM2_internal(nglTexture *Tex, nglTextureInfo *TexInfo)
                     v9->field_34 |= 8u;
                     v9->field_48 = nglCreatePalette(0, 0x100u, a3);
 
-                    auto &Add = get_vfunc(nglTextureDirectory()->m_vtbl, 0x10);
-                    Add(nglTextureDirectory(), v9);
+                    void (__fastcall *Add)(void *, void *, void *) = CAST(Add, get_vfunc(nglTextureDirectory()->m_vtbl, 0x10));
+                    Add(nglTextureDirectory(), nullptr, v9);
                     v5 = a3 + 1024;
 
                     a3 += 1024;
@@ -4268,16 +4268,16 @@ nglTexture *nglLoadTextureInPlace(const tlFixedString &a1,
                                   nglTextureFileFormat a2,
                                   void *a3,
                                   int a4) {
-    auto &Find = get_vfunc(nglTextureDirectory()->m_vtbl, 0x8);
+    nglTexture * (__fastcall *Find)(void *, void *, int) = CAST(Find, get_vfunc(nglTextureDirectory()->m_vtbl, 0x8));
 
-    nglTexture *result = CAST(result, Find(nglTextureDirectory(), a1.m_hash));
+    nglTexture *result = Find(nglTextureDirectory(), nullptr, a1.m_hash);
     if (result != nullptr) {
         ++result->field_8;
     } else {
         auto *tex = nglConstructTexture(a1, a2, a3, a4);
         if (tex != nullptr) {
-            auto Add = get_vfunc(nglTextureDirectory()->m_vtbl, 0x10);
-            Add(nglTextureDirectory(), tex);
+            void (__fastcall *Add)(void *, void *, nglTexture *) = CAST(Add, get_vfunc(nglTextureDirectory()->m_vtbl, 0x10));
+            Add(nglTextureDirectory(), nullptr, tex);
             result = tex;
         } else {
             result = nglDefaultTex();
@@ -4625,8 +4625,8 @@ nglMesh *nglGetMesh(const tlFixedString &Name, bool Warn)
     {
         tlHashString v2 {Name.m_hash};
 
-        auto &Find = get_vfunc(nglMeshDirectory()->m_vtbl, 0xC);
-        auto *Mesh = (nglMesh *) Find(nglMeshDirectory(), &v2);
+        nglMesh * (__fastcall *Find)(void *, void *, const tlHashString *) = CAST(Find, get_vfunc(nglMeshDirectory()->m_vtbl, 0xC));
+        auto *Mesh = Find(nglMeshDirectory(), nullptr, &v2);
 
         if (Mesh == nullptr && Warn) {
             sp_log("nglGetMesh: Unable to find mesh %s.\n", Name.to_string());
@@ -4640,9 +4640,9 @@ nglMesh *nglGetMesh(const tlFixedString &Name, bool Warn)
 }
 
 nglMesh *nglGetMesh(uint32_t a1, bool a2) {
-    auto &Find = get_vfunc(nglMeshDirectory()->m_vtbl, 0x8);
+    nglMesh * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(nglMeshDirectory()->m_vtbl, 0x8));
 
-    auto *Mesh = (nglMesh *) Find(nglMeshDirectory(), a1);
+    auto *Mesh = Find(nglMeshDirectory(), nullptr, a1);
 
     if (Mesh == nullptr && a2) {
         sp_log("nglGetMesh: Unable to find mesh %d.\n", a1);

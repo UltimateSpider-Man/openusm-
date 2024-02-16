@@ -104,3 +104,5 @@ struct simple_queue {
         return v2;
     }
 };
+
+extern void binary_search_array_unit_test();

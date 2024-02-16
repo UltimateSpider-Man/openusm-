@@ -110,9 +110,9 @@ void nalCompSkeleton::UnMash(void *a2, BaseComponent **a3, unsigned int iNumComp
                     std::intptr_t m_vtbl;
                 } *tmp = CAST(tmp, v22);
 
-                auto &func3C = get_vfunc(tmp->m_vtbl, 0x3c);
+                void (__fastcall *func3C)(void *, void *, int, void *, int) = CAST(func3C, get_vfunc(tmp->m_vtbl, 0x3C));
 
-                func3C(v22, v23, v18, v17);
+                func3C(v22, nullptr, v23, v18, v17);
             }
         LABEL_28:
             v8 += 12;
