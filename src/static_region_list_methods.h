@@ -50,3 +50,5 @@ struct static_region_list_methods {
 
     static inline Var<int *> scratchpad{0x0095C8B8};
 };
+
+extern void static_region_list_methods_patch();

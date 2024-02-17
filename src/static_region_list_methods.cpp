@@ -4,12 +4,24 @@
 #include "func_wrapper.h"
 #include "scratchpad_stack.h"
 #include "stack_allocator.h"
+#include "trace.h"
+#include "utility.h"
 #include "variables.h"
 
 VALIDATE_SIZE(static_region_list_methods, 0x4);
 
-void static_region_list_methods::init() {
-    CDECL_CALL(0x00513F90);
+void static_region_list_methods::init()
+{
+    TRACE("static_region_list_methods::init");
+
+    if constexpr (1) {
+        scratchpad() = static_cast<int *>(scratchpad_stack::alloc(0x40));
+        for ( int i = 0; i < 16; ++i ) {
+            scratchpad()[i] = 0;
+        }
+    } else {
+        CDECL_CALL(0x00513F90);
+    }
 }
 
 void static_region_list_methods::term() {
@@ -74,4 +86,10 @@ int static_region_list_methods::traverse_using_test(const traverse_test &a1,
                                                     const subdivision_node &a2,
                                                     subdivision_visitor &a3) {
     return THISCALL(0x00513E50, this, &a1, &a2, &a3);
+}
+
+void static_region_list_methods_patch()
+{
+    auto address = int(static_region_list_methods::init);
+    REDIRECT(0x0052E065, address);
 }

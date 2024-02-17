@@ -56,6 +56,7 @@
 #include "city_lod.h"
 #include "console.h"
 #include "collide_aux.h"
+#include "collision_capsule.h"
 #include "colmesh.h"
 #include "combat_state.h"
 #include "combo_system_move.h"
@@ -174,6 +175,7 @@
 #include "quaternion.h"
 #include "quick_anchor_info.h"
 #include "rbc_def_contact.h"
+#include "region.h"
 #include "resource_amalgapak_header.h"
 #include "resource_directory.h"
 #include "resource_manager.h"
@@ -206,6 +208,7 @@
 #include "spidey_base_state.h"
 #include "spline.h"
 #include "state_machine.h"
+#include "static_region_list_methods.h"
 #include "string_hash.h"
 #include "string_hash_dictionary.h"
 #include "swing_anchor_obbfilter.h"
@@ -2399,13 +2402,19 @@ BOOL install_redirects()
 
     settings_patch();
 
+    static_region_list_methods_patch();
+
     aeps_patch();
 
     game_patch();
 
+    region_patch();
+
     ai_interaction_data_patch();
 
     animation_controller_patch();
+
+    collision_capsule_patch();
 
     city_lod_patch();
 
@@ -2694,6 +2703,8 @@ BOOL install_redirects()
 
     script_memtrack_patch();
 
+    scratchpad_stack_patch();
+
     hero_inode_patch();
 
     nal_anim_controller_patch();
@@ -2792,8 +2803,6 @@ BOOL install_redirects()
         script_library_class_patch();
 
         po_patch();
-
-        scratchpad_stack_patch();
 
         wds_entity_manager_patch();
 

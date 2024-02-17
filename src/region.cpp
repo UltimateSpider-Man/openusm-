@@ -325,7 +325,12 @@ void region::un_mash_lego_map(char *a2, int *a3)
 
 void region::add(entity *e)
 {
-    THISCALL(0x0054FF40, this, e);
+    TRACE("region::add");
+
+    if constexpr (0) {
+    } else {
+        THISCALL(0x0054FF40, this, e);
+    }
 }
 
 void region::add(light_source *l)
@@ -345,4 +350,14 @@ int region::get_district_variant()
 	} else {
 		return this->field_C4;
 	}
+}
+
+void region_patch()
+{
+    {
+        void (region::*func)(entity *e) = &region::add;
+        FUNC_ADDRESS(address, func);
+        REDIRECT(0x004F537A, address);
+        REDIRECT(0x0055ACD5, address);
+    }
 }

@@ -182,3 +182,5 @@ struct region
 
     static inline Var<int> number_of_allocated_regions{0x0095C920};
 };
+
+extern void region_patch();

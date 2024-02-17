@@ -2,8 +2,10 @@
 
 #include "actor.h"
 #include "common.h"
+#include "debug_render.h"
 #include "func_wrapper.h"
 #include "oldmath_po.h"
+#include "trace.h"
 
 #include <cassert>
 #include <cmath>
@@ -25,14 +27,11 @@ collision_capsule::collision_capsule(actor *a2) {
     this->field_C |= 0x80000u;
 }
 
-capsule collision_capsule::sub_48AE70(const po &a3) {
-
+capsule collision_capsule::get_abs_capsule(const po &a3)
+{
     capsule v12;
-
     v12.base = a3.m * this->rel_cap.base;
-
     v12.end = a3.m * this->rel_cap.end;
-
     v12.radius = this->rel_cap.radius;
 
     return v12;
@@ -115,6 +114,22 @@ void collision_capsule::un_mash(generic_mash_header *a1, void *a2, generic_mash_
     this->field_9 = false;
 }
 
-void collision_capsule::render(const po &a1) {
-    ;
-};
+void collision_capsule::render(const po &a1)
+{
+    TRACE("collision_capsule::render");
+
+    auto a4 = this->get_abs_capsule(a1);
+    auto v2 = static_cast<uint8_t>(255.0 * 0.5f);
+    color32 v3 {255, 255, 255, v2};
+    render_debug_capsule(a4.base, a4.end, a4.radius, v3);
+}
+
+void collision_capsule_patch()
+{
+    {
+        FUNC_ADDRESS(address, &collision_capsule::render);
+        set_vfunc(0x00882D1C, address);
+    }
+}
+
+

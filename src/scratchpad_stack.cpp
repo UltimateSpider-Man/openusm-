@@ -1,11 +1,13 @@
 #include "scratchpad_stack.h"
+
+#include "func_wrapper.h"
 #include "memory.h"
 #include "stack_allocator.h"
 #include "trace.h"
 #include "utility.h"
 
 namespace scratchpad_stack {
-Var<stack_allocator> stk{0x0095C728};
+Var<stack_allocator> stk {0x0095C724};
 }
 
 Var<bool> tlScratchpadLocked{0x00970D60};
@@ -68,9 +70,16 @@ void *scratchpad_stack::alloc(int n_bytes)
     return stk().push(n_bytes);
 }
 
-void scratchpad_stack::initialize() {
-    auto status = stk().allocate(16384u, 16, 16);
-    assert(status);
+void scratchpad_stack::initialize()
+{
+    TRACE("scratchpad_stack::initialize");
+
+    if constexpr (1) {
+        auto status = stk().allocate(16384u, 16, 16);
+        assert(status);
+    } else {
+        CDECL_CALL(0x00538D10);
+    }
 }
 
 void scratchpad_stack::term()
@@ -84,6 +93,7 @@ bool sub_512730(void *a1) {
         a1 < &scratchpad_stack::stk().segment[scratchpad_stack::stk().segment_size_bytes];
 }
 
-void scratchpad_stack_patch() {
-    //REDIRECT(0x005576B0, scratchpad_stack::initialize);
+void scratchpad_stack_patch()
+{
+    REDIRECT(0x005576B0, scratchpad_stack::initialize);
 }

@@ -14,7 +14,7 @@ struct collision_capsule : collision_geometry {
     //0x00524CD0
     collision_capsule(actor *a2);
 
-    capsule sub_48AE70(const po &a3);
+    capsule get_abs_capsule(const po &a3);
 
     //0x00515F20
     void compute_dimensions();
@@ -45,3 +45,5 @@ struct collision_capsule : collision_geometry {
 };
 
 extern Var<std::intptr_t> collision_capsule_v_table;
+
+extern void collision_capsule_patch();
