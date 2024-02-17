@@ -1571,7 +1571,38 @@ void entity_set_abs_position(entity_base *ent, const vector3d &pos) {
 
 void check_po(entity_base *e)
 {
-    CDECL_CALL(0x0053CD00, e);
+    TRACE("check_po");
+
+    if constexpr (1)
+    {
+        auto &abs_po = e->get_abs_po();
+        if ( abs_po.has_nonuniform_scaling() )
+        {
+            auto id = e->get_id();
+            auto *v3 = id.to_string();
+            mString v9 {v3};
+            auto v7 = v9 + ": non-uniform scaling is not supported";
+            sp_log(v7.c_str());
+        }
+        else if ( e->is_an_actor() )
+        {
+            if ( bit_cast<actor *>(e)->get_colgeom() != nullptr )
+            {
+                auto &v4 = e->get_abs_po();
+                auto v15 = vector3d {v4[0]}.length();
+                if ( v15 < 0.99000001 || v15 > 1.01 )
+                {
+                    auto v5 = e->get_id();
+                    auto *v6 = v5.to_string();
+                    mString v10 {v6};
+                    auto v8 = v10 + ": scaling is not supported on entities with collision geometry";
+                    sp_log(v8.c_str());
+                }
+            }
+        }
+    } else {
+        CDECL_CALL(0x0053CD00, e);
+    }
 }
 
 void entity_base_patch() {

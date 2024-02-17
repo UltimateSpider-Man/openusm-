@@ -158,8 +158,12 @@ item *wds_entity_manager::add_item(_std::vector<item *> *a2, item *a3) {
 
 int wds_entity_manager::add_ent_to_lists(_std::vector<entity *> *a2,
                                          _std::vector<item *> *a3,
-                                         entity *ent) {
-    if constexpr (1) {
+                                         entity *ent)
+{
+    TRACE("wds_entity_manager::add_ent_to_lists");
+
+    if constexpr (1)
+    {
         auto result = 0;
         switch ((entity_flavor_t) ent->get_flavor()) {
         case ACTOR:
@@ -399,10 +403,17 @@ void wds_entity_manager::frame_advance(Float a2) {
     this->check_water(a2);
 }
 
-void wds_entity_manager_patch() {
+void wds_entity_manager_patch()
+{
     {
         FUNC_ADDRESS(address, &wds_entity_manager::add_entity_internal);
         //SET_JUMP(0x005DFB10, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &wds_entity_manager::add_ent_to_lists);
+        REDIRECT(0x005E0B1C, address);
+        REDIRECT(0x0055AC96, address);
     }
 
     if constexpr (0) {
@@ -418,10 +429,5 @@ void wds_entity_manager_patch() {
             REDIRECT(0x0055B94E, address);
         }
 
-        {
-            FUNC_ADDRESS(address, &wds_entity_manager::add_ent_to_lists);
-            REDIRECT(0x005E0B1C, address);
-            REDIRECT(0x0055AC96, address);
-        }
     }
 }

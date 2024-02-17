@@ -155,7 +155,10 @@ entity *entity::compute_sector(terrain *a1, bool a2, entity *a3)
     }
 }
 
-void entity::force_region_hack(region *a2) {
+void entity::force_region_hack(region *a2)
+{
+    TRACE("entity::force_region_hack");
+
     assert(regions[0] == nullptr);
 
     this->regions[0] = a2;
@@ -610,7 +613,12 @@ int entity::find_entities(int a1)
     return CDECL_CALL(0x004D67D0, a1);
 }
 
-void entity_patch() {
+void entity_patch()
+{
+    {
+        FUNC_ADDRESS(address, &entity::force_region_hack);
+        SET_JUMP(0x0048B830, address);
+    }
 
     {
         FUNC_ADDRESS(address, &entity::get_primary_region);

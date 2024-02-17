@@ -1005,7 +1005,7 @@ void swing_inode::update_pendulums(Float a2)
 {
     TRACE("swing_inode::update_pendulums");
 
-    if constexpr (0)
+    if constexpr (1)
     {
         auto *the_hero_inode = this->field_20;
         auto *controller_ptr = the_hero_inode->field_24;

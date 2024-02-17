@@ -6,8 +6,6 @@ struct stack_allocator {
     char *segment;
     char *current;
 
-    stack_allocator();
-
     bool allocate(int size, int alignment_arg, int external_alignment_arg);
 
     void *push(int size_bytes);
@@ -19,4 +17,6 @@ struct stack_allocator {
     void pop(void *pointer, int size_bytes);
 
     void free();
+
+    void print() const;
 };

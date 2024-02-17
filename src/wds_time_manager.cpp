@@ -24,9 +24,8 @@ void wds_time_manager::frame_advance(Float a2) {
     this->field_18 = a2;
     this->field_4 += a2;
     this->field_10 = (1.0 - this->field_14) * this->field_10 + a2 * this->field_14;
-    auto v4 = a2 + this->field_8;
     ++this->field_C;
-    this->field_8 = v4;
+    this->field_8 += a2;
     if (debug_render_get_ival(PAUSE_TIMERS)) {
         this->field_1C = true;
     } else if (this->field_1C) {

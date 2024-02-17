@@ -30,8 +30,10 @@ void collision_geometry::get_colgeom_radius() {
     this->owner->get_colgeom_radius();
 }
 
-vector3d collision_geometry::get_local_space_bounding_sphere_center() {
-    if constexpr (1) {
+vector3d collision_geometry::get_local_space_bounding_sphere_center()
+{
+    if constexpr (1)
+    {
         void (__fastcall *func)(collision_geometry *, void *, vector3d *) = CAST(func, get_vfunc(m_vtbl, 0x18));
 
         vector3d out;

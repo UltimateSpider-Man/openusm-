@@ -36,8 +36,8 @@ enum debug_render_items_e
     GLASS_HOUSE = 20,
     OBBS = 21,
     TRAFFIC_PATHS = 22,
-    MINI_GAME,
-    BRAINS,
+    MINI_GAME = 23,
+    BRAINS = 24,
     VOICE = 25,
     PATROLS = 26,
     PAUSE_TIMERS = 27,
@@ -160,6 +160,8 @@ struct line_info;
 extern void debug_render_line_info(line_info *a1, [[maybe_unused]] char a2, int a3);
 
 extern void debug_render_line_info();
+
+extern void render_debug_capsule(const vector3d &a2, const vector3d &a3, Float a4, color32 a5);
 
 extern void print_3d_text(const vector3d &arg0, color32 arg4, float a3, const char *a2, ...);
 

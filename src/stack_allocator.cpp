@@ -10,9 +10,15 @@
 
 VALIDATE_SIZE(stack_allocator, 0x10);
 
-stack_allocator::stack_allocator() {}
+VALIDATE_OFFSET(stack_allocator, segment_size_bytes, 0x0);
+VALIDATE_OFFSET(stack_allocator, alignment, 0x4);
+VALIDATE_OFFSET(stack_allocator, segment, 0x8);
+VALIDATE_OFFSET(stack_allocator, current, 0xC);
 
-bool stack_allocator::allocate(int size, int alignment_arg, int external_alignment_arg) {
+bool stack_allocator::allocate(int size, int alignment_arg, int external_alignment_arg)
+{
+    TRACE("stack_allocator::allocate");
+
     assert(bitmath::is_power_of_2(alignment_arg));
 
     assert(bitmath::is_power_of_2(external_alignment_arg));
@@ -20,7 +26,7 @@ bool stack_allocator::allocate(int size, int alignment_arg, int external_alignme
     assert(external_alignment_arg >= alignment_arg);
 
     this->alignment = alignment_arg;
-    this->segment = (char *) arch_memalign(external_alignment_arg, size);
+    this->segment = static_cast<char *> (arch_memalign(external_alignment_arg, size));
     this->current = this->segment;
     this->segment_size_bytes = size;
     assert((long(current) & (alignment - 1)) == 0);
@@ -39,6 +45,7 @@ void *stack_allocator::push(int size_bytes)
     assert((size >= size_bytes) && (size & (alignment - 1)) == 0);
 
     this->current += size;
+
     assert(current <= segment + segment_size_bytes);
     assert((long(current) & (alignment - 1)) == 0);
 
@@ -79,4 +86,13 @@ void stack_allocator::free()
     mem_freealign(this->segment);
     this->segment = nullptr;
     this->current = nullptr;
+}
+
+void stack_allocator::print() const
+{
+    sp_log("segment_size_bytes = %d, alignment = %d, segment = %d, current = %d",
+            this->segment_size_bytes,
+            this->alignment,
+            this->segment,
+            this->current);
 }

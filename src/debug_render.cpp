@@ -464,6 +464,72 @@ void debug_render_done()
     }
 }
 
+void render_debug_capsule(const vector3d &a2, const vector3d &a3, Float a4, color32 a5)
+{
+    if ( a4 < 0.0049999999 ) {
+        a4 = 0.0049999999;
+    }
+
+    auto v39 = a2;
+    auto v38 = a3;
+    vector3d v37;
+    vector3d v36;
+    vector3d v35;
+    auto v5 = v38 - v39;
+    v36 = v5;
+    float v34 = a4;
+    auto v33 = v36.length();
+    if ( v33 < 0.0049999999 ) {
+        render_debug_hemisphere(a2, a4, a5);
+    }
+
+    v36.normalize();
+    auto v22 = std::abs(v36.z);
+    if ( v22 <= std::abs(v36.x) )
+    {
+        v37 = vector3d::cross(v36, ZVEC);
+        v37.normalize();
+
+        v35 = vector3d::cross(v37, v36);
+    }
+    else
+    {
+        v35 = vector3d::cross(XVEC, v36);
+        v35.normalize();
+
+        v37 = vector3d::cross(v36, v35);
+    }
+
+    matrix4x4 v32 {v37, v36, v35, v39};
+
+    nglMeshParams v31 {};
+    nglParamSet<nglShaderParamSet_Pool> v30 {1};
+
+    v31.Flags |= 2u;
+    v31.Scale[0] = v34;
+    v31.Scale[1] = v34;
+    v31.Scale[2] = v34;
+    v30.set_color(a5);
+    auto v13 = *bit_cast<math::MatClass<4, 3> *>(&v32);
+    nglListAddMesh(s_debug_hemisphere, v13, &v31, &v30);
+
+    v31.Scale[1] = v33;
+    auto v15 = *bit_cast<math::MatClass<4, 3> *>(&v32);
+
+    nglListAddMesh(s_debug_cylinder, v15, &v31, &v30);
+    v31.Scale[1] = a4;
+
+    v32[3] = v38;
+
+    auto v20 = -v36;
+    v32[1] = v20;
+
+    auto v21 = -v35;
+    v32[2] = v21;
+    auto v19 = *bit_cast<math::MatClass<4, 3> *>(&v32);
+    nglListAddMesh(s_debug_hemisphere, v19, &v31, &v30);
+}
+
 void render_debug_box(const vector3d &a2, const vector3d &a3, color32 a4)
 {
     vector3d v16 = (a2 + a3) * 0.5;

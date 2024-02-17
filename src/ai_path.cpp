@@ -181,7 +181,7 @@ void ai_path::setup(
                 auto *v14 = v13->colgeom;
                 if (v14 != nullptr) {
                     if (v14->get_type() == collision_geometry::CAPSULE) {
-                        capsule v21 = bit_cast<collision_capsule *>(v14)->sub_48AE70(
+                        capsule v21 = bit_cast<collision_capsule *>(v14)->get_abs_capsule(
                             v13->get_abs_po());
                         this->field_80 = v21.radius;
                     } else {

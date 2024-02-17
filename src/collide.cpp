@@ -89,7 +89,7 @@ bool collide_sphere_geometry(const vector3d &a2,
                              vector3d *impact_pos,
                              vector3d *impact_normal) {
     if (cg->get_type() == collision_geometry::CAPSULE) {
-        auto a2a = bit_cast<collision_capsule *>(cg)->sub_48AE70(a4);
+        auto a2a = bit_cast<collision_capsule *>(cg)->get_abs_capsule(a4);
 
         float v23;
         closest_point_line_segment_point(a2a.base, a2a.end, a2, v23);
@@ -392,12 +392,13 @@ bool collide_segment_geometry(const vector3d &a2,
                               collision_geometry *cg,
                               const po &a5,
                               vector3d *impact_pos,
-                              vector3d *impact_normal) {
+                              vector3d *impact_normal)
+{
     assert(impact_pos != nullptr && impact_normal != nullptr);
 
     bool result;
     if (cg->get_type() == collision_geometry::CAPSULE) {
-        auto v11 = bit_cast<collision_capsule *>(cg)->sub_48AE70(a5);
+        auto v11 = bit_cast<collision_capsule *>(cg)->get_abs_capsule(a5);
         result = collide_segment_capsule(a2,
                                          a3,
                                          v11.base,

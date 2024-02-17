@@ -130,7 +130,6 @@ void sub_6A9863()
         debug_render_line_info();
     }
 
-
     render_debug_lines();
     render_debug_spheres();
 }

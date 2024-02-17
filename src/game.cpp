@@ -148,25 +148,27 @@ void term_subdivision()
     CDECL_CALL(0x0052E700);
 }
 
-game::level_load_stuff::level_load_stuff() {
-#if 0
-    this->descriptor = nullptr;
-    this->field_4 = mString{"m0_arena"};
-    this->field_14 = mString{"spiderman"};
-    this->field_34.sub_599070();
-    this->descriptor = nullptr;
-    this->field_30 = 0;
-    this->load_completed = false;
-    this->field_3A = false;
-    this->field_38 = false;
-#else
-    THISCALL(0x00561EA0, this);
-#endif
+game::level_load_stuff::level_load_stuff()
+{
+    if constexpr (1) {
+        this->descriptor = nullptr;
+        this->name_mission_table = mString{"m0_arena"};
+        this->field_14 = mString{"spiderman"};
+        this->descriptor = nullptr;
+        this->field_30 = 0;
+        this->load_completed = false;
+        this->field_3A = false;
+        this->load_widgets_created = false;
+    } else {
+        THISCALL(0x00561EA0, this);
+    }
 }
 
 game::game()
 {
-    if constexpr (0)
+    TRACE("game::game");
+
+    if constexpr (1)
     {
         scratchpad_stack::initialize();
         script_manager::init();
@@ -930,7 +932,8 @@ void game::advance_state_paused(Float a1)
     //sp_log("game::advance_state_paused(): end");
 }
 
-void game::clear_screen() {
+void game::clear_screen()
+{
     TRACE("game::clear_screen");
 
     if constexpr (1) {

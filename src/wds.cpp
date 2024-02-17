@@ -417,7 +417,8 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
 {
     TRACE("world_dynamics_system::un_mash_scene_entities");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if (brew.field_0.is_done()) {
             return false;
         }

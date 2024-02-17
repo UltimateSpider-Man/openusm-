@@ -27,8 +27,8 @@ VALIDATE_SIZE(game_settings, 0x4CCu);
 void __stdcall vector_constructor(void *a1,
                                   uint32_t size,
                                   int count,
-                                  thiscall_call constructor,
-                                  [[maybe_unused]] thiscall_call destructor) {
+                                  void (__fastcall *constructor)(void *),
+                                  [[maybe_unused]] fastcall_call destructor) {
     FUNC_ADDRESS(address, &game_data_essentials::initialize);
 
     constructor = bit_cast<decltype(constructor)>(address);
