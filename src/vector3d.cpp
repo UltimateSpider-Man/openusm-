@@ -284,6 +284,22 @@ vector3d vector3d::normalized() const {
     return result;
 }
 
+vector3d vector3d::min(const vector3d &a2, const vector3d &a3)
+{
+    auto v6 = std::min(a2[2], a3[2]);
+    auto v5 = std::min(a2[1], a3[1]);
+    auto v3 = std::min(a2[0], a3[0]);
+    return vector3d {v3, v5, v6};
+}
+
+vector3d vector3d::max(const vector3d &a2, const vector3d &a3)
+{
+    auto v6 = std::max(a2[2], a3[2]);
+    auto v5 = std::max(a2[1], a3[1]);
+    auto v3 = std::max(a2[0], a3[0]);
+    return vector3d {v3, v5, v6};
+}
+
 #ifndef USE_GLM
 bool is_colinear(vector3d a1, vector3d a4, Float epsilon) {
 #if 0       

@@ -57,7 +57,8 @@ void message_board::frame_advance(float a2)
     }
 }
 
-void message_board::render() {
+void message_board::render()
+{
     auto &v15 = this->field_0;
     if constexpr (1) {
         int a3 = 390;

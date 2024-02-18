@@ -7,6 +7,7 @@
 #include "common.h"
 #include "debug_render.h"
 #include "district_graph_container.h"
+#include "dynamic_rtree.h"
 #include "eligible_pack.h"
 #include "eligible_pack_category.h"
 #include "eligible_pack_token.h"
@@ -16,12 +17,14 @@
 #include "game.h"
 #include "igofrontend.h"
 #include "igozoomoutmap.h"
+#include "memory.h"
 #include "mstring.h"
 #include "oldmath_po.h"
 #include "oriented_bounding_box_root_node.h"
 #include "os_developer_options.h"
 #include "parse_generic_mash.h"
 #include "proximity_map.h"
+#include "proximity_map_construction.h"
 #include "region.h"
 #include "region_lookup_cache.h"
 #include "region_mash_info.h"
@@ -31,7 +34,7 @@
 #include "scratchpad_stack.h"
 #include "simple_region_visitor.h"
 #include "stack_allocator.h"
-#include "static_region_list_methods.h"
+#include "subdivision_static_region_list.h"
 #include "subdivision_node_obb_base.h"
 #include "subdivision_visitor.h"
 #include "texture_to_frame_map.h"
@@ -140,13 +143,108 @@ terrain::terrain(const mString &a2)
     {
         THISCALL(0x00559920, this, a2);
     }
-
-    
 }
 
 terrain::~terrain()
 {
-    THISCALL(0x0054E990, this);
+    if constexpr (1)
+    {
+        if ( this->traffic_ptr != nullptr )
+        {
+            this->traffic_ptr->release_mem();
+            this->traffic_ptr = nullptr;
+        }
+
+        collision_dynamic_rtree().term();
+        this->region_map->initialized = false;
+
+        this->region_proximity_map_allocator->free();
+        operator delete(this->region_proximity_map_allocator);
+
+        region_lookup_cache::term();
+
+        if ( this->regions != nullptr )
+        {
+            for ( int i = this->total_regions - 1; i >= 0; --i )
+            {
+                auto *v7 = this->regions[i];
+                if ( v7 != nullptr )
+                {
+                    v7->~region();
+                    --region::number_of_allocated_regions();
+                }
+            }
+            operator delete[](this->regions);
+            this->regions = nullptr;
+        }
+
+        if ( this->strips != nullptr )
+        {
+            operator delete[](this->strips);
+            this->strips = nullptr;
+        }
+
+        if ( terrain::regions_for_point() != nullptr )
+        {
+            for ( auto j = 0; j < this->total_regions; ++j ) {
+                regions_for_point()->clear();
+            }
+
+            if (regions_for_point() != nullptr) {
+                delete regions_for_point();
+            }
+
+            terrain::regions_for_point() = nullptr;
+        }
+
+        if ( terrain::region_change_callbacks() != nullptr ) {
+            delete terrain::region_change_callbacks();
+        }
+
+    } else {
+        THISCALL(0x0054E990, this);
+    }
+}
+
+void terrain::init_region_proximity_map()
+{
+    TRACE("terrain::init_region_proximity_map");
+
+    if ( this->region_map == nullptr )
+    {
+        if ( this->region_proximity_map_allocator == nullptr )
+        {
+            this->region_proximity_map_allocator = static_cast<stack_allocator *>(mem_alloc(sizeof(stack_allocator)));
+
+            assert(region_proximity_map_allocator);
+            auto status = this->region_proximity_map_allocator->allocate(0x4000, 4, 16);
+
+            assert("Failed to allocate the memory for region lookup proximity map stack."
+                    && status);
+        }
+
+        _std::vector<proximity_map_construction_leaf> v16;
+        vector3d a4 {3.4028235e38, 3.4028235e38, 3.4028235e38};
+        vector3d a5 {-3.4028235e38, -3.4028235e38, -3.4028235e38};
+        for ( int i = 0; i < this->get_num_regions(); ++i )
+        {
+            auto *reg = this->get_region(i);
+
+            vector3d a3{};
+            vector3d a2{};
+            auto *v2 = reg->obb;
+            v2->get_extents(&a3, &a2);
+
+            a4 = vector3d::min(a4, a3);
+            a5 = vector3d::max(a5, a2);
+
+            proximity_map_construction_leaf v9 {reg, a3, a2};
+            v16.push_back(v9);
+        }
+
+        static_region_list_builder v8;
+        this->region_map = create_static_proximity_map_on_the_stack(*this->region_proximity_map_allocator, v16, v8, a4, a5, 16);
+    }
 }
 
 void terrain::update_region_pack_info()
@@ -1024,6 +1122,11 @@ void terrain_patch()
     {
         FUNC_ADDRESS(address, &terrain::start_streaming);
         REDIRECT(0x0055D1BF, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &terrain::init_region_proximity_map);
+        REDIRECT(0x00556CDD, address);
     }
 
     return;

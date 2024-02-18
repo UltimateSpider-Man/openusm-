@@ -32,6 +32,12 @@ struct FEMenuSystem {
     //virtual
     void MakeActive(int idx);
 
+    //virtual
+    char GetDefaultColorScheme();
+
+    //virtual
+    bool GetSingleInput();
+
     //0x006187D0
     //virtual
     void OnButtonPress(int a2, int a3);

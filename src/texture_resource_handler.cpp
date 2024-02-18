@@ -3,6 +3,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "log.h"
+#include "osassert.h"
 #include "resource_directory.h"
 #include "utility.h"
 #include "trace.h"

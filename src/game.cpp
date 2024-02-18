@@ -16,6 +16,7 @@
 #include "debugutil.h"
 #include "debug_render.h"
 #include "debug_menu.h"
+#include "debug_struct.h"
 #include "event_manager.h"
 #include "fe_controller_disconnect.h"
 #include "fe_timer_widget.h"
@@ -55,6 +56,7 @@
 #include "ngl_scene.h"
 #include "occlusion.h"
 #include "oldmath_po.h"
+#include "osassert.h"
 #include "os_developer_options.h"
 #include "pausemenusystem.h"
 #include "proximity_map_stack.h"
@@ -181,14 +183,14 @@ game::game()
 
         geometry_manager::set_field_of_view(fov);
 
-        g_debug()[0] |= 0x80u;
+        g_debug().field_0 |= 0x80u;
         if (os_developer_options::instance()->get_flag(mString{"OUTPUT_WARNING_DISABLE"})) {
-            g_debug()[0] &= 0x7Fu;
+            g_debug().field_0 &= 0x7Fu;
         }
 
-        g_debug()[1] |= 4u;
+        g_debug().field_1 |= 4u;
         if (os_developer_options::instance()->get_flag(mString{"OUTPUT_ASSERT_DISABLE"})) {
-            g_debug()[1] &= 0xFBu;
+            g_debug().field_1 &= 0xFBu;
         }
 
         if (os_developer_options::instance()->get_flag(mString{"SMOKE_TEST"})) {
@@ -1772,8 +1774,10 @@ void sub_5BC870() {
     CDECL_CALL(0x005BC870);
 }
 
-void game::render_interface() {
-    if constexpr (1) {
+void game::render_interface()
+{
+    if constexpr (1)
+    {
         if (this->flag.level_is_loaded)
         {
             sub_5BC870();

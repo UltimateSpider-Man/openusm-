@@ -424,15 +424,14 @@ void ai_core::spawn_state_machine_internal(ai_state_machine *a2,
             auto *v10 = v9->_Prev;
             auto *v11 = &this->my_machine_list;
 
-            decltype(v9) __thiscall (
-                *sub_5E3BE0)(void *, void *a1, void *a2, ai_state_machine **a3) = CAST(sub_5E3BE0,
+            decltype(v9) (__fastcall *sub_5E3BE0)(void *, void *, void *a1, void *a2, ai_state_machine **a3) = CAST(sub_5E3BE0,
                                                                                        0x005E3BE0);
 
-            auto *v12 = sub_5E3BE0(v11, v9, v10, &new_state_machine);
+            auto *v12 = sub_5E3BE0(v11, nullptr, v9, v10, &new_state_machine);
 
-            void __thiscall (*sub_6B76F0)(void *, unsigned int a2) = CAST(sub_6B76F0, 0x006B76F0);
+            void (__fastcall *sub_6B76F0)(void *, void *, unsigned int a2) = CAST(sub_6B76F0, 0x006B76F0);
 
-            sub_6B76F0(v11, 1u);
+            sub_6B76F0(v11, nullptr, 1u);
             v9->_Prev = v12;
             v12->_Prev->_Next = v12;
         }

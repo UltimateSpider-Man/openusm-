@@ -17,4 +17,6 @@ struct token_def {
     int field_2C;
 
     token_def();
+
+    void show_dot(bool a2);
 };

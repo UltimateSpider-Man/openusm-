@@ -38,4 +38,13 @@ struct camera : actor {
 
 inline Var<camera*> g_camera_link {0x0095C720};
 
+struct region;
+
+extern vector3d collide_with_world(
+        camera *,
+        const vector3d &a3,
+        float a2,
+        const vector3d &arg10,
+        region *reg);
+
 extern void camera_patch();

@@ -169,6 +169,10 @@ struct vector3d
     //0x00401870
     static vector3d cross(const vector3d &a2, const vector3d &a3);
 
+    static vector3d min(const vector3d &, const vector3d &); 
+
+    static vector3d max(const vector3d &a2, const vector3d &a3);
+
 };
 
 //0x005BF0B0

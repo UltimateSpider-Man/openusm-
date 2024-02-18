@@ -214,7 +214,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
         } else {
             assert(script_object_dummy_list == nullptr);
             
-            auto rebase = [](generic_mash_data_ptrs *a1, uint32_t a2) {
+            auto rebase = [](generic_mash_data_ptrs *a1, int a2) {
                 if ( int v6 = a2 - ((uint32_t)a1->field_0 % a2);
                         v6 < a2 ) {
                     a1->field_0 += v6;
@@ -734,7 +734,7 @@ void script_executable::release_mem()
 
         if ( script_allocated_stuff_map != nullptr ) {
             THISCALL(0x005B8460, this->script_allocated_stuff_map);
-            slab_allocator::deallocate(script_allocated_stuff_map, 0);
+            mem_dealloc(script_allocated_stuff_map, sizeof(*script_allocated_stuff_map));
             this->script_allocated_stuff_map = nullptr;
         }
             
@@ -762,7 +762,7 @@ const char *script_executable::get_permanent_string(unsigned int index) const
 {
     assert(permanent_string_table != nullptr && "We should still have the string table around any time we're doing a lookup");
 
-    assert(index < permanent_string_table_size && "Index out of bounds... bad juju man");
+    assert((int)index < permanent_string_table_size && "Index out of bounds... bad juju man");
 
     return this->permanent_string_table[index];
 }
@@ -842,7 +842,7 @@ const char *script_executable::get_system_string(unsigned int index) const {
 
     assert(system_string_table != nullptr && "We should still have the string table around any time we're doing a lookup");
 
-    assert(index < system_string_table_size && "Index out of bounds... bad juju man");
+    assert((int)index < system_string_table_size && "Index out of bounds... bad juju man");
 
     return this->system_string_table[index];
 }

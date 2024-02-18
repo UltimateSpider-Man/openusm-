@@ -9,6 +9,7 @@
 #include "hashstring.h"
 #include "log.h"
 #include "mstring.h"
+#include "osassert.h"
 #include "os_developer_options.h"
 #include "parse_generic_mash.h"
 #include "resource_pack_slot.h"

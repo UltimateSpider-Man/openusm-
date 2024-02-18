@@ -59,9 +59,9 @@ int FEText::_get_mash_sizeof()
 void FEText::Draw() {
     //sp_log("Draw:");
 
-    if constexpr (0) {
-        if (bool (__fastcall *IsShown)(FEText *) = CAST(IsShown, get_vfunc(this->m_vtbl, 0x44));
-            IsShown(this) && !(this->field_1C == mString{""})) {
+    if constexpr (0)
+    {
+        if (this->IsShown() && !(this->field_1C == mString{""})) {
             auto color = this->field_4C;
             if ((this->field_64 & 8) != 0) {
                 color = this->flash_info->GetColor(this->field_4C);
@@ -91,8 +91,7 @@ void FEText::Draw() {
             auto v10 = this->field_40;
             auto v9 = this->field_3C;
 
-            float (__fastcall *GetZvalue)(FEText *) = CAST(GetZvalue, get_vfunc(this->m_vtbl, 0x3C));
-            auto a5 = GetZvalue(this);
+            auto a5 = this->GetZvalue();
 
             auto v14 = color32::to_int(color);
             auto *str = this->field_1C.c_str();
@@ -191,17 +190,15 @@ void FEText::AdjustForJustification(float *a2, float *a3) {
 
         //sp_log("%f %f", v8, v7);
 
-        bool (__fastcall *GetFlag)(FEText *, void *, int) = CAST(GetFlag, get_vfunc(this->m_vtbl, 0xE4));
-
-        if (GetFlag(this, nullptr, 32)) {
+        if (this->GetFlag(32)) {
             *a2 = *a2 - v7;
-        } else if (!GetFlag(this, nullptr, 16)) {
+        } else if (!this->GetFlag(16)) {
             *a2 = *a2 - (v7 * 0.5);
         }
 
-        if (GetFlag(this, nullptr, 128)) {
+        if (this->GetFlag(128)) {
             *a3 = *a3 - v8;
-        } else if (!GetFlag(this, nullptr, 64)) {
+        } else if (!this->GetFlag(64)) {
             *a3 = *a3 - (v8 * 0.5);
         }
     } else {

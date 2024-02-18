@@ -116,7 +116,6 @@ struct list : public _List_val<_Ty, _Ax> {
         _Const_iterator(_Nodeptr _Pnode) : _Ptr(_Pnode) {}
 
         const_reference operator*() const { // return designated value
-
             return (_Myval(_Ptr));
         }
 
@@ -185,7 +184,7 @@ struct list : public _List_val<_Ty, _Ax> {
         _Iterator(_Nodeptr _Pnode) : _Mybase_iter(_Pnode) {}
 
         reference operator*() const { // return designated value
-            return ((reference) * *(_Mybase_iter *) this);
+            return (_Myval(this->_Ptr));
         }
 
         _Tptr operator->() const { // return pointer to class object

@@ -9,7 +9,7 @@ struct path_graph_node;
 struct path_graph_edge;
 
 struct path_graph {
-    resource_key field_0;
+    resource_key id;
     mVector<path_graph_node> field_8;
     mVector<path_graph_edge> field_1C;
     int field_30;

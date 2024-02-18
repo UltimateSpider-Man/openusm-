@@ -1,11 +1,14 @@
 #include "proximity_map.h"
 
+#include "common.h"
 #include "func_wrapper.h"
 #include "trace.h"
 #include "sector2d.h"
 #include "vector3d.h"
 
 #include <cassert>
+
+VALIDATE_SIZE(proximity_map_construction_leaf, 0x1C);
 
 int proximity_map::traverse_point(const vector3d &a2, subdivision_visitor &a3) {
     return THISCALL(0x005115E0, this, &a2, &a3);
@@ -106,4 +109,14 @@ void dynamic_proximity_map::init(dynamic_proximity_map_stack *alloc, fixed_pool 
     assert(map_type == DYNAMIC);
 
     THISCALL(0x00522500, this, alloc, a3, number_of_cells_arg, &a5, &a6, cell_node_type);
+}
+
+proximity_map_construction_leaf::proximity_map_construction_leaf(
+        region *a2,
+        const vector3d &a1,
+        const vector3d &a4)
+{
+    this->field_0.r = a2;
+    this->field_4 = a1;
+    this->field_10 = a4;
 }

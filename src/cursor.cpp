@@ -63,7 +63,7 @@ Cursor::Cursor(LPCWSTR lpWideCharStr, int a3, int a4) {
     }
 }
 
-Cursor *__thiscall hookCtor(Cursor *self, LPCWSTR lpWideCharStr, int a3, int a4) {
+Cursor * __fastcall hookCtor(Cursor *self, void *, LPCWSTR lpWideCharStr, int a3, int a4) {
     new (self) Cursor{lpWideCharStr, a3, a4};
     return self;
 }

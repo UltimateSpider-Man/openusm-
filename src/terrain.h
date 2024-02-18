@@ -51,6 +51,8 @@ struct terrain {
     //0x0054E990
     ~terrain();
 
+    void init_region_proximity_map();
+
     //0x0054F380
     void update_region_pack_info();
 

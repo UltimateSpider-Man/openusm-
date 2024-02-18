@@ -2,13 +2,14 @@
 
 #include "common.h"
 #include "entity_base.h"
+#include "entity_base_vhandle.h"
 #include "func_wrapper.h"
 #include "log.h"
 #include "mstring.h"
+#include "osassert.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
-#include "entity_base_vhandle.h"
-#include "trace.h"
 #include "wds.h"
 
 #include <cassert>

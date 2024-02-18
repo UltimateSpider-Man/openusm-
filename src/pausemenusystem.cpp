@@ -144,7 +144,8 @@ void PauseMenuSystem::Deactivate() {
     THISCALL(0x0060BEE0, this);
 }
 
-void PauseMenuSystem::Update(Float a2) {
+void PauseMenuSystem::Update(Float a2)
+{
     if constexpr (1) {
         auto idx = this->m_index;
         if (idx >= 0) {
@@ -168,12 +169,8 @@ void PauseMenuSystem::Update(Float a2) {
             if (idx1 >= 0) {
                 auto **v6 = this->field_4;
 
-                if (v6[idx1]) {
-                    auto *vtbl = bit_cast<fastcall_call(*)[9]>(v6[idx1]->m_vtbl);
-                    void (__fastcall *func)(void *, void *, Float) = CAST(func, (*vtbl)[8]);
-
-                    func(v6[idx1], nullptr, a2);
-                    //v6[idx1]->Update(v6[idx1], a2);
+                if (v6[idx1] != nullptr) {
+                    v6[idx1]->Update(a2);
                 }
             }
 

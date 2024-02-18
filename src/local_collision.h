@@ -164,6 +164,10 @@ inline Var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>>>
 
 inline Var<entfilter<entfilter_AND<entfilter_BLOCKS_BEAMS, entfilter_LINESEG_TEST>> *> entfilter_blocks_beams {0x00960060};
 
+inline Var<entfilter_base *> entfilter_line_segment_camera_collision {0x00960070};
+
+inline Var<entfilter_base *> entfilter_sphere_camera_collision {0x00960074};
+
 inline Var<obbfilter_base *> obbfilter_lineseg_test{0x00960064};
 
 inline Var<obbfilter<obbfilter_OBB_SPHERE_TEST> *> obbfilter_sphere_test{0x00960050};

@@ -48,7 +48,6 @@ struct world_dynamics_system {
     wds_time_manager field_158;
     wds_patrol_def_manager field_178;
     wds_token_manager field_188;
-    int field_1A8;
     terrain *the_terrain;
     cached_special_effect field_1B0;
     cached_special_effect field_1F0;

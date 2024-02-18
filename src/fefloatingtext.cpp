@@ -12,7 +12,7 @@ FEFloatingText::FEFloatingText()
     THISCALL(0x0043C4A0, this);
 }
 
-void FEFloatingText::_unmash(mash_info_struct *a1, void *a3)
+void FEFloatingText::_unmash(mash_info_struct *a1, void *)
 {
     FEText::unmash(a1, this);
 }

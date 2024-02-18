@@ -43,10 +43,10 @@ void info_node_desc_list::add_entry(info_node_descriptor a2) {
 
             this->field_0.m_last = v6 + 1;
         } else {
-            void __thiscall (*sub_6DCB10)(void *, void *, int, void *) = CAST(sub_6DCB10,
+            void (__fastcall *sub_6DCB10)(void *, void *, void *, int, void *) = CAST(sub_6DCB10,
                                                                               0x006DCB10);
 
-            sub_6DCB10(this, this->field_0.m_last, 1, &a2);
+            sub_6DCB10(this, nullptr, this->field_0.m_last, 1, &a2);
         }
     } else {
         THISCALL(0x006D6E20, this, a2);

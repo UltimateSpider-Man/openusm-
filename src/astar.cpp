@@ -107,8 +107,8 @@ bool astar_search_record::search(unsigned int a2)
 
 float astar_search_record::get_cost_estimate_to_goal(void *a1, void *a2)
 {
-    float __thiscall (* func)(void *, void *, void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
-    return func(this, a1, a2);
+    float (__fastcall * func)(void *, int, void *, void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
+    return func(this, 0, a1, a2);
 }
 
 void * astar_search_record::reset_neighbor_iterator(void *a1)

@@ -282,11 +282,12 @@ void add_resource_pack_modified_callback(void (*callback)(_std::vector<resource_
     }
     else
     {
-        void (__thiscall *_Insert_n)(void *, void *, int, decltype(&callback)) = CAST(_Insert_n, 0x0056A260);
+        void (__fastcall *_Insert_n)(void *, int, void *, int, decltype(&callback)) = CAST(_Insert_n, 0x0056A260);
         _Insert_n(&resource_pack_modified_callbacks(),
-            resource_pack_modified_callbacks().m_last,
-            1,
-            &a2);
+                0,
+                resource_pack_modified_callbacks().m_last,
+                1,
+                &a2);
     }
 }
 
@@ -1042,7 +1043,7 @@ uint8_t *get_resource(const resource_key &resource_id, int *mash_data_size, reso
 
 } // namespace resource_manager
 
-void __thiscall resource_partititon_constructor(resource_partition *self, resource_partition_enum a2)
+void __fastcall resource_partititon_constructor(resource_partition *self, void *, resource_partition_enum a2)
 {
     self = new (self) resource_partition{a2};
 }

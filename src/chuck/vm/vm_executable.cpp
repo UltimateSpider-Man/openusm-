@@ -187,8 +187,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                         auto *ps = ex.owner->get_parent()->get_permanent_string(v10);
                         mString v17 {ps};
 
-                        uint32_t (__fastcall *find_instance)(script_library_class *, void *, mString *) = CAST(find_instance, get_vfunc(slc->m_vtbl, 4));
-                        auto addr = find_instance(slc, nullptr, &v17);
+                        auto addr = slc->find_instance(v17);
                         return addr;
                     };
 
@@ -366,8 +365,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                         auto *ps = this->owner->get_parent()->get_permanent_string(v10);
                         mString v17 {ps};
 
-                        uint32_t (__fastcall *find_instance)(script_library_class *, void *, mString *) = CAST(find_instance, get_vfunc(slc->m_vtbl, 4));
-                        auto addr = find_instance(slc, nullptr, &v17);
+                        auto addr = slc->find_instance(v17);
 
                         *(buffer - 2) = addr >> 16;
                         *(buffer - 1) = addr & 0x0000FFFF;

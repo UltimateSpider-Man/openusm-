@@ -185,7 +185,7 @@ public:
     _Vector_iterator(pointer _Ptr) : _Mybase(_Ptr) {}
 
     reference operator*() const {
-        return ((reference) * *(reinterpret_cast<_Mybase *>(const_cast<_Myt *>(this))));
+        return (*this->_Myptr);
     }
 
     pointer operator->() const { // return pointer to class object
@@ -234,7 +234,7 @@ public:
     }
 
     difference_type operator-(const _Mybase &_Right) const { // return difference of iterators
-        return (*(_Mybase *) this - _Right);
+        return (this->_Myptr - _Right._Myptr);
     }
 
     reference operator[](difference_type _Off) const { // subscript

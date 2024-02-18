@@ -114,18 +114,11 @@ void alternate_costumes::onActivate() {
         auto *v4 = this->field_34;
         auto *v5 = v4->field_4.c_str();
 
-        struct Vtbl {
-            int field_0[35];
-            void(__thiscall *SetTextNoLocalize)(void *, FEText::string);
-        };
-
-        Vtbl *vtbl = CAST(vtbl, v4->text_box->m_vtbl);
-
         {
             mString v23{v5};
             auto str = *bit_cast<FEText::string *>(&v23);
 
-            vtbl->SetTextNoLocalize(v4->text_box, str);
+            v4->text_box->SetTextNoLocalize(str);
         }
 
         {
@@ -133,7 +126,7 @@ void alternate_costumes::onActivate() {
 
             mString v23{v6};
             auto str = *bit_cast<FEText::string *>(&v23);
-            vtbl->SetTextNoLocalize(v4->text_box, str);
+            v4->text_box->SetTextNoLocalize(str);
         }
 
         auto *v7 = g_world_ptr()->get_hero_ptr(0);

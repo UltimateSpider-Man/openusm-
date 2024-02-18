@@ -61,7 +61,8 @@ void line_info::render(int num, bool a3) {
     }
 }
 
-void line_info::clear() {
+void line_info::clear()
+{
     if constexpr (1) {
         this->collision = false;
         this->field_59 = false;
@@ -71,7 +72,7 @@ void line_info::clear() {
         this->hit_pos = ZEROVEC;
         this->field_30 = ZEROVEC;
         this->field_3C = ZVEC;
-        this->field_4C = nullptr;
+        this->m_obb = nullptr;
         if ( this->queued_for_collision_check ) {
             queued_collision_checks().find(this, 1);
             this->queued_for_collision_check = false;
@@ -107,7 +108,7 @@ bool line_info::check_collision(const local_collision::entfilter_base &p_ent_fil
         this->field_30 = this->field_C;
         this->hit_entity = {0};
 
-        this->field_4C = nullptr;
+        this->m_obb = nullptr;
         entity *v_hit_entity = nullptr;
         assert(ent_filter != nullptr && obb_filter != nullptr);
 
@@ -133,9 +134,10 @@ bool line_info::check_collision(const local_collision::entfilter_base &p_ent_fil
                              &this->hit_norm,
                              &a7,
                              &v_hit_entity,
-                             &this->field_4C,
+                             &this->m_obb,
                              false);
-                if ( this->collision ) {
+                if ( this->collision )
+                {
                     assert(hit_pos.is_valid() && "line_info find_intersection failed");
                     assert(hit_norm.is_valid() && "line_info find_intersection failed");
 
@@ -149,7 +151,8 @@ bool line_info::check_collision(const local_collision::entfilter_base &p_ent_fil
             }
         }
 
-        if ( this->collision ) {
+        if ( this->collision )
+        {
             if ( v_hit_entity == nullptr ) {
                 assert(hit_entity == INVALID_VHANDLE);
 

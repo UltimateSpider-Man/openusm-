@@ -36,19 +36,3 @@ void *func_address(Func func) {
 }
 
 #define FUNC_ADDRESS(address, func) [[maybe_unused]] void *address = func_address(func)
-
-#ifdef NDEBUG
-inline void error(const char *, ...) {}
-#else
-
-inline void error(const char *format, ...) {
-    va_list args;
-    va_start(args, format);
-
-    vprintf(format, args);
-    printf("\n");
-    va_end(args);
-
-    assert(0);
-}
-#endif

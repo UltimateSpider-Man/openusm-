@@ -316,10 +316,7 @@ void nglListAddMesh(nglMesh *Mesh,
                     auto *MeshSection = Mesh->Sections[i].Section;
                     nglPerfInfo().m_num_verts += MeshSection->NVertices;
 
-                    void (__fastcall *AddNode)(void *, void *, void *, nglMeshSection*, nglMaterialBase *) = CAST(AddNode, get_vfunc(MeshSection->Material->field_4->m_vtbl, 0x8));
-
-                    AddNode(MeshSection->Material->field_4,
-                            nullptr,
+                    MeshSection->Material->field_4->AddNode(
                             meshNode,
                             MeshSection,
                             MeshSection->Material);

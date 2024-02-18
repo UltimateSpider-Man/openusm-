@@ -1,10 +1,12 @@
 #include "camera.h"
 
+#include "collide.h"
 #include "common.h"
 #include "custom_math.h"
 #include "entity.h"
 #include "func_wrapper.h"
 #include "geometry_manager.h"
+#include "local_collision.h"
 #include "oldmath_po.h"
 #include "utility.h"
 #include "vector3d.h"
@@ -104,6 +106,78 @@ void camera::get_look_and_up(vector3d *look, vector3d *up) {
     if (up != nullptr) {
         *up = this->get_abs_po().m[1];
     }
+}
+
+vector3d collide_with_world(
+        camera *,
+        const vector3d &a3,
+        float a2,
+        const vector3d &arg10,
+        region *reg)
+{
+    auto a1 = arg10;
+    auto *a7 = reg;
+    if ( a1.length2() > 0.0000099999997 )
+    {
+        vector3d a5{};
+        vector3d a6{};
+        auto *v13 = local_collision::obbfilter_lineseg_test();
+        auto *v12 = local_collision::entfilter_line_segment_camera_collision();
+        auto v6 = a3 + a1;
+        if ( find_intersection(a3, v6, *v12, *v13, &a5, &a6, &a7, nullptr, nullptr, false) )
+        {
+            a1 = a5 - a3;
+            auto v26 = a1.length();
+            a1 *= ((v26 - 0.0099999998) / v26);
+        }
+    }
+
+    vector3d v25{};
+    int v24 = 0;
+    bool v23 = false;
+    bool v22 = true;
+    do
+    {
+        auto v25 = a3;
+        v25 += a1;
+        vector3d impact_normal{};
+        vector3d impact_pos{};
+        if ( find_sphere_intersection(
+                v25,
+                a2,
+                *local_collision::entfilter_sphere_camera_collision(),
+                *local_collision::obbfilter_sphere_test(),
+                &impact_pos,
+                &impact_normal,
+                nullptr,
+                nullptr) )
+        {
+            impact_normal = v25 - impact_pos;
+            auto v19 = impact_normal.length2();
+            if ( v19 <= 0.0 )
+            {
+                v24 = 5;
+            }
+            else
+            {
+                v19 = std::sqrt(v19);
+                impact_normal *= 1.0 / v19;
+                auto v9 = ((a2 + 0.000099999997) - v19) * impact_normal;
+                a1 = a1 + v9;
+                ++v24;
+            }
+
+            v22 = false;
+        }
+        else
+        {
+            v23 = true;
+        }
+    }
+    while ( !v23 && v24 < 5 );
+
+    vector3d result = ( v23 ? v25 : a3 );
+    return result;
 }
 
 void camera_patch() {

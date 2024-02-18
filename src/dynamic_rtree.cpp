@@ -4,6 +4,7 @@
 #include "fixed_pool.h"
 #include "float.hpp"
 #include "func_wrapper.h"
+#include "memory.h"
 #include "subdivision_visitor.h"
 #include "rtree.h"
 #include "actor.h"
@@ -21,6 +22,16 @@ void dynamic_rtree_root_t::traverse_sphere(const vector3d &a2, Float a3, subdivi
 
 void dynamic_rtree_root_t::init(int a2, int a3) {
     THISCALL(0x005386B0, this, a2, a3);
+}
+
+void dynamic_rtree_root_t::term()
+{
+    mem_freealign(this->state->field_5D4);
+    this->state->field_5D4 = nullptr;
+    state->bottom_level = nullptr;
+
+    mem_freealign(this->state);
+    this->state = nullptr;
 }
 
 void dynamic_rtree_root_t::sort() {

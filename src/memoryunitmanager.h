@@ -4,13 +4,9 @@
 
 namespace MemoryUnitManager {
 
-struct eOperation {
-    int field_0;
-};
+enum eOperation {};
 
-struct eStatus {
-    int field_0;
-};
+enum eStatus {};
 
 struct Container {
     int empty[144];
@@ -20,6 +16,11 @@ struct Container {
 
     //0x007B1160
     Container(const char *a2);
+
+    char *GetGameName()
+    {
+        return this->field_248;
+    }
 };
 
 struct Observer {};
@@ -29,6 +30,14 @@ extern void RegisterObserver(Observer *a1);
 extern void Initialize(uint32_t a1);
 
 extern bool Service();
+
+extern void SetLastError(eStatus a1);
+
+extern eStatus GetLastError();
+
+extern bool StartOperation();
+
+extern eStatus LoadGame(const Container &a1);
 
 extern int LoadGameSync(const Container &a1);
 
@@ -41,5 +50,9 @@ extern Var<eStatus> mLastError;
 
 //0x007B1FF0
 extern int SaveGame(const Container &a1);
+
+inline Var<eOperation> mCurrentOperation {0x0098481C};
+
+inline Var<Container> mGameSave {0x00984828};
 
 } // namespace MemoryUnitManager

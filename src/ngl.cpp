@@ -24,6 +24,7 @@
 #include "ngldebugshader.h"
 #include "nglemptyshader.h"
 #include "nglshader.h"
+#include "osassert.h"
 #include "os_file.h"
 #include "parse_generic_mash.h"
 #include "resource_manager.h"

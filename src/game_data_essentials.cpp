@@ -9,7 +9,8 @@
 
 VALIDATE_SIZE(game_data_essentials, 0x3C);
 
-game_data_essentials::game_data_essentials() {
+game_data_essentials::game_data_essentials()
+{
     if constexpr (1) {
         this->field_2 = 1;
         this->field_4 = 1;

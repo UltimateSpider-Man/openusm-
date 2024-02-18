@@ -22,10 +22,8 @@ struct game_camera : camera {
     int empty[2];
 
     vhandle_type<entity> field_118;
-    int field_11C;
-    int field_120;
-    int field_124;
-    int field_128;
+    vector3d field_11C;
+    float field_128;
     bool field_12C;
     char pad[3];
 
@@ -37,7 +35,17 @@ struct game_camera : camera {
 
     game_camera(const string_hash &a2, entity *a3);
 
-    entity *get_target_entity();
+    entity *get_target_entity() const;
 
     void set_target_entity(entity *e);
+
+    //0x0057A330
+    void blend(vector3d arg0, vector3d eax0, Float arg18);
+
+    //virtual
+    //0x0057CC90
+    void frame_advance(Float t);
 };
+
+
+extern void game_camera_patch();

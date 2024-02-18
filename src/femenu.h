@@ -29,11 +29,6 @@ struct FEMenu {
     //0x0060AA90
     FEMenu(FEMenuSystem *a2, uint32_t a3, int a4, int a5, int16_t a6, int16_t a7);
 
-    void sub_60B180(Float a2);
-
-    //virtual
-    void Load();
-
     //0x00618610
     //virtual
     void AddEntry(int a2, FEText *a3, bool a4);
@@ -42,11 +37,56 @@ struct FEMenu {
 
     /* virtual */ void Init();
 
+    //virtual
+    void Load();
+
     /* virtual */ void Update(Float a2);
 
     /* virtual */ void OnActivate();
 
     /* virtual */ void OnDeactivate(FEMenu *a2);
+
+    //virtual
+    void OnSelect(int a2);
+
+    //virtual
+    void OnStart(int a2);
+
+    //virtual
+    void OnUp(int a2);
+
+    //virtual
+    void OnDown(int a2);
+
+    //virtual
+    void OnLeft(int a2);
+
+    //virtual
+    void OnRight(int a2);
+
+    //virtual
+    void OnCross(int a2);
+
+    //virtual
+    void OnTriangle(int a2);
+
+    //virtual
+    void OnSquare(int a2);
+
+    //virtual
+    void OnCircle(int a2);
+
+    //virtual
+    void OnL1(int);
+
+    //virtual
+    void OnR1(int);
+
+    //virtual
+    void OnL2(int);
+
+    //virtual
+    void OnR2(int);
 
     /* virtual */ void OnAnyButtonPress(int a2, int a3);
 

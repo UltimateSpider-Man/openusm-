@@ -5,6 +5,7 @@
 #include "log.h"
 #include "nal_component.h"
 #include "nfl_system.h"
+#include "osassert.h"
 #include "tl_system.h"
 #include "tlresource_directory.h"
 #include "trace.h"

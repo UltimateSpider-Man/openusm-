@@ -168,9 +168,9 @@ float InputSettings::internal_struct::sub_821E90(InputAction a2) {
         return result;
 
     } else {
-        float __thiscall (*func)(void *, uint32_t) = CAST(func, 0x00821E90);
+        float (__fastcall *func)(void *, void *, uint32_t) = CAST(func, 0x00821E90);
 
-        return func(this, static_cast<uint32_t>(a2));
+        return func(this, nullptr, static_cast<uint32_t>(a2));
     }
 }
 

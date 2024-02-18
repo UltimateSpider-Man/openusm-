@@ -21,10 +21,11 @@ struct slot_pool {
     int field_18[8];
     int field_38;
 
-    slot_pool(int a2) {
-        this->field_14 = a2;
-        this->field_C = (int *) operator new(8 * a2);
-        int v3 = this->field_14;
+    slot_pool(int a2)
+    {
+        this->MAX_SLOTS = a2;
+        this->slots = new slot_t [a2];
+        int v3 = this->MAX_SLOTS;
         uint8_t v4 = 0;
         if ((v3 - 1) & v3 || v3 == 1) {
             for (; v3; ++v4) {
@@ -41,21 +42,22 @@ struct slot_pool {
         this->sub_64A510();
     }
 
-    void sub_64A510() {
+    void sub_64A510()
+    {
         this->field_10 = 0;
         this->field_38 = 0;
-        if (this->field_14 > 0) {
-            for (int i = 0; i < this->field_14; ++i) {
-                this->field_C[2 * i] = i;
+        if (this->MAX_SLOTS > 0) {
+            for (int i = 0; i < this->MAX_SLOTS; ++i) {
+                this->slots[i].id = i;
             }
         }
 
-        for (int i = 0; i < this->field_14; ++i) {
+        for (int i = 0; i < this->MAX_SLOTS; ++i) {
             if (this->field_38 >= 8) {
                 break;
             }
 
-            if (!(this->field_C[2 * i] & this->field_8)) {
+            if (!(this->slots[i].id & this->field_8)) {
                 this->field_18[this->field_38] = i;
                 ++this->field_38;
             }

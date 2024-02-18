@@ -27,4 +27,6 @@ struct traffic_path_graph {
 
     //0x005C7E20
     bool un_mash(char *a2, int *a3, region *a4, traffic_path_brew &a5);
+
+    void release_mem();
 };

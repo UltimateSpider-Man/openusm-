@@ -66,6 +66,8 @@ struct dynamic_rtree_root_t {
 
     void sort();
 
+    void term();
+
     //0x0052AFC0
     void update_entity(entity *ent);
 

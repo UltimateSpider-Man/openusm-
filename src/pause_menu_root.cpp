@@ -154,7 +154,7 @@ void pause_menu_root::Update(Float a2) {
             sub_648F40();
         }
 
-        this->sub_60B180(a2);
+        FEMenu::Update(a2);
         if (this->field_30) {
             this->update_switching_heroes();
         }
@@ -164,10 +164,7 @@ void pause_menu_root::Update(Float a2) {
                 auto *v3 = this->field_AC;
                 this->field_2C = false;
 
-                void (__fastcall *MakeActive)(void *, void *, int) = CAST(MakeActive, get_vfunc(v3->m_vtbl, 0x8));
-
-                MakeActive(v3, nullptr, 8);
-                //->MakeActive(v3, 8);
+                v3->MakeActive(8);
 
                 comic_panels::game_play_panel()->field_67 = true;
             }

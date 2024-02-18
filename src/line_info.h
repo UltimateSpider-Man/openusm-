@@ -17,7 +17,7 @@ struct line_info {
     vector3d field_30;
     vector3d field_3C;
     vhandle_type<entity> hit_entity;
-    subdivision_node_obb_base *field_4C;
+    subdivision_node_obb_base *m_obb;
     const local_collision::entfilter_base *ent_filter;
     const local_collision::obbfilter_base *obb_filter;
     bool collision;

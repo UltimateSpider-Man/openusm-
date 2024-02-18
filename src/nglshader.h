@@ -28,6 +28,9 @@ struct nglShader {
 
     /* virtual */ tlFixedString GetName();
 
+    //virtual
+    void AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
+
     /* virtual */ void BindMaterial(nglMaterialBase *mat);
 
     /* virtual */ void ReleaseMaterial(nglMaterialBase *mat);

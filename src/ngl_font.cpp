@@ -2,11 +2,9 @@
 
 #include "log.h"
 #include "ngl.h"
-
-#include "utility.h"
+#include "osassert.h"
 #include "trace.h"
-
-#include <cassert>
+#include "utility.h"
 
 Var<nglFont *> nglSysFont = {0x00975208};
 

@@ -797,8 +797,8 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         if ( this->base.colgeom )
             this->base.base.base.m_vtbl->set_collisions_active(this, 1, 1);
 
-        if ( ((unsigned __int8 (__thiscall *)(actor *))this->base.base.base.m_vtbl->field_134)(this) )
-            ((void (__thiscall *)(actor *, _DWORD, _DWORD))this->base.base.base.m_vtbl->field_214)(this, 0, 0);
+        if ( ((unsigned __int8 (__fastcall *)(actor *))this->base.base.base.m_vtbl->field_134)(this) )
+            ((void (__fastcall *)(actor *, void *, DWORD, DWORD))this->base.base.base.m_vtbl->field_214)(this, 0, 0);
 
         if ( resource_context_stack.m_first && resource_context_stack.m_last - resource_context_stack.m_first )
             v76 = (resource_pack_slot *)*((_DWORD *)resource_context_stack.m_last - 1);

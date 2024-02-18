@@ -28,3 +28,8 @@ bool traffic_path_graph::un_mash(char *a2, int *a3, region *a4, traffic_path_bre
         return func(this, 0, a2, a3, a4, &a5);
     }
 }
+
+void traffic_path_graph::release_mem()
+{
+    THISCALL(0x005D5CB0, this);
+}

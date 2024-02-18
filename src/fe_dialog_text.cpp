@@ -26,25 +26,6 @@ void fe_dialog_text::set_text(string a1) {
     THISCALL(0x0060D960, this, a1);
 }
 
-#if 0
-void __thiscall fe_dialog_text__set_text(fe_dialog_text *self, mString a2) {
-    printf("%s", a2.guts);
-
-    //THISCALL(0x0060D960, self, a2);
-}
-
-void __thiscall fe_dialog_text__set_text1(fe_dialog_text *self, mContainer a1, char *a2, void *a3) {
-    printf("%s", a2);
-
-    //THISCALL(0x0060D960, self, a1, a2, a3);
-}
-
-void __thiscall fe_dialog_text__set_text(fe_dialog_text *self, fe_dialog_text::string a1) {
-    printf("%s", a1.data);
-    //THISCALL(0x0060D960, this, a1);
-}
-#endif
-
 void fe_dialog_text::_Load() {
     TRACE("fe_dialog_text::Load");
 

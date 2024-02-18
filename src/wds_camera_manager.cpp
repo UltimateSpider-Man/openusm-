@@ -30,16 +30,16 @@ void wds_camera_manager::frame_advance(Float a2) {
     if constexpr (1) {
         struct Vtbl {
             int field_0;
-            bool __thiscall (*is_active)(void *);
+            bool (__fastcall *is_active)(void *);
             int field_8;
-            void __thiscall (*frame_advance)(void *, Float);
+            void (__fastcall *frame_advance)(void *, void *, Float);
         };
 
         for (auto &mcs : this->field_0) {
             Vtbl *vtbl = CAST(vtbl, mcs->m_vtbl);
 
             if (vtbl->is_active(mcs)) {
-                vtbl->frame_advance(mcs, a2);
+                vtbl->frame_advance(mcs, nullptr, a2);
             }
         }
     } else {
@@ -63,11 +63,11 @@ void wds_camera_manager::advance_controllers(Float a2) {
             if (cntrl->field_4) {
                 struct Vtbl {
                     int field_0;
-                    void __thiscall (*frame_advance)(void *, Float);
+                    void (__fastcall *frame_advance)(void *, void *, Float);
                 };
 
                 Vtbl *vtbl = CAST(vtbl, cntrl->m_vtbl);
-                vtbl->frame_advance(cntrl, a2);
+                vtbl->frame_advance(cntrl, nullptr, a2);
             }
         }
     } else {

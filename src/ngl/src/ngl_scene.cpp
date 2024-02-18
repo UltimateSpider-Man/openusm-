@@ -7,6 +7,7 @@
 #include "ngl_dx_scene.h"
 #include "ngl_dx_core.h"
 #include "ngl_params.h"
+#include "osassert.h"
 #include "trace.h"
 #include "variables.h"
 

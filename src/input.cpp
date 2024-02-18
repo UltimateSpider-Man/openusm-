@@ -730,9 +730,9 @@ float Input::sub_81FE60(InputMouse a2, int mode) {
 
         return 0.0f;
     } else {
-        float __thiscall (*func)(void *, int, int) = CAST(func, 0x0081FE60);
+        float (__fastcall *func)(void *, void *, int, int) = CAST(func, 0x0081FE60);
 
-        return func(this, static_cast<int>(a2), mode);
+        return func(this, nullptr, static_cast<int>(a2), mode);
     }
 }
 

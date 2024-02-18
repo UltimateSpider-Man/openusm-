@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "osassert.h"
 #include "parse_generic_mash.h"
 #include "resource_key.h"
 #include "resource_manager.h"

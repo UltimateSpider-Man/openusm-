@@ -14,11 +14,6 @@
 VALIDATE_SIZE(FEMenu, 44u);
 
 FEMenu::FEMenu(FEMenuSystem *a2, uint32_t a3, int a4, int a5, int16_t a6, int16_t a7) {
-    struct Vtbl {
-        int empty[11];
-        char(__fastcall *field_2C)(void *);
-    };
-
     this->m_vtbl = 0x00893C88;
 
     this->field_4 = CAST(this->field_4, operator new(4 * a3));
@@ -37,9 +32,7 @@ FEMenu::FEMenu(FEMenuSystem *a2, uint32_t a3, int a4, int a5, int16_t a6, int16_
     this->field_18 = 0;
     this->field_26 = a6;
     if (a2 != nullptr) {
-        void *vtbl = get_vtbl(a2);
-        this->field_2B = static_cast<Vtbl *>(vtbl)->field_2C(a2);
-
+        this->field_2B = a2->GetDefaultColorScheme();
     } else {
         this->field_2B = 0;
     }
@@ -49,10 +42,6 @@ void FEMenu::Load()
 {
     void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x10));
     func(this);
-}
-
-void FEMenu::sub_60B180(Float a2) {
-    THISCALL(0x0060B180, this, a2);
 }
 
 void FEMenu::AddEntry(int a2, FEText *a3, bool a4) {
@@ -74,10 +63,13 @@ void FEMenu::Init()
     func(this);
 }
 
-void FEMenu::Update(Float a2) {
-    if ((128 & this->field_28) != 0 && this->field_2A != -1) {
+void FEMenu::Update(Float a2)
+{
+    if ((128 & this->field_28) != 0 && this->field_2A != -1)
+    {
         this->field_1C = this->field_1C - a2;
-        if (this->field_1C <= 0.0f) {
+        if (this->field_1C <= 0.0f)
+        {
             this->ButtonHeldAction();
             auto v4 = this->field_28;
             this->field_1C = 0.1;
@@ -101,7 +93,93 @@ void FEMenu::OnActivate() {
 
 void FEMenu::OnDeactivate(FEMenu *a2) {
     void (__fastcall *func)(FEMenu *, void *, FEMenu *) = CAST(func, get_vfunc(m_vtbl, 0x30));
+    func(this, nullptr, a2);
+}
 
+void FEMenu::OnSelect(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x34));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnStart(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x38));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnUp(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x3C));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnDown(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x40));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnLeft(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x44));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnRight(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x48));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnCross(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x4C));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnTriangle(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x50));
+
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnSquare(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x54));
+
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnCircle(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x58));
+
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnL1(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x5C));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnR1(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x60));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnL2(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x64));
+    func(this, nullptr, a2);
+}
+
+void FEMenu::OnR2(int a2)
+{
+    void (__fastcall *func)(FEMenu *, void *, int) = CAST(func, get_vfunc(m_vtbl, 0x68));
     func(this, nullptr, a2);
 }
 

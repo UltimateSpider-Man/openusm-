@@ -9,6 +9,8 @@ struct string_hash;
 struct Input;
 struct InputSettings;
 
+inline Var<float> s_camera_target_radius_factor {0x0087EBC4};
+
 extern Var<float> flt_87EBD4;
 
 extern Var<float> flt_86F860;
@@ -44,8 +46,6 @@ extern Var<HWND> g_appHwnd;
 extern Var<bool> g_is_the_packer;
 
 extern Var<int> g_TOD;
-
-extern Var<char[2]> g_debug;
 
 extern Var<char *[14]> dword_965C24;
 

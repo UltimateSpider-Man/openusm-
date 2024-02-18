@@ -68,3 +68,19 @@ struct dynamic_proximity_map : proximity_map
     //0x00522500
     void init(dynamic_proximity_map_stack *alloc, fixed_pool *a3, int number_of_cells_arg, const vector3d &a5, const vector3d &a6, subdivision_node::type_t a7);
 };
+
+struct region;
+
+struct proximity_map_construction_leaf {
+    union {
+        int i;
+        region *r;
+    } field_0;
+    vector3d field_4;
+    vector3d field_10;
+
+    proximity_map_construction_leaf(
+            region *a2,
+            const vector3d &a1,
+            const vector3d &a4);
+};

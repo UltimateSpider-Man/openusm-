@@ -253,7 +253,7 @@ tlInstanceBank::Node *tlInstanceBank::Search(const tlHashString &a2)
 }
 
 template<int I>
-tlInstanceBank::Node __thiscall *tlInstanceBank_Search(tlInstanceBank *self, const tlHashString &a2)
+tlInstanceBank::Node * __fastcall tlInstanceBank_Search(tlInstanceBank *self, void *, const tlHashString &a2)
 {
     TRACE("tlInstanceBank_Search");
 

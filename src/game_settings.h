@@ -10,17 +10,19 @@
 struct resource_key;
 
 struct game_settings {
+
+    static inline constexpr auto NUM_SOFT_SAVE_BUFFERS = 2;
+
     std::intptr_t m_vtbl;
     MemoryUnitManager::Container field_4;
     game_data_essentials field_28C[3]{};
     game_data_meat field_340;
-    char *field_494;
-    char *field_498;
+    char *field_494[NUM_SOFT_SAVE_BUFFERS];
     char *field_49C[3];
     char field_4A8[12];
     int field_4B4;
     int field_4B8;
-    bool field_4BC[3];
+    bool m_game_data_valid[3];
     bool field_4BF;
     bool field_4C0;
     bool field_4C1;
@@ -31,11 +33,19 @@ struct game_settings {
     //0x0057BF50
     game_settings();
 
+    ~game_settings();
+
     //0x0057C0B0
     /* virtual */ void Callback(MemoryUnitManager::eOperation a2);
 
     //0x005799E0
     void init_script_buffer();
+
+    //0x005737A0
+    int get_game_size();
+
+    //0x0057C1B0
+    int soft_save(uint32_t soft_save_type);
 
     void update_miles_crawled_venom(Float a2);
 
@@ -68,6 +78,12 @@ struct game_settings {
     void collect_game_options();
 
     char *get_buffer(int a2);
+
+    //0x00579790
+    void reset_container(bool a2);
+
+    //0x00579970
+    int load();
 
     //0x0057F410
     void load_game(int slot_num);

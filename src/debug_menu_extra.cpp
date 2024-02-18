@@ -1234,7 +1234,7 @@ void game_flags_handler(debug_menu_entry *a1)
 
         //TODO
         /*
-        if ( !(*(unsigned __int8 (__thiscall **)(int))(*(_DWORD *)v23 + 44))(v23) )
+        if ( !(*(unsigned __int8 (__fastcall **)(int))(*(_DWORD *)v23 + 44))(v23) )
         {
             j_debug_print_va("Controller 2 is not connected!";
             ->set_bval(a1, 0, 1);
@@ -1243,7 +1243,7 @@ void game_flags_handler(debug_menu_entry *a1)
         if ( v24 )
         {
             j_debug_print_va("User cam (theoretically) enabled on controller 2");
-            v7 = (*(int (__thiscall **)(int))(*(_DWORD *)v23 + 8))(v23);
+            v7 = (*(int (__fastcall **)(int))(*(_DWORD *)v23 + 8))(v23);
             sub_676E45(g_mouselook_controller, v7);
         }
         else

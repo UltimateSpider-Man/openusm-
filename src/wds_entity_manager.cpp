@@ -10,6 +10,7 @@
 #include "item.h"
 #include "mstring.h"
 #include "oldmath_po.h"
+#include "osassert.h"
 #include "resource_key.h"
 #include "resource_manager.h"
 #include "trace.h"
@@ -210,10 +211,12 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                                                           const po &a4,
                                                           const mString &a5,
                                                           uint32_t a6,
-                                                          const _std::list<region *> *regions) {
+                                                          const _std::list<region *> *regions)
+{
     TRACE("wds_entity_manager::create_and_add_entity_or_subclass");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         entity *v71 = nullptr;
 
         auto v68 = a4;
@@ -254,8 +257,7 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                 if ( v71 == nullptr )
                 {
                     auto *v11 = v58.m_hash.to_string();
-                    sp_log("parse_entity_mash error on entity '%s.ent'", v11);
-                    assert(0);
+                    error("parse_entity_mash error on entity '%s.ent'", v11);
                 }
 
                 this->add_ent_to_lists(ent_vec_ptr, item_vec_ptr, v71);
@@ -263,7 +265,7 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
             else
             {
                 auto *v12 = a2.to_string();
-                sp_log("Entity '%s.ent' not found in any loaded packfiles!", v12);
+                warning("Entity '%s.ent' not found in any loaded packfiles!", v12);
                 auto *partition_pointer = resource_manager::get_partition_pointer(RESOURCE_PARTITION_MISSION);
                 debug_print_va("Mission stack contains:");
                 if ( partition_pointer != nullptr ) {

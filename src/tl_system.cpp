@@ -8,6 +8,7 @@
 #include "ngl_font.h"
 #include "ngl_mesh.h"
 #include "nglshader.h"
+#include "osassert.h"
 #include "resource_directory.h"
 #include "tl_instance_bank.h"
 #include "tlresourcedirectory.h"
@@ -599,13 +600,13 @@ void tlResourceDirectory<nglTexture, tlFixedString>::ReleaseAll(bool a2, bool a3
 
         struct {
             int field_0[1];
-            char *(__thiscall *DirectoryName)(void *);
+            char * (__fastcall *DirectoryName)(void *);
             int field_8[4];
 
-            tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::SkipListIterator *(
-                __thiscall *Enumerate)(void *);
+            tlInstanceBankResourceDirectory<nglTexture, tlFixedString>::SkipListIterator * (
+                __fastcall *Enumerate)(void *);
             int field_1[3];
-            int(__thiscall *Release)(void *, nglTexture *, int, bool);
+            int(__fastcall *Release)(void *, void *, nglTexture *, int, bool);
         } *vtbl = CAST(vtbl, this->m_vtbl);
 
         auto *iter = vtbl->Enumerate(this);
@@ -613,7 +614,7 @@ void tlResourceDirectory<nglTexture, tlFixedString>::ReleaseAll(bool a2, bool a3
             iter->reset();
             while ((*iter)()) {
                 auto *v7 = *(*iter);
-                auto v8 = vtbl->Release(this, v7, i, a3);
+                auto v8 = vtbl->Release(this, nullptr, v7, i, a3);
                 if (v8 > 0) {
                     ++(*iter);
                 } else {

@@ -40,27 +40,11 @@ void __stdcall vector_constructor(void *a1,
 }
 #endif
 
-game_settings::game_settings() : field_4{""} {
-    if constexpr (1) {
+game_settings::game_settings() : field_4{""}
+{
+    if constexpr (1)
+    {
         this->m_vtbl = 0x0088B234;
-
-        auto *v2 = this->field_4BC;
-        v2[0] = false;
-        v2[1] = false;
-        v2[2] = false;
-        this->field_4BF = 0;
-        this->field_4C0 = 0;
-        this->field_4C1 = false;
-        this->field_4C2 = 0;
-        this->field_4BF = 0;
-        this->field_494 = nullptr;
-        this->field_498 = nullptr;
-        this->field_4BC[0] = false;
-        this->field_49C[0] = nullptr;
-        this->field_4BC[1] = false;
-        this->field_49C[1] = nullptr;
-        this->field_4BC[2] = false;
-        this->field_49C[2] = nullptr;
 
         MemoryUnitManager::Initialize(0);
 
@@ -84,6 +68,26 @@ game_settings::game_settings() : field_4{""} {
     }
 }
 
+void sub_5288B0(void *Memory)
+{
+    CDECL_CALL(0x005288B0, Memory);
+}
+
+game_settings::~game_settings()
+{
+    this->m_vtbl = 0x0088B234;
+    
+    for (int i = 0; i < 3; ++i)
+    {
+        mem_freealign(this->field_49C[i]);
+    }
+
+    for (int i = 0; i < 2; ++i)
+    {
+        sub_5288B0(this->field_494[i]);
+    }
+}
+
 void game_settings::Callback(MemoryUnitManager::eOperation a2) {
     THISCALL(0x0057C0B0, this, a2);
 }
@@ -92,8 +96,8 @@ void game_settings::init_script_buffer()
 {
     if constexpr (1) {
         this->sub_579990();
-        script_manager::save_game_var_buffer(this->field_494);
-        script_manager::save_game_var_buffer(this->field_498);
+        script_manager::save_game_var_buffer(this->field_494[0]);
+        script_manager::save_game_var_buffer(this->field_494[1]);
 
     } else {
         THISCALL(0x005799E0, this);
@@ -174,13 +178,13 @@ void game_settings::soft_load(uint32_t soft_save_type) {
         assert(soft_save_type < NUM_SOFT_SAVE_BUFFERS);
 
         if (soft_save_type == 1) {
-            std::memcpy(this->field_494, this->field_498, this->field_4B4);
+            std::memcpy(this->field_494[0], this->field_494[1], this->field_4B4);
         }
 
         g_game_ptr()->field_15D = false;
         this->field_4C0 = false;
         this->export_game_settings();
-        script_manager::load_game_var_buffer((&this->field_494)[soft_save_type]);
+        script_manager::load_game_var_buffer(this->field_494[soft_save_type]);
         mission_manager::s_inst()->set_real_time();
 
     } else {
@@ -208,22 +212,37 @@ void game_settings::update_web_fluid_used(Float a2) {
     this->field_340.m_web_fluid_used += a2;
 }
 
-void game_settings::load_game(int slot_num) {
-    if constexpr (1) {
-        if (this->field_4C2) {
+void game_settings::reset_container(bool a2)
+{
+    THISCALL(0x00579790, this, a2);
+}
+
+int game_settings::load()
+{
+    this->reset_container(true);
+    return MemoryUnitManager::LoadGame(this->field_4);
+}
+
+void game_settings::load_game(int slot_num)
+{
+    assert(this->m_game_data_valid[slot_num]);
+
+    if constexpr (1)
+    {
+        if (this->field_4C2)
+        {
             if (this->field_4C8 > 2) {
                 this->field_4C2 = false;
                 this->start_new_game();
                 mission_manager::s_inst()->lock();
-                this->field_4C1 = 1;
-                this->field_4C1 = 0;
+                this->field_4C1 = false;
                 std::memcpy(&this->field_340,
-                            this->field_49C[slot_num] + 60,
+                            this->field_49C[slot_num] + sizeof(game_data_essentials),
                             sizeof(this->field_340));
                 this->sub_579990();
-                std::memcpy(this->field_494, this->field_49C[slot_num] + 400, this->field_4B4);
-                std::memcpy(this->field_498,
-                            &this->field_49C[slot_num][this->field_4B4 + 400],
+                std::memcpy(this->field_494[0], this->field_49C[slot_num] + sizeof(game_data_essentials) + sizeof(game_data_meat), this->field_4B4);
+                std::memcpy(this->field_494[1],
+                            this->field_49C[slot_num] + this->field_4B4 + sizeof(game_data_essentials) + sizeof(game_data_meat),
                             this->field_4B4);
                 this->field_4BF = true;
                 this->soft_load(0);
@@ -238,7 +257,9 @@ void game_settings::load_game(int slot_num) {
                 auto *v4 = g_world_ptr()->get_chase_cam_ptr(0);
                 g_game_ptr()->set_current_camera(v4, true);
             }
-        } else {
+        }
+        else
+        {
             this->field_4C2 = true;
             this->field_4C8 = 0;
             this->m_slot_num = slot_num;
@@ -284,15 +305,16 @@ void game_settings::collect_game_settings() {
     }
 }
 
-void game_settings::sub_579990() {
+void game_settings::sub_579990()
+{
     if constexpr (1) {
-        if (this->field_494 == nullptr) {
+        if (this->field_494[0] == nullptr) {
             if (this->field_4B4 == 0) {
                 this->set_script_buffer_size();
             }
 
-            this->field_494 = static_cast<char *>(arch_malloc(this->field_4B4));
-            this->field_498 = static_cast<char *>(arch_malloc(this->field_4B4));
+            this->field_494[0] = static_cast<char *>(arch_malloc(this->field_4B4));
+            this->field_494[1] = static_cast<char *>(arch_malloc(this->field_4B4));
         }
 
     } else {
@@ -306,6 +328,33 @@ void game_settings::collect_game_options() {
 
 char *game_settings::get_buffer(int a2) {
     return this->field_49C[a2];
+}
+
+int game_settings::soft_save(uint32_t soft_save_type)
+{
+    assert(soft_save_type < NUM_SOFT_SAVE_BUFFERS);
+
+    this->collect_game_settings();
+    this->sub_579990();
+    return script_manager::save_game_var_buffer(this->field_494[soft_save_type]);
+}
+
+static constexpr auto MAX_GAME_SIZE = 16384;
+
+int game_settings::get_game_size()
+{
+    if ( this->field_4B4 == 0 ) {
+        this->field_4B4 = script_manager::save_game_var_buffer(nullptr);
+    }
+
+    auto size = 2 * this->field_4B4 + 400;
+    assert(size <= MAX_GAME_SIZE && "Uh-oh!!  We've exceeded the maximum size for our save game!!!");
+
+    if ( size < MAX_GAME_SIZE ) {
+        return MAX_GAME_SIZE;
+    }
+
+    return size;
 }
 
 void game_settings::save(int slot_num) {
@@ -332,24 +381,10 @@ void game_settings::save(int slot_num) {
         *((int *) &v1.field_4) = v5[1];
         *((int *) &v1.field_8) = v5[2];
         v1.field_10 = this->field_4B4;
-        this->field_4BC[slot_num] = true;
-        this->collect_game_settings(); // game_settings::soft_save()
-        this->sub_579990();
-        script_manager::save_game_var_buffer((char *) this->field_494);
+        this->m_game_data_valid[slot_num] = true;
+        this->soft_save(0);
         this->collect_game_options();
-        if (!this->field_4B4) { // game_settings::get_game_size()
-            this->field_4B4 = script_manager::save_game_var_buffer(nullptr);
-        }
-
-        auto size = 2 * this->field_4B4 + 400;
-
-        static constexpr auto MAX_GAME_SIZE = 16384;
-        assert(size <= MAX_GAME_SIZE &&
-               "Uh-oh!!  We've exceeded the maximum size for our save game!!!");
-
-        if (size < 16384) {
-            size = 16384;
-        }
+        auto size = this->get_game_size();
 
         memset(this->field_49C[slot_num], 0, MemoryUnitManager::GetGameSaveSize(size));
         std::memcpy(this->field_49C[slot_num], &v1, sizeof(game_data_essentials));
@@ -358,10 +393,10 @@ void game_settings::save(int slot_num) {
                     sizeof(game_data_meat));
         std::memcpy(this->field_49C[slot_num] + sizeof(game_data_essentials) +
                         sizeof(game_data_essentials),
-                    this->field_494,
+                    this->field_494[0],
                     this->field_4B4);
         std::memcpy(&this->field_49C[slot_num][this->field_4B4 + 400],
-                    this->field_498,
+                    this->field_494[1],
                     this->field_4B4);
 
         if (!MemoryUnitManager::SaveGame(this->field_4)) {

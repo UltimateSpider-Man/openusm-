@@ -9,6 +9,7 @@
 #include "log.h"
 #include "mesh_file_resource_handler.h"
 #include "nfl_system.h"
+#include "osassert.h"
 #include "os_developer_options.h"
 #include "parse_generic_mash.h"
 #include "resource_directory.h"

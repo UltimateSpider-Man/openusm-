@@ -258,7 +258,7 @@ public:
         }
 
         reference operator*() const { // return designated value
-            return ((reference) * *(const_iterator *) this);
+            return (_Myval(this->_Ptr));
         }
 
         pointer operator->() const { // return pointer to class object

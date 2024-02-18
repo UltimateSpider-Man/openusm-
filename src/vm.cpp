@@ -178,7 +178,7 @@ bool slf__set_mission_text_box_flavor__num__t::operator()(vm_stack &a1,
     return true;
 }
 
-bool __stdcall slf__get_pack_size__str__t__cl(vm_stack *a1, int v40)
+bool __stdcall slf__get_pack_size__str__t__cl(vm_stack *a1, int )
 {
     TRACE("slf__get_pack_size__str__t__cl");
 
@@ -199,7 +199,7 @@ bool __stdcall slf__get_pack_size__str__t__cl(vm_stack *a1, int v40)
     return true;
 }
 
-bool __stdcall slf__add_3d_debug_str__vector3d__vector3d__num__str__t__cl(vm_stack *a2, int _7C)
+bool __stdcall slf__add_3d_debug_str__vector3d__vector3d__num__str__t__cl(vm_stack *a2, int )
 {
     TRACE("slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator()");
 

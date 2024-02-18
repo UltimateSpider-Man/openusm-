@@ -267,14 +267,9 @@ bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3)
             return false;
         }
 
-        auto v10 = a1[1];
-        auto v11 = a1[2];
-        auto v12 = a1[0];
-
         a2.field_C = a1;
 
         auto a2a = (v20 ? v20->get_my_handle() : 0);
-        auto v13 = a5[0];
 
         a2.hit_entity = {a2a};
 
@@ -282,8 +277,7 @@ bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3)
 
         a2.hit_pos = a1;
 
-        auto v14 = v21;
-        a2.field_4C = v14;
+        a2.m_obb = v21;
         a2.collision = true;
 
         auto *v15 = this->field_C->physical_ifc();

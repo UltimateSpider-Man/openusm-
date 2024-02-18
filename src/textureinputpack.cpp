@@ -335,7 +335,8 @@ void TextureInputPack::sub_5871D0() {
     }
 }
 
-void __thiscall sub_5B24F0(void *self,
+void __fastcall sub_5B24F0(void *self,
+                           void *,
                            const char *a2,
                            int a3,
                            int a4,

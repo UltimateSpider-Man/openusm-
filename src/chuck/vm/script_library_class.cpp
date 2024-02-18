@@ -136,6 +136,13 @@ void script_library_class::add_functions_complete()
     }
 }
 
+uint32_t script_library_class::find_instance(const mString &a1)
+{
+    uint32_t (__fastcall *func)(void *, void *, const mString *) = CAST(func, get_vfunc(this->m_vtbl, 0x4));
+
+    return func(this, nullptr, &a1);
+}
+
 script_library_class::function::function(const char *name) {
     if constexpr (1) {
         this->m_vtbl = 0x0088EAFC;

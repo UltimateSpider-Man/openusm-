@@ -43,8 +43,6 @@ Var<bool> g_master_clock_is_up{0x00965EB0};
 
 Var<int> g_TOD{0x0091E000};
 
-Var<char[2]> g_debug{0x0095FF80};
-
 Var<char *[14]> dword_965C24 { 0x00965C24 };
 
 Var<char[1024]> g_scene_name = (0x0095C308);

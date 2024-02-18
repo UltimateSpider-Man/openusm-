@@ -68,6 +68,7 @@
 #include "cut_scene_player.h"
 #include "cut_scene_resource_handler.h"
 #include "daynight.h"
+#include "debug_struct.h"
 #include "eligible_pack.h"
 #include "eligible_pack_streamer.h"
 #include "enhanced_state.h"
@@ -90,6 +91,7 @@
 #include "func_wrapper.h"
 #include "gab_database_resource_handler.h"
 #include "game.h"
+#include "game_camera.h"
 #include "game_data_meat.h"
 #include "game_settings.h"
 #include "gamepadinput.h"
@@ -208,7 +210,7 @@
 #include "spidey_base_state.h"
 #include "spline.h"
 #include "state_machine.h"
-#include "static_region_list_methods.h"
+#include "subdivision_static_region_list.h"
 #include "string_hash.h"
 #include "string_hash_dictionary.h"
 #include "swing_anchor_obbfilter.h"
@@ -1263,15 +1265,15 @@ int __stdcall myWinMain(HINSTANCE hInstance,
     parse_cmd(lpCmdLine);
 
     if (os_developer_options::instance()->get_flag(25)) { //HALT_ON_ASSERTS
-        g_debug()[1] |= 1;
+        g_debug().field_1 |= 1;
     } else {
-        g_debug()[1] &= 0xFE;
+        g_debug().field_1 &= 0xFE;
     }
 
     if (g_is_the_packer() || !os_developer_options::instance()->get_flag(26)) { //SCREEN_ASSERTS
-        g_debug()[1] &= 0xFD;
+        g_debug().field_1 &= 0xFD;
     } else {
-        g_debug()[1] |= 2;
+        g_debug().field_1 |= 2;
     }
 
     nflInitParams a1;
@@ -2407,6 +2409,8 @@ BOOL install_redirects()
     aeps_patch();
 
     game_patch();
+
+    game_camera_patch();
 
     region_patch();
 

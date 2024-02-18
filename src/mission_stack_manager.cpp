@@ -2,6 +2,7 @@
 
 #include "func_wrapper.h"
 #include "game.h"
+#include "osassert.h"
 #include "resource_directory.h"
 #include "resource_manager.h"
 #include "resource_pack_group.h"

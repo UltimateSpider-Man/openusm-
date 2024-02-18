@@ -42,6 +42,7 @@
 #include "line_info.h"
 #include "loaded_regions_cache.h"
 #include "manip_obj.h"
+#include "marky_camera.h"
 #include "mash_virtual_base.h"
 #include "memory.h"
 #include "motion_effect_struct.h"
@@ -101,70 +102,34 @@ int *sub_566A70() {
 }
 
 world_dynamics_system::world_dynamics_system()
-#if 0
-    : field_4(), field_3E0() {
-    this->field_18 = 0;
-    this->field_1C = 0;
-    this->field_20 = 0;
-    this->field_28 = wds_camera_manager();
-    this->field_74 = wds_entity_manager();
-    this->field_A0 = wds_render_manager();
-    this->field_140 = wds_script_manager();
-    this->field_158 = wds_time_manager();
-    this->field_178 = wds_patrol_def_manager();
-
-    this->field_188.field_1C = sub_566A70();
-    this->field_1A8 = 0;
-    this->field_188.field_0 = 0;
-    this->field_188.field_5 = 0;
-    this->field_188.field_4 = 0;
-    this->field_188.field_14 = 0;
-    this->field_1B0 = cached_special_effect();
-    this->field_1F0 = cached_special_effect();
-
-    cdecl_call sub_504D60 = CAST(sub_504D60, 0x00504D60);
-    this->field_240 = CAST(field_240, sub_504D60());
-    this->field_244 = 0;
-    this->field_24C = CAST(field_24C, sub_504D60());
-    this->field_250 = 0;
-    this->field_258 = CAST(field_258, sub_504D60());
-    this->field_25C = 0;
-    this->field_264 = 0;
-    this->field_268 = 0;
-    this->field_26C = 0;
-    this->field_274 = 0;
-    this->field_278 = 0;
-    this->field_27C = 0;
-    this->field_284 = 0;
-    this->field_288 = 0;
-    this->field_28C = 0;
-    this->field_29C = mission_stack_manager();
-    this->field_2A8 = mission_manager();
-    this->field_3A8 = patrol_manager();
-
-    this->field_0 = new slot_pool<nal_anim_control *, uint32_t>{500};
-
-    this->field_4.reserve(20u);
-
-    this->m_loading_from_scn_file = 0;
-    this->field_230[0] = nullptr;
-    this->field_234[0] = nullptr;
-    this->field_298 = -1;
-    this->field_290 = 4;
-    this->ter = nullptr;
-    this->num_players = 0;
-    mash_virtual_base::generate_vtable();
-    physical_interface::clear_static_lists();
-    this->field_3F0 = 1;
-#else
+    : field_4(), field_3E0()
 {
-    THISCALL(0x005554D0, this);
-#endif
+    if constexpr (1)
+    {
+        this->field_0 = new slot_pool<nal_anim_control *, uint32_t>{500};
+
+        this->field_4.reserve(20u);
+
+        this->m_loading_from_scn_file = false;
+        this->field_230[0] = nullptr;
+        this->field_234[0] = nullptr;
+        this->field_298 = -1;
+        this->field_290 = 4;
+        this->the_terrain = nullptr;
+        this->num_players = 0;
+        mash_virtual_base::generate_vtable();
+        physical_interface::clear_static_lists();
+        this->field_3F0 = true;
+    }
+    else
+    {
+        THISCALL(0x005554D0, this);
+    }
 }
 
 world_dynamics_system::~world_dynamics_system()
 {
-    if constexpr (0)
+    if constexpr (1)
     {
         this->field_23C.clear();
         debug_render_done();
@@ -336,18 +301,10 @@ void world_dynamics_system::frame_advance(Float a2) {
         this->field_1B0.frame_advance(a2);
         this->field_1F0.frame_advance(a2);
 
-        for (auto &generator : this->field_260) {
-            struct Vtbl {
-                int field_0;
-                bool __fastcall (*is_active)(const void *);
-                int field_8;
-                void __fastcall (*frame_advance)(void *, void *, Float);
-            };
-
-            Vtbl *vtbl = CAST(vtbl, generator->m_vtbl);
-
-            if (vtbl->is_active(generator)) {
-                vtbl->frame_advance(generator, nullptr, a2);
+        for (auto &generator : this->field_260)
+        {
+            if (generator->is_active()) {
+                generator->frame_advance(a2);
             }
         }
 
@@ -1497,20 +1454,11 @@ bool world_dynamics_system::is_loading_from_scn_file() {
 int world_dynamics_system::remove_player(int player_num) {
     assert(player_num == num_players - 1);
 
-    struct Vtbl {
-        int empty0[29];
-        bool (__fastcall *is_a_game_camera)(const void *);
-        int empty1[135];
-        int (__fastcall *sync)(void *, void *, void *);
-    };
-
     cut_scene_player *v3 = g_cut_scene_player();
     v3->stop(nullptr);
     bool v4 = this->num_players-- == 1;
     if (v4) {
-        void *vtbl = get_vtbl(this->field_28.field_44);
-
-        bit_cast<Vtbl *>(vtbl)->sync(this->field_28.field_44, nullptr, this->field_234[0]);
+        this->field_28.field_44->sync(*(this->field_234[0]));
     }
 
     g_world_ptr()->ent_mgr.destroy_entity(this->field_234[this->num_players]);

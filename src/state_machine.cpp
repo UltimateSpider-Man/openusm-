@@ -9,6 +9,7 @@
 #include "layer_state_machine_shared.h"
 #include "nal_generic.h"
 #include "oldmath_po.h"
+#include "osassert.h"
 #include "trace.h"
 #include "utility.h"
 #include "vtbl.h"

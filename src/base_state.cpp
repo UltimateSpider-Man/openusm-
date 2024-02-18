@@ -104,20 +104,17 @@ void base_state::activate(ai_state_machine *the_state_machine,
             }
         }
     } else {
-        struct {
-            char field_0[0x18];
 
-            void __fastcall (*activate)(void *,
-                                        int,
-                                        ai_state_machine *the_state_machine,
-                                        const mashed_state *a3,
-                                        const mashed_state *a4,
-                                        const param_block *a5,
-                                        base_state::activate_flag_e a6);
+        void (__fastcall *func)(void *,
+                                    int,
+                                    ai_state_machine *the_state_machine,
+                                    const mashed_state *a3,
+                                    const mashed_state *a4,
+                                    const param_block *a5,
+                                    base_state::activate_flag_e a6) = CAST(func, get_vfunc(m_vtbl, 0x18));
 
-        } *vtbl = CAST(vtbl, get_vtbl(this));
 
-        vtbl->activate(this, 0, the_state_machine, a3, a4, a5, a6);
+        func(this, 0, the_state_machine, a3, a4, a5, a6);
     }
 }
 

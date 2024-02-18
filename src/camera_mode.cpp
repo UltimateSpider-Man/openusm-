@@ -4,7 +4,8 @@
 
 camera_mode::camera_mode() {}
 
-void camera_mode::request_recenter(Float a2, const camera_target_info &a3) {
+void camera_mode::request_recenter(Float a2, const camera_target_info &a3)
+{
     if constexpr (1) {
         void (__fastcall *request_recenter)(camera_mode *, void *, Float, const camera_target_info *) = CAST(request_recenter, get_vfunc(m_vtbl, 0x14));
 

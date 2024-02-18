@@ -12,10 +12,11 @@ fe_mini_map_dot::fe_mini_map_dot(mini_map_dot_type a2, vector3d a3) {
     THISCALL(0x0063AB90, this, a2, a3);
 }
 
-void fe_mini_map_dot::Draw() {
-    if (this->field_24 && this->field_25) {
-        void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->field_0->m_vtbl, 0x58));
-        Draw(this->field_0);
+void fe_mini_map_dot::Draw()
+{
+    if (this->field_24 && this->field_25)
+    {
+        this->field_0->Draw();
 
         if (this->field_8 != nullptr) {
             nglListAddQuad(this->field_8);
@@ -30,8 +31,7 @@ void fe_mini_map_dot::Draw() {
         }
 
         if (this->field_28) {
-            void (__fastcall *Draw)(void *) = CAST(Draw, get_vfunc(this->field_4->m_vtbl, 0x58));
-            Draw(this->field_4);
+            this->field_4->Draw();
         }
     }
 }

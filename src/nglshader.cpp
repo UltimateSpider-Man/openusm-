@@ -47,6 +47,13 @@ tlFixedString nglShader::GetName() {
     return result;
 }
 
+void nglShader::AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3)
+{
+    void (__fastcall *func)(void *, void *, nglMeshNode *, nglMeshSection *, nglMaterialBase *) = CAST(func, get_vfunc(m_vtbl, 0x8));
+
+    func(this, nullptr, a1, a2, a3);
+}
+
 void nglShader::BindMaterial(nglMaterialBase *mat) {
     void (__fastcall *func)(void *, void *, nglMaterialBase *) = CAST(func, get_vfunc(m_vtbl, 0xC));
 
@@ -103,10 +110,9 @@ bool nglShader::IsSwitchable() {
     return func(this);
 }
 
-void nglShaderNode::Render() {
-    auto *vtbl = get_vtbl(this);
-
-    void (__fastcall *func)(void *) = CAST(func, get_vfunc((int) vtbl, 0x0));
+void nglShaderNode::Render()
+{
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(this->m_vtbl, 0x0));
     func(this);
 }
 
