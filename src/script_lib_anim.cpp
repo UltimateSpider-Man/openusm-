@@ -6,7 +6,7 @@ slc_anim_t *slc_anim = nullptr;
 
 struct slf__anim__kill_anim__t : script_library_class::function {
     slf__anim__kill_anim__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAE8;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAE8;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -14,7 +14,7 @@ struct slf__anim__kill_anim__t : script_library_class::function {
 
 struct slf__anim__pause__t : script_library_class::function {
     slf__anim__pause__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAB8;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAB8;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -22,7 +22,7 @@ struct slf__anim__pause__t : script_library_class::function {
 
 struct slf__anim__play__t : script_library_class::function {
     slf__anim__play__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAD8;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAD8;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -30,7 +30,7 @@ struct slf__anim__play__t : script_library_class::function {
 
 struct slf__anim__set_fade_time__num__t : script_library_class::function {
     slf__anim__set_fade_time__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAC8;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAC8;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -38,7 +38,7 @@ struct slf__anim__set_fade_time__num__t : script_library_class::function {
 
 struct slf__anim__set_time__num__t : script_library_class::function {
     slf__anim__set_time__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAD0;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAD0;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -46,7 +46,7 @@ struct slf__anim__set_time__num__t : script_library_class::function {
 
 struct slf__anim__set_timescale__num__t : script_library_class::function {
     slf__anim__set_timescale__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAC0;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAC0;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -54,7 +54,7 @@ struct slf__anim__set_timescale__num__t : script_library_class::function {
 
 struct slf__anim__wait_finished__t : script_library_class::function {
     slf__anim__wait_finished__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AAE0;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AAE0;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}

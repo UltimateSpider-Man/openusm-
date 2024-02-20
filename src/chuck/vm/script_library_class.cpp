@@ -74,7 +74,7 @@ bool script_library_class::function::operator()(vm_stack &a2,
                                                 script_library_class::function::entry_t a3) const {
     bool __stdcall (
         *func)(vm_stack & a2,
-               script_library_class::function::entry_t a3) = CAST(func, get_vfunc(m_vtbl, 0x4));
+               script_library_class::function::entry_t a3) = CAST(func, get_vfunc((int)m_vtbl, 0x4));
 
     return func(a2, a3);
 }
@@ -143,9 +143,11 @@ uint32_t script_library_class::find_instance(const mString &a1)
     return func(this, nullptr, &a1);
 }
 
-script_library_class::function::function(const char *name) {
-    if constexpr (1) {
-        this->m_vtbl = 0x0088EAFC;
+script_library_class::function::function(const char *name)
+{
+    if constexpr (1)
+    {
+        this->m_vtbl = CAST(this->m_vtbl, 0x0088EAFC);
 
 #if SLC_NAME_FIELD
         this->m_name = name;

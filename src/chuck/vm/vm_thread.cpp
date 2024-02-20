@@ -1079,10 +1079,12 @@ char *vm_thread::install_temp_string(const char *a1) {
     return v3;
 }
 
-bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, const uint16_t *oldPC) {
+bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, const uint16_t *oldPC)
+{
     TRACE("vm_thread::call_script_library_function");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         auto *oldSP = this->dstack.SP;
 
         printf("arg.lfr = 0x%08X\n", arg.lfr->m_vtbl);

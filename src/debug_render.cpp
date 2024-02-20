@@ -27,6 +27,7 @@
 
 #include <ngl_mesh.h>
 
+#include <array>
 #include <cassert>
 #include <cmath>
 
@@ -413,7 +414,12 @@ void debug_render_init()
 {
     TRACE("debug_render_init");
 
-    CDECL_CALL(0x005784F0);
+    if constexpr (1) {
+        static Var<std::array<int, 51>> initial_values {0x00922718};
+        std::memcpy(debug_render_items(), &initial_values(), sizeof(debug_render_items()));
+    } else {
+        CDECL_CALL(0x005784F0);
+    }
 
     int a4 = 194;
 

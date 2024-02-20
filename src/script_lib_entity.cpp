@@ -11,7 +11,7 @@
 
 struct slf__entity__abs_snap_to__entity__t : script_library_class::function {
     slf__entity__abs_snap_to__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE34;
+        m_vtbl = (decltype(m_vtbl)) 0x0089AE34;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -19,7 +19,7 @@ struct slf__entity__abs_snap_to__entity__t : script_library_class::function {
 
 struct slf__entity__add_collision_ignorance__entity__t : script_library_class::function {
     slf__entity__add_collision_ignorance__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF94;
+        m_vtbl = (decltype(m_vtbl))0x0089AF94;
     }
 
     struct parms_t {
@@ -49,7 +49,7 @@ struct slf__entity__add_collision_ignorance__entity__t : script_library_class::f
 
 struct slf__entity__add_exclusive_interactor__string_hash__interactable_interface__t : script_library_class::function {
     slf__entity__add_exclusive_interactor__string_hash__interactable_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B5C4;
+        m_vtbl = (decltype(m_vtbl))0x0089B5C4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -57,7 +57,7 @@ struct slf__entity__add_exclusive_interactor__string_hash__interactable_interfac
 
 struct slf__entity__add_item__entity__t : script_library_class::function {
     slf__entity__add_item__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF44;
+        m_vtbl = (decltype(m_vtbl))0x0089AF44;
     }
 
     struct parms_t {
@@ -93,7 +93,7 @@ struct slf__entity__add_item__entity__t : script_library_class::function {
 
 struct slf__entity__add_selectable_target__entity__t : script_library_class::function {
     slf__entity__add_selectable_target__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B17C;
+        m_vtbl = (decltype(m_vtbl))0x0089B17C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -101,7 +101,7 @@ struct slf__entity__add_selectable_target__entity__t : script_library_class::fun
 
 struct slf__entity__add_vehicle_to_traffic_system__num__t : script_library_class::function {
     slf__entity__add_vehicle_to_traffic_system__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B474;
+        m_vtbl = (decltype(m_vtbl))0x0089B474;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -109,7 +109,7 @@ struct slf__entity__add_vehicle_to_traffic_system__num__t : script_library_class
 
 struct slf__entity__ai_get_viseme_morph_set__str__str__t : script_library_class::function {
     slf__entity__ai_get_viseme_morph_set__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3F4;
+        m_vtbl = (decltype(m_vtbl))0x0089B3F4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -117,7 +117,7 @@ struct slf__entity__ai_get_viseme_morph_set__str__str__t : script_library_class:
 
 struct slf__entity__ai_get_viseme_stream__str__t : script_library_class::function {
     slf__entity__ai_get_viseme_stream__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3EC;
+        m_vtbl = (decltype(m_vtbl))0x0089B3EC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -125,7 +125,7 @@ struct slf__entity__ai_get_viseme_stream__str__t : script_library_class::functio
 
 struct slf__entity__ai_is_speaking__t : script_library_class::function {
     slf__entity__ai_is_speaking__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B40C;
+        m_vtbl = (decltype(m_vtbl))0x0089B40C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -133,7 +133,7 @@ struct slf__entity__ai_is_speaking__t : script_library_class::function {
 
 struct slf__entity__ai_run_lip_sync__str__t : script_library_class::function {
     slf__entity__ai_run_lip_sync__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3E4;
+        m_vtbl = (decltype(m_vtbl))0x0089B3E4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -141,7 +141,7 @@ struct slf__entity__ai_run_lip_sync__str__t : script_library_class::function {
 
 struct slf__entity__ai_say_file__str__num__num__t : script_library_class::function {
     slf__entity__ai_say_file__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3CC;
+        m_vtbl = (decltype(m_vtbl))0x0089B3CC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -149,7 +149,7 @@ struct slf__entity__ai_say_file__str__num__num__t : script_library_class::functi
 
 struct slf__entity__ai_say_gab__str__num__num__t : script_library_class::function {
     slf__entity__ai_say_gab__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B424;
+        m_vtbl = (decltype(m_vtbl))0x0089B424;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -157,7 +157,7 @@ struct slf__entity__ai_say_gab__str__num__num__t : script_library_class::functio
 
 struct slf__entity__ai_say_sound_group__str__num__num__t : script_library_class::function {
     slf__entity__ai_say_sound_group__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B414;
+        m_vtbl = (decltype(m_vtbl))0x0089B414;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -165,7 +165,7 @@ struct slf__entity__ai_say_sound_group__str__num__num__t : script_library_class:
 
 struct slf__entity__ai_shut_up__t : script_library_class::function {
     slf__entity__ai_shut_up__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B404;
+        m_vtbl = (decltype(m_vtbl))0x0089B404;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -173,7 +173,7 @@ struct slf__entity__ai_shut_up__t : script_library_class::function {
 
 struct slf__entity__ai_traffic_come_on_camera__vector3d__num__t : script_library_class::function {
     slf__entity__ai_traffic_come_on_camera__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2EC;
+        m_vtbl = (decltype(m_vtbl))0x0089B2EC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -181,7 +181,7 @@ struct slf__entity__ai_traffic_come_on_camera__vector3d__num__t : script_library
 
 struct slf__entity__ai_traffic_come_on_camera__vector3d__vector3d__num__t : script_library_class::function {
     slf__entity__ai_traffic_come_on_camera__vector3d__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2F4;
+        m_vtbl = (decltype(m_vtbl))0x0089B2F4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -189,7 +189,7 @@ struct slf__entity__ai_traffic_come_on_camera__vector3d__vector3d__num__t : scri
 
 struct slf__entity__ai_traffic_follow_entity__entity__num__t : script_library_class::function {
     slf__entity__ai_traffic_follow_entity__entity__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2FC;
+        m_vtbl = (decltype(m_vtbl))0x0089B2FC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -197,7 +197,7 @@ struct slf__entity__ai_traffic_follow_entity__entity__num__t : script_library_cl
 
 struct slf__entity__ai_traffic_follow_vehicle__entity__t : script_library_class::function {
     slf__entity__ai_traffic_follow_vehicle__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B304;
+        m_vtbl = (decltype(m_vtbl))0x0089B304;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -205,7 +205,7 @@ struct slf__entity__ai_traffic_follow_vehicle__entity__t : script_library_class:
 
 struct slf__entity__ai_traffic_get_value__num__t : script_library_class::function {
     slf__entity__ai_traffic_get_value__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2BC;
+        m_vtbl = (decltype(m_vtbl))0x0089B2BC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -213,7 +213,7 @@ struct slf__entity__ai_traffic_get_value__num__t : script_library_class::functio
 
 struct slf__entity__ai_traffic_get_value__num__num__t : script_library_class::function {
     slf__entity__ai_traffic_get_value__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2B4;
+        m_vtbl = (decltype(m_vtbl))0x0089B2B4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -221,7 +221,7 @@ struct slf__entity__ai_traffic_get_value__num__num__t : script_library_class::fu
 
 struct slf__entity__ai_traffic_goto__vector3d__num__num__num__t : script_library_class::function {
     slf__entity__ai_traffic_goto__vector3d__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2CC;
+        m_vtbl = (decltype(m_vtbl))0x0089B2CC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -229,7 +229,7 @@ struct slf__entity__ai_traffic_goto__vector3d__num__num__num__t : script_library
 
 struct slf__entity__ai_traffic_set_value__num__num__t : script_library_class::function {
     slf__entity__ai_traffic_set_value__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2C4;
+        m_vtbl = (decltype(m_vtbl))0x0089B2C4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -237,7 +237,7 @@ struct slf__entity__ai_traffic_set_value__num__num__t : script_library_class::fu
 
 struct slf__entity__ai_traffic_spawn_away_from__vector3d__num__t : script_library_class::function {
     slf__entity__ai_traffic_spawn_away_from__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2DC;
+        m_vtbl = (decltype(m_vtbl))0x0089B2DC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -245,7 +245,7 @@ struct slf__entity__ai_traffic_spawn_away_from__vector3d__num__t : script_librar
 
 struct slf__entity__ai_traffic_spawn_behind__entity__t : script_library_class::function {
     slf__entity__ai_traffic_spawn_behind__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2E4;
+        m_vtbl = (decltype(m_vtbl))0x0089B2E4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -253,7 +253,7 @@ struct slf__entity__ai_traffic_spawn_behind__entity__t : script_library_class::f
 
 struct slf__entity__ai_traffic_spawn_near__vector3d__t : script_library_class::function {
     slf__entity__ai_traffic_spawn_near__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2D4;
+        m_vtbl = (decltype(m_vtbl))0x0089B2D4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -261,7 +261,7 @@ struct slf__entity__ai_traffic_spawn_near__vector3d__t : script_library_class::f
 
 struct slf__entity__ai_voice_box_set_team_respect__string_hash__num__t : script_library_class::function {
     slf__entity__ai_voice_box_set_team_respect__string_hash__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3C4;
+        m_vtbl = (decltype(m_vtbl))0x0089B3C4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -269,7 +269,7 @@ struct slf__entity__ai_voice_box_set_team_respect__string_hash__num__t : script_
 
 struct slf__entity__ai_wait_say_file__str__num__num__t : script_library_class::function {
     slf__entity__ai_wait_say_file__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3D4;
+        m_vtbl = (decltype(m_vtbl))0x0089B3D4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -277,7 +277,7 @@ struct slf__entity__ai_wait_say_file__str__num__num__t : script_library_class::f
 
 struct slf__entity__ai_wait_say_gab__str__num__num__t : script_library_class::function {
     slf__entity__ai_wait_say_gab__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B42C;
+        m_vtbl = (decltype(m_vtbl))0x0089B42C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -285,7 +285,7 @@ struct slf__entity__ai_wait_say_gab__str__num__num__t : script_library_class::fu
 
 struct slf__entity__ai_wait_say_preregistered_file__str__num__num__t : script_library_class::function {
     slf__entity__ai_wait_say_preregistered_file__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3DC;
+        m_vtbl = (decltype(m_vtbl))0x0089B3DC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -293,7 +293,7 @@ struct slf__entity__ai_wait_say_preregistered_file__str__num__num__t : script_li
 
 struct slf__entity__ai_wait_say_sound_group__str__num__num__t : script_library_class::function {
     slf__entity__ai_wait_say_sound_group__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B41C;
+        m_vtbl = (decltype(m_vtbl))0x0089B41C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -301,7 +301,7 @@ struct slf__entity__ai_wait_say_sound_group__str__num__num__t : script_library_c
 
 struct slf__entity__anim_finished__t : script_library_class::function {
     slf__entity__anim_finished__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AEC4;
+        m_vtbl = (decltype(m_vtbl))0x0089AEC4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -309,7 +309,7 @@ struct slf__entity__anim_finished__t : script_library_class::function {
 
 struct slf__entity__anim_finished__num__t : script_library_class::function {
     slf__entity__anim_finished__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AECC;
+        m_vtbl = (decltype(m_vtbl))0x0089AECC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -317,7 +317,7 @@ struct slf__entity__anim_finished__num__t : script_library_class::function {
 
 struct slf__entity__apply_continuous_rotation__vector3d__num__num__t : script_library_class::function {
     slf__entity__apply_continuous_rotation__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACA4;
+        m_vtbl = (decltype(m_vtbl))0x0089ACA4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -325,7 +325,7 @@ struct slf__entity__apply_continuous_rotation__vector3d__num__num__t : script_li
 
 struct slf__entity__apply_damage__num__t : script_library_class::function {
     slf__entity__apply_damage__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADBC;
+        m_vtbl = (decltype(m_vtbl))0x0089ADBC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -333,7 +333,7 @@ struct slf__entity__apply_damage__num__t : script_library_class::function {
 
 struct slf__entity__apply_directed_damage__num__vector3d__t : script_library_class::function {
     slf__entity__apply_directed_damage__num__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADD4;
+        m_vtbl = (decltype(m_vtbl))0x0089ADD4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -341,7 +341,7 @@ struct slf__entity__apply_directed_damage__num__vector3d__t : script_library_cla
 
 struct slf__entity__apply_directed_damage_cat__num__vector3d__str__num__t : script_library_class::function {
     slf__entity__apply_directed_damage_cat__num__vector3d__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADDC;
+        m_vtbl = (decltype(m_vtbl))0x0089ADDC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -349,7 +349,7 @@ struct slf__entity__apply_directed_damage_cat__num__vector3d__str__num__t : scri
 
 struct slf__entity__apply_explosive_damage__num__vector3d__t : script_library_class::function {
     slf__entity__apply_explosive_damage__num__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADE4;
+        m_vtbl = (decltype(m_vtbl))0x0089ADE4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -357,7 +357,7 @@ struct slf__entity__apply_explosive_damage__num__vector3d__t : script_library_cl
 
 struct slf__entity__apply_explosive_damage__num__vector3d__vector3d__t : script_library_class::function {
     slf__entity__apply_explosive_damage__num__vector3d__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADEC;
+        m_vtbl = (decltype(m_vtbl))0x0089ADEC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -365,7 +365,7 @@ struct slf__entity__apply_explosive_damage__num__vector3d__vector3d__t : script_
 
 struct slf__entity__apply_subdue__num__t : script_library_class::function {
     slf__entity__apply_subdue__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADC4;
+        m_vtbl = (decltype(m_vtbl))0x0089ADC4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -373,7 +373,7 @@ struct slf__entity__apply_subdue__num__t : script_library_class::function {
 
 struct slf__entity__camera_get_target__t : script_library_class::function {
     slf__entity__camera_get_target__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE44;
+        m_vtbl = (decltype(m_vtbl))0x0089AE44;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -381,7 +381,7 @@ struct slf__entity__camera_get_target__t : script_library_class::function {
 
 struct slf__entity__camera_orbit__vector3d__num__num__num__t : script_library_class::function {
     slf__entity__camera_orbit__vector3d__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE74;
+        m_vtbl = (decltype(m_vtbl))0x0089AE74;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -389,7 +389,7 @@ struct slf__entity__camera_orbit__vector3d__num__num__num__t : script_library_cl
 
 struct slf__entity__camera_set_collide_with_world__num__t : script_library_class::function {
     slf__entity__camera_set_collide_with_world__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE5C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE5C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -397,7 +397,7 @@ struct slf__entity__camera_set_collide_with_world__num__t : script_library_class
 
 struct slf__entity__camera_set_roll__num__t : script_library_class::function {
     slf__entity__camera_set_roll__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE4C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE4C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -405,7 +405,7 @@ struct slf__entity__camera_set_roll__num__t : script_library_class::function {
 
 struct slf__entity__camera_set_target__vector3d__t : script_library_class::function {
     slf__entity__camera_set_target__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE3C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE3C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -413,7 +413,7 @@ struct slf__entity__camera_set_target__vector3d__t : script_library_class::funct
 
 struct slf__entity__camera_slide_to__vector3d__vector3d__num__num__t : script_library_class::function {
     slf__entity__camera_slide_to__vector3d__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE64;
+        m_vtbl = (decltype(m_vtbl))0x0089AE64;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -421,7 +421,7 @@ struct slf__entity__camera_slide_to__vector3d__vector3d__num__num__t : script_li
 
 struct slf__entity__camera_slide_to_orbit__vector3d__num__num__num__num__t : script_library_class::function {
     slf__entity__camera_slide_to_orbit__vector3d__num__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE6C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE6C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -429,7 +429,7 @@ struct slf__entity__camera_slide_to_orbit__vector3d__num__num__num__num__t : scr
 
 struct slf__entity__cancel_tether__t : script_library_class::function {
     slf__entity__cancel_tether__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1D4;
+        m_vtbl = (decltype(m_vtbl))0x0089B1D4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -437,7 +437,7 @@ struct slf__entity__cancel_tether__t : script_library_class::function {
 
 struct slf__entity__car_random_body_and_color__t : script_library_class::function {
     slf__entity__car_random_body_and_color__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1C4;
+        m_vtbl = (decltype(m_vtbl))0x0089B1C4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -445,7 +445,7 @@ struct slf__entity__car_random_body_and_color__t : script_library_class::functio
 
 struct slf__entity__change_ai_base_machine__str__t : script_library_class::function {
     slf__entity__change_ai_base_machine__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B144;
+        m_vtbl = (decltype(m_vtbl))0x0089B144;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -453,7 +453,7 @@ struct slf__entity__change_ai_base_machine__str__t : script_library_class::funct
 
 struct slf__entity__collisions_enabled__t : script_library_class::function {
     slf__entity__collisions_enabled__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B43C;
+        m_vtbl = (decltype(m_vtbl))0x0089B43C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -461,7 +461,7 @@ struct slf__entity__collisions_enabled__t : script_library_class::function {
 
 struct slf__entity__compute_sector__t : script_library_class::function {
     slf__entity__compute_sector__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABE4;
+        m_vtbl = (decltype(m_vtbl))0x0089ABE4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -469,7 +469,7 @@ struct slf__entity__compute_sector__t : script_library_class::function {
 
 struct slf__entity__create_damage_interface__t : script_library_class::function {
     slf__entity__create_damage_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B34C;
+        m_vtbl = (decltype(m_vtbl))0x0089B34C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -477,7 +477,7 @@ struct slf__entity__create_damage_interface__t : script_library_class::function 
 
 struct slf__entity__create_interactable_ifc__t : script_library_class::function {
     slf__entity__create_interactable_ifc__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B5B4;
+        m_vtbl = (decltype(m_vtbl))0x0089B5B4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -485,7 +485,7 @@ struct slf__entity__create_interactable_ifc__t : script_library_class::function 
 
 struct slf__entity__create_physical_interface__t : script_library_class::function {
     slf__entity__create_physical_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B344;
+        m_vtbl = (decltype(m_vtbl))0x0089B344;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -493,7 +493,7 @@ struct slf__entity__create_physical_interface__t : script_library_class::functio
 
 struct slf__entity__create_script_data_interface__t : script_library_class::function {
     slf__entity__create_script_data_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B334;
+        m_vtbl = (decltype(m_vtbl))0x0089B334;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -501,7 +501,7 @@ struct slf__entity__create_script_data_interface__t : script_library_class::func
 
 struct slf__entity__create_web_ifc__str__num__num__t : script_library_class::function {
     slf__entity__create_web_ifc__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B534;
+        m_vtbl = (decltype(m_vtbl))0x0089B534;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -509,7 +509,7 @@ struct slf__entity__create_web_ifc__str__num__num__t : script_library_class::fun
 
 struct slf__entity__disable_as_target__t : script_library_class::function {
     slf__entity__disable_as_target__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B14C;
+        m_vtbl = (decltype(m_vtbl))0x0089B14C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -517,7 +517,7 @@ struct slf__entity__disable_as_target__t : script_library_class::function {
 
 struct slf__entity__disable_collisions__t : script_library_class::function {
     slf__entity__disable_collisions__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF84;
+        m_vtbl = (decltype(m_vtbl))0x0089AF84;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -525,7 +525,7 @@ struct slf__entity__disable_collisions__t : script_library_class::function {
 
 struct slf__entity__disable_fading__t : script_library_class::function {
     slf__entity__disable_fading__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADB4;
+        m_vtbl = (decltype(m_vtbl))0x0089ADB4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -533,7 +533,7 @@ struct slf__entity__disable_fading__t : script_library_class::function {
 
 struct slf__entity__disgorge_items__t : script_library_class::function {
     slf__entity__disgorge_items__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF74;
+        m_vtbl = (decltype(m_vtbl))0x0089AF74;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -541,7 +541,7 @@ struct slf__entity__disgorge_items__t : script_library_class::function {
 
 struct slf__entity__enable_as_target__t : script_library_class::function {
     slf__entity__enable_as_target__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B154;
+        m_vtbl = (decltype(m_vtbl))0x0089B154;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -549,7 +549,7 @@ struct slf__entity__enable_as_target__t : script_library_class::function {
 
 struct slf__entity__enable_collisions__t : script_library_class::function {
     slf__entity__enable_collisions__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF8C;
+        m_vtbl = (decltype(m_vtbl))0x0089AF8C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -557,7 +557,7 @@ struct slf__entity__enable_collisions__t : script_library_class::function {
 
 struct slf__entity__enable_collisions__num__t : script_library_class::function {
     slf__entity__enable_collisions__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B434;
+        m_vtbl = (decltype(m_vtbl))0x0089B434;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -565,7 +565,7 @@ struct slf__entity__enable_collisions__num__t : script_library_class::function {
 
 struct slf__entity__eye_check_ent__entity__t : script_library_class::function {
     slf__entity__eye_check_ent__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B054;
+        m_vtbl = (decltype(m_vtbl))0x0089B054;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -573,7 +573,7 @@ struct slf__entity__eye_check_ent__entity__t : script_library_class::function {
 
 struct slf__entity__eye_check_pos__vector3d__t : script_library_class::function {
     slf__entity__eye_check_pos__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B04C;
+        m_vtbl = (decltype(m_vtbl))0x0089B04C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -581,7 +581,7 @@ struct slf__entity__eye_check_pos__vector3d__t : script_library_class::function 
 
 struct slf__entity__force_activate_interaction__string_hash__interactable_interface__t : script_library_class::function {
     slf__entity__force_activate_interaction__string_hash__interactable_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B62C;
+        m_vtbl = (decltype(m_vtbl))0x0089B62C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -589,7 +589,7 @@ struct slf__entity__force_activate_interaction__string_hash__interactable_interf
 
 struct slf__entity__force_current_region__t : script_library_class::function {
     slf__entity__force_current_region__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD24;
+        m_vtbl = (decltype(m_vtbl))0x0089AD24;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -597,7 +597,7 @@ struct slf__entity__force_current_region__t : script_library_class::function {
 
 struct slf__entity__force_region__entity__t : script_library_class::function {
     slf__entity__force_region__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD1C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD1C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -605,7 +605,7 @@ struct slf__entity__force_region__entity__t : script_library_class::function {
 
 struct slf__entity__get_abs_position__t : script_library_class::function {
     slf__entity__get_abs_position__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABCC;
+        m_vtbl = (decltype(m_vtbl))0x0089ABCC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -613,7 +613,7 @@ struct slf__entity__get_abs_position__t : script_library_class::function {
 
 struct slf__entity__get_ai_base_machine_name__t : script_library_class::function {
     slf__entity__get_ai_base_machine_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B16C;
+        m_vtbl = (decltype(m_vtbl))0x0089B16C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -621,7 +621,7 @@ struct slf__entity__get_ai_base_machine_name__t : script_library_class::function
 
 struct slf__entity__get_ai_param_float__str__t : script_library_class::function {
     slf__entity__get_ai_param_float__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B074;
+        m_vtbl = (decltype(m_vtbl))0x0089B074;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -629,7 +629,7 @@ struct slf__entity__get_ai_param_float__str__t : script_library_class::function 
 
 struct slf__entity__get_ai_param_hash__str__t : script_library_class::function {
     slf__entity__get_ai_param_hash__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B08C;
+        m_vtbl = (decltype(m_vtbl))0x0089B08C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -637,7 +637,7 @@ struct slf__entity__get_ai_param_hash__str__t : script_library_class::function {
 
 struct slf__entity__get_ai_param_int__str__t : script_library_class::function {
     slf__entity__get_ai_param_int__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B07C;
+        m_vtbl = (decltype(m_vtbl))0x0089B07C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -645,7 +645,7 @@ struct slf__entity__get_ai_param_int__str__t : script_library_class::function {
 
 struct slf__entity__get_ai_param_str__str__t : script_library_class::function {
     slf__entity__get_ai_param_str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B084;
+        m_vtbl = (decltype(m_vtbl))0x0089B084;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -653,7 +653,7 @@ struct slf__entity__get_ai_param_str__str__t : script_library_class::function {
 
 struct slf__entity__get_ai_param_vector3d__str__t : script_library_class::function {
     slf__entity__get_ai_param_vector3d__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B094;
+        m_vtbl = (decltype(m_vtbl))0x0089B094;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -661,7 +661,7 @@ struct slf__entity__get_ai_param_vector3d__str__t : script_library_class::functi
 
 struct slf__entity__get_ai_signaller__t : script_library_class::function {
     slf__entity__get_ai_signaller__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF6C;
+        m_vtbl = (decltype(m_vtbl))0x0089AF6C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -669,7 +669,7 @@ struct slf__entity__get_ai_signaller__t : script_library_class::function {
 
 struct slf__entity__get_anchor_point__t : script_library_class::function {
     slf__entity__get_anchor_point__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC1C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC1C;
     }
 
     struct parms_t {
@@ -691,7 +691,7 @@ struct slf__entity__get_anchor_point__t : script_library_class::function {
 
 struct slf__entity__get_carry_slave__t : script_library_class::function {
     slf__entity__get_carry_slave__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B19C;
+        m_vtbl = (decltype(m_vtbl))0x0089B19C;
     }
 
     struct parms_t {
@@ -707,7 +707,7 @@ struct slf__entity__get_carry_slave__t : script_library_class::function {
 
 struct slf__entity__get_current_animation_name__t : script_library_class::function {
     slf__entity__get_current_animation_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B044;
+        m_vtbl = (decltype(m_vtbl))0x0089B044;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -715,7 +715,7 @@ struct slf__entity__get_current_animation_name__t : script_library_class::functi
 
 struct slf__entity__get_damage_force__t : script_library_class::function {
     slf__entity__get_damage_force__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABD4;
+        m_vtbl = (decltype(m_vtbl))0x0089ABD4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -723,7 +723,7 @@ struct slf__entity__get_damage_force__t : script_library_class::function {
 
 struct slf__entity__get_debug_name__t : script_library_class::function {
     slf__entity__get_debug_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B444;
+        m_vtbl = (decltype(m_vtbl))0x0089B444;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -731,7 +731,7 @@ struct slf__entity__get_debug_name__t : script_library_class::function {
 
 struct slf__entity__get_detonate_position__t : script_library_class::function {
     slf__entity__get_detonate_position__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABDC;
+        m_vtbl = (decltype(m_vtbl))0x0089ABDC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -739,7 +739,7 @@ struct slf__entity__get_detonate_position__t : script_library_class::function {
 
 struct slf__entity__get_district__t : script_library_class::function {
     slf__entity__get_district__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B024;
+        m_vtbl = (decltype(m_vtbl))0x0089B024;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -747,7 +747,7 @@ struct slf__entity__get_district__t : script_library_class::function {
 
 struct slf__entity__get_facing__t : script_library_class::function {
     slf__entity__get_facing__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABEC;
+        m_vtbl = (decltype(m_vtbl))0x0089ABEC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -755,7 +755,7 @@ struct slf__entity__get_facing__t : script_library_class::function {
 
 struct slf__entity__get_fade_timer__t : script_library_class::function {
     slf__entity__get_fade_timer__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1AC;
+        m_vtbl = (decltype(m_vtbl))0x0089B1AC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -763,7 +763,7 @@ struct slf__entity__get_fade_timer__t : script_library_class::function {
 
 struct slf__entity__get_first_child__t : script_library_class::function {
     slf__entity__get_first_child__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC4C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC4C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -771,7 +771,7 @@ struct slf__entity__get_first_child__t : script_library_class::function {
 
 struct slf__entity__get_hash_name__t : script_library_class::function {
     slf__entity__get_hash_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B44C;
+        m_vtbl = (decltype(m_vtbl))0x0089B44C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -779,7 +779,7 @@ struct slf__entity__get_hash_name__t : script_library_class::function {
 
 struct slf__entity__get_hidey_pos__vector3d__num__t : script_library_class::function {
     slf__entity__get_hidey_pos__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC2C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC2C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -787,7 +787,7 @@ struct slf__entity__get_hidey_pos__vector3d__num__t : script_library_class::func
 
 struct slf__entity__get_ifc_num__str__t : script_library_class::function {
     slf__entity__get_ifc_num__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B284;
+        m_vtbl = (decltype(m_vtbl))0x0089B284;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -795,7 +795,7 @@ struct slf__entity__get_ifc_num__str__t : script_library_class::function {
 
 struct slf__entity__get_ifc_str__str__t : script_library_class::function {
     slf__entity__get_ifc_str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2A4;
+        m_vtbl = (decltype(m_vtbl))0x0089B2A4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -803,7 +803,7 @@ struct slf__entity__get_ifc_str__str__t : script_library_class::function {
 
 struct slf__entity__get_ifc_vec__str__t : script_library_class::function {
     slf__entity__get_ifc_vec__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B294;
+        m_vtbl = (decltype(m_vtbl))0x0089B294;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -811,7 +811,7 @@ struct slf__entity__get_ifc_vec__str__t : script_library_class::function {
 
 struct slf__entity__get_ifl_frame__t : script_library_class::function {
     slf__entity__get_ifl_frame__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B03C;
+        m_vtbl = (decltype(m_vtbl))0x0089B03C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -819,7 +819,7 @@ struct slf__entity__get_ifl_frame__t : script_library_class::function {
 
 struct slf__entity__get_inode_param_float__str__str__t : script_library_class::function {
     slf__entity__get_inode_param_float__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0DC;
+        m_vtbl = (decltype(m_vtbl))0x0089B0DC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -827,7 +827,7 @@ struct slf__entity__get_inode_param_float__str__str__t : script_library_class::f
 
 struct slf__entity__get_inode_param_hash__str__str__t : script_library_class::function {
     slf__entity__get_inode_param_hash__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0F4;
+        m_vtbl = (decltype(m_vtbl))0x0089B0F4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -835,7 +835,7 @@ struct slf__entity__get_inode_param_hash__str__str__t : script_library_class::fu
 
 struct slf__entity__get_inode_param_int__str__str__t : script_library_class::function {
     slf__entity__get_inode_param_int__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0E4;
+        m_vtbl = (decltype(m_vtbl))0x0089B0E4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -843,7 +843,7 @@ struct slf__entity__get_inode_param_int__str__str__t : script_library_class::fun
 
 struct slf__entity__get_inode_param_str__str__str__t : script_library_class::function {
     slf__entity__get_inode_param_str__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0EC;
+        m_vtbl = (decltype(m_vtbl))0x0089B0EC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -851,7 +851,7 @@ struct slf__entity__get_inode_param_str__str__str__t : script_library_class::fun
 
 struct slf__entity__get_inode_param_vector3d__str__str__t : script_library_class::function {
     slf__entity__get_inode_param_vector3d__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0FC;
+        m_vtbl = (decltype(m_vtbl))0x0089B0FC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -859,7 +859,7 @@ struct slf__entity__get_inode_param_vector3d__str__str__t : script_library_class
 
 struct slf__entity__get_interactable_ifc__t : script_library_class::function {
     slf__entity__get_interactable_ifc__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B5BC;
+        m_vtbl = (decltype(m_vtbl))0x0089B5BC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -867,7 +867,7 @@ struct slf__entity__get_interactable_ifc__t : script_library_class::function {
 
 struct slf__entity__get_item__num__t : script_library_class::function {
     slf__entity__get_item__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF54;
+        m_vtbl = (decltype(m_vtbl))0x0089AF54;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -875,7 +875,7 @@ struct slf__entity__get_item__num__t : script_library_class::function {
 
 struct slf__entity__get_item_by_name__str__t : script_library_class::function {
     slf__entity__get_item_by_name__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF5C;
+        m_vtbl = (decltype(m_vtbl))0x0089AF5C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -883,7 +883,7 @@ struct slf__entity__get_item_by_name__str__t : script_library_class::function {
 
 struct slf__entity__get_item_quantity__num__t : script_library_class::function {
     slf__entity__get_item_quantity__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF64;
+        m_vtbl = (decltype(m_vtbl))0x0089AF64;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -891,7 +891,7 @@ struct slf__entity__get_item_quantity__num__t : script_library_class::function {
 
 struct slf__entity__get_last_anchor__t : script_library_class::function {
     slf__entity__get_last_anchor__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC0C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC0C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -899,7 +899,7 @@ struct slf__entity__get_last_anchor__t : script_library_class::function {
 
 struct slf__entity__get_last_attacker__t : script_library_class::function {
     slf__entity__get_last_attacker__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC14;
+        m_vtbl = (decltype(m_vtbl))0x0089AC14;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -907,7 +907,7 @@ struct slf__entity__get_last_attacker__t : script_library_class::function {
 
 struct slf__entity__get_last_item_used__t : script_library_class::function {
     slf__entity__get_last_item_used__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B20C;
+        m_vtbl = (decltype(m_vtbl))0x0089B20C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -915,7 +915,7 @@ struct slf__entity__get_last_item_used__t : script_library_class::function {
 
 struct slf__entity__get_member__str__t : script_library_class::function {
     slf__entity__get_member__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE8C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE8C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -923,7 +923,7 @@ struct slf__entity__get_member__str__t : script_library_class::function {
 
 struct slf__entity__get_next_sibling__t : script_library_class::function {
     slf__entity__get_next_sibling__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC54;
+        m_vtbl = (decltype(m_vtbl))0x0089AC54;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -931,7 +931,7 @@ struct slf__entity__get_next_sibling__t : script_library_class::function {
 
 struct slf__entity__get_num_items__t : script_library_class::function {
     slf__entity__get_num_items__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF4C;
+        m_vtbl = (decltype(m_vtbl))0x0089AF4C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -939,7 +939,7 @@ struct slf__entity__get_num_items__t : script_library_class::function {
 
 struct slf__entity__get_parent__t : script_library_class::function {
     slf__entity__get_parent__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC44;
+        m_vtbl = (decltype(m_vtbl))0x0089AC44;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -947,7 +947,7 @@ struct slf__entity__get_parent__t : script_library_class::function {
 
 struct slf__entity__get_pendulum_length__t : script_library_class::function {
     slf__entity__get_pendulum_length__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3B4;
+        m_vtbl = (decltype(m_vtbl))0x0089B3B4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -955,7 +955,7 @@ struct slf__entity__get_pendulum_length__t : script_library_class::function {
 
 struct slf__entity__get_rel_position__t : script_library_class::function {
     slf__entity__get_rel_position__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC24;
+        m_vtbl = (decltype(m_vtbl))0x0089AC24;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -963,7 +963,7 @@ struct slf__entity__get_rel_position__t : script_library_class::function {
 
 struct slf__entity__get_rel_velocity__entity__t : script_library_class::function {
     slf__entity__get_rel_velocity__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD04;
+        m_vtbl = (decltype(m_vtbl))0x0089AD04;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -971,7 +971,7 @@ struct slf__entity__get_rel_velocity__entity__t : script_library_class::function
 
 struct slf__entity__get_render_alpha__t : script_library_class::function {
     slf__entity__get_render_alpha__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B254;
+        m_vtbl = (decltype(m_vtbl))0x0089B254;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -979,7 +979,7 @@ struct slf__entity__get_render_alpha__t : script_library_class::function {
 
 struct slf__entity__get_render_color__t : script_library_class::function {
     slf__entity__get_render_color__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B24C;
+        m_vtbl = (decltype(m_vtbl))0x0089B24C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -987,7 +987,7 @@ struct slf__entity__get_render_color__t : script_library_class::function {
 
 struct slf__entity__get_scripted_target__t : script_library_class::function {
     slf__entity__get_scripted_target__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B194;
+        m_vtbl = (decltype(m_vtbl))0x0089B194;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -995,7 +995,7 @@ struct slf__entity__get_scripted_target__t : script_library_class::function {
 
 struct slf__entity__get_sector_name__t : script_library_class::function {
     slf__entity__get_sector_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD14;
+        m_vtbl = (decltype(m_vtbl))0x0089AD14;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1003,7 +1003,7 @@ struct slf__entity__get_sector_name__t : script_library_class::function {
 
 struct slf__entity__get_state__num__t : script_library_class::function {
     slf__entity__get_state__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B56C;
+        m_vtbl = (decltype(m_vtbl))0x0089B56C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1011,7 +1011,7 @@ struct slf__entity__get_state__num__t : script_library_class::function {
 
 struct slf__entity__get_time_dilation__t : script_library_class::function {
     slf__entity__get_time_dilation__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B314;
+        m_vtbl = (decltype(m_vtbl))0x0089B314;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1019,7 +1019,7 @@ struct slf__entity__get_time_dilation__t : script_library_class::function {
 
 struct slf__entity__get_time_mode__t : script_library_class::function {
     slf__entity__get_time_mode__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B324;
+        m_vtbl = (decltype(m_vtbl))0x0089B324;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1027,7 +1027,7 @@ struct slf__entity__get_time_mode__t : script_library_class::function {
 
 struct slf__entity__get_x_facing__t : script_library_class::function {
     slf__entity__get_x_facing__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABF4;
+        m_vtbl = (decltype(m_vtbl))0x0089ABF4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1035,7 +1035,7 @@ struct slf__entity__get_x_facing__t : script_library_class::function {
 
 struct slf__entity__get_y_facing__t : script_library_class::function {
     slf__entity__get_y_facing__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ABFC;
+        m_vtbl = (decltype(m_vtbl))0x0089ABFC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1043,7 +1043,7 @@ struct slf__entity__get_y_facing__t : script_library_class::function {
 
 struct slf__entity__get_z_facing__t : script_library_class::function {
     slf__entity__get_z_facing__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC04;
+        m_vtbl = (decltype(m_vtbl))0x0089AC04;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1051,7 +1051,7 @@ struct slf__entity__get_z_facing__t : script_library_class::function {
 
 struct slf__entity__has_carry_slave__t : script_library_class::function {
     slf__entity__has_carry_slave__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1A4;
+        m_vtbl = (decltype(m_vtbl))0x0089B1A4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1059,7 +1059,7 @@ struct slf__entity__has_carry_slave__t : script_library_class::function {
 
 struct slf__entity__has_member__str__t : script_library_class::function {
     slf__entity__has_member__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE94;
+        m_vtbl = (decltype(m_vtbl))0x0089AE94;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1067,7 +1067,7 @@ struct slf__entity__has_member__str__t : script_library_class::function {
 
 struct slf__entity__has_script_data_interface__t : script_library_class::function {
     slf__entity__has_script_data_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B33C;
+        m_vtbl = (decltype(m_vtbl))0x0089B33C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1075,7 +1075,7 @@ struct slf__entity__has_script_data_interface__t : script_library_class::functio
 
 struct slf__entity__hates__entity__t : script_library_class::function {
     slf__entity__hates__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B51C;
+        m_vtbl = (decltype(m_vtbl))0x0089B51C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1083,7 +1083,7 @@ struct slf__entity__hates__entity__t : script_library_class::function {
 
 struct slf__entity__ifl_damage_lock__num__t : script_library_class::function {
     slf__entity__ifl_damage_lock__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B004;
+        m_vtbl = (decltype(m_vtbl))0x0089B004;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1091,7 +1091,7 @@ struct slf__entity__ifl_damage_lock__num__t : script_library_class::function {
 
 struct slf__entity__ifl_lock__num__t : script_library_class::function {
     slf__entity__ifl_lock__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B00C;
+        m_vtbl = (decltype(m_vtbl))0x0089B00C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1099,7 +1099,7 @@ struct slf__entity__ifl_lock__num__t : script_library_class::function {
 
 struct slf__entity__ifl_pause__t : script_library_class::function {
     slf__entity__ifl_pause__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B014;
+        m_vtbl = (decltype(m_vtbl))0x0089B014;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1107,7 +1107,7 @@ struct slf__entity__ifl_pause__t : script_library_class::function {
 
 struct slf__entity__ifl_play__t : script_library_class::function {
     slf__entity__ifl_play__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B01C;
+        m_vtbl = (decltype(m_vtbl))0x0089B01C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1115,7 +1115,7 @@ struct slf__entity__ifl_play__t : script_library_class::function {
 
 struct slf__entity__in_sector__vector3d__vector3d__num__t : script_library_class::function {
     slf__entity__in_sector__vector3d__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD0C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD0C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1123,7 +1123,7 @@ struct slf__entity__in_sector__vector3d__vector3d__num__t : script_library_class
 
 struct slf__entity__inhibit_universal_soldier_ability__str__num__t : script_library_class::function {
     slf__entity__inhibit_universal_soldier_ability__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B174;
+        m_vtbl = (decltype(m_vtbl))0x0089B174;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1131,7 +1131,7 @@ struct slf__entity__inhibit_universal_soldier_ability__str__num__t : script_libr
 
 struct slf__entity__invoke_facial_expression__num__num__num__num__t : script_library_class::function {
     slf__entity__invoke_facial_expression__num__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3FC;
+        m_vtbl = (decltype(m_vtbl))0x0089B3FC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1139,7 +1139,7 @@ struct slf__entity__invoke_facial_expression__num__num__num__num__t : script_lib
 
 struct slf__entity__is_a_car__t : script_library_class::function {
     slf__entity__is_a_car__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD5C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD5C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1147,7 +1147,7 @@ struct slf__entity__is_a_car__t : script_library_class::function {
 
 struct slf__entity__is_picked_up__t : script_library_class::function {
     slf__entity__is_picked_up__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE1C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE1C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1155,7 +1155,7 @@ struct slf__entity__is_picked_up__t : script_library_class::function {
 
 struct slf__entity__is_suspended__t : script_library_class::function {
     slf__entity__is_suspended__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B45C;
+        m_vtbl = (decltype(m_vtbl))0x0089B45C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1163,7 +1163,7 @@ struct slf__entity__is_suspended__t : script_library_class::function {
 
 struct slf__entity__is_throwable__t : script_library_class::function {
     slf__entity__is_throwable__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD64;
+        m_vtbl = (decltype(m_vtbl))0x0089AD64;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1171,7 +1171,7 @@ struct slf__entity__is_throwable__t : script_library_class::function {
 
 struct slf__entity__is_valid__t : script_library_class::function {
     slf__entity__is_valid__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B464;
+        m_vtbl = (decltype(m_vtbl))0x0089B464;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1179,7 +1179,7 @@ struct slf__entity__is_valid__t : script_library_class::function {
 
 struct slf__entity__is_visible__t : script_library_class::function {
     slf__entity__is_visible__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD74;
+        m_vtbl = (decltype(m_vtbl))0x0089AD74;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1187,7 +1187,7 @@ struct slf__entity__is_visible__t : script_library_class::function {
 
 struct slf__entity__kill_anim_in_slot__num__t : script_library_class::function {
     slf__entity__kill_anim_in_slot__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AEBC;
+        m_vtbl = (decltype(m_vtbl))0x0089AEBC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1195,7 +1195,7 @@ struct slf__entity__kill_anim_in_slot__num__t : script_library_class::function {
 
 struct slf__entity__likes__entity__t : script_library_class::function {
     slf__entity__likes__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B524;
+        m_vtbl = (decltype(m_vtbl))0x0089B524;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1203,7 +1203,7 @@ struct slf__entity__likes__entity__t : script_library_class::function {
 
 struct slf__entity__look_at__vector3d__t : script_library_class::function {
     slf__entity__look_at__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC7C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC7C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1211,7 +1211,7 @@ struct slf__entity__look_at__vector3d__t : script_library_class::function {
 
 struct slf__entity__motion_blur_off__t : script_library_class::function {
     slf__entity__motion_blur_off__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADFC;
+        m_vtbl = (decltype(m_vtbl))0x0089ADFC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1219,7 +1219,7 @@ struct slf__entity__motion_blur_off__t : script_library_class::function {
 
 struct slf__entity__motion_blur_on__num__num__num__t : script_library_class::function {
     slf__entity__motion_blur_on__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADF4;
+        m_vtbl = (decltype(m_vtbl))0x0089ADF4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1227,7 +1227,7 @@ struct slf__entity__motion_blur_on__num__num__num__t : script_library_class::fun
 
 struct slf__entity__motion_trail_off__t : script_library_class::function {
     slf__entity__motion_trail_off__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE14;
+        m_vtbl = (decltype(m_vtbl))0x0089AE14;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1235,7 +1235,7 @@ struct slf__entity__motion_trail_off__t : script_library_class::function {
 
 struct slf__entity__motion_trail_on__entity__entity__vector3d__num__num__num__num__t : script_library_class::function {
     slf__entity__motion_trail_on__entity__entity__vector3d__num__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE04;
+        m_vtbl = (decltype(m_vtbl))0x0089AE04;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1243,7 +1243,7 @@ struct slf__entity__motion_trail_on__entity__entity__vector3d__num__num__num__nu
 
 struct slf__entity__motion_trail_on__entity__str__num__num__vector3d__num__num__num__num__t : script_library_class::function {
     slf__entity__motion_trail_on__entity__str__num__num__vector3d__num__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE0C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE0C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1251,7 +1251,7 @@ struct slf__entity__motion_trail_on__entity__str__num__num__vector3d__num__num__
 
 struct slf__entity__neutral__entity__t : script_library_class::function {
     slf__entity__neutral__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B52C;
+        m_vtbl = (decltype(m_vtbl))0x0089B52C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1259,7 +1259,7 @@ struct slf__entity__neutral__entity__t : script_library_class::function {
 
 struct slf__entity__operator_not_equals__entity__t : script_library_class::function {
     slf__entity__operator_not_equals__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD3C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD3C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1267,7 +1267,7 @@ struct slf__entity__operator_not_equals__entity__t : script_library_class::funct
 
 struct slf__entity__operator_equals_equals__entity__t : script_library_class::function {
     slf__entity__operator_equals_equals__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD34;
+        m_vtbl = (decltype(m_vtbl))0x0089AD34;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1275,7 +1275,7 @@ struct slf__entity__operator_equals_equals__entity__t : script_library_class::fu
 
 struct slf__entity__physical_ifc_add_particle__str__t : script_library_class::function {
     slf__entity__physical_ifc_add_particle__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4A4;
+        m_vtbl = (decltype(m_vtbl))0x0089B4A4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1283,7 +1283,7 @@ struct slf__entity__physical_ifc_add_particle__str__t : script_library_class::fu
 
 struct slf__entity__physical_ifc_apply_force__vector3d__num__t : script_library_class::function {
     slf__entity__physical_ifc_apply_force__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B354;
+        m_vtbl = (decltype(m_vtbl))0x0089B354;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1291,7 +1291,7 @@ struct slf__entity__physical_ifc_apply_force__vector3d__num__t : script_library_
 
 struct slf__entity__physical_ifc_cancel_all_velocity__t : script_library_class::function {
     slf__entity__physical_ifc_cancel_all_velocity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B36C;
+        m_vtbl = (decltype(m_vtbl))0x0089B36C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1299,7 +1299,7 @@ struct slf__entity__physical_ifc_cancel_all_velocity__t : script_library_class::
 
 struct slf__entity__physical_ifc_clear_pendulum__t : script_library_class::function {
     slf__entity__physical_ifc_clear_pendulum__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3A4;
+        m_vtbl = (decltype(m_vtbl))0x0089B3A4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1307,7 +1307,7 @@ struct slf__entity__physical_ifc_clear_pendulum__t : script_library_class::funct
 
 struct slf__entity__physical_ifc_get_attached_particle_name__t : script_library_class::function {
     slf__entity__physical_ifc_get_attached_particle_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4BC;
+        m_vtbl = (decltype(m_vtbl))0x0089B4BC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1315,7 +1315,7 @@ struct slf__entity__physical_ifc_get_attached_particle_name__t : script_library_
 
 struct slf__entity__physical_ifc_get_bounce_particle_name__t : script_library_class::function {
     slf__entity__physical_ifc_get_bounce_particle_name__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4AC;
+        m_vtbl = (decltype(m_vtbl))0x0089B4AC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1323,7 +1323,7 @@ struct slf__entity__physical_ifc_get_bounce_particle_name__t : script_library_cl
 
 struct slf__entity__physical_ifc_is_biped_physics_running__t : script_library_class::function {
     slf__entity__physical_ifc_is_biped_physics_running__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B374;
+        m_vtbl = (decltype(m_vtbl))0x0089B374;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1331,7 +1331,7 @@ struct slf__entity__physical_ifc_is_biped_physics_running__t : script_library_cl
 
 struct slf__entity__physical_ifc_is_effectively_standing__t : script_library_class::function {
     slf__entity__physical_ifc_is_effectively_standing__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B35C;
+        m_vtbl = (decltype(m_vtbl))0x0089B35C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1339,7 +1339,7 @@ struct slf__entity__physical_ifc_is_effectively_standing__t : script_library_cla
 
 struct slf__entity__physical_ifc_is_prop_physics_at_rest__t : script_library_class::function {
     slf__entity__physical_ifc_is_prop_physics_at_rest__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4CC;
+        m_vtbl = (decltype(m_vtbl))0x0089B4CC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1347,7 +1347,7 @@ struct slf__entity__physical_ifc_is_prop_physics_at_rest__t : script_library_cla
 
 struct slf__entity__physical_ifc_is_prop_physics_running__t : script_library_class::function {
     slf__entity__physical_ifc_is_prop_physics_running__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4D4;
+        m_vtbl = (decltype(m_vtbl))0x0089B4D4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1355,7 +1355,7 @@ struct slf__entity__physical_ifc_is_prop_physics_running__t : script_library_cla
 
 struct slf__entity__physical_ifc_manage_standing__num__t : script_library_class::function {
     slf__entity__physical_ifc_manage_standing__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B364;
+        m_vtbl = (decltype(m_vtbl))0x0089B364;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1363,7 +1363,7 @@ struct slf__entity__physical_ifc_manage_standing__num__t : script_library_class:
 
 struct slf__entity__physical_ifc_set_allow_biped_physics__num__t : script_library_class::function {
     slf__entity__physical_ifc_set_allow_biped_physics__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B38C;
+        m_vtbl = (decltype(m_vtbl))0x0089B38C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1371,7 +1371,7 @@ struct slf__entity__physical_ifc_set_allow_biped_physics__num__t : script_librar
 
 struct slf__entity__physical_ifc_set_attached_particle_name__str__t : script_library_class::function {
     slf__entity__physical_ifc_set_attached_particle_name__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4C4;
+        m_vtbl = (decltype(m_vtbl))0x0089B4C4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1379,7 +1379,7 @@ struct slf__entity__physical_ifc_set_attached_particle_name__str__t : script_lib
 
 struct slf__entity__physical_ifc_set_bounce_particle_name__str__t : script_library_class::function {
     slf__entity__physical_ifc_set_bounce_particle_name__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4B4;
+        m_vtbl = (decltype(m_vtbl))0x0089B4B4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1387,7 +1387,7 @@ struct slf__entity__physical_ifc_set_bounce_particle_name__str__t : script_libra
 
 struct slf__entity__physical_ifc_set_pendulum__entity__num__t : script_library_class::function {
     slf__entity__physical_ifc_set_pendulum__entity__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B39C;
+        m_vtbl = (decltype(m_vtbl))0x0089B39C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1395,7 +1395,7 @@ struct slf__entity__physical_ifc_set_pendulum__entity__num__t : script_library_c
 
 struct slf__entity__physical_ifc_set_pendulum__vector3d__num__t : script_library_class::function {
     slf__entity__physical_ifc_set_pendulum__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B394;
+        m_vtbl = (decltype(m_vtbl))0x0089B394;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1403,7 +1403,7 @@ struct slf__entity__physical_ifc_set_pendulum__vector3d__num__t : script_library
 
 struct slf__entity__physical_ifc_start_biped_physics__t : script_library_class::function {
     slf__entity__physical_ifc_start_biped_physics__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B37C;
+        m_vtbl = (decltype(m_vtbl))0x0089B37C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1411,7 +1411,7 @@ struct slf__entity__physical_ifc_start_biped_physics__t : script_library_class::
 
 struct slf__entity__physical_ifc_start_prop_physics__vector3d__num__t : script_library_class::function {
     slf__entity__physical_ifc_start_prop_physics__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B494;
+        m_vtbl = (decltype(m_vtbl))0x0089B494;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1419,7 +1419,7 @@ struct slf__entity__physical_ifc_start_prop_physics__vector3d__num__t : script_l
 
 struct slf__entity__physical_ifc_stop_biped_physics__t : script_library_class::function {
     slf__entity__physical_ifc_stop_biped_physics__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B384;
+        m_vtbl = (decltype(m_vtbl))0x0089B384;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1427,7 +1427,7 @@ struct slf__entity__physical_ifc_stop_biped_physics__t : script_library_class::f
 
 struct slf__entity__physical_ifc_stop_prop_physics__t : script_library_class::function {
     slf__entity__physical_ifc_stop_prop_physics__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B49C;
+        m_vtbl = (decltype(m_vtbl))0x0089B49C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1435,7 +1435,7 @@ struct slf__entity__physical_ifc_stop_prop_physics__t : script_library_class::fu
 
 struct slf__entity__play_anim__str__t : script_library_class::function {
     slf__entity__play_anim__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AEA4;
+        m_vtbl = (decltype(m_vtbl))0x0089AEA4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1443,7 +1443,7 @@ struct slf__entity__play_anim__str__t : script_library_class::function {
 
 struct slf__entity__play_anim__str__num__num__t : script_library_class::function {
     slf__entity__play_anim__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AEAC;
+        m_vtbl = (decltype(m_vtbl))0x0089AEAC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1451,7 +1451,7 @@ struct slf__entity__play_anim__str__num__num__t : script_library_class::function
 
 struct slf__entity__poison__num__num__t : script_library_class::function {
     slf__entity__poison__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1DC;
+        m_vtbl = (decltype(m_vtbl))0x0089B1DC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1459,7 +1459,7 @@ struct slf__entity__poison__num__num__t : script_library_class::function {
 
 struct slf__entity__pop_ai_base_machine__t : script_library_class::function {
     slf__entity__pop_ai_base_machine__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B164;
+        m_vtbl = (decltype(m_vtbl))0x0089B164;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1467,7 +1467,7 @@ struct slf__entity__pop_ai_base_machine__t : script_library_class::function {
 
 struct slf__entity__pre_roll__num__t : script_library_class::function {
     slf__entity__pre_roll__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B55C;
+        m_vtbl = (decltype(m_vtbl))0x0089B55C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1475,7 +1475,7 @@ struct slf__entity__pre_roll__num__t : script_library_class::function {
 
 struct slf__entity__push_ai_base_machine__str__t : script_library_class::function {
     slf__entity__push_ai_base_machine__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B15C;
+        m_vtbl = (decltype(m_vtbl))0x0089B15C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1483,7 +1483,7 @@ struct slf__entity__push_ai_base_machine__str__t : script_library_class::functio
 
 struct slf__entity__randomize_position__vector3d__num__num__num__t : script_library_class::function {
     slf__entity__randomize_position__vector3d__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4DC;
+        m_vtbl = (decltype(m_vtbl))0x0089B4DC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1491,7 +1491,7 @@ struct slf__entity__randomize_position__vector3d__num__num__num__t : script_libr
 
 struct slf__entity__regenerate__num__num__t : script_library_class::function {
     slf__entity__regenerate__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1E4;
+        m_vtbl = (decltype(m_vtbl))0x0089B1E4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1499,7 +1499,7 @@ struct slf__entity__regenerate__num__num__t : script_library_class::function {
 
 struct slf__entity__rel_angle__vector3d__t : script_library_class::function {
     slf__entity__rel_angle__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC34;
+        m_vtbl = (decltype(m_vtbl))0x0089AC34;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1507,7 +1507,7 @@ struct slf__entity__rel_angle__vector3d__t : script_library_class::function {
 
 struct slf__entity__remove_collision_ignorance__entity__t : script_library_class::function {
     slf__entity__remove_collision_ignorance__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF9C;
+        m_vtbl = (decltype(m_vtbl))0x0089AF9C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1515,7 +1515,7 @@ struct slf__entity__remove_collision_ignorance__entity__t : script_library_class
 
 struct slf__entity__remove_exclusive_interactor__string_hash__interactable_interface__t : script_library_class::function {
     slf__entity__remove_exclusive_interactor__string_hash__interactable_interface__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B5CC;
+        m_vtbl = (decltype(m_vtbl))0x0089B5CC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1523,7 +1523,7 @@ struct slf__entity__remove_exclusive_interactor__string_hash__interactable_inter
 
 struct slf__entity__remove_selectable_target__entity__t : script_library_class::function {
     slf__entity__remove_selectable_target__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B184;
+        m_vtbl = (decltype(m_vtbl))0x0089B184;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1531,7 +1531,7 @@ struct slf__entity__remove_selectable_target__entity__t : script_library_class::
 
 struct slf__entity__remove_vehicle_from_traffic_system__t : script_library_class::function {
     slf__entity__remove_vehicle_from_traffic_system__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B47C;
+        m_vtbl = (decltype(m_vtbl))0x0089B47C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1539,7 +1539,7 @@ struct slf__entity__remove_vehicle_from_traffic_system__t : script_library_class
 
 struct slf__entity__reset_ai__t : script_library_class::function {
     slf__entity__reset_ai__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B06C;
+        m_vtbl = (decltype(m_vtbl))0x0089B06C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1547,7 +1547,7 @@ struct slf__entity__reset_ai__t : script_library_class::function {
 
 struct slf__entity__restart__t : script_library_class::function {
     slf__entity__restart__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B564;
+        m_vtbl = (decltype(m_vtbl))0x0089B564;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1555,7 +1555,7 @@ struct slf__entity__restart__t : script_library_class::function {
 
 struct slf__entity__seriously_kill__t : script_library_class::function {
     slf__entity__seriously_kill__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADCC;
+        m_vtbl = (decltype(m_vtbl))0x0089ADCC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1563,7 +1563,7 @@ struct slf__entity__seriously_kill__t : script_library_class::function {
 
 struct slf__entity__set_abs_xz_facing__vector3d__t : script_library_class::function {
     slf__entity__set_abs_xz_facing__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC94;
+        m_vtbl = (decltype(m_vtbl))0x0089AC94;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1571,7 +1571,7 @@ struct slf__entity__set_abs_xz_facing__vector3d__t : script_library_class::funct
 
 struct slf__entity__set_active__num__t : script_library_class::function {
     slf__entity__set_active__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD9C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD9C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1579,7 +1579,7 @@ struct slf__entity__set_active__num__t : script_library_class::function {
 
 struct slf__entity__set_ai_param_float__str__num__t : script_library_class::function {
     slf__entity__set_ai_param_float__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B09C;
+        m_vtbl = (decltype(m_vtbl))0x0089B09C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1587,7 +1587,7 @@ struct slf__entity__set_ai_param_float__str__num__t : script_library_class::func
 
 struct slf__entity__set_ai_param_float_variance__str__num__num__t : script_library_class::function {
     slf__entity__set_ai_param_float_variance__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0A4;
+        m_vtbl = (decltype(m_vtbl))0x0089B0A4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1595,7 +1595,7 @@ struct slf__entity__set_ai_param_float_variance__str__num__num__t : script_libra
 
 struct slf__entity__set_ai_param_hash__str__num__t : script_library_class::function {
     slf__entity__set_ai_param_hash__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0C4;
+        m_vtbl = (decltype(m_vtbl))0x0089B0C4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1603,7 +1603,7 @@ struct slf__entity__set_ai_param_hash__str__num__t : script_library_class::funct
 
 struct slf__entity__set_ai_param_hash__str__str__t : script_library_class::function {
     slf__entity__set_ai_param_hash__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0BC;
+        m_vtbl = (decltype(m_vtbl))0x0089B0BC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1611,7 +1611,7 @@ struct slf__entity__set_ai_param_hash__str__str__t : script_library_class::funct
 
 struct slf__entity__set_ai_param_hash__str__string_hash__t : script_library_class::function {
     slf__entity__set_ai_param_hash__str__string_hash__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0CC;
+        m_vtbl = (decltype(m_vtbl))0x0089B0CC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1619,7 +1619,7 @@ struct slf__entity__set_ai_param_hash__str__string_hash__t : script_library_clas
 
 struct slf__entity__set_ai_param_int__str__num__t : script_library_class::function {
     slf__entity__set_ai_param_int__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0AC;
+        m_vtbl = (decltype(m_vtbl))0x0089B0AC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1627,7 +1627,7 @@ struct slf__entity__set_ai_param_int__str__num__t : script_library_class::functi
 
 struct slf__entity__set_ai_param_str__str__str__t : script_library_class::function {
     slf__entity__set_ai_param_str__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0B4;
+        m_vtbl = (decltype(m_vtbl))0x0089B0B4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1635,7 +1635,7 @@ struct slf__entity__set_ai_param_str__str__str__t : script_library_class::functi
 
 struct slf__entity__set_ai_param_vector3d__str__vector3d__t : script_library_class::function {
     slf__entity__set_ai_param_vector3d__str__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B0D4;
+        m_vtbl = (decltype(m_vtbl))0x0089B0D4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1643,7 +1643,7 @@ struct slf__entity__set_ai_param_vector3d__str__vector3d__t : script_library_cla
 
 struct slf__entity__set_ambient_factor__vector3d__t : script_library_class::function {
     slf__entity__set_ambient_factor__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B32C;
+        m_vtbl = (decltype(m_vtbl))0x0089B32C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1651,7 +1651,7 @@ struct slf__entity__set_ambient_factor__vector3d__t : script_library_class::func
 
 struct slf__entity__set_anchor_activated__num__t : script_library_class::function {
     slf__entity__set_anchor_activated__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFA4;
+        m_vtbl = (decltype(m_vtbl))0x0089AFA4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1659,7 +1659,7 @@ struct slf__entity__set_anchor_activated__num__t : script_library_class::functio
 
 struct slf__entity__set_car_combat_info__num__num__num__num__num__num__num__num__t : script_library_class::function {
     slf__entity__set_car_combat_info__num__num__num__num__num__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1BC;
+        m_vtbl = (decltype(m_vtbl))0x0089B1BC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1667,7 +1667,7 @@ struct slf__entity__set_car_combat_info__num__num__num__num__num__num__num__num_
 
 struct slf__entity__set_crawlable__num__t : script_library_class::function {
     slf__entity__set_crawlable__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD84;
+        m_vtbl = (decltype(m_vtbl))0x0089AD84;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1675,7 +1675,7 @@ struct slf__entity__set_crawlable__num__t : script_library_class::function {
 
 struct slf__entity__set_default_variant__t : script_library_class::function {
     slf__entity__set_default_variant__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B544;
+        m_vtbl = (decltype(m_vtbl))0x0089B544;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1683,7 +1683,7 @@ struct slf__entity__set_default_variant__t : script_library_class::function {
 
 struct slf__entity__set_distance_clip__num__t : script_library_class::function {
     slf__entity__set_distance_clip__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADAC;
+        m_vtbl = (decltype(m_vtbl))0x0089ADAC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1691,7 +1691,7 @@ struct slf__entity__set_distance_clip__num__t : script_library_class::function {
 
 struct slf__entity__set_entity_blur__num__t : script_library_class::function {
     slf__entity__set_entity_blur__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B224;
+        m_vtbl = (decltype(m_vtbl))0x0089B224;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1699,7 +1699,7 @@ struct slf__entity__set_entity_blur__num__t : script_library_class::function {
 
 struct slf__entity__set_facing__vector3d__vector3d__t : script_library_class::function {
     slf__entity__set_facing__vector3d__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC8C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC8C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1707,7 +1707,7 @@ struct slf__entity__set_facing__vector3d__vector3d__t : script_library_class::fu
 
 struct slf__entity__set_fade_timer__num__t : script_library_class::function {
     slf__entity__set_fade_timer__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1B4;
+        m_vtbl = (decltype(m_vtbl))0x0089B1B4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1715,7 +1715,7 @@ struct slf__entity__set_fade_timer__num__t : script_library_class::function {
 
 struct slf__entity__set_hires_shadow__num__t : script_library_class::function {
     slf__entity__set_hires_shadow__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD4C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD4C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1723,7 +1723,7 @@ struct slf__entity__set_hires_shadow__num__t : script_library_class::function {
 
 struct slf__entity__set_ifc_num__str__num__t : script_library_class::function {
     slf__entity__set_ifc_num__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B28C;
+        m_vtbl = (decltype(m_vtbl))0x0089B28C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1731,7 +1731,7 @@ struct slf__entity__set_ifc_num__str__num__t : script_library_class::function {
 
 struct slf__entity__set_ifc_str__str__str__t : script_library_class::function {
     slf__entity__set_ifc_str__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B2AC;
+        m_vtbl = (decltype(m_vtbl))0x0089B2AC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1739,7 +1739,7 @@ struct slf__entity__set_ifc_str__str__str__t : script_library_class::function {
 
 struct slf__entity__set_ifc_vec__str__vector3d__t : script_library_class::function {
     slf__entity__set_ifc_vec__str__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B29C;
+        m_vtbl = (decltype(m_vtbl))0x0089B29C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1747,7 +1747,7 @@ struct slf__entity__set_ifc_vec__str__vector3d__t : script_library_class::functi
 
 struct slf__entity__set_ignore_limbo__num__t : script_library_class::function {
     slf__entity__set_ignore_limbo__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B4E4;
+        m_vtbl = (decltype(m_vtbl))0x0089B4E4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1755,7 +1755,7 @@ struct slf__entity__set_ignore_limbo__num__t : script_library_class::function {
 
 struct slf__entity__set_immobile__num__t : script_library_class::function {
     slf__entity__set_immobile__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B484;
+        m_vtbl = (decltype(m_vtbl))0x0089B484;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1763,7 +1763,7 @@ struct slf__entity__set_immobile__num__t : script_library_class::function {
 
 struct slf__entity__set_inode_param_entity__str__str__entity__t : script_library_class::function {
     slf__entity__set_inode_param_entity__str__str__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B11C;
+        m_vtbl = (decltype(m_vtbl))0x0089B11C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1771,7 +1771,7 @@ struct slf__entity__set_inode_param_entity__str__str__entity__t : script_library
 
 struct slf__entity__set_inode_param_float__str__str__num__t : script_library_class::function {
     slf__entity__set_inode_param_float__str__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B104;
+        m_vtbl = (decltype(m_vtbl))0x0089B104;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1779,7 +1779,7 @@ struct slf__entity__set_inode_param_float__str__str__num__t : script_library_cla
 
 struct slf__entity__set_inode_param_float_variance__str__str__num__num__t : script_library_class::function {
     slf__entity__set_inode_param_float_variance__str__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B10C;
+        m_vtbl = (decltype(m_vtbl))0x0089B10C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1787,7 +1787,7 @@ struct slf__entity__set_inode_param_float_variance__str__str__num__num__t : scri
 
 struct slf__entity__set_inode_param_hash__str__str__num__t : script_library_class::function {
     slf__entity__set_inode_param_hash__str__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B134;
+        m_vtbl = (decltype(m_vtbl))0x0089B134;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1795,7 +1795,7 @@ struct slf__entity__set_inode_param_hash__str__str__num__t : script_library_clas
 
 struct slf__entity__set_inode_param_hash__str__str__str__t : script_library_class::function {
     slf__entity__set_inode_param_hash__str__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B12C;
+        m_vtbl = (decltype(m_vtbl))0x0089B12C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1803,7 +1803,7 @@ struct slf__entity__set_inode_param_hash__str__str__str__t : script_library_clas
 
 struct slf__entity__set_inode_param_int__str__str__num__t : script_library_class::function {
     slf__entity__set_inode_param_int__str__str__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B114;
+        m_vtbl = (decltype(m_vtbl))0x0089B114;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1811,7 +1811,7 @@ struct slf__entity__set_inode_param_int__str__str__num__t : script_library_class
 
 struct slf__entity__set_inode_param_str__str__str__str__t : script_library_class::function {
     slf__entity__set_inode_param_str__str__str__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B124;
+        m_vtbl = (decltype(m_vtbl))0x0089B124;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1819,7 +1819,7 @@ struct slf__entity__set_inode_param_str__str__str__str__t : script_library_class
 
 struct slf__entity__set_inode_param_vector3d__str__str__vector3d__t : script_library_class::function {
     slf__entity__set_inode_param_vector3d__str__str__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B13C;
+        m_vtbl = (decltype(m_vtbl))0x0089B13C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1827,7 +1827,7 @@ struct slf__entity__set_inode_param_vector3d__str__str__vector3d__t : script_lib
 
 struct slf__entity__set_invulnerable__num__t : script_library_class::function {
     slf__entity__set_invulnerable__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD44;
+        m_vtbl = (decltype(m_vtbl))0x0089AD44;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1835,7 +1835,7 @@ struct slf__entity__set_invulnerable__num__t : script_library_class::function {
 
 struct slf__entity__set_kill_ent_on_destroy__num__t : script_library_class::function {
     slf__entity__set_kill_ent_on_destroy__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B48C;
+        m_vtbl = (decltype(m_vtbl))0x0089B48C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1843,7 +1843,7 @@ struct slf__entity__set_kill_ent_on_destroy__num__t : script_library_class::func
 
 struct slf__entity__set_member_hidden__num__t : script_library_class::function {
     slf__entity__set_member_hidden__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE9C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE9C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1851,7 +1851,7 @@ struct slf__entity__set_member_hidden__num__t : script_library_class::function {
 
 struct slf__entity__set_parent__entity__t : script_library_class::function {
     slf__entity__set_parent__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC3C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC3C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1859,7 +1859,7 @@ struct slf__entity__set_parent__entity__t : script_library_class::function {
 
 struct slf__entity__set_parent_rel__entity__t : script_library_class::function {
     slf__entity__set_parent_rel__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC5C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC5C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1867,7 +1867,7 @@ struct slf__entity__set_parent_rel__entity__t : script_library_class::function {
 
 struct slf__entity__set_path_graph__str__t : script_library_class::function {
     slf__entity__set_path_graph__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B214;
+        m_vtbl = (decltype(m_vtbl))0x0089B214;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1875,7 +1875,7 @@ struct slf__entity__set_path_graph__str__t : script_library_class::function {
 
 struct slf__entity__set_path_graph_start_node__num__t : script_library_class::function {
     slf__entity__set_path_graph_start_node__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B21C;
+        m_vtbl = (decltype(m_vtbl))0x0089B21C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1883,7 +1883,7 @@ struct slf__entity__set_path_graph_start_node__num__t : script_library_class::fu
 
 struct slf__entity__set_pendulum_attach_limb__num__t : script_library_class::function {
     slf__entity__set_pendulum_attach_limb__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3BC;
+        m_vtbl = (decltype(m_vtbl))0x0089B3BC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1891,7 +1891,7 @@ struct slf__entity__set_pendulum_attach_limb__num__t : script_library_class::fun
 
 struct slf__entity__set_pendulum_length__num__t : script_library_class::function {
     slf__entity__set_pendulum_length__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B3AC;
+        m_vtbl = (decltype(m_vtbl))0x0089B3AC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1899,7 +1899,7 @@ struct slf__entity__set_pendulum_length__num__t : script_library_class::function
 
 struct slf__entity__set_physical__num__t : script_library_class::function {
     slf__entity__set_physical__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ADA4;
+        m_vtbl = (decltype(m_vtbl))0x0089ADA4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1907,7 +1907,7 @@ struct slf__entity__set_physical__num__t : script_library_class::function {
 
 struct slf__entity__set_po_facing__vector3d__t : script_library_class::function {
     slf__entity__set_po_facing__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC9C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC9C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1915,7 +1915,7 @@ struct slf__entity__set_po_facing__vector3d__t : script_library_class::function 
 
 struct slf__entity__set_rel_position__vector3d__t : script_library_class::function {
     slf__entity__set_rel_position__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC64;
+        m_vtbl = (decltype(m_vtbl))0x0089AC64;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1923,7 +1923,7 @@ struct slf__entity__set_rel_position__vector3d__t : script_library_class::functi
 
 struct slf__entity__set_render_alpha__num__t : script_library_class::function {
     slf__entity__set_render_alpha__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B244;
+        m_vtbl = (decltype(m_vtbl))0x0089B244;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1931,7 +1931,7 @@ struct slf__entity__set_render_alpha__num__t : script_library_class::function {
 
 struct slf__entity__set_render_color__vector3d__t : script_library_class::function {
     slf__entity__set_render_color__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B23C;
+        m_vtbl = (decltype(m_vtbl))0x0089B23C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1939,7 +1939,7 @@ struct slf__entity__set_render_color__vector3d__t : script_library_class::functi
 
 struct slf__entity__set_render_scale__vector3d__t : script_library_class::function {
     slf__entity__set_render_scale__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B22C;
+        m_vtbl = (decltype(m_vtbl))0x0089B22C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1947,7 +1947,7 @@ struct slf__entity__set_render_scale__vector3d__t : script_library_class::functi
 
 struct slf__entity__set_scale__num__t : script_library_class::function {
     slf__entity__set_scale__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B274;
+        m_vtbl = (decltype(m_vtbl))0x0089B274;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1955,7 +1955,7 @@ struct slf__entity__set_scale__num__t : script_library_class::function {
 
 struct slf__entity__set_scripted_target__entity__t : script_library_class::function {
     slf__entity__set_scripted_target__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B18C;
+        m_vtbl = (decltype(m_vtbl))0x0089B18C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1963,7 +1963,7 @@ struct slf__entity__set_scripted_target__entity__t : script_library_class::funct
 
 struct slf__entity__set_see_thru__num__t : script_library_class::function {
     slf__entity__set_see_thru__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD94;
+        m_vtbl = (decltype(m_vtbl))0x0089AD94;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1971,7 +1971,7 @@ struct slf__entity__set_see_thru__num__t : script_library_class::function {
 
 struct slf__entity__set_special_target__num__t : script_library_class::function {
     slf__entity__set_special_target__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B454;
+        m_vtbl = (decltype(m_vtbl))0x0089B454;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1979,7 +1979,7 @@ struct slf__entity__set_special_target__num__t : script_library_class::function 
 
 struct slf__entity__set_state__num__num__t : script_library_class::function {
     slf__entity__set_state__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B574;
+        m_vtbl = (decltype(m_vtbl))0x0089B574;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1987,7 +1987,7 @@ struct slf__entity__set_state__num__num__t : script_library_class::function {
 
 struct slf__entity__set_targetting__num__t : script_library_class::function {
     slf__entity__set_targetting__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD54;
+        m_vtbl = (decltype(m_vtbl))0x0089AD54;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -1995,7 +1995,7 @@ struct slf__entity__set_targetting__num__t : script_library_class::function {
 
 struct slf__entity__set_throwable__num__t : script_library_class::function {
     slf__entity__set_throwable__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD6C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD6C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2003,7 +2003,7 @@ struct slf__entity__set_throwable__num__t : script_library_class::function {
 
 struct slf__entity__set_time_dilation__num__t : script_library_class::function {
     slf__entity__set_time_dilation__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B30C;
+        m_vtbl = (decltype(m_vtbl))0x0089B30C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2011,7 +2011,7 @@ struct slf__entity__set_time_dilation__num__t : script_library_class::function {
 
 struct slf__entity__set_time_mode__num__t : script_library_class::function {
     slf__entity__set_time_mode__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B31C;
+        m_vtbl = (decltype(m_vtbl))0x0089B31C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2019,7 +2019,7 @@ struct slf__entity__set_time_mode__num__t : script_library_class::function {
 
 struct slf__entity__set_variant__string_hash__t : script_library_class::function {
     slf__entity__set_variant__string_hash__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B53C;
+        m_vtbl = (decltype(m_vtbl))0x0089B53C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2027,7 +2027,7 @@ struct slf__entity__set_variant__string_hash__t : script_library_class::function
 
 struct slf__entity__set_velocity__vector3d__t : script_library_class::function {
     slf__entity__set_velocity__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC74;
+        m_vtbl = (decltype(m_vtbl))0x0089AC74;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2035,7 +2035,7 @@ struct slf__entity__set_velocity__vector3d__t : script_library_class::function {
 
 struct slf__entity__set_visible__num__t : script_library_class::function {
     slf__entity__set_visible__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD7C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD7C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2043,7 +2043,7 @@ struct slf__entity__set_visible__num__t : script_library_class::function {
 
 struct slf__entity__set_visible_and_disable_fading__num__t : script_library_class::function {
     slf__entity__set_visible_and_disable_fading__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD8C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD8C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2051,7 +2051,7 @@ struct slf__entity__set_visible_and_disable_fading__num__t : script_library_clas
 
 struct slf__entity__set_xz_facing__vector3d__t : script_library_class::function {
     slf__entity__set_xz_facing__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC84;
+        m_vtbl = (decltype(m_vtbl))0x0089AC84;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2059,7 +2059,7 @@ struct slf__entity__set_xz_facing__vector3d__t : script_library_class::function 
 
 struct slf__entity__setup_tether__vector3d__num__t : script_library_class::function {
     slf__entity__setup_tether__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1CC;
+        m_vtbl = (decltype(m_vtbl))0x0089B1CC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2067,7 +2067,7 @@ struct slf__entity__setup_tether__vector3d__num__t : script_library_class::funct
 
 struct slf__entity__snap_to__entity__t : script_library_class::function {
     slf__entity__snap_to__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE2C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE2C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2075,7 +2075,7 @@ struct slf__entity__snap_to__entity__t : script_library_class::function {
 
 struct slf__entity__suspend__t : script_library_class::function {
     slf__entity__suspend__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AF7C;
+        m_vtbl = (decltype(m_vtbl))0x0089AF7C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2083,7 +2083,7 @@ struct slf__entity__suspend__t : script_library_class::function {
 
 struct slf__entity__teleport_to_point__vector3d__t : script_library_class::function {
     slf__entity__teleport_to_point__vector3d__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AC6C;
+        m_vtbl = (decltype(m_vtbl))0x0089AC6C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2091,7 +2091,7 @@ struct slf__entity__teleport_to_point__vector3d__t : script_library_class::funct
 
 struct slf__entity__unforce_regions__t : script_library_class::function {
     slf__entity__unforce_regions__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AD2C;
+        m_vtbl = (decltype(m_vtbl))0x0089AD2C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2099,7 +2099,7 @@ struct slf__entity__unforce_regions__t : script_library_class::function {
 
 struct slf__entity__unsuspend__t : script_library_class::function {
     slf__entity__unsuspend__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFAC;
+        m_vtbl = (decltype(m_vtbl))0x0089AFAC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2107,7 +2107,7 @@ struct slf__entity__unsuspend__t : script_library_class::function {
 
 struct slf__entity__use_item__str__t : script_library_class::function {
     slf__entity__use_item__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1FC;
+        m_vtbl = (decltype(m_vtbl))0x0089B1FC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2115,7 +2115,7 @@ struct slf__entity__use_item__str__t : script_library_class::function {
 
 struct slf__entity__use_item_by_id__str__t : script_library_class::function {
     slf__entity__use_item_by_id__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B204;
+        m_vtbl = (decltype(m_vtbl))0x0089B204;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2123,7 +2123,7 @@ struct slf__entity__use_item_by_id__str__t : script_library_class::function {
 
 struct slf__entity__wait_camera_set_roll__num__num__t : script_library_class::function {
     slf__entity__wait_camera_set_roll__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE54;
+        m_vtbl = (decltype(m_vtbl))0x0089AE54;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2131,7 +2131,7 @@ struct slf__entity__wait_camera_set_roll__num__num__t : script_library_class::fu
 
 struct slf__entity__wait_change_color__vector3d__vector3d__num__t : script_library_class::function {
     slf__entity__wait_change_color__vector3d__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE7C;
+        m_vtbl = (decltype(m_vtbl))0x0089AE7C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2139,7 +2139,7 @@ struct slf__entity__wait_change_color__vector3d__vector3d__num__t : script_libra
 
 struct slf__entity__wait_change_range__num__num__num__t : script_library_class::function {
     slf__entity__wait_change_range__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE84;
+        m_vtbl = (decltype(m_vtbl))0x0089AE84;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2147,7 +2147,7 @@ struct slf__entity__wait_change_range__num__num__num__t : script_library_class::
 
 struct slf__entity__wait_change_render_color__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_change_render_color__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B25C;
+        m_vtbl = (decltype(m_vtbl))0x0089B25C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2155,7 +2155,7 @@ struct slf__entity__wait_change_render_color__vector3d__num__num__t : script_lib
 
 struct slf__entity__wait_change_render_scale__vector3d__num__t : script_library_class::function {
     slf__entity__wait_change_render_scale__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B234;
+        m_vtbl = (decltype(m_vtbl))0x0089B234;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2163,7 +2163,7 @@ struct slf__entity__wait_change_render_scale__vector3d__num__t : script_library_
 
 struct slf__entity__wait_for_not_sector__str__t : script_library_class::function {
     slf__entity__wait_for_not_sector__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFEC;
+        m_vtbl = (decltype(m_vtbl))0x0089AFEC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2171,7 +2171,7 @@ struct slf__entity__wait_for_not_sector__str__t : script_library_class::function
 
 struct slf__entity__wait_for_pickup__t : script_library_class::function {
     slf__entity__wait_for_pickup__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFB4;
+        m_vtbl = (decltype(m_vtbl))0x0089AFB4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2179,7 +2179,7 @@ struct slf__entity__wait_for_pickup__t : script_library_class::function {
 
 struct slf__entity__wait_for_sector__str__t : script_library_class::function {
     slf__entity__wait_for_sector__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFE4;
+        m_vtbl = (decltype(m_vtbl))0x0089AFE4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2187,7 +2187,7 @@ struct slf__entity__wait_for_sector__str__t : script_library_class::function {
 
 struct slf__entity__wait_lookat__vector3d__num__t : script_library_class::function {
     slf__entity__wait_lookat__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B26C;
+        m_vtbl = (decltype(m_vtbl))0x0089B26C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2195,7 +2195,7 @@ struct slf__entity__wait_lookat__vector3d__num__t : script_library_class::functi
 
 struct slf__entity__wait_lookat2__entity__entity__vector3d__num__t : script_library_class::function {
     slf__entity__wait_lookat2__entity__entity__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B264;
+        m_vtbl = (decltype(m_vtbl))0x0089B264;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2203,7 +2203,7 @@ struct slf__entity__wait_lookat2__entity__entity__vector3d__num__t : script_libr
 
 struct slf__entity__wait_looping_anim__str__num__num__t : script_library_class::function {
     slf__entity__wait_looping_anim__str__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B1F4;
+        m_vtbl = (decltype(m_vtbl))0x0089B1F4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2211,7 +2211,7 @@ struct slf__entity__wait_looping_anim__str__num__num__t : script_library_class::
 
 struct slf__entity__wait_play_anim__str__num__num__num__t : script_library_class::function {
     slf__entity__wait_play_anim__str__num__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AEB4;
+        m_vtbl = (decltype(m_vtbl))0x0089AEB4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2219,7 +2219,7 @@ struct slf__entity__wait_play_anim__str__num__num__num__t : script_library_class
 
 struct slf__entity__wait_prox__entity__num__t : script_library_class::function {
     slf__entity__wait_prox__entity__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFBC;
+        m_vtbl = (decltype(m_vtbl))0x0089AFBC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2227,7 +2227,7 @@ struct slf__entity__wait_prox__entity__num__t : script_library_class::function {
 
 struct slf__entity__wait_prox__vector3d__num__t : script_library_class::function {
     slf__entity__wait_prox__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFC4;
+        m_vtbl = (decltype(m_vtbl))0x0089AFC4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2235,7 +2235,7 @@ struct slf__entity__wait_prox__vector3d__num__t : script_library_class::function
 
 struct slf__entity__wait_prox__vector3d__num__vector3d__num__t : script_library_class::function {
     slf__entity__wait_prox__vector3d__num__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFCC;
+        m_vtbl = (decltype(m_vtbl))0x0089AFCC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2243,7 +2243,7 @@ struct slf__entity__wait_prox__vector3d__num__vector3d__num__t : script_library_
 
 struct slf__entity__wait_prox_maxY__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_prox_maxY__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFDC;
+        m_vtbl = (decltype(m_vtbl))0x0089AFDC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2251,7 +2251,7 @@ struct slf__entity__wait_prox_maxY__vector3d__num__num__t : script_library_class
 
 struct slf__entity__wait_prox_minY__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_prox_minY__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFD4;
+        m_vtbl = (decltype(m_vtbl))0x0089AFD4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2259,7 +2259,7 @@ struct slf__entity__wait_prox_minY__vector3d__num__num__t : script_library_class
 
 struct slf__entity__wait_prox_sector__vector3d__num__str__t : script_library_class::function {
     slf__entity__wait_prox_sector__vector3d__num__str__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AFF4;
+        m_vtbl = (decltype(m_vtbl))0x0089AFF4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2267,7 +2267,7 @@ struct slf__entity__wait_prox_sector__vector3d__num__str__t : script_library_cla
 
 struct slf__entity__wait_rotate__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_rotate__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACAC;
+        m_vtbl = (decltype(m_vtbl))0x0089ACAC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2275,7 +2275,7 @@ struct slf__entity__wait_rotate__vector3d__num__num__t : script_library_class::f
 
 struct slf__entity__wait_rotate_WCS__vector3d__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_rotate_WCS__vector3d__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACBC;
+        m_vtbl = (decltype(m_vtbl))0x0089ACBC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2283,7 +2283,7 @@ struct slf__entity__wait_rotate_WCS__vector3d__vector3d__num__num__t : script_li
 
 struct slf__entity__wait_rotate_WCS_cosmetic__vector3d__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_rotate_WCS_cosmetic__vector3d__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACCC;
+        m_vtbl = (decltype(m_vtbl))0x0089ACCC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2291,7 +2291,7 @@ struct slf__entity__wait_rotate_WCS_cosmetic__vector3d__vector3d__num__num__t : 
 
 struct slf__entity__wait_rotate_WCS_with_compute_sector__vector3d__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_rotate_WCS_with_compute_sector__vector3d__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACC4;
+        m_vtbl = (decltype(m_vtbl))0x0089ACC4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2299,7 +2299,7 @@ struct slf__entity__wait_rotate_WCS_with_compute_sector__vector3d__vector3d__num
 
 struct slf__entity__wait_rotate_cosmetic__vector3d__num__num__t : script_library_class::function {
     slf__entity__wait_rotate_cosmetic__vector3d__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACB4;
+        m_vtbl = (decltype(m_vtbl))0x0089ACB4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2307,7 +2307,7 @@ struct slf__entity__wait_rotate_cosmetic__vector3d__num__num__t : script_library
 
 struct slf__entity__wait_set_scale__num__num__t : script_library_class::function {
     slf__entity__wait_set_scale__num__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089B27C;
+        m_vtbl = (decltype(m_vtbl))0x0089B27C;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2315,7 +2315,7 @@ struct slf__entity__wait_set_scale__num__num__t : script_library_class::function
 
 struct slf__entity__wait_translate__vector3d__num__t : script_library_class::function {
     slf__entity__wait_translate__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACD4;
+        m_vtbl = (decltype(m_vtbl))0x0089ACD4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2323,7 +2323,7 @@ struct slf__entity__wait_translate__vector3d__num__t : script_library_class::fun
 
 struct slf__entity__wait_translate_WCS__vector3d__num__t : script_library_class::function {
     slf__entity__wait_translate_WCS__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACEC;
+        m_vtbl = (decltype(m_vtbl))0x0089ACEC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2331,7 +2331,7 @@ struct slf__entity__wait_translate_WCS__vector3d__num__t : script_library_class:
 
 struct slf__entity__wait_translate_WCS_cosmetic__vector3d__num__t : script_library_class::function {
     slf__entity__wait_translate_WCS_cosmetic__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACFC;
+        m_vtbl = (decltype(m_vtbl))0x0089ACFC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2339,7 +2339,7 @@ struct slf__entity__wait_translate_WCS_cosmetic__vector3d__num__t : script_libra
 
 struct slf__entity__wait_translate_WCS_with_compute_sector__vector3d__num__t : script_library_class::function {
     slf__entity__wait_translate_WCS_with_compute_sector__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACF4;
+        m_vtbl = (decltype(m_vtbl))0x0089ACF4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2347,7 +2347,7 @@ struct slf__entity__wait_translate_WCS_with_compute_sector__vector3d__num__t : s
 
 struct slf__entity__wait_translate_cosmetic__vector3d__num__t : script_library_class::function {
     slf__entity__wait_translate_cosmetic__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACE4;
+        m_vtbl = (decltype(m_vtbl))0x0089ACE4;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2355,7 +2355,7 @@ struct slf__entity__wait_translate_cosmetic__vector3d__num__t : script_library_c
 
 struct slf__entity__wait_translate_with_compute_sector__vector3d__num__t : script_library_class::function {
     slf__entity__wait_translate_with_compute_sector__vector3d__num__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089ACDC;
+        m_vtbl = (decltype(m_vtbl))0x0089ACDC;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
@@ -2363,7 +2363,7 @@ struct slf__entity__wait_translate_with_compute_sector__vector3d__num__t : scrip
 
 struct slf__entity__was_occluded_last_frame__t : script_library_class::function {
     slf__entity__was_occluded_last_frame__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
-        m_vtbl = 0x0089AE24;
+        m_vtbl = (decltype(m_vtbl))0x0089AE24;
     }
 
     bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}

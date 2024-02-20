@@ -19,6 +19,7 @@
 #include "script_library_class.h"
 #include "trace.h"
 #include "variables.h"
+#include "wds.h"
 #include "vm_stack.h"
 #include "vm_thread.h"
 
@@ -45,7 +46,8693 @@ void destruct_client_script_libs()
     CDECL_CALL(0x0058FA50);
 }
 
+struct slf__abs_delay__num__t : script_library_class::function {
+    slf__abs_delay__num__t(const char *a3);
 
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__abs_delay__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663170);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__abs_delay__num__t::slf__abs_delay__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A724);
+    FUNC_ADDRESS(address, &slf__abs_delay__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__acos__num__t : script_library_class::function {
+    slf__acos__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__acos__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663F80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__acos__num__t::slf__acos__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A91C);
+    FUNC_ADDRESS(address, &slf__acos__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_2d_debug_str__vector3d__vector3d__num__str__t : script_library_class::function {
+    slf__add_2d_debug_str__vector3d__vector3d__num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_2d_debug_str__vector3d__vector3d__num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663360);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_2d_debug_str__vector3d__vector3d__num__str__t::slf__add_2d_debug_str__vector3d__vector3d__num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A860);
+    FUNC_ADDRESS(address, &slf__add_2d_debug_str__vector3d__vector3d__num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t : script_library_class::function {
+    slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663760);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t::slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A858);
+    FUNC_ADDRESS(address, &slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_3d_debug_str__vector3d__vector3d__num__str__t : script_library_class::function {
+    slf__add_3d_debug_str__vector3d__vector3d__num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663360);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_3d_debug_str__vector3d__vector3d__num__str__t::slf__add_3d_debug_str__vector3d__vector3d__num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A850);
+    FUNC_ADDRESS(address, &slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_civilian_info__vector3d__num__num__num__t : script_library_class::function {
+    slf__add_civilian_info__vector3d__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_civilian_info__vector3d__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680FE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_civilian_info__vector3d__num__num__num__t::slf__add_civilian_info__vector3d__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5BC);
+    FUNC_ADDRESS(address, &slf__add_civilian_info__vector3d__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_civilian_info_entity__entity__num__num__num__t : script_library_class::function {
+    slf__add_civilian_info_entity__entity__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_civilian_info_entity__entity__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006810F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_civilian_info_entity__entity__num__num__num__t::slf__add_civilian_info_entity__entity__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5CC);
+    FUNC_ADDRESS(address, &slf__add_civilian_info_entity__entity__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_debug_cyl__vector3d__vector3d__num__t : script_library_class::function {
+    slf__add_debug_cyl__vector3d__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_debug_cyl__vector3d__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_debug_cyl__vector3d__vector3d__num__t::slf__add_debug_cyl__vector3d__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A774);
+    FUNC_ADDRESS(address, &slf__add_debug_cyl__vector3d__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_debug_cyl__vector3d__vector3d__num__vector3d__num__t : script_library_class::function {
+    slf__add_debug_cyl__vector3d__vector3d__num__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_debug_cyl__vector3d__vector3d__num__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006633A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_debug_cyl__vector3d__vector3d__num__vector3d__num__t::slf__add_debug_cyl__vector3d__vector3d__num__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A77C);
+    FUNC_ADDRESS(address, &slf__add_debug_cyl__vector3d__vector3d__num__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_debug_line__vector3d__vector3d__t : script_library_class::function {
+    slf__add_debug_line__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_debug_line__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663370);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_debug_line__vector3d__vector3d__t::slf__add_debug_line__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A764);
+    FUNC_ADDRESS(address, &slf__add_debug_line__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_debug_line__vector3d__vector3d__vector3d__num__t : script_library_class::function {
+    slf__add_debug_line__vector3d__vector3d__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_debug_line__vector3d__vector3d__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663380);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_debug_line__vector3d__vector3d__vector3d__num__t::slf__add_debug_line__vector3d__vector3d__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A76C);
+    FUNC_ADDRESS(address, &slf__add_debug_line__vector3d__vector3d__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_debug_sphere__vector3d__num__t : script_library_class::function {
+    slf__add_debug_sphere__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_debug_sphere__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677930);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_debug_sphere__vector3d__num__t::slf__add_debug_sphere__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A754);
+    FUNC_ADDRESS(address, &slf__add_debug_sphere__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_debug_sphere__vector3d__num__vector3d__num__t : script_library_class::function {
+    slf__add_debug_sphere__vector3d__num__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_debug_sphere__vector3d__num__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663360);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_debug_sphere__vector3d__num__vector3d__num__t::slf__add_debug_sphere__vector3d__num__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A75C);
+    FUNC_ADDRESS(address, &slf__add_debug_sphere__vector3d__num__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_glass_house__str__t : script_library_class::function {
+    slf__add_glass_house__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_glass_house__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006798A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_glass_house__str__t::slf__add_glass_house__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A548);
+    FUNC_ADDRESS(address, &slf__add_glass_house__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_glass_house__str__num__t : script_library_class::function {
+    slf__add_glass_house__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_glass_house__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00661FC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_glass_house__str__num__t::slf__add_glass_house__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A550);
+    FUNC_ADDRESS(address, &slf__add_glass_house__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_glass_house__str__num__vector3d__t : script_library_class::function {
+    slf__add_glass_house__str__num__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_glass_house__str__num__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662240);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_glass_house__str__num__vector3d__t::slf__add_glass_house__str__num__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A560);
+    FUNC_ADDRESS(address, &slf__add_glass_house__str__num__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_glass_house__str__vector3d__t : script_library_class::function {
+    slf__add_glass_house__str__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_glass_house__str__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662100);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_glass_house__str__vector3d__t::slf__add_glass_house__str__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A558);
+    FUNC_ADDRESS(address, &slf__add_glass_house__str__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_to_console__str__t : script_library_class::function {
+    slf__add_to_console__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_to_console__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_to_console__str__t::slf__add_to_console__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A834);
+    FUNC_ADDRESS(address, &slf__add_to_console__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__add_traffic_model__num__str__t : script_library_class::function {
+    slf__add_traffic_model__num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__add_traffic_model__num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677770);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__add_traffic_model__num__str__t::slf__add_traffic_model__num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5A4);
+    FUNC_ADDRESS(address, &slf__add_traffic_model__num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__allow_suspend_thread__num__t : script_library_class::function {
+    slf__allow_suspend_thread__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__allow_suspend_thread__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006627C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__allow_suspend_thread__num__t::slf__allow_suspend_thread__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A594);
+    FUNC_ADDRESS(address, &slf__allow_suspend_thread__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__angle_between__vector3d__vector3d__t : script_library_class::function {
+    slf__angle_between__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__angle_between__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672070);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__angle_between__vector3d__vector3d__t::slf__angle_between__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BA50);
+    FUNC_ADDRESS(address, &slf__angle_between__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__apply_donut_damage__vector3d__num__num__num__num__num__t : script_library_class::function {
+    slf__apply_donut_damage__vector3d__num__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__apply_donut_damage__vector3d__num__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663460);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__apply_donut_damage__vector3d__num__num__num__num__num__t::slf__apply_donut_damage__vector3d__num__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A804);
+    FUNC_ADDRESS(address, &slf__apply_donut_damage__vector3d__num__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__apply_radius_damage__vector3d__num__num__num__num__t : script_library_class::function {
+    slf__apply_radius_damage__vector3d__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__apply_radius_damage__vector3d__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006633E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__apply_radius_damage__vector3d__num__num__num__num__t::slf__apply_radius_damage__vector3d__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7FC);
+    FUNC_ADDRESS(address, &slf__apply_radius_damage__vector3d__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__apply_radius_subdue__vector3d__num__num__num__num__t : script_library_class::function {
+    slf__apply_radius_subdue__vector3d__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__apply_radius_subdue__vector3d__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006634E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__apply_radius_subdue__vector3d__num__num__num__num__t::slf__apply_radius_subdue__vector3d__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A80C);
+    FUNC_ADDRESS(address, &slf__apply_radius_subdue__vector3d__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__assert__num__str__t : script_library_class::function {
+    slf__assert__num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__assert__num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__assert__num__str__t::slf__assert__num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A518);
+    FUNC_ADDRESS(address, &slf__assert__num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__attach_decal__str__vector3d__num__vector3d__entity__t : script_library_class::function {
+    slf__attach_decal__str__vector3d__num__vector3d__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__attach_decal__str__vector3d__num__vector3d__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006643B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__attach_decal__str__vector3d__num__vector3d__entity__t::slf__attach_decal__str__vector3d__num__vector3d__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A9FC);
+    FUNC_ADDRESS(address, &slf__attach_decal__str__vector3d__num__vector3d__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__begin_screen_recording__str__num__t : script_library_class::function {
+    slf__begin_screen_recording__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__begin_screen_recording__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E740);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__begin_screen_recording__str__num__t::slf__begin_screen_recording__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B7B0);
+    FUNC_ADDRESS(address, &slf__begin_screen_recording__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__blackscreen_off__num__t : script_library_class::function {
+    slf__blackscreen_off__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__blackscreen_off__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673850);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__blackscreen_off__num__t::slf__blackscreen_off__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BCAC);
+    FUNC_ADDRESS(address, &slf__blackscreen_off__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__blackscreen_on__num__t : script_library_class::function {
+    slf__blackscreen_on__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__blackscreen_on__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673800);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__blackscreen_on__num__t::slf__blackscreen_on__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BCA0);
+    FUNC_ADDRESS(address, &slf__blackscreen_on__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__bring_up_dialog_box__num__num__t : script_library_class::function {
+    slf__bring_up_dialog_box__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__bring_up_dialog_box__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673080);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__bring_up_dialog_box__num__num__t::slf__bring_up_dialog_box__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC28);
+    FUNC_ADDRESS(address, &slf__bring_up_dialog_box__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__bring_up_dialog_box_debug__str__num__str__t : script_library_class::function {
+    slf__bring_up_dialog_box_debug__str__num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__bring_up_dialog_box_debug__str__num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673490);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__bring_up_dialog_box_debug__str__num__str__t::slf__bring_up_dialog_box_debug__str__num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC38);
+    FUNC_ADDRESS(address, &slf__bring_up_dialog_box_debug__str__num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__bring_up_dialog_box_title__num__num__num__t : script_library_class::function {
+    slf__bring_up_dialog_box_title__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__bring_up_dialog_box_title__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673240);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__bring_up_dialog_box_title__num__num__num__t::slf__bring_up_dialog_box_title__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC30);
+    FUNC_ADDRESS(address, &slf__bring_up_dialog_box_title__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__bring_up_medal_award_box__num__t : script_library_class::function {
+    slf__bring_up_medal_award_box__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__bring_up_medal_award_box__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006726E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__bring_up_medal_award_box__num__t::slf__bring_up_medal_award_box__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB10);
+    FUNC_ADDRESS(address, &slf__bring_up_medal_award_box__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__bring_up_race_announcer__t : script_library_class::function {
+    slf__bring_up_race_announcer__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__bring_up_race_announcer__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006726B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__bring_up_race_announcer__t::slf__bring_up_race_announcer__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB08);
+    FUNC_ADDRESS(address, &slf__bring_up_race_announcer__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__calc_launch_vector__vector3d__vector3d__num__entity__t : script_library_class::function {
+    slf__calc_launch_vector__vector3d__vector3d__num__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__calc_launch_vector__vector3d__vector3d__num__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006641D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__calc_launch_vector__vector3d__vector3d__num__entity__t::slf__calc_launch_vector__vector3d__vector3d__num__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A98C);
+    FUNC_ADDRESS(address, &slf__calc_launch_vector__vector3d__vector3d__num__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__can_load_pack__str__t : script_library_class::function {
+    slf__can_load_pack__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__can_load_pack__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680C60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__can_load_pack__str__t::slf__can_load_pack__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3F4);
+    FUNC_ADDRESS(address, &slf__can_load_pack__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__chase_cam__t : script_library_class::function {
+    slf__chase_cam__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__chase_cam__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067BBD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__chase_cam__t::slf__chase_cam__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF04);
+    FUNC_ADDRESS(address, &slf__chase_cam__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_all_grenades__t : script_library_class::function {
+    slf__clear_all_grenades__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_all_grenades__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006640D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_all_grenades__t::slf__clear_all_grenades__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A95C);
+    FUNC_ADDRESS(address, &slf__clear_all_grenades__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_civilians_within_radius__vector3d__num__t : script_library_class::function {
+    slf__clear_civilians_within_radius__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_civilians_within_radius__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677930);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_civilians_within_radius__vector3d__num__t::slf__clear_civilians_within_radius__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5E4);
+    FUNC_ADDRESS(address, &slf__clear_civilians_within_radius__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_controls__t : script_library_class::function {
+    slf__clear_controls__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_controls__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673B70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_controls__t::slf__clear_controls__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BD48);
+    FUNC_ADDRESS(address, &slf__clear_controls__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_debug_all__t : script_library_class::function {
+    slf__clear_debug_all__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_debug_all__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_debug_all__t::slf__clear_debug_all__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A79C);
+    FUNC_ADDRESS(address, &slf__clear_debug_all__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_debug_cyls__t : script_library_class::function {
+    slf__clear_debug_cyls__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_debug_cyls__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_debug_cyls__t::slf__clear_debug_cyls__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A794);
+    FUNC_ADDRESS(address, &slf__clear_debug_cyls__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_debug_lines__t : script_library_class::function {
+    slf__clear_debug_lines__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_debug_lines__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_debug_lines__t::slf__clear_debug_lines__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A78C);
+    FUNC_ADDRESS(address, &slf__clear_debug_lines__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_debug_spheres__t : script_library_class::function {
+    slf__clear_debug_spheres__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_debug_spheres__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_debug_spheres__t::slf__clear_debug_spheres__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A784);
+    FUNC_ADDRESS(address, &slf__clear_debug_spheres__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_screen__t : script_library_class::function {
+    slf__clear_screen__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_screen__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006640C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_screen__t::slf__clear_screen__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A944);
+    FUNC_ADDRESS(address, &slf__clear_screen__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__clear_traffic_within_radius__vector3d__num__t : script_library_class::function {
+    slf__clear_traffic_within_radius__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__clear_traffic_within_radius__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006778F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__clear_traffic_within_radius__vector3d__num__t::slf__clear_traffic_within_radius__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5DC);
+    FUNC_ADDRESS(address, &slf__clear_traffic_within_radius__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__col_check__vector3d__vector3d__num__t : script_library_class::function {
+    slf__col_check__vector3d__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__col_check__vector3d__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663770);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__col_check__vector3d__vector3d__num__t::slf__col_check__vector3d__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A868);
+    FUNC_ADDRESS(address, &slf__col_check__vector3d__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__console_exec__str__t : script_library_class::function {
+    slf__console_exec__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__console_exec__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__console_exec__str__t::slf__console_exec__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A83C);
+    FUNC_ADDRESS(address, &slf__console_exec__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__copy_vector3d_list__vector3d_list__vector3d_list__t : script_library_class::function {
+    slf__copy_vector3d_list__vector3d_list__vector3d_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__copy_vector3d_list__vector3d_list__vector3d_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686E00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__copy_vector3d_list__vector3d_list__vector3d_list__t::slf__copy_vector3d_list__vector3d_list__vector3d_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BED4);
+    FUNC_ADDRESS(address, &slf__copy_vector3d_list__vector3d_list__vector3d_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__cos__num__t : script_library_class::function {
+    slf__cos__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__cos__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663F20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__cos__num__t::slf__cos__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A90C);
+    FUNC_ADDRESS(address, &slf__cos__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_beam__t : script_library_class::function {
+    slf__create_beam__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_beam__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067AD20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_beam__t::slf__create_beam__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089ABB4);
+    FUNC_ADDRESS(address, &slf__create_beam__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_credits__t : script_library_class::function {
+    slf__create_credits__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_credits__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672630);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_credits__t::slf__create_credits__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAE8);
+    FUNC_ADDRESS(address, &slf__create_credits__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_cut_scene__str__t : script_library_class::function {
+    slf__create_cut_scene__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_cut_scene__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00670AF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_cut_scene__str__t::slf__create_cut_scene__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B7C0);
+    FUNC_ADDRESS(address, &slf__create_cut_scene__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_debug_menu_entry__str__t : script_library_class::function {
+    slf__create_debug_menu_entry__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_debug_menu_entry__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067C1E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_debug_menu_entry__str__t::slf__create_debug_menu_entry__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C704);
+    FUNC_ADDRESS(address, &slf__create_debug_menu_entry__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_debug_menu_entry__str__str__t : script_library_class::function {
+    slf__create_debug_menu_entry__str__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_debug_menu_entry__str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678210);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_debug_menu_entry__str__str__t::slf__create_debug_menu_entry__str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C70C);
+    FUNC_ADDRESS(address, &slf__create_debug_menu_entry__str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_decal__str__vector3d__num__vector3d__t : script_library_class::function {
+    slf__create_decal__str__vector3d__num__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_decal__str__vector3d__num__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664340);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_decal__str__vector3d__num__vector3d__t::slf__create_decal__str__vector3d__num__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A9F4);
+    FUNC_ADDRESS(address, &slf__create_decal__str__vector3d__num__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_entity__str__t : script_library_class::function {
+    slf__create_entity__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_entity__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067BC10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_entity__str__t::slf__create_entity__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF0C);
+    FUNC_ADDRESS(address, &slf__create_entity__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_entity__str__str__t : script_library_class::function {
+    slf__create_entity__str__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_entity__str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067BD40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_entity__str__str__t::slf__create_entity__str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF14);
+    FUNC_ADDRESS(address, &slf__create_entity__str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_entity_in_hero_region__str__t : script_library_class::function {
+    slf__create_entity_in_hero_region__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_entity_in_hero_region__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067BEC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_entity_in_hero_region__str__t::slf__create_entity_in_hero_region__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF2C);
+    FUNC_ADDRESS(address, &slf__create_entity_in_hero_region__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_entity_list__t : script_library_class::function {
+    slf__create_entity_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_entity_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006860D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_entity_list__t::slf__create_entity_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BFCC);
+    FUNC_ADDRESS(address, &slf__create_entity_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_entity_tracker__entity__t : script_library_class::function {
+    slf__create_entity_tracker__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_entity_tracker__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677650);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_entity_tracker__entity__t::slf__create_entity_tracker__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C594);
+    FUNC_ADDRESS(address, &slf__create_entity_tracker__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_item__str__t : script_library_class::function {
+    slf__create_item__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_item__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E190);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_item__str__t::slf__create_item__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B6B4);
+    FUNC_ADDRESS(address, &slf__create_item__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_line_info__vector3d__vector3d__t : script_library_class::function {
+    slf__create_line_info__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_line_info__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E440);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_line_info__vector3d__vector3d__t::slf__create_line_info__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B708);
+    FUNC_ADDRESS(address, &slf__create_line_info__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_lofi_stereo_sound_inst__str__t : script_library_class::function {
+    slf__create_lofi_stereo_sound_inst__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_lofi_stereo_sound_inst__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067EBF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_lofi_stereo_sound_inst__str__t::slf__create_lofi_stereo_sound_inst__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B818);
+    FUNC_ADDRESS(address, &slf__create_lofi_stereo_sound_inst__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_num_list__t : script_library_class::function {
+    slf__create_num_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_num_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00685FD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_num_list__t::slf__create_num_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BF54);
+    FUNC_ADDRESS(address, &slf__create_num_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_pfx__str__t : script_library_class::function {
+    slf__create_pfx__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_pfx__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678E20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_pfx__str__t::slf__create_pfx__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C904);
+    FUNC_ADDRESS(address, &slf__create_pfx__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_pfx__str__vector3d__t : script_library_class::function {
+    slf__create_pfx__str__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_pfx__str__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678F30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_pfx__str__vector3d__t::slf__create_pfx__str__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C90C);
+    FUNC_ADDRESS(address, &slf__create_pfx__str__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_polytube__t : script_library_class::function {
+    slf__create_polytube__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_polytube__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680510);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_polytube__t::slf__create_polytube__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C228);
+    FUNC_ADDRESS(address, &slf__create_polytube__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_polytube__str__t : script_library_class::function {
+    slf__create_polytube__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_polytube__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006805E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_polytube__str__t::slf__create_polytube__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C230);
+    FUNC_ADDRESS(address, &slf__create_polytube__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_progression_menu_entry__str__str__t : script_library_class::function {
+    slf__create_progression_menu_entry__str__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_progression_menu_entry__str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678210);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_progression_menu_entry__str__str__t::slf__create_progression_menu_entry__str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C714);
+    FUNC_ADDRESS(address, &slf__create_progression_menu_entry__str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_sound_inst__t : script_library_class::function {
+    slf__create_sound_inst__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_sound_inst__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E840);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_sound_inst__t::slf__create_sound_inst__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B7F8);
+    FUNC_ADDRESS(address, &slf__create_sound_inst__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_sound_inst__str__t : script_library_class::function {
+    slf__create_sound_inst__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_sound_inst__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E920);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_sound_inst__str__t::slf__create_sound_inst__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B800);
+    FUNC_ADDRESS(address, &slf__create_sound_inst__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_stompable_music_sound_inst__str__t : script_library_class::function {
+    slf__create_stompable_music_sound_inst__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_stompable_music_sound_inst__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067EA10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_stompable_music_sound_inst__str__t::slf__create_stompable_music_sound_inst__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B808);
+    FUNC_ADDRESS(address, &slf__create_stompable_music_sound_inst__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_str_list__t : script_library_class::function {
+    slf__create_str_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_str_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686180);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_str_list__t::slf__create_str_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C044);
+    FUNC_ADDRESS(address, &slf__create_str_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_taunt_entry__entity__str__num__t : script_library_class::function {
+    slf__create_taunt_entry__entity__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_taunt_entry__entity__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677B80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_taunt_entry__entity__str__num__t::slf__create_taunt_entry__entity__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C63C);
+    FUNC_ADDRESS(address, &slf__create_taunt_entry__entity__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_taunt_exchange__entity__entity__num__num__num__num__t : script_library_class::function {
+    slf__create_taunt_exchange__entity__entity__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_taunt_exchange__entity__entity__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686330);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_taunt_exchange__entity__entity__num__num__num__num__t::slf__create_taunt_exchange__entity__entity__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C6B4);
+    FUNC_ADDRESS(address, &slf__create_taunt_exchange__entity__entity__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_taunt_exchange_list__t : script_library_class::function {
+    slf__create_taunt_exchange_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_taunt_exchange_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686260);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_taunt_exchange_list__t::slf__create_taunt_exchange_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C0DC);
+    FUNC_ADDRESS(address, &slf__create_taunt_exchange_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_threat_assessment_meter__t : script_library_class::function {
+    slf__create_threat_assessment_meter__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_threat_assessment_meter__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678030);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_threat_assessment_meter__t::slf__create_threat_assessment_meter__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C6CC);
+    FUNC_ADDRESS(address, &slf__create_threat_assessment_meter__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_time_limited_entity__str__num__t : script_library_class::function {
+    slf__create_time_limited_entity__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_time_limited_entity__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668C60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_time_limited_entity__str__num__t::slf__create_time_limited_entity__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF3C);
+    FUNC_ADDRESS(address, &slf__create_time_limited_entity__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_trigger__entity__num__t : script_library_class::function {
+    slf__create_trigger__entity__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_trigger__entity__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067FC50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_trigger__entity__num__t::slf__create_trigger__entity__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B970);
+    FUNC_ADDRESS(address, &slf__create_trigger__entity__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_trigger__str__vector3d__num__t : script_library_class::function {
+    slf__create_trigger__str__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_trigger__str__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067FB60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_trigger__str__vector3d__num__t::slf__create_trigger__str__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B968);
+    FUNC_ADDRESS(address, &slf__create_trigger__str__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_trigger__vector3d__num__t : script_library_class::function {
+    slf__create_trigger__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_trigger__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067FA80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_trigger__vector3d__num__t::slf__create_trigger__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B960);
+    FUNC_ADDRESS(address, &slf__create_trigger__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_unstompable_script_cutscene_sound_inst__str__t : script_library_class::function {
+    slf__create_unstompable_script_cutscene_sound_inst__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_unstompable_script_cutscene_sound_inst__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067EB00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_unstompable_script_cutscene_sound_inst__str__t::slf__create_unstompable_script_cutscene_sound_inst__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B810);
+    FUNC_ADDRESS(address, &slf__create_unstompable_script_cutscene_sound_inst__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__create_vector3d_list__t : script_library_class::function {
+    slf__create_vector3d_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__create_vector3d_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00685F20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__create_vector3d_list__t::slf__create_vector3d_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BECC);
+    FUNC_ADDRESS(address, &slf__create_vector3d_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__cross__vector3d__vector3d__t : script_library_class::function {
+    slf__cross__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__cross__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00671F70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__cross__vector3d__vector3d__t::slf__cross__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BA38);
+    FUNC_ADDRESS(address, &slf__cross__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__debug_breakpoint__t : script_library_class::function {
+    slf__debug_breakpoint__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__debug_breakpoint__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__debug_breakpoint__t::slf__debug_breakpoint__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A510);
+    FUNC_ADDRESS(address, &slf__debug_breakpoint__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__debug_print__num__str__t : script_library_class::function {
+    slf__debug_print__num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__debug_print__num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__debug_print__num__str__t::slf__debug_print__num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A528);
+    FUNC_ADDRESS(address, &slf__debug_print__num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__debug_print__num__vector3d__str__t : script_library_class::function {
+    slf__debug_print__num__vector3d__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__debug_print__num__vector3d__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00661F50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__debug_print__num__vector3d__str__t::slf__debug_print__num__vector3d__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A530);
+    FUNC_ADDRESS(address, &slf__debug_print__num__vector3d__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__debug_print__str__t : script_library_class::function {
+    slf__debug_print__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__debug_print__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__debug_print__str__t::slf__debug_print__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A520);
+    FUNC_ADDRESS(address, &slf__debug_print__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__debug_print_set_background_color__vector3d__t : script_library_class::function {
+    slf__debug_print_set_background_color__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__debug_print_set_background_color__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00661F60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__debug_print_set_background_color__vector3d__t::slf__debug_print_set_background_color__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A538);
+    FUNC_ADDRESS(address, &slf__debug_print_set_background_color__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__delay__num__t : script_library_class::function {
+    slf__delay__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__delay__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663120);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__delay__num__t::slf__delay__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A71C);
+    FUNC_ADDRESS(address, &slf__delay__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_credits__t : script_library_class::function {
+    slf__destroy_credits__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_credits__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672650);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_credits__t::slf__destroy_credits__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAF0);
+    FUNC_ADDRESS(address, &slf__destroy_credits__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_debug_menu_entry__debug_menu_entry__t : script_library_class::function {
+    slf__destroy_debug_menu_entry__debug_menu_entry__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_debug_menu_entry__debug_menu_entry__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_debug_menu_entry__debug_menu_entry__t::slf__destroy_debug_menu_entry__debug_menu_entry__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C71C);
+    FUNC_ADDRESS(address, &slf__destroy_debug_menu_entry__debug_menu_entry__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_entity__entity__t : script_library_class::function {
+    slf__destroy_entity__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_entity__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067C010);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_entity__entity__t::slf__destroy_entity__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF34);
+    FUNC_ADDRESS(address, &slf__destroy_entity__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_entity_list__entity_list__t : script_library_class::function {
+    slf__destroy_entity_list__entity_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_entity_list__entity_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686F10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_entity_list__entity_list__t::slf__destroy_entity_list__entity_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BFD4);
+    FUNC_ADDRESS(address, &slf__destroy_entity_list__entity_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_entity_tracker__entity_tracker__t : script_library_class::function {
+    slf__destroy_entity_tracker__entity_tracker__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_entity_tracker__entity_tracker__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677720);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_entity_tracker__entity_tracker__t::slf__destroy_entity_tracker__entity_tracker__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C59C);
+    FUNC_ADDRESS(address, &slf__destroy_entity_tracker__entity_tracker__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_line_info__line_info__t : script_library_class::function {
+    slf__destroy_line_info__line_info__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_line_info__line_info__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006705C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_line_info__line_info__t::slf__destroy_line_info__line_info__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B710);
+    FUNC_ADDRESS(address, &slf__destroy_line_info__line_info__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_num_list__num_list__t : script_library_class::function {
+    slf__destroy_num_list__num_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_num_list__num_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686080);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_num_list__num_list__t::slf__destroy_num_list__num_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BF5C);
+    FUNC_ADDRESS(address, &slf__destroy_num_list__num_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_pfx__pfx__t : script_library_class::function {
+    slf__destroy_pfx__pfx__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_pfx__pfx__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00687870);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_pfx__pfx__t::slf__destroy_pfx__pfx__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C914);
+    FUNC_ADDRESS(address, &slf__destroy_pfx__pfx__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_str_list__str_list__t : script_library_class::function {
+    slf__destroy_str_list__str_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_str_list__str_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006878B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_str_list__str_list__t::slf__destroy_str_list__str_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C04C);
+    FUNC_ADDRESS(address, &slf__destroy_str_list__str_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_taunt_entry__taunt_entry__t : script_library_class::function {
+    slf__destroy_taunt_entry__taunt_entry__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_taunt_entry__taunt_entry__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677C70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_taunt_entry__taunt_entry__t::slf__destroy_taunt_entry__taunt_entry__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C644);
+    FUNC_ADDRESS(address, &slf__destroy_taunt_entry__taunt_entry__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_taunt_exchange__taunt_exchange__t : script_library_class::function {
+    slf__destroy_taunt_exchange__taunt_exchange__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_taunt_exchange__taunt_exchange__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686B90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_taunt_exchange__taunt_exchange__t::slf__destroy_taunt_exchange__taunt_exchange__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C6BC);
+    FUNC_ADDRESS(address, &slf__destroy_taunt_exchange__taunt_exchange__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_taunt_exchange_list__taunt_exchange_list__t : script_library_class::function {
+    slf__destroy_taunt_exchange_list__taunt_exchange_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_taunt_exchange_list__taunt_exchange_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686B00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_taunt_exchange_list__taunt_exchange_list__t::slf__destroy_taunt_exchange_list__taunt_exchange_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C0E4);
+    FUNC_ADDRESS(address, &slf__destroy_taunt_exchange_list__taunt_exchange_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_threat_assessment_meter__tam__t : script_library_class::function {
+    slf__destroy_threat_assessment_meter__tam__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_threat_assessment_meter__tam__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678060);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_threat_assessment_meter__tam__t::slf__destroy_threat_assessment_meter__tam__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C6D4);
+    FUNC_ADDRESS(address, &slf__destroy_threat_assessment_meter__tam__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_trigger__trigger__t : script_library_class::function {
+    slf__destroy_trigger__trigger__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_trigger__trigger__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067FD20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_trigger__trigger__t::slf__destroy_trigger__trigger__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B978);
+    FUNC_ADDRESS(address, &slf__destroy_trigger__trigger__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__destroy_vector3d_list__vector3d_list__t : script_library_class::function {
+    slf__destroy_vector3d_list__vector3d_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__destroy_vector3d_list__vector3d_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686E30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__destroy_vector3d_list__vector3d_list__t::slf__destroy_vector3d_list__vector3d_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BEDC);
+    FUNC_ADDRESS(address, &slf__destroy_vector3d_list__vector3d_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__dilated_delay__num__t : script_library_class::function {
+    slf__dilated_delay__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__dilated_delay__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006631D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__dilated_delay__num__t::slf__dilated_delay__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A72C);
+    FUNC_ADDRESS(address, &slf__dilated_delay__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__disable_marky_cam__num__t : script_library_class::function {
+    slf__disable_marky_cam__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__disable_marky_cam__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679A00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__disable_marky_cam__num__t::slf__disable_marky_cam__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5F4);
+    FUNC_ADDRESS(address, &slf__disable_marky_cam__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__disable_nearby_occlusion_only_obb__vector3d__t : script_library_class::function {
+    slf__disable_nearby_occlusion_only_obb__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__disable_nearby_occlusion_only_obb__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662AA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__disable_nearby_occlusion_only_obb__vector3d__t::slf__disable_nearby_occlusion_only_obb__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5E4);
+    FUNC_ADDRESS(address, &slf__disable_nearby_occlusion_only_obb__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__disable_player_shadows__t : script_library_class::function {
+    slf__disable_player_shadows__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__disable_player_shadows__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662B10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__disable_player_shadows__t::slf__disable_player_shadows__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A614);
+    FUNC_ADDRESS(address, &slf__disable_player_shadows__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__disable_subtitles__t : script_library_class::function {
+    slf__disable_subtitles__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__disable_subtitles__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006640B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__disable_subtitles__t::slf__disable_subtitles__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A93C);
+    FUNC_ADDRESS(address, &slf__disable_subtitles__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__disable_vibrator__t : script_library_class::function {
+    slf__disable_vibrator__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__disable_vibrator__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A600);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__disable_vibrator__t::slf__disable_vibrator__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7DC);
+    FUNC_ADDRESS(address, &slf__disable_vibrator__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__disable_zoom_map__num__t : script_library_class::function {
+    slf__disable_zoom_map__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__disable_zoom_map__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672BB0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__disable_zoom_map__num__t::slf__disable_zoom_map__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBF0);
+    FUNC_ADDRESS(address, &slf__disable_zoom_map__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance3d__vector3d__vector3d__t : script_library_class::function {
+    slf__distance3d__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance3d__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672010);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance3d__vector3d__vector3d__t::slf__distance3d__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BA48);
+    FUNC_ADDRESS(address, &slf__distance3d__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_chase_widget_set_pos__num__t : script_library_class::function {
+    slf__distance_chase_widget_set_pos__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_chase_widget_set_pos__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006729F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_chase_widget_set_pos__num__t::slf__distance_chase_widget_set_pos__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB88);
+    FUNC_ADDRESS(address, &slf__distance_chase_widget_set_pos__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_chase_widget_turn_off__t : script_library_class::function {
+    slf__distance_chase_widget_turn_off__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_chase_widget_turn_off__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006729D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_chase_widget_turn_off__t::slf__distance_chase_widget_turn_off__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB80);
+    FUNC_ADDRESS(address, &slf__distance_chase_widget_turn_off__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_chase_widget_turn_on__num__num__t : script_library_class::function {
+    slf__distance_chase_widget_turn_on__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_chase_widget_turn_on__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672980);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_chase_widget_turn_on__num__num__t::slf__distance_chase_widget_turn_on__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB78);
+    FUNC_ADDRESS(address, &slf__distance_chase_widget_turn_on__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_race_widget_set_boss_pos__num__t : script_library_class::function {
+    slf__distance_race_widget_set_boss_pos__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_race_widget_set_boss_pos__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672A90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_race_widget_set_boss_pos__num__t::slf__distance_race_widget_set_boss_pos__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBA8);
+    FUNC_ADDRESS(address, &slf__distance_race_widget_set_boss_pos__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_race_widget_set_hero_pos__num__t : script_library_class::function {
+    slf__distance_race_widget_set_hero_pos__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_race_widget_set_hero_pos__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672A60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_race_widget_set_hero_pos__num__t::slf__distance_race_widget_set_hero_pos__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBA0);
+    FUNC_ADDRESS(address, &slf__distance_race_widget_set_hero_pos__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_race_widget_set_types__num__num__t : script_library_class::function {
+    slf__distance_race_widget_set_types__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_race_widget_set_types__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672AC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_race_widget_set_types__num__num__t::slf__distance_race_widget_set_types__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBB0);
+    FUNC_ADDRESS(address, &slf__distance_race_widget_set_types__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_race_widget_turn_off__t : script_library_class::function {
+    slf__distance_race_widget_turn_off__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_race_widget_turn_off__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672A40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_race_widget_turn_off__t::slf__distance_race_widget_turn_off__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB98);
+    FUNC_ADDRESS(address, &slf__distance_race_widget_turn_off__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__distance_race_widget_turn_on__t : script_library_class::function {
+    slf__distance_race_widget_turn_on__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__distance_race_widget_turn_on__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672A20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__distance_race_widget_turn_on__t::slf__distance_race_widget_turn_on__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB90);
+    FUNC_ADDRESS(address, &slf__distance_race_widget_turn_on__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__district_id__str__t : script_library_class::function {
+    slf__district_id__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__district_id__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006769B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__district_id__str__t::slf__district_id__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C47C);
+    FUNC_ADDRESS(address, &slf__district_id__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__district_name__num__t : script_library_class::function {
+    slf__district_name__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__district_name__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680F70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__district_name__num__t::slf__district_name__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C484);
+    FUNC_ADDRESS(address, &slf__district_name__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__dot__vector3d__vector3d__t : script_library_class::function {
+    slf__dot__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__dot__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00671F30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__dot__vector3d__vector3d__t::slf__dot__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BA30);
+    FUNC_ADDRESS(address, &slf__dot__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__dump_searchable_region_list__str__t : script_library_class::function {
+    slf__dump_searchable_region_list__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__dump_searchable_region_list__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__dump_searchable_region_list__str__t::slf__dump_searchable_region_list__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A994);
+    FUNC_ADDRESS(address, &slf__dump_searchable_region_list__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_ai__num__t : script_library_class::function {
+    slf__enable_ai__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_ai__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662F90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_ai__num__t::slf__enable_ai__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6CC);
+    FUNC_ADDRESS(address, &slf__enable_ai__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_civilians__num__t : script_library_class::function {
+    slf__enable_civilians__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_civilians__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677940);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_civilians__num__t::slf__enable_civilians__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5EC);
+    FUNC_ADDRESS(address, &slf__enable_civilians__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_controls__num__t : script_library_class::function {
+    slf__enable_controls__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_controls__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673AF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_controls__num__t::slf__enable_controls__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BD40);
+    FUNC_ADDRESS(address, &slf__enable_controls__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_entity_fading__num__t : script_library_class::function {
+    slf__enable_entity_fading__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_entity_fading__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00669AC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_entity_fading__num__t::slf__enable_entity_fading__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B05C);
+    FUNC_ADDRESS(address, &slf__enable_entity_fading__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_interface__num__t : script_library_class::function {
+    slf__enable_interface__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_interface__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662F40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_interface__num__t::slf__enable_interface__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6C4);
+    FUNC_ADDRESS(address, &slf__enable_interface__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_marky_cam__num__t : script_library_class::function {
+    slf__enable_marky_cam__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_marky_cam__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006799B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_marky_cam__num__t::slf__enable_marky_cam__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5BC);
+    FUNC_ADDRESS(address, &slf__enable_marky_cam__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_mini_map__num__t : script_library_class::function {
+    slf__enable_mini_map__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_mini_map__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672B60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_mini_map__num__t::slf__enable_mini_map__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBE8);
+    FUNC_ADDRESS(address, &slf__enable_mini_map__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_nearby_occlusion_only_obb__vector3d__t : script_library_class::function {
+    slf__enable_nearby_occlusion_only_obb__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_nearby_occlusion_only_obb__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662A70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_nearby_occlusion_only_obb__vector3d__t::slf__enable_nearby_occlusion_only_obb__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5DC);
+    FUNC_ADDRESS(address, &slf__enable_nearby_occlusion_only_obb__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_obb__vector3d__num__t : script_library_class::function {
+    slf__enable_obb__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_obb__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662690);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_obb__vector3d__num__t::slf__enable_obb__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A588);
+    FUNC_ADDRESS(address, &slf__enable_obb__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_pause__num__t : script_library_class::function {
+    slf__enable_pause__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_pause__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662E50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_pause__num__t::slf__enable_pause__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6AC);
+    FUNC_ADDRESS(address, &slf__enable_pause__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_physics__num__t : script_library_class::function {
+    slf__enable_physics__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_physics__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663020);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_physics__num__t::slf__enable_physics__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6DC);
+    FUNC_ADDRESS(address, &slf__enable_physics__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_player_shadows__t : script_library_class::function {
+    slf__enable_player_shadows__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_player_shadows__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662B20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_player_shadows__t::slf__enable_player_shadows__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A61C);
+    FUNC_ADDRESS(address, &slf__enable_player_shadows__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_pois__num__t : script_library_class::function {
+    slf__enable_pois__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_pois__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_pois__num__t::slf__enable_pois__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6EC);
+    FUNC_ADDRESS(address, &slf__enable_pois__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_quad_path_connector__district__num__district__num__num__t : script_library_class::function {
+    slf__enable_quad_path_connector__district__num__district__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_quad_path_connector__district__num__district__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662510);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_quad_path_connector__district__num__district__num__num__t::slf__enable_quad_path_connector__district__num__district__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A578);
+    FUNC_ADDRESS(address, &slf__enable_quad_path_connector__district__num__district__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_subtitles__t : script_library_class::function {
+    slf__enable_subtitles__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_subtitles__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006640A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_subtitles__t::slf__enable_subtitles__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A934);
+    FUNC_ADDRESS(address, &slf__enable_subtitles__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_tokens_of_type__num__num__t : script_library_class::function {
+    slf__enable_tokens_of_type__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_tokens_of_type__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066F420);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_tokens_of_type__num__num__t::slf__enable_tokens_of_type__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B54C);
+    FUNC_ADDRESS(address, &slf__enable_tokens_of_type__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_traffic__num__t : script_library_class::function {
+    slf__enable_traffic__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_traffic__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006779C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_traffic__num__t::slf__enable_traffic__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5FC);
+    FUNC_ADDRESS(address, &slf__enable_traffic__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_user_camera__num__t : script_library_class::function {
+    slf__enable_user_camera__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_user_camera__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662A10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_user_camera__num__t::slf__enable_user_camera__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5D4);
+    FUNC_ADDRESS(address, &slf__enable_user_camera__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__enable_vibrator__t : script_library_class::function {
+    slf__enable_vibrator__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__enable_vibrator__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A620);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__enable_vibrator__t::slf__enable_vibrator__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7E4);
+    FUNC_ADDRESS(address, &slf__enable_vibrator__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__end_current_patrol__t : script_library_class::function {
+    slf__end_current_patrol__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__end_current_patrol__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676EC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__end_current_patrol__t::slf__end_current_patrol__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4FC);
+    FUNC_ADDRESS(address, &slf__end_current_patrol__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__end_cut_scenes__t : script_library_class::function {
+    slf__end_cut_scenes__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__end_cut_scenes__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00670C80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__end_cut_scenes__t::slf__end_cut_scenes__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B7C8);
+    FUNC_ADDRESS(address, &slf__end_cut_scenes__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__end_screen_recording__t : script_library_class::function {
+    slf__end_screen_recording__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__end_screen_recording__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E7E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__end_screen_recording__t::slf__end_screen_recording__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B7B8);
+    FUNC_ADDRESS(address, &slf__end_screen_recording__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__entity_col_check__entity__entity__t : script_library_class::function {
+    slf__entity_col_check__entity__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__entity_col_check__entity__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006639D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__entity_col_check__entity__entity__t::slf__entity_col_check__entity__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A88C);
+    FUNC_ADDRESS(address, &slf__entity_col_check__entity__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__entity_exists__str__t : script_library_class::function {
+    slf__entity_exists__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__entity_exists__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668BF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__entity_exists__str__t::slf__entity_exists__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF24);
+    FUNC_ADDRESS(address, &slf__entity_exists__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__entity_get_entity_tracker__entity__t : script_library_class::function {
+    slf__entity_get_entity_tracker__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__entity_get_entity_tracker__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006697F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__entity_get_entity_tracker__entity__t::slf__entity_get_entity_tracker__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B034);
+    FUNC_ADDRESS(address, &slf__entity_get_entity_tracker__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__entity_has_entity_tracker__entity__t : script_library_class::function {
+    slf__entity_has_entity_tracker__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__entity_has_entity_tracker__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00669790);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__entity_has_entity_tracker__entity__t::slf__entity_has_entity_tracker__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B02C);
+    FUNC_ADDRESS(address, &slf__entity_has_entity_tracker__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__exit_water__entity__t : script_library_class::function {
+    slf__exit_water__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__exit_water__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00682380);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__exit_water__entity__t::slf__exit_water__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A604);
+    FUNC_ADDRESS(address, &slf__exit_water__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_closest_point_on_a_path_to_point__vector3d__t : script_library_class::function {
+    slf__find_closest_point_on_a_path_to_point__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_closest_point_on_a_path_to_point__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006624B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_closest_point_on_a_path_to_point__vector3d__t::slf__find_closest_point_on_a_path_to_point__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A570);
+    FUNC_ADDRESS(address, &slf__find_closest_point_on_a_path_to_point__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_district_for_point__vector3d__t : script_library_class::function {
+    slf__find_district_for_point__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_district_for_point__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663560);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_district_for_point__vector3d__t::slf__find_district_for_point__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A81C);
+    FUNC_ADDRESS(address, &slf__find_district_for_point__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_entities_in_radius__entity_list__vector3d__num__num__t : script_library_class::function {
+    slf__find_entities_in_radius__entity_list__vector3d__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_entities_in_radius__entity_list__vector3d__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686C60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_entities_in_radius__entity_list__vector3d__num__num__t::slf__find_entities_in_radius__entity_list__vector3d__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B46C);
+    FUNC_ADDRESS(address, &slf__find_entities_in_radius__entity_list__vector3d__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_entity__str__t : script_library_class::function {
+    slf__find_entity__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_entity__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668B90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_entity__str__t::slf__find_entity__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AF1C);
+    FUNC_ADDRESS(address, &slf__find_entity__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_innermost_district__vector3d__t : script_library_class::function {
+    slf__find_innermost_district__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_innermost_district__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006635A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_innermost_district__vector3d__t::slf__find_innermost_district__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A824);
+    FUNC_ADDRESS(address, &slf__find_innermost_district__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_outermost_district__vector3d__t : script_library_class::function {
+    slf__find_outermost_district__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_outermost_district__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006635E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_outermost_district__vector3d__t::slf__find_outermost_district__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A82C);
+    FUNC_ADDRESS(address, &slf__find_outermost_district__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_trigger__entity__t : script_library_class::function {
+    slf__find_trigger__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_trigger__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067F9B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_trigger__entity__t::slf__find_trigger__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B950);
+    FUNC_ADDRESS(address, &slf__find_trigger__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_trigger__str__t : script_library_class::function {
+    slf__find_trigger__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_trigger__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067F900);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_trigger__str__t::slf__find_trigger__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B948);
+    FUNC_ADDRESS(address, &slf__find_trigger__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__find_trigger_in_district__district__str__t : script_library_class::function {
+    slf__find_trigger_in_district__district__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__find_trigger_in_district__district__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067FA00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__find_trigger_in_district__district__str__t::slf__find_trigger_in_district__district__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B958);
+    FUNC_ADDRESS(address, &slf__find_trigger_in_district__district__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__float_random__num__t : script_library_class::function {
+    slf__float_random__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__float_random__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663300);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__float_random__num__t::slf__float_random__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A74C);
+    FUNC_ADDRESS(address, &slf__float_random__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__force_mission__district__str__num__t : script_library_class::function {
+    slf__force_mission__district__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__force_mission__district__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006765D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__force_mission__district__str__num__t::slf__force_mission__district__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3B4);
+    FUNC_ADDRESS(address, &slf__force_mission__district__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__force_streamer_refresh__t : script_library_class::function {
+    slf__force_streamer_refresh__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__force_streamer_refresh__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676B70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__force_streamer_refresh__t::slf__force_streamer_refresh__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4AC);
+    FUNC_ADDRESS(address, &slf__force_streamer_refresh__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__format_time_string__num__t : script_library_class::function {
+    slf__format_time_string__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__format_time_string__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006736A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__format_time_string__num__t::slf__format_time_string__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC74);
+    FUNC_ADDRESS(address, &slf__format_time_string__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__freeze_hero__num__t : script_library_class::function {
+    slf__freeze_hero__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__freeze_hero__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679A50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__freeze_hero__num__t::slf__freeze_hero__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5FC);
+    FUNC_ADDRESS(address, &slf__freeze_hero__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__game_ini_get_flag__str__t : script_library_class::function {
+    slf__game_ini_get_flag__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__game_ini_get_flag__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067AC20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__game_ini_get_flag__str__t::slf__game_ini_get_flag__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A97C);
+    FUNC_ADDRESS(address, &slf__game_ini_get_flag__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__game_time_advance__num__num__t : script_library_class::function {
+    slf__game_time_advance__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__game_time_advance__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676D30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__game_time_advance__num__num__t::slf__game_time_advance__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4DC);
+    FUNC_ADDRESS(address, &slf__game_time_advance__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_all_execs_thread_count__str__t : script_library_class::function {
+    slf__get_all_execs_thread_count__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_all_execs_thread_count__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006824D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_all_execs_thread_count__str__t::slf__get_all_execs_thread_count__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A9EC);
+    FUNC_ADDRESS(address, &slf__get_all_execs_thread_count__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_all_instances_thread_count__str__t : script_library_class::function {
+    slf__get_all_instances_thread_count__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_all_instances_thread_count__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00681500);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_all_instances_thread_count__str__t::slf__get_all_instances_thread_count__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A9E4);
+    FUNC_ADDRESS(address, &slf__get_all_instances_thread_count__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_attacker_entity__t : script_library_class::function {
+    slf__get_attacker_entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_attacker_entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006644F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_attacker_entity__t::slf__get_attacker_entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA24);
+    FUNC_ADDRESS(address, &slf__get_attacker_entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_attacker_member__t : script_library_class::function {
+    slf__get_attacker_member__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_attacker_member__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006644F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_attacker_member__t::slf__get_attacker_member__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA2C);
+    FUNC_ADDRESS(address, &slf__get_attacker_member__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_available_stack_size__t : script_library_class::function {
+    slf__get_available_stack_size__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_available_stack_size__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676E30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_available_stack_size__t::slf__get_available_stack_size__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4EC);
+    FUNC_ADDRESS(address, &slf__get_available_stack_size__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_character_packname_list__t : script_library_class::function {
+    slf__get_character_packname_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_character_packname_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676270);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_character_packname_list__t::slf__get_character_packname_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C354);
+    FUNC_ADDRESS(address, &slf__get_character_packname_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list__t : script_library_class::function {
+    slf__get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00687180);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list__t::slf__get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C61C);
+    FUNC_ADDRESS(address, &slf__get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_col_hit_ent__t : script_library_class::function {
+    slf__get_col_hit_ent__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_col_hit_ent__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A6E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_col_hit_ent__t::slf__get_col_hit_ent__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A884);
+    FUNC_ADDRESS(address, &slf__get_col_hit_ent__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_col_hit_norm__t : script_library_class::function {
+    slf__get_col_hit_norm__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_col_hit_norm__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663990);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_col_hit_norm__t::slf__get_col_hit_norm__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A87C);
+    FUNC_ADDRESS(address, &slf__get_col_hit_norm__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_col_hit_pos__t : script_library_class::function {
+    slf__get_col_hit_pos__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_col_hit_pos__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663950);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_col_hit_pos__t::slf__get_col_hit_pos__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A874);
+    FUNC_ADDRESS(address, &slf__get_col_hit_pos__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_control_state__num__t : script_library_class::function {
+    slf__get_control_state__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_control_state__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A690);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_control_state__num__t::slf__get_control_state__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7F4);
+    FUNC_ADDRESS(address, &slf__get_control_state__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_control_trigger__num__t : script_library_class::function {
+    slf__get_control_trigger__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_control_trigger__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A640);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_control_trigger__num__t::slf__get_control_trigger__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7EC);
+    FUNC_ADDRESS(address, &slf__get_control_trigger__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_current_instance_thread_count__str__t : script_library_class::function {
+    slf__get_current_instance_thread_count__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_current_instance_thread_count__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00681490);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_current_instance_thread_count__str__t::slf__get_current_instance_thread_count__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A9DC);
+    FUNC_ADDRESS(address, &slf__get_current_instance_thread_count__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_current_view_cam_pos__t : script_library_class::function {
+    slf__get_current_view_cam_pos__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_current_view_cam_pos__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662930);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_current_view_cam_pos__t::slf__get_current_view_cam_pos__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5B4);
+    FUNC_ADDRESS(address, &slf__get_current_view_cam_pos__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_current_view_cam_x_facing__t : script_library_class::function {
+    slf__get_current_view_cam_x_facing__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_current_view_cam_x_facing__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662810);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_current_view_cam_x_facing__t::slf__get_current_view_cam_x_facing__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A59C);
+    FUNC_ADDRESS(address, &slf__get_current_view_cam_x_facing__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_current_view_cam_y_facing__t : script_library_class::function {
+    slf__get_current_view_cam_y_facing__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_current_view_cam_y_facing__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662870);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_current_view_cam_y_facing__t::slf__get_current_view_cam_y_facing__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5A4);
+    FUNC_ADDRESS(address, &slf__get_current_view_cam_y_facing__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_current_view_cam_z_facing__t : script_library_class::function {
+    slf__get_current_view_cam_z_facing__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_current_view_cam_z_facing__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006628D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_current_view_cam_z_facing__t::slf__get_current_view_cam_z_facing__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5AC);
+    FUNC_ADDRESS(address, &slf__get_current_view_cam_z_facing__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_fog_color__t : script_library_class::function {
+    slf__get_fog_color__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_fog_color__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663E60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_fog_color__t::slf__get_fog_color__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8F4);
+    FUNC_ADDRESS(address, &slf__get_fog_color__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_fog_distance__t : script_library_class::function {
+    slf__get_fog_distance__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_fog_distance__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663EC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_fog_distance__t::slf__get_fog_distance__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8FC);
+    FUNC_ADDRESS(address, &slf__get_fog_distance__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_game_info_num__str__t : script_library_class::function {
+    slf__get_game_info_num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_game_info_num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663C00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_game_info_num__str__t::slf__get_game_info_num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8C4);
+    FUNC_ADDRESS(address, &slf__get_game_info_num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_game_info_str__str__t : script_library_class::function {
+    slf__get_game_info_str__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_game_info_str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A7F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_game_info_str__str__t::slf__get_game_info_str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8D4);
+    FUNC_ADDRESS(address, &slf__get_game_info_str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_glam_cam__num__t : script_library_class::function {
+    slf__get_glam_cam__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_glam_cam__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00670930);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_glam_cam__num__t::slf__get_glam_cam__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B780);
+    FUNC_ADDRESS(address, &slf__get_glam_cam__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_global_time_dilation__t : script_library_class::function {
+    slf__get_global_time_dilation__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_global_time_dilation__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663A60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_global_time_dilation__t::slf__get_global_time_dilation__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A894);
+    FUNC_ADDRESS(address, &slf__get_global_time_dilation__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_ini_flag__str__t : script_library_class::function {
+    slf__get_ini_flag__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_ini_flag__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067AC20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_ini_flag__str__t::slf__get_ini_flag__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A94C);
+    FUNC_ADDRESS(address, &slf__get_ini_flag__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_ini_num__str__t : script_library_class::function {
+    slf__get_ini_num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_ini_num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067AB70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_ini_num__str__t::slf__get_ini_num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A954);
+    FUNC_ADDRESS(address, &slf__get_ini_num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_int_num__num__t : script_library_class::function {
+    slf__get_int_num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_int_num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664060);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_int_num__num__t::slf__get_int_num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A92C);
+    FUNC_ADDRESS(address, &slf__get_int_num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_camera_marker__num__t : script_library_class::function {
+    slf__get_mission_camera_marker__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_camera_marker__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00682F80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_camera_marker__num__t::slf__get_mission_camera_marker__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C414);
+    FUNC_ADDRESS(address, &slf__get_mission_camera_marker__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_camera_transform_marker__num__t : script_library_class::function {
+    slf__get_mission_camera_transform_marker__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_camera_transform_marker__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00683040);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_camera_transform_marker__num__t::slf__get_mission_camera_transform_marker__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C454);
+    FUNC_ADDRESS(address, &slf__get_mission_camera_transform_marker__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_entity__t : script_library_class::function {
+    slf__get_mission_entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006764E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_entity__t::slf__get_mission_entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C38C);
+    FUNC_ADDRESS(address, &slf__get_mission_entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_key_posfacing3d__t : script_library_class::function {
+    slf__get_mission_key_posfacing3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_key_posfacing3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676330);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_key_posfacing3d__t::slf__get_mission_key_posfacing3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C36C);
+    FUNC_ADDRESS(address, &slf__get_mission_key_posfacing3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_key_position__t : script_library_class::function {
+    slf__get_mission_key_position__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_key_position__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006762E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_key_position__t::slf__get_mission_key_position__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C364);
+    FUNC_ADDRESS(address, &slf__get_mission_key_position__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_marker__num__t : script_library_class::function {
+    slf__get_mission_marker__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_marker__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00682F10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_marker__num__t::slf__get_mission_marker__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C40C);
+    FUNC_ADDRESS(address, &slf__get_mission_marker__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_nums__t : script_library_class::function {
+    slf__get_mission_nums__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_nums__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006765A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_nums__t::slf__get_mission_nums__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3AC);
+    FUNC_ADDRESS(address, &slf__get_mission_nums__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_patrol_waypoint__t : script_library_class::function {
+    slf__get_mission_patrol_waypoint__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_patrol_waypoint__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006764A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_patrol_waypoint__t::slf__get_mission_patrol_waypoint__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C384);
+    FUNC_ADDRESS(address, &slf__get_mission_patrol_waypoint__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_positions__t : script_library_class::function {
+    slf__get_mission_positions__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_positions__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676540);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_positions__t::slf__get_mission_positions__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C39C);
+    FUNC_ADDRESS(address, &slf__get_mission_positions__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_strings__t : script_library_class::function {
+    slf__get_mission_strings__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_strings__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676570);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_strings__t::slf__get_mission_strings__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3A4);
+    FUNC_ADDRESS(address, &slf__get_mission_strings__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_transform_marker__num__t : script_library_class::function {
+    slf__get_mission_transform_marker__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_transform_marker__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00682FE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_transform_marker__num__t::slf__get_mission_transform_marker__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C42C);
+    FUNC_ADDRESS(address, &slf__get_mission_transform_marker__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_mission_trigger__t : script_library_class::function {
+    slf__get_mission_trigger__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_mission_trigger__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676510);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_mission_trigger__t::slf__get_mission_trigger__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C394);
+    FUNC_ADDRESS(address, &slf__get_mission_trigger__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_missions_key_position_by_index__district__str__num__t : script_library_class::function {
+    slf__get_missions_key_position_by_index__district__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_missions_key_position_by_index__district__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676620);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_missions_key_position_by_index__district__str__num__t::slf__get_missions_key_position_by_index__district__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3BC);
+    FUNC_ADDRESS(address, &slf__get_missions_key_position_by_index__district__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_missions_nums_by_index__district__str__num__num_list__t : script_library_class::function {
+    slf__get_missions_nums_by_index__district__str__num__num_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_missions_nums_by_index__district__str__num__num_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00682EB0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_missions_nums_by_index__district__str__num__num_list__t::slf__get_missions_nums_by_index__district__str__num__num_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3CC);
+    FUNC_ADDRESS(address, &slf__get_missions_nums_by_index__district__str__num__num_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_missions_patrol_waypoint_by_index__district__str__num__t : script_library_class::function {
+    slf__get_missions_patrol_waypoint_by_index__district__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_missions_patrol_waypoint_by_index__district__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006766A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_missions_patrol_waypoint_by_index__district__str__num__t::slf__get_missions_patrol_waypoint_by_index__district__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3C4);
+    FUNC_ADDRESS(address, &slf__get_missions_patrol_waypoint_by_index__district__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_neighborhood_name__num__t : script_library_class::function {
+    slf__get_neighborhood_name__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_neighborhood_name__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677220);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_neighborhood_name__num__t::slf__get_neighborhood_name__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C54C);
+    FUNC_ADDRESS(address, &slf__get_neighborhood_name__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_num_free_slots__str__t : script_library_class::function {
+    slf__get_num_free_slots__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_num_free_slots__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676720);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_num_free_slots__str__t::slf__get_num_free_slots__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3E4);
+    FUNC_ADDRESS(address, &slf__get_num_free_slots__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_num_mission_transform_marker__t : script_library_class::function {
+    slf__get_num_mission_transform_marker__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_num_mission_transform_marker__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680F10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_num_mission_transform_marker__t::slf__get_num_mission_transform_marker__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C434);
+    FUNC_ADDRESS(address, &slf__get_num_mission_transform_marker__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_pack_group__str__t : script_library_class::function {
+    slf__get_pack_group__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_pack_group__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680B80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_pack_group__str__t::slf__get_pack_group__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3EC);
+    FUNC_ADDRESS(address, &slf__get_pack_group__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_pack_size__str__t : script_library_class::function {
+    slf__get_pack_size__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_pack_size__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676D70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_pack_size__str__t::slf__get_pack_size__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4E4);
+    FUNC_ADDRESS(address, &slf__get_pack_size__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_patrol_difficulty__str__t : script_library_class::function {
+    slf__get_patrol_difficulty__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_patrol_difficulty__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677100);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_patrol_difficulty__str__t::slf__get_patrol_difficulty__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C534);
+    FUNC_ADDRESS(address, &slf__get_patrol_difficulty__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_patrol_node_position_by_index__str__num__t : script_library_class::function {
+    slf__get_patrol_node_position_by_index__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_patrol_node_position_by_index__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677080);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_patrol_node_position_by_index__str__num__t::slf__get_patrol_node_position_by_index__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C52C);
+    FUNC_ADDRESS(address, &slf__get_patrol_node_position_by_index__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_patrol_start_position__str__t : script_library_class::function {
+    slf__get_patrol_start_position__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_patrol_start_position__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677010);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_patrol_start_position__str__t::slf__get_patrol_start_position__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C524);
+    FUNC_ADDRESS(address, &slf__get_patrol_start_position__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_patrol_unlock_threshold__str__t : script_library_class::function {
+    slf__get_patrol_unlock_threshold__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_patrol_unlock_threshold__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677160);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_patrol_unlock_threshold__str__t::slf__get_patrol_unlock_threshold__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C53C);
+    FUNC_ADDRESS(address, &slf__get_patrol_unlock_threshold__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_platform__t : script_library_class::function {
+    slf__get_platform__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_platform__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00661F20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_platform__t::slf__get_platform__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A508);
+    FUNC_ADDRESS(address, &slf__get_platform__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_render_opt_num__str__t : script_library_class::function {
+    slf__get_render_opt_num__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_render_opt_num__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663DD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_render_opt_num__str__t::slf__get_render_opt_num__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8E4);
+    FUNC_ADDRESS(address, &slf__get_render_opt_num__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_spider_reflexes_spiderman_time_dilation__t : script_library_class::function {
+    slf__get_spider_reflexes_spiderman_time_dilation__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_spider_reflexes_spiderman_time_dilation__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_spider_reflexes_spiderman_time_dilation__t::slf__get_spider_reflexes_spiderman_time_dilation__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAC4);
+    FUNC_ADDRESS(address, &slf__get_spider_reflexes_spiderman_time_dilation__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_spider_reflexes_world_time_dilation__t : script_library_class::function {
+    slf__get_spider_reflexes_world_time_dilation__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_spider_reflexes_world_time_dilation__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_spider_reflexes_world_time_dilation__t::slf__get_spider_reflexes_world_time_dilation__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAD4);
+    FUNC_ADDRESS(address, &slf__get_spider_reflexes_world_time_dilation__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_time_inc__t : script_library_class::function {
+    slf__get_time_inc__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_time_inc__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006633B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_time_inc__t::slf__get_time_inc__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7A4);
+    FUNC_ADDRESS(address, &slf__get_time_inc__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_time_of_day__t : script_library_class::function {
+    slf__get_time_of_day__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_time_of_day__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664150);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_time_of_day__t::slf__get_time_of_day__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A974);
+    FUNC_ADDRESS(address, &slf__get_time_of_day__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_time_of_day_rate__t : script_library_class::function {
+    slf__get_time_of_day_rate__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_time_of_day_rate__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664110);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_time_of_day_rate__t::slf__get_time_of_day_rate__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A96C);
+    FUNC_ADDRESS(address, &slf__get_time_of_day_rate__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_token_index_from_id__num__num__t : script_library_class::function {
+    slf__get_token_index_from_id__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_token_index_from_id__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066F470);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_token_index_from_id__num__num__t::slf__get_token_index_from_id__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B554);
+    FUNC_ADDRESS(address, &slf__get_token_index_from_id__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__get_traffic_spawn_point_near_camera__vector3d_list__t : script_library_class::function {
+    slf__get_traffic_spawn_point_near_camera__vector3d_list__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__get_traffic_spawn_point_near_camera__vector3d_list__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00686BE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__get_traffic_spawn_point_near_camera__vector3d_list__t::slf__get_traffic_spawn_point_near_camera__vector3d_list__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA98);
+    FUNC_ADDRESS(address, &slf__get_traffic_spawn_point_near_camera__vector3d_list__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__greater_than_or_equal_rounded__num__num__t : script_library_class::function {
+    slf__greater_than_or_equal_rounded__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__greater_than_or_equal_rounded__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673750);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__greater_than_or_equal_rounded__num__num__t::slf__greater_than_or_equal_rounded__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC90);
+    FUNC_ADDRESS(address, &slf__greater_than_or_equal_rounded__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__hard_break__t : script_library_class::function {
+    slf__hard_break__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__hard_break__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__hard_break__t::slf__hard_break__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA1C);
+    FUNC_ADDRESS(address, &slf__hard_break__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__has_substring__str__str__t : script_library_class::function {
+    slf__has_substring__str__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__has_substring__str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006625D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__has_substring__str__str__t::slf__has_substring__str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A580);
+    FUNC_ADDRESS(address, &slf__has_substring__str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__hero__t : script_library_class::function {
+    slf__hero__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__hero__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067BBA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__hero__t::slf__hero__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AED4);
+    FUNC_ADDRESS(address, &slf__hero__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__hero_exists__t : script_library_class::function {
+    slf__hero_exists__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__hero_exists__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668A10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__hero_exists__t::slf__hero_exists__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AEDC);
+    FUNC_ADDRESS(address, &slf__hero_exists__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__hero_type__t : script_library_class::function {
+    slf__hero_type__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__hero_type__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668A50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__hero_type__t::slf__hero_type__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AEE4);
+    FUNC_ADDRESS(address, &slf__hero_type__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__hide_controller_gauge__t : script_library_class::function {
+    slf__hide_controller_gauge__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__hide_controller_gauge__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672750);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__hide_controller_gauge__t::slf__hide_controller_gauge__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB20);
+    FUNC_ADDRESS(address, &slf__hide_controller_gauge__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__initialize_encounter_object__t : script_library_class::function {
+    slf__initialize_encounter_object__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__initialize_encounter_object__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664490);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__initialize_encounter_object__t::slf__initialize_encounter_object__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA0C);
+    FUNC_ADDRESS(address, &slf__initialize_encounter_object__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__initialize_encounter_objects__t : script_library_class::function {
+    slf__initialize_encounter_objects__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__initialize_encounter_objects__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664430);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__initialize_encounter_objects__t::slf__initialize_encounter_objects__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA04);
+    FUNC_ADDRESS(address, &slf__initialize_encounter_objects__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__insert_pack__str__t : script_library_class::function {
+    slf__insert_pack__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__insert_pack__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006809A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__insert_pack__str__t::slf__insert_pack__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3D4);
+    FUNC_ADDRESS(address, &slf__insert_pack__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__invoke_pause_menu_unlockables__t : script_library_class::function {
+    slf__invoke_pause_menu_unlockables__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__invoke_pause_menu_unlockables__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006737C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__invoke_pause_menu_unlockables__t::slf__invoke_pause_menu_unlockables__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC98);
+    FUNC_ADDRESS(address, &slf__invoke_pause_menu_unlockables__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_ai_enabled__t : script_library_class::function {
+    slf__is_ai_enabled__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_ai_enabled__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662FE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_ai_enabled__t::slf__is_ai_enabled__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6D4);
+    FUNC_ADDRESS(address, &slf__is_ai_enabled__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_cut_scene_playing__t : script_library_class::function {
+    slf__is_cut_scene_playing__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_cut_scene_playing__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00670CA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_cut_scene_playing__t::slf__is_cut_scene_playing__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B7D0);
+    FUNC_ADDRESS(address, &slf__is_cut_scene_playing__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_district_loaded__num__t : script_library_class::function {
+    slf__is_district_loaded__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_district_loaded__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676AB0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_district_loaded__num__t::slf__is_district_loaded__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C49C);
+    FUNC_ADDRESS(address, &slf__is_district_loaded__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_hero_frozen__t : script_library_class::function {
+    slf__is_hero_frozen__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_hero_frozen__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679AA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_hero_frozen__t::slf__is_hero_frozen__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A60C);
+    FUNC_ADDRESS(address, &slf__is_hero_frozen__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_hero_peter_parker__t : script_library_class::function {
+    slf__is_hero_peter_parker__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_hero_peter_parker__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668B40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_hero_peter_parker__t::slf__is_hero_peter_parker__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AEFC);
+    FUNC_ADDRESS(address, &slf__is_hero_peter_parker__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_hero_spidey__t : script_library_class::function {
+    slf__is_hero_spidey__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_hero_spidey__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668AA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_hero_spidey__t::slf__is_hero_spidey__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AEEC);
+    FUNC_ADDRESS(address, &slf__is_hero_spidey__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_hero_venom__t : script_library_class::function {
+    slf__is_hero_venom__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_hero_venom__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668AF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_hero_venom__t::slf__is_hero_venom__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AEF4);
+    FUNC_ADDRESS(address, &slf__is_hero_venom__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_marky_cam_enabled__t : script_library_class::function {
+    slf__is_marky_cam_enabled__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_marky_cam_enabled__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662990);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_marky_cam_enabled__t::slf__is_marky_cam_enabled__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5C4);
+    FUNC_ADDRESS(address, &slf__is_marky_cam_enabled__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_mission_active__t : script_library_class::function {
+    slf__is_mission_active__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_mission_active__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676F20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_mission_active__t::slf__is_mission_active__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C50C);
+    FUNC_ADDRESS(address, &slf__is_mission_active__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_mission_loading__t : script_library_class::function {
+    slf__is_mission_loading__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_mission_loading__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676F60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_mission_loading__t::slf__is_mission_loading__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C514);
+    FUNC_ADDRESS(address, &slf__is_mission_loading__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_pack_available__str__t : script_library_class::function {
+    slf__is_pack_available__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_pack_available__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680E40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_pack_available__str__t::slf__is_pack_available__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C404);
+    FUNC_ADDRESS(address, &slf__is_pack_available__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_pack_loaded__str__t : script_library_class::function {
+    slf__is_pack_loaded__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_pack_loaded__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680D50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_pack_loaded__str__t::slf__is_pack_loaded__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3FC);
+    FUNC_ADDRESS(address, &slf__is_pack_loaded__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_pack_pushed__str__t : script_library_class::function {
+    slf__is_pack_pushed__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_pack_pushed__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676190);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_pack_pushed__str__t::slf__is_pack_pushed__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C34C);
+    FUNC_ADDRESS(address, &slf__is_pack_pushed__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_path_graph_inside_glass_house__str__t : script_library_class::function {
+    slf__is_path_graph_inside_glass_house__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_path_graph_inside_glass_house__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664590);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_path_graph_inside_glass_house__str__t::slf__is_path_graph_inside_glass_house__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AAA0);
+    FUNC_ADDRESS(address, &slf__is_path_graph_inside_glass_house__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_patrol_active__t : script_library_class::function {
+    slf__is_patrol_active__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_patrol_active__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676EE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_patrol_active__t::slf__is_patrol_active__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C504);
+    FUNC_ADDRESS(address, &slf__is_patrol_active__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_patrol_node_empty__num__t : script_library_class::function {
+    slf__is_patrol_node_empty__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_patrol_node_empty__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006771C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_patrol_node_empty__num__t::slf__is_patrol_node_empty__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C544);
+    FUNC_ADDRESS(address, &slf__is_patrol_node_empty__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_paused__t : script_library_class::function {
+    slf__is_paused__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_paused__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662EA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_paused__t::slf__is_paused__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6B4);
+    FUNC_ADDRESS(address, &slf__is_paused__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_physics_enabled__t : script_library_class::function {
+    slf__is_physics_enabled__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_physics_enabled__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663070);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_physics_enabled__t::slf__is_physics_enabled__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6E4);
+    FUNC_ADDRESS(address, &slf__is_physics_enabled__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_point_inside_glass_house__vector3d__t : script_library_class::function {
+    slf__is_point_inside_glass_house__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_point_inside_glass_house__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00661F70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_point_inside_glass_house__vector3d__t::slf__is_point_inside_glass_house__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A540);
+    FUNC_ADDRESS(address, &slf__is_point_inside_glass_house__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_point_under_water__vector3d__t : script_library_class::function {
+    slf__is_point_under_water__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_point_under_water__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664540);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_point_under_water__vector3d__t::slf__is_point_under_water__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA3C);
+    FUNC_ADDRESS(address, &slf__is_point_under_water__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__is_user_camera_enabled__t : script_library_class::function {
+    slf__is_user_camera_enabled__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__is_user_camera_enabled__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006629D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__is_user_camera_enabled__t::slf__is_user_camera_enabled__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5CC);
+    FUNC_ADDRESS(address, &slf__is_user_camera_enabled__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__load_anim__str__t : script_library_class::function {
+    slf__load_anim__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__load_anim__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__load_anim__str__t::slf__load_anim__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AAF0);
+    FUNC_ADDRESS(address, &slf__load_anim__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__load_level__str__vector3d__t : script_library_class::function {
+    slf__load_level__str__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__load_level__str__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663AD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__load_level__str__vector3d__t::slf__load_level__str__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8AC);
+    FUNC_ADDRESS(address, &slf__load_level__str__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__lock_all_districts__t : script_library_class::function {
+    slf__lock_all_districts__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__lock_all_districts__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676C10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__lock_all_districts__t::slf__lock_all_districts__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4C4);
+    FUNC_ADDRESS(address, &slf__lock_all_districts__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__lock_district__num__t : script_library_class::function {
+    slf__lock_district__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__lock_district__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676A70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__lock_district__num__t::slf__lock_district__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C494);
+    FUNC_ADDRESS(address, &slf__lock_district__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__lock_mission_manager__num__t : script_library_class::function {
+    slf__lock_mission_manager__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__lock_mission_manager__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676FA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__lock_mission_manager__num__t::slf__lock_mission_manager__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C51C);
+    FUNC_ADDRESS(address, &slf__lock_mission_manager__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__los_check__vector3d__vector3d__t : script_library_class::function {
+    slf__los_check__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__los_check__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006813E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__los_check__vector3d__vector3d__t::slf__los_check__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A814);
+    FUNC_ADDRESS(address, &slf__los_check__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__lower_hotpursuit_indicator_level__t : script_library_class::function {
+    slf__lower_hotpursuit_indicator_level__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__lower_hotpursuit_indicator_level__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672610);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__lower_hotpursuit_indicator_level__t::slf__lower_hotpursuit_indicator_level__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAE0);
+    FUNC_ADDRESS(address, &slf__lower_hotpursuit_indicator_level__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__malor__vector3d__num__t : script_library_class::function {
+    slf__malor__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__malor__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664180);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__malor__vector3d__num__t::slf__malor__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A984);
+    FUNC_ADDRESS(address, &slf__malor__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__normal__vector3d__t : script_library_class::function {
+    slf__normal__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__normal__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00671FD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__normal__vector3d__t::slf__normal__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BA40);
+    FUNC_ADDRESS(address, &slf__normal__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__pause_game__num__t : script_library_class::function {
+    slf__pause_game__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__pause_game__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662EE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__pause_game__num__t::slf__pause_game__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6BC);
+    FUNC_ADDRESS(address, &slf__pause_game__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__play_credits__t : script_library_class::function {
+    slf__play_credits__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__play_credits__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672670);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__play_credits__t::slf__play_credits__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAF8);
+    FUNC_ADDRESS(address, &slf__play_credits__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__play_prerender__str__t : script_library_class::function {
+    slf__play_prerender__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__play_prerender__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663B60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__play_prerender__str__t::slf__play_prerender__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8B4);
+    FUNC_ADDRESS(address, &slf__play_prerender__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__pop_pack__str__t : script_library_class::function {
+    slf__pop_pack__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__pop_pack__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680870);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__pop_pack__str__t::slf__pop_pack__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C344);
+    FUNC_ADDRESS(address, &slf__pop_pack__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__post_message__str__num__t : script_library_class::function {
+    slf__post_message__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__post_message__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A460);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__post_message__str__num__t::slf__post_message__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A73C);
+    FUNC_ADDRESS(address, &slf__post_message__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__pre_roll_all_pfx__num__t : script_library_class::function {
+    slf__pre_roll_all_pfx__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__pre_roll_all_pfx__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664510);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__pre_roll_all_pfx__num__t::slf__pre_roll_all_pfx__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA34);
+    FUNC_ADDRESS(address, &slf__pre_roll_all_pfx__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__press_controller_gauge__num__t : script_library_class::function {
+    slf__press_controller_gauge__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__press_controller_gauge__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672770);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__press_controller_gauge__num__t::slf__press_controller_gauge__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB28);
+    FUNC_ADDRESS(address, &slf__press_controller_gauge__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__press_controller_gauge__num__num__num__t : script_library_class::function {
+    slf__press_controller_gauge__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__press_controller_gauge__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006727A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__press_controller_gauge__num__num__num__t::slf__press_controller_gauge__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB30);
+    FUNC_ADDRESS(address, &slf__press_controller_gauge__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__purge_district__num__t : script_library_class::function {
+    slf__purge_district__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__purge_district__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676BD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__purge_district__num__t::slf__purge_district__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4BC);
+    FUNC_ADDRESS(address, &slf__purge_district__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__push_pack__str__t : script_library_class::function {
+    slf__push_pack__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__push_pack__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680730);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__push_pack__str__t::slf__push_pack__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C334);
+    FUNC_ADDRESS(address, &slf__push_pack__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__push_pack_into_district_slot__str__t : script_library_class::function {
+    slf__push_pack_into_district_slot__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__push_pack_into_district_slot__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00682B80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__push_pack_into_district_slot__str__t::slf__push_pack_into_district_slot__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C33C);
+    FUNC_ADDRESS(address, &slf__push_pack_into_district_slot__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__raise_hotpursuit_indicator_level__t : script_library_class::function {
+    slf__raise_hotpursuit_indicator_level__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__raise_hotpursuit_indicator_level__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006725F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__raise_hotpursuit_indicator_level__t::slf__raise_hotpursuit_indicator_level__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAD8);
+    FUNC_ADDRESS(address, &slf__raise_hotpursuit_indicator_level__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__random__num__t : script_library_class::function {
+    slf__random__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__random__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663280);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__random__num__t::slf__random__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A744);
+    FUNC_ADDRESS(address, &slf__random__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__remove_civilian_info__num__t : script_library_class::function {
+    slf__remove_civilian_info__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__remove_civilian_info__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677870);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__remove_civilian_info__num__t::slf__remove_civilian_info__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5C4);
+    FUNC_ADDRESS(address, &slf__remove_civilian_info__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__remove_civilian_info_entity__entity__num__t : script_library_class::function {
+    slf__remove_civilian_info_entity__entity__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__remove_civilian_info_entity__entity__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00681240);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__remove_civilian_info_entity__entity__num__t::slf__remove_civilian_info_entity__entity__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5D4);
+    FUNC_ADDRESS(address, &slf__remove_civilian_info_entity__entity__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__remove_glass_house__str__t : script_library_class::function {
+    slf__remove_glass_house__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__remove_glass_house__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006623A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__remove_glass_house__str__t::slf__remove_glass_house__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A568);
+    FUNC_ADDRESS(address, &slf__remove_glass_house__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__remove_item_entity_from_world__entity__t : script_library_class::function {
+    slf__remove_item_entity_from_world__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__remove_item_entity_from_world__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00669500);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__remove_item_entity_from_world__entity__t::slf__remove_item_entity_from_world__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AFFC);
+    FUNC_ADDRESS(address, &slf__remove_item_entity_from_world__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__remove_pack__str__t : script_library_class::function {
+    slf__remove_pack__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__remove_pack__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680A90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__remove_pack__str__t::slf__remove_pack__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C3DC);
+    FUNC_ADDRESS(address, &slf__remove_pack__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__remove_traffic_model__num__t : script_library_class::function {
+    slf__remove_traffic_model__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__remove_traffic_model__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677810);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__remove_traffic_model__num__t::slf__remove_traffic_model__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5AC);
+    FUNC_ADDRESS(address, &slf__remove_traffic_model__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__reset_externed_alses__t : script_library_class::function {
+    slf__reset_externed_alses__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__reset_externed_alses__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00669B00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__reset_externed_alses__t::slf__reset_externed_alses__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B064);
+    FUNC_ADDRESS(address, &slf__reset_externed_alses__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_all_anchors_activated__num__t : script_library_class::function {
+    slf__set_all_anchors_activated__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_all_anchors_activated__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006830A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_all_anchors_activated__num__t::slf__set_all_anchors_activated__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAEC);
+    FUNC_ADDRESS(address, &slf__set_all_anchors_activated__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_blur__num__t : script_library_class::function {
+    slf__set_blur__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_blur__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662B90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_blur__num__t::slf__set_blur__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A63C);
+    FUNC_ADDRESS(address, &slf__set_blur__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_blur_blend_mode__num__t : script_library_class::function {
+    slf__set_blur_blend_mode__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_blur_blend_mode__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662CC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_blur_blend_mode__num__t::slf__set_blur_blend_mode__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A664);
+    FUNC_ADDRESS(address, &slf__set_blur_blend_mode__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_blur_color__vector3d__t : script_library_class::function {
+    slf__set_blur_color__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_blur_color__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662BC0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_blur_color__vector3d__t::slf__set_blur_color__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A644);
+    FUNC_ADDRESS(address, &slf__set_blur_color__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_blur_offset__num__num__t : script_library_class::function {
+    slf__set_blur_offset__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_blur_offset__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662C50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_blur_offset__num__num__t::slf__set_blur_offset__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A654);
+    FUNC_ADDRESS(address, &slf__set_blur_offset__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_blur_rot__num__t : script_library_class::function {
+    slf__set_blur_rot__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_blur_rot__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662C90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_blur_rot__num__t::slf__set_blur_rot__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A65C);
+    FUNC_ADDRESS(address, &slf__set_blur_rot__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_blur_scale__num__num__t : script_library_class::function {
+    slf__set_blur_scale__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_blur_scale__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662C10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_blur_scale__num__num__t::slf__set_blur_scale__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A64C);
+    FUNC_ADDRESS(address, &slf__set_blur_scale__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_clear_color__vector3d__t : script_library_class::function {
+    slf__set_clear_color__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_clear_color__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006630B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_clear_color__vector3d__t::slf__set_clear_color__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6F4);
+    FUNC_ADDRESS(address, &slf__set_clear_color__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_current_mission_objective_caption__num__t : script_library_class::function {
+    slf__set_current_mission_objective_caption__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_current_mission_objective_caption__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679570);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_current_mission_objective_caption__num__t::slf__set_current_mission_objective_caption__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CADC);
+    FUNC_ADDRESS(address, &slf__set_current_mission_objective_caption__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_default_traffic_hitpoints__num__t : script_library_class::function {
+    slf__set_default_traffic_hitpoints__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_default_traffic_hitpoints__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677A70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_default_traffic_hitpoints__num__t::slf__set_default_traffic_hitpoints__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C614);
+    FUNC_ADDRESS(address, &slf__set_default_traffic_hitpoints__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_dialog_box_flavor__num__t : script_library_class::function {
+    slf__set_dialog_box_flavor__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_dialog_box_flavor__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673600);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_dialog_box_flavor__num__t::slf__set_dialog_box_flavor__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC5C);
+    FUNC_ADDRESS(address, &slf__set_dialog_box_flavor__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_dialog_box_lockout_time__num__t : script_library_class::function {
+    slf__set_dialog_box_lockout_time__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_dialog_box_lockout_time__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673670);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_dialog_box_lockout_time__num__t::slf__set_dialog_box_lockout_time__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC6C);
+    FUNC_ADDRESS(address, &slf__set_dialog_box_lockout_time__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_engine_property__str__num__t : script_library_class::function {
+    slf__set_engine_property__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_engine_property__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006642A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_engine_property__str__num__t::slf__set_engine_property__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A99C);
+    FUNC_ADDRESS(address, &slf__set_engine_property__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_fov__num__t : script_library_class::function {
+    slf__set_fov__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_fov__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662B60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_fov__num__t::slf__set_fov__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A62C);
+    FUNC_ADDRESS(address, &slf__set_fov__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_game_info_num__str__num__t : script_library_class::function {
+    slf__set_game_info_num__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_game_info_num__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663B90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_game_info_num__str__num__t::slf__set_game_info_num__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8BC);
+    FUNC_ADDRESS(address, &slf__set_game_info_num__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_game_info_str__str__str__t : script_library_class::function {
+    slf__set_game_info_str__str__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_game_info_str__str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663C90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_game_info_str__str__str__t::slf__set_game_info_str__str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8CC);
+    FUNC_ADDRESS(address, &slf__set_game_info_str__str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_global_time_dilation__num__t : script_library_class::function {
+    slf__set_global_time_dilation__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_global_time_dilation__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663A90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_global_time_dilation__num__t::slf__set_global_time_dilation__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A89C);
+    FUNC_ADDRESS(address, &slf__set_global_time_dilation__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_marky_cam_lookat__vector3d__t : script_library_class::function {
+    slf__set_marky_cam_lookat__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_marky_cam_lookat__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662AD0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_marky_cam_lookat__vector3d__t::slf__set_marky_cam_lookat__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A5EC);
+    FUNC_ADDRESS(address, &slf__set_marky_cam_lookat__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_max_streaming_distance__num__t : script_library_class::function {
+    slf__set_max_streaming_distance__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_max_streaming_distance__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676B90);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_max_streaming_distance__num__t::slf__set_max_streaming_distance__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4B4);
+    FUNC_ADDRESS(address, &slf__set_max_streaming_distance__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_mission_key_pos_facing__vector3d__vector3d__t : script_library_class::function {
+    slf__set_mission_key_pos_facing__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_mission_key_pos_facing__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676430);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_mission_key_pos_facing__vector3d__vector3d__t::slf__set_mission_key_pos_facing__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C37C);
+    FUNC_ADDRESS(address, &slf__set_mission_key_pos_facing__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_mission_key_position__vector3d__t : script_library_class::function {
+    slf__set_mission_key_position__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_mission_key_position__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_mission_key_position__vector3d__t::slf__set_mission_key_position__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C374);
+    FUNC_ADDRESS(address, &slf__set_mission_key_position__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_mission_text__num__t : script_library_class::function {
+    slf__set_mission_text__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_mission_text__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672C00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_mission_text__num__t::slf__set_mission_text__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBF8);
+    FUNC_ADDRESS(address, &slf__set_mission_text__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_mission_text_box_flavor__num__t : script_library_class::function {
+    slf__set_mission_text_box_flavor__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_mission_text_box_flavor__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673640);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_mission_text_box_flavor__num__t::slf__set_mission_text_box_flavor__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC64);
+    FUNC_ADDRESS(address, &slf__set_mission_text_box_flavor__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_mission_text_debug__str__t : script_library_class::function {
+    slf__set_mission_text_debug__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_mission_text_debug__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672FA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_mission_text_debug__str__t::slf__set_mission_text_debug__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC00);
+    FUNC_ADDRESS(address, &slf__set_mission_text_debug__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_parking_density__num__t : script_library_class::function {
+    slf__set_parking_density__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_parking_density__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677A40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_parking_density__num__t::slf__set_parking_density__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C60C);
+    FUNC_ADDRESS(address, &slf__set_parking_density__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_pedestrian_density__num__t : script_library_class::function {
+    slf__set_pedestrian_density__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_pedestrian_density__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677990);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_pedestrian_density__num__t::slf__set_pedestrian_density__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5F4);
+    FUNC_ADDRESS(address, &slf__set_pedestrian_density__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_render_opt_num__str__num__t : script_library_class::function {
+    slf__set_render_opt_num__str__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_render_opt_num__str__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663D60);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_render_opt_num__str__num__t::slf__set_render_opt_num__str__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8DC);
+    FUNC_ADDRESS(address, &slf__set_render_opt_num__str__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_score_widget_score__num__t : script_library_class::function {
+    slf__set_score_widget_score__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_score_widget_score__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672570);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_score_widget_score__num__t::slf__set_score_widget_score__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAC8);
+    FUNC_ADDRESS(address, &slf__set_score_widget_score__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_sound_category_volume__num__num__num__t : script_library_class::function {
+    slf__set_sound_category_volume__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_sound_category_volume__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664300);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_sound_category_volume__num__num__num__t::slf__set_sound_category_volume__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A9D4);
+    FUNC_ADDRESS(address, &slf__set_sound_category_volume__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_blur__num__t : script_library_class::function {
+    slf__set_spider_reflexes_blur__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_blur__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662CF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_blur__num__t::slf__set_spider_reflexes_blur__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A674);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_blur__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_blur_blend_mode__num__t : script_library_class::function {
+    slf__set_spider_reflexes_blur_blend_mode__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_blur_blend_mode__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662E20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_blur_blend_mode__num__t::slf__set_spider_reflexes_blur_blend_mode__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A69C);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_blur_blend_mode__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_blur_color__vector3d__t : script_library_class::function {
+    slf__set_spider_reflexes_blur_color__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_blur_color__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662D20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_blur_color__vector3d__t::slf__set_spider_reflexes_blur_color__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A67C);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_blur_color__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_blur_offset__num__num__t : script_library_class::function {
+    slf__set_spider_reflexes_blur_offset__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_blur_offset__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662DB0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_blur_offset__num__num__t::slf__set_spider_reflexes_blur_offset__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A68C);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_blur_offset__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_blur_rot__num__t : script_library_class::function {
+    slf__set_spider_reflexes_blur_rot__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_blur_rot__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662DF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_blur_rot__num__t::slf__set_spider_reflexes_blur_rot__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A694);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_blur_rot__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_blur_scale__num__num__t : script_library_class::function {
+    slf__set_spider_reflexes_blur_scale__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_blur_scale__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662D70);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_blur_scale__num__num__t::slf__set_spider_reflexes_blur_scale__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A684);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_blur_scale__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_hero_meter_depletion_rate__num__t : script_library_class::function {
+    slf__set_spider_reflexes_hero_meter_depletion_rate__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_hero_meter_depletion_rate__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_hero_meter_depletion_rate__num__t::slf__set_spider_reflexes_hero_meter_depletion_rate__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAB4);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_hero_meter_depletion_rate__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_spiderman_time_dilation__num__t : script_library_class::function {
+    slf__set_spider_reflexes_spiderman_time_dilation__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_spiderman_time_dilation__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_spiderman_time_dilation__num__t::slf__set_spider_reflexes_spiderman_time_dilation__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CABC);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_spiderman_time_dilation__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_spider_reflexes_world_time_dilation__num__t : script_library_class::function {
+    slf__set_spider_reflexes_world_time_dilation__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_spider_reflexes_world_time_dilation__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_spider_reflexes_world_time_dilation__num__t::slf__set_spider_reflexes_world_time_dilation__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CACC);
+    FUNC_ADDRESS(address, &slf__set_spider_reflexes_world_time_dilation__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_state_of_the_story_caption__num__t : script_library_class::function {
+    slf__set_state_of_the_story_caption__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_state_of_the_story_caption__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679570);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_state_of_the_story_caption__num__t::slf__set_state_of_the_story_caption__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAE4);
+    FUNC_ADDRESS(address, &slf__set_state_of_the_story_caption__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_target_info__entity__vector3d__vector3d__t : script_library_class::function {
+    slf__set_target_info__entity__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_target_info__entity__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067E3C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_target_info__entity__vector3d__vector3d__t::slf__set_target_info__entity__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B6C4);
+    FUNC_ADDRESS(address, &slf__set_target_info__entity__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_time_of_day__num__t : script_library_class::function {
+    slf__set_time_of_day__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_time_of_day__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006640E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_time_of_day__num__t::slf__set_time_of_day__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A964);
+    FUNC_ADDRESS(address, &slf__set_time_of_day__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_traffic_density__num__t : script_library_class::function {
+    slf__set_traffic_density__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_traffic_density__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677A10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_traffic_density__num__t::slf__set_traffic_density__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C604);
+    FUNC_ADDRESS(address, &slf__set_traffic_density__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_traffic_model_usage__num__num__t : script_library_class::function {
+    slf__set_traffic_model_usage__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_traffic_model_usage__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00677840);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_traffic_model_usage__num__num__t::slf__set_traffic_model_usage__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C5B4);
+    FUNC_ADDRESS(address, &slf__set_traffic_model_usage__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_vibration_resume__num__t : script_library_class::function {
+    slf__set_vibration_resume__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_vibration_resume__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A5B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_vibration_resume__num__t::slf__set_vibration_resume__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7D4);
+    FUNC_ADDRESS(address, &slf__set_vibration_resume__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_whoosh_interp_rate__num__t : script_library_class::function {
+    slf__set_whoosh_interp_rate__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_whoosh_interp_rate__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066EBE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_whoosh_interp_rate__num__t::slf__set_whoosh_interp_rate__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B504);
+    FUNC_ADDRESS(address, &slf__set_whoosh_interp_rate__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_whoosh_pitch_range__num__num__t : script_library_class::function {
+    slf__set_whoosh_pitch_range__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_whoosh_pitch_range__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066EBB0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_whoosh_pitch_range__num__num__t::slf__set_whoosh_pitch_range__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B4FC);
+    FUNC_ADDRESS(address, &slf__set_whoosh_pitch_range__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_whoosh_speed_range__num__num__t : script_library_class::function {
+    slf__set_whoosh_speed_range__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_whoosh_speed_range__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066EB50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_whoosh_speed_range__num__num__t::slf__set_whoosh_speed_range__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B4EC);
+    FUNC_ADDRESS(address, &slf__set_whoosh_speed_range__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_whoosh_volume_range__num__num__t : script_library_class::function {
+    slf__set_whoosh_volume_range__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_whoosh_volume_range__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066EB80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_whoosh_volume_range__num__num__t::slf__set_whoosh_volume_range__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B4F4);
+    FUNC_ADDRESS(address, &slf__set_whoosh_volume_range__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__set_zoom__num__t : script_library_class::function {
+    slf__set_zoom__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__set_zoom__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00662B30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__set_zoom__num__t::slf__set_zoom__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A624);
+    FUNC_ADDRESS(address, &slf__set_zoom__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__show_controller_gauge__t : script_library_class::function {
+    slf__show_controller_gauge__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__show_controller_gauge__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672730);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__show_controller_gauge__t::slf__show_controller_gauge__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB18);
+    FUNC_ADDRESS(address, &slf__show_controller_gauge__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__show_hotpursuit_indicator__num__t : script_library_class::function {
+    slf__show_hotpursuit_indicator__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__show_hotpursuit_indicator__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006725A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__show_hotpursuit_indicator__num__t::slf__show_hotpursuit_indicator__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAD0);
+    FUNC_ADDRESS(address, &slf__show_hotpursuit_indicator__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__show_score_widget__num__t : script_library_class::function {
+    slf__show_score_widget__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__show_score_widget__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672520);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__show_score_widget__num__t::slf__show_score_widget__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BAC0);
+    FUNC_ADDRESS(address, &slf__show_score_widget__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__shut_up_all_ai_voice_boxes__t : script_library_class::function {
+    slf__shut_up_all_ai_voice_boxes__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__shut_up_all_ai_voice_boxes__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066EC10);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__shut_up_all_ai_voice_boxes__t::slf__shut_up_all_ai_voice_boxes__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B50C);
+    FUNC_ADDRESS(address, &slf__shut_up_all_ai_voice_boxes__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__sin__num__t : script_library_class::function {
+    slf__sin__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__sin__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663EF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__sin__num__t::slf__sin__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A904);
+    FUNC_ADDRESS(address, &slf__sin__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__sin_cos__num__t : script_library_class::function {
+    slf__sin_cos__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__sin_cos__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664000);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__sin_cos__num__t::slf__sin_cos__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A924);
+    FUNC_ADDRESS(address, &slf__sin_cos__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__soft_load__num__t : script_library_class::function {
+    slf__soft_load__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__soft_load__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006738C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__soft_load__num__t::slf__soft_load__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BCBC);
+    FUNC_ADDRESS(address, &slf__soft_load__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__soft_save__num__t : script_library_class::function {
+    slf__soft_save__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__soft_save__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673880);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__soft_save__num__t::slf__soft_save__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BCB4);
+    FUNC_ADDRESS(address, &slf__soft_save__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_add_hero_points__num__t : script_library_class::function {
+    slf__spiderman_add_hero_points__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_add_hero_points__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679510);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_add_hero_points__num__t::slf__spiderman_add_hero_points__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAA4);
+    FUNC_ADDRESS(address, &slf__spiderman_add_hero_points__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_bank_stylepoints__t : script_library_class::function {
+    slf__spiderman_bank_stylepoints__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_bank_stylepoints__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_bank_stylepoints__t::slf__spiderman_bank_stylepoints__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C91C);
+    FUNC_ADDRESS(address, &slf__spiderman_bank_stylepoints__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_break_web__t : script_library_class::function {
+    slf__spiderman_break_web__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_break_web__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_break_web__t::slf__spiderman_break_web__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9E4);
+    FUNC_ADDRESS(address, &slf__spiderman_break_web__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_add_shake__num__num__num__t : script_library_class::function {
+    slf__spiderman_camera_add_shake__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_add_shake__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006796F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_add_shake__num__num__num__t::slf__spiderman_camera_add_shake__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB34);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_add_shake__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_autocorrect__num__t : script_library_class::function {
+    slf__spiderman_camera_autocorrect__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_autocorrect__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679000);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_autocorrect__num__t::slf__spiderman_camera_autocorrect__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C924);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_autocorrect__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_clear_fixedstatic__t : script_library_class::function {
+    slf__spiderman_camera_clear_fixedstatic__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_clear_fixedstatic__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006795D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_clear_fixedstatic__t::slf__spiderman_camera_clear_fixedstatic__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAFC);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_clear_fixedstatic__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_enable_combat__num__t : script_library_class::function {
+    slf__spiderman_camera_enable_combat__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_enable_combat__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679640);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_enable_combat__num__t::slf__spiderman_camera_enable_combat__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB24);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_enable_combat__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_enable_lookaround__num__t : script_library_class::function {
+    slf__spiderman_camera_enable_lookaround__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_enable_lookaround__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006795F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_enable_lookaround__num__t::slf__spiderman_camera_enable_lookaround__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB1C);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_enable_lookaround__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_set_fixedstatic__vector3d__vector3d__t : script_library_class::function {
+    slf__spiderman_camera_set_fixedstatic__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_set_fixedstatic__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006795A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_set_fixedstatic__vector3d__vector3d__t::slf__spiderman_camera_set_fixedstatic__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAF4);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_set_fixedstatic__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_set_follow__entity__t : script_library_class::function {
+    slf__spiderman_camera_set_follow__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_set_follow__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006796A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_set_follow__entity__t::slf__spiderman_camera_set_follow__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB2C);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_set_follow__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_set_hero_underwater__num__t : script_library_class::function {
+    slf__spiderman_camera_set_hero_underwater__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_set_hero_underwater__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679760);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_set_hero_underwater__num__t::slf__spiderman_camera_set_hero_underwater__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB3C);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_set_hero_underwater__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_set_interpolation_time__num__t : script_library_class::function {
+    slf__spiderman_camera_set_interpolation_time__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_set_interpolation_time__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_set_interpolation_time__num__t::slf__spiderman_camera_set_interpolation_time__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB14);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_set_interpolation_time__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_set_lockon_min_distance__num__t : script_library_class::function {
+    slf__spiderman_camera_set_lockon_min_distance__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_set_lockon_min_distance__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_set_lockon_min_distance__num__t::slf__spiderman_camera_set_lockon_min_distance__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB04);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_set_lockon_min_distance__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_camera_set_lockon_y_offset__num__t : script_library_class::function {
+    slf__spiderman_camera_set_lockon_y_offset__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_camera_set_lockon_y_offset__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_camera_set_lockon_y_offset__num__t::slf__spiderman_camera_set_lockon_y_offset__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB0C);
+    FUNC_ADDRESS(address, &slf__spiderman_camera_set_lockon_y_offset__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_charged_jump__t : script_library_class::function {
+    slf__spiderman_charged_jump__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_charged_jump__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_charged_jump__t::slf__spiderman_charged_jump__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C98C);
+    FUNC_ADDRESS(address, &slf__spiderman_charged_jump__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_enable_control_button__num__num__t : script_library_class::function {
+    slf__spiderman_enable_control_button__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_enable_control_button__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_enable_control_button__num__num__t::slf__spiderman_enable_control_button__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA94);
+    FUNC_ADDRESS(address, &slf__spiderman_enable_control_button__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_enable_lockon__num__t : script_library_class::function {
+    slf__spiderman_enable_lockon__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_enable_lockon__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_enable_lockon__num__t::slf__spiderman_enable_lockon__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9AC);
+    FUNC_ADDRESS(address, &slf__spiderman_enable_lockon__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_engage_lockon__num__t : script_library_class::function {
+    slf__spiderman_engage_lockon__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_engage_lockon__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_engage_lockon__num__t::slf__spiderman_engage_lockon__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9B4);
+    FUNC_ADDRESS(address, &slf__spiderman_engage_lockon__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_engage_lockon__num__entity__t : script_library_class::function {
+    slf__spiderman_engage_lockon__num__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_engage_lockon__num__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679430);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_engage_lockon__num__entity__t::slf__spiderman_engage_lockon__num__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9BC);
+    FUNC_ADDRESS(address, &slf__spiderman_engage_lockon__num__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_get_hero_points__t : script_library_class::function {
+    slf__spiderman_get_hero_points__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_get_hero_points__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794E0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_get_hero_points__t::slf__spiderman_get_hero_points__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA9C);
+    FUNC_ADDRESS(address, &slf__spiderman_get_hero_points__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_get_max_zip_length__t : script_library_class::function {
+    slf__spiderman_get_max_zip_length__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_get_max_zip_length__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_get_max_zip_length__t::slf__spiderman_get_max_zip_length__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9DC);
+    FUNC_ADDRESS(address, &slf__spiderman_get_max_zip_length__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_get_spidey_sense_level__t : script_library_class::function {
+    slf__spiderman_get_spidey_sense_level__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_get_spidey_sense_level__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679400);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_get_spidey_sense_level__t::slf__spiderman_get_spidey_sense_level__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C99C);
+    FUNC_ADDRESS(address, &slf__spiderman_get_spidey_sense_level__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_crawling__t : script_library_class::function {
+    slf__spiderman_is_crawling__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_crawling__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679160);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_crawling__t::slf__spiderman_is_crawling__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C934);
+    FUNC_ADDRESS(address, &slf__spiderman_is_crawling__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_falling__t : script_library_class::function {
+    slf__spiderman_is_falling__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_falling__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006792F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_falling__t::slf__spiderman_is_falling__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C964);
+    FUNC_ADDRESS(address, &slf__spiderman_is_falling__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_jumping__t : script_library_class::function {
+    slf__spiderman_is_jumping__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_jumping__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006792F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_jumping__t::slf__spiderman_is_jumping__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C96C);
+    FUNC_ADDRESS(address, &slf__spiderman_is_jumping__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_on_ceiling__t : script_library_class::function {
+    slf__spiderman_is_on_ceiling__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_on_ceiling__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679200);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_on_ceiling__t::slf__spiderman_is_on_ceiling__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C944);
+    FUNC_ADDRESS(address, &slf__spiderman_is_on_ceiling__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_on_ground__t : script_library_class::function {
+    slf__spiderman_is_on_ground__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_on_ground__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006792A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_on_ground__t::slf__spiderman_is_on_ground__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C94C);
+    FUNC_ADDRESS(address, &slf__spiderman_is_on_ground__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_on_wall__t : script_library_class::function {
+    slf__spiderman_is_on_wall__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_on_wall__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006791B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_on_wall__t::slf__spiderman_is_on_wall__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C93C);
+    FUNC_ADDRESS(address, &slf__spiderman_is_on_wall__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_running__t : script_library_class::function {
+    slf__spiderman_is_running__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_running__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006792A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_running__t::slf__spiderman_is_running__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C95C);
+    FUNC_ADDRESS(address, &slf__spiderman_is_running__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_sprint_crawling__t : script_library_class::function {
+    slf__spiderman_is_sprint_crawling__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_sprint_crawling__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_sprint_crawling__t::slf__spiderman_is_sprint_crawling__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C984);
+    FUNC_ADDRESS(address, &slf__spiderman_is_sprint_crawling__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_sprinting__t : script_library_class::function {
+    slf__spiderman_is_sprinting__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_sprinting__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006792F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_sprinting__t::slf__spiderman_is_sprinting__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C974);
+    FUNC_ADDRESS(address, &slf__spiderman_is_sprinting__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_swinging__t : script_library_class::function {
+    slf__spiderman_is_swinging__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_swinging__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679250);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_swinging__t::slf__spiderman_is_swinging__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C954);
+    FUNC_ADDRESS(address, &slf__spiderman_is_swinging__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_is_wallsprinting__t : script_library_class::function {
+    slf__spiderman_is_wallsprinting__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_is_wallsprinting__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679340);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_is_wallsprinting__t::slf__spiderman_is_wallsprinting__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C97C);
+    FUNC_ADDRESS(address, &slf__spiderman_is_wallsprinting__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_lock_spider_reflexes_off__t : script_library_class::function {
+    slf__spiderman_lock_spider_reflexes_off__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_lock_spider_reflexes_off__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_lock_spider_reflexes_off__t::slf__spiderman_lock_spider_reflexes_off__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA24);
+    FUNC_ADDRESS(address, &slf__spiderman_lock_spider_reflexes_off__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_lock_spider_reflexes_on__t : script_library_class::function {
+    slf__spiderman_lock_spider_reflexes_on__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_lock_spider_reflexes_on__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_lock_spider_reflexes_on__t::slf__spiderman_lock_spider_reflexes_on__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA1C);
+    FUNC_ADDRESS(address, &slf__spiderman_lock_spider_reflexes_on__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_lockon_camera_engaged__t : script_library_class::function {
+    slf__spiderman_lockon_camera_engaged__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_lockon_camera_engaged__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_lockon_camera_engaged__t::slf__spiderman_lockon_camera_engaged__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA0C);
+    FUNC_ADDRESS(address, &slf__spiderman_lockon_camera_engaged__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_lockon_mode_engaged__t : script_library_class::function {
+    slf__spiderman_lockon_mode_engaged__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_lockon_mode_engaged__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_lockon_mode_engaged__t::slf__spiderman_lockon_mode_engaged__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA04);
+    FUNC_ADDRESS(address, &slf__spiderman_lockon_mode_engaged__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_camera_target__entity__t : script_library_class::function {
+    slf__spiderman_set_camera_target__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_camera_target__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679460);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_camera_target__entity__t::slf__spiderman_set_camera_target__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA14);
+    FUNC_ADDRESS(address, &slf__spiderman_set_camera_target__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_desired_mode__num__vector3d__vector3d__t : script_library_class::function {
+    slf__spiderman_set_desired_mode__num__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_desired_mode__num__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663390);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_desired_mode__num__vector3d__vector3d__t::slf__spiderman_set_desired_mode__num__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9EC);
+    FUNC_ADDRESS(address, &slf__spiderman_set_desired_mode__num__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_health_beep_min_max_cooldown_time__num__num__t : script_library_class::function {
+    slf__spiderman_set_health_beep_min_max_cooldown_time__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_health_beep_min_max_cooldown_time__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_health_beep_min_max_cooldown_time__num__num__t::slf__spiderman_set_health_beep_min_max_cooldown_time__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9F4);
+    FUNC_ADDRESS(address, &slf__spiderman_set_health_beep_min_max_cooldown_time__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_health_beep_threshold__num__t : script_library_class::function {
+    slf__spiderman_set_health_beep_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_health_beep_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_health_beep_threshold__num__t::slf__spiderman_set_health_beep_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9FC);
+    FUNC_ADDRESS(address, &slf__spiderman_set_health_beep_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_hero_meter_empty_rate__num__t : script_library_class::function {
+    slf__spiderman_set_hero_meter_empty_rate__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_hero_meter_empty_rate__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_hero_meter_empty_rate__num__t::slf__spiderman_set_hero_meter_empty_rate__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB44);
+    FUNC_ADDRESS(address, &slf__spiderman_set_hero_meter_empty_rate__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_max_height__num__t : script_library_class::function {
+    slf__spiderman_set_max_height__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_max_height__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_max_height__num__t::slf__spiderman_set_max_height__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9CC);
+    FUNC_ADDRESS(address, &slf__spiderman_set_max_height__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_max_zip_length__num__t : script_library_class::function {
+    slf__spiderman_set_max_zip_length__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_max_zip_length__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_max_zip_length__num__t::slf__spiderman_set_max_zip_length__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9D4);
+    FUNC_ADDRESS(address, &slf__spiderman_set_max_zip_length__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_min_height__num__t : script_library_class::function {
+    slf__spiderman_set_min_height__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_min_height__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_min_height__num__t::slf__spiderman_set_min_height__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9C4);
+    FUNC_ADDRESS(address, &slf__spiderman_set_min_height__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_spidey_sense_level__num__t : script_library_class::function {
+    slf__spiderman_set_spidey_sense_level__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_spidey_sense_level__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006793C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_spidey_sense_level__num__t::slf__spiderman_set_spidey_sense_level__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C994);
+    FUNC_ADDRESS(address, &slf__spiderman_set_spidey_sense_level__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_set_swing_anchor_max_sticky_time__num__t : script_library_class::function {
+    slf__spiderman_set_swing_anchor_max_sticky_time__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_set_swing_anchor_max_sticky_time__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_set_swing_anchor_max_sticky_time__num__t::slf__spiderman_set_swing_anchor_max_sticky_time__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C9A4);
+    FUNC_ADDRESS(address, &slf__spiderman_set_swing_anchor_max_sticky_time__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_subtract_hero_points__num__t : script_library_class::function {
+    slf__spiderman_subtract_hero_points__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_subtract_hero_points__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679540);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_subtract_hero_points__num__t::slf__spiderman_subtract_hero_points__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CAAC);
+    FUNC_ADDRESS(address, &slf__spiderman_subtract_hero_points__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_alternating_wall_run_occurrence_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_alternating_wall_run_occurrence_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_alternating_wall_run_occurrence_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_alternating_wall_run_occurrence_threshold__num__t::slf__spiderman_td_set_alternating_wall_run_occurrence_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA74);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_alternating_wall_run_occurrence_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_alternating_wall_run_time_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_alternating_wall_run_time_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_alternating_wall_run_time_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_alternating_wall_run_time_threshold__num__t::slf__spiderman_td_set_alternating_wall_run_time_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA6C);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_alternating_wall_run_time_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_big_air_height_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_big_air_height_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_big_air_height_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_big_air_height_threshold__num__t::slf__spiderman_td_set_big_air_height_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA34);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_big_air_height_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_continuous_air_swings_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_continuous_air_swings_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_continuous_air_swings_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_continuous_air_swings_threshold__num__t::slf__spiderman_td_set_continuous_air_swings_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA4C);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_continuous_air_swings_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_gain_altitude_height_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_gain_altitude_height_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_gain_altitude_height_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_gain_altitude_height_threshold__num__t::slf__spiderman_td_set_gain_altitude_height_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA54);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_gain_altitude_height_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_near_miss_trigger_radius__num__t : script_library_class::function {
+    slf__spiderman_td_set_near_miss_trigger_radius__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_near_miss_trigger_radius__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_near_miss_trigger_radius__num__t::slf__spiderman_td_set_near_miss_trigger_radius__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA84);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_near_miss_trigger_radius__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_near_miss_velocity_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_near_miss_velocity_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_near_miss_velocity_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_near_miss_velocity_threshold__num__t::slf__spiderman_td_set_near_miss_velocity_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA8C);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_near_miss_velocity_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_orbit_min_radius_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_orbit_min_radius_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_orbit_min_radius_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_orbit_min_radius_threshold__num__t::slf__spiderman_td_set_orbit_min_radius_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA3C);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_orbit_min_radius_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_soft_landing_velocity_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_soft_landing_velocity_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_soft_landing_velocity_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_soft_landing_velocity_threshold__num__t::slf__spiderman_td_set_soft_landing_velocity_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA5C);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_soft_landing_velocity_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_super_speed_speed_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_super_speed_speed_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_super_speed_speed_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_super_speed_speed_threshold__num__t::slf__spiderman_td_set_super_speed_speed_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA7C);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_super_speed_speed_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_swinging_wall_run_time_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_swinging_wall_run_time_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_swinging_wall_run_time_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_swinging_wall_run_time_threshold__num__t::slf__spiderman_td_set_swinging_wall_run_time_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA64);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_swinging_wall_run_time_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_td_set_wall_sprint_time_threshold__num__t : script_library_class::function {
+    slf__spiderman_td_set_wall_sprint_time_threshold__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_td_set_wall_sprint_time_threshold__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_td_set_wall_sprint_time_threshold__num__t::slf__spiderman_td_set_wall_sprint_time_threshold__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA44);
+    FUNC_ADDRESS(address, &slf__spiderman_td_set_wall_sprint_time_threshold__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_unlock_spider_reflexes__t : script_library_class::function {
+    slf__spiderman_unlock_spider_reflexes__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_unlock_spider_reflexes__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_unlock_spider_reflexes__t::slf__spiderman_unlock_spider_reflexes__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CA2C);
+    FUNC_ADDRESS(address, &slf__spiderman_unlock_spider_reflexes__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spiderman_wait_add_threat__entity__str__num__num__t : script_library_class::function {
+    slf__spiderman_wait_add_threat__entity__str__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spiderman_wait_add_threat__entity__str__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006797C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spiderman_wait_add_threat__entity__str__num__num__t::slf__spiderman_wait_add_threat__entity__str__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089CB4C);
+    FUNC_ADDRESS(address, &slf__spiderman_wait_add_threat__entity__str__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__spidey_can_see__vector3d__t : script_library_class::function {
+    slf__spidey_can_see__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__spidey_can_see__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679030);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__spidey_can_see__vector3d__t::slf__spidey_can_see__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C92C);
+    FUNC_ADDRESS(address, &slf__spidey_can_see__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__sqrt__num__t : script_library_class::function {
+    slf__sqrt__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__sqrt__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663F50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__sqrt__num__t::slf__sqrt__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A914);
+    FUNC_ADDRESS(address, &slf__sqrt__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__start_patrol__str__t : script_library_class::function {
+    slf__start_patrol__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__start_patrol__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676E80);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__start_patrol__str__t::slf__start_patrol__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4F4);
+    FUNC_ADDRESS(address, &slf__start_patrol__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__stop_all_sounds__t : script_library_class::function {
+    slf__stop_all_sounds__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__stop_all_sounds__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0066EC20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__stop_all_sounds__t::slf__stop_all_sounds__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B514);
+    FUNC_ADDRESS(address, &slf__stop_all_sounds__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__stop_credits__t : script_library_class::function {
+    slf__stop_credits__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__stop_credits__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672690);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__stop_credits__t::slf__stop_credits__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB00);
+    FUNC_ADDRESS(address, &slf__stop_credits__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__stop_vibration__t : script_library_class::function {
+    slf__stop_vibration__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__stop_vibration__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A590);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__stop_vibration__t::slf__stop_vibration__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7CC);
+    FUNC_ADDRESS(address, &slf__stop_vibration__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__subtitle__num__num__num__num__num__num__t : script_library_class::function {
+    slf__subtitle__num__num__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__subtitle__num__num__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673900);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__subtitle__num__num__num__num__num__num__t::slf__subtitle__num__num__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BCC4);
+    FUNC_ADDRESS(address, &slf__subtitle__num__num__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__swap_hero_costume__str__t : script_library_class::function {
+    slf__swap_hero_costume__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__swap_hero_costume__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676C50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__swap_hero_costume__str__t::slf__swap_hero_costume__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4D4);
+    FUNC_ADDRESS(address, &slf__swap_hero_costume__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__text_width__str__t : script_library_class::function {
+    slf__text_width__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__text_width__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__text_width__str__t::slf__text_width__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7AC);
+    FUNC_ADDRESS(address, &slf__text_width__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_get_count_up__t : script_library_class::function {
+    slf__timer_widget_get_count_up__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_get_count_up__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672940);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_get_count_up__t::slf__timer_widget_get_count_up__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB70);
+    FUNC_ADDRESS(address, &slf__timer_widget_get_count_up__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_get_time__t : script_library_class::function {
+    slf__timer_widget_get_time__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_get_time__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006728C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_get_time__t::slf__timer_widget_get_time__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB60);
+    FUNC_ADDRESS(address, &slf__timer_widget_get_time__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_set_count_up__num__t : script_library_class::function {
+    slf__timer_widget_set_count_up__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_set_count_up__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006728F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_set_count_up__num__t::slf__timer_widget_set_count_up__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB68);
+    FUNC_ADDRESS(address, &slf__timer_widget_set_count_up__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_set_time__num__t : script_library_class::function {
+    slf__timer_widget_set_time__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_set_time__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672890);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_set_time__num__t::slf__timer_widget_set_time__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB58);
+    FUNC_ADDRESS(address, &slf__timer_widget_set_time__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_start__t : script_library_class::function {
+    slf__timer_widget_start__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_start__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672850);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_start__t::slf__timer_widget_start__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB48);
+    FUNC_ADDRESS(address, &slf__timer_widget_start__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_stop__t : script_library_class::function {
+    slf__timer_widget_stop__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_stop__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672870);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_stop__t::slf__timer_widget_stop__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB50);
+    FUNC_ADDRESS(address, &slf__timer_widget_stop__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_turn_off__t : script_library_class::function {
+    slf__timer_widget_turn_off__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_turn_off__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672830);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_turn_off__t::slf__timer_widget_turn_off__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB40);
+    FUNC_ADDRESS(address, &slf__timer_widget_turn_off__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__timer_widget_turn_on__t : script_library_class::function {
+    slf__timer_widget_turn_on__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__timer_widget_turn_on__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672810);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__timer_widget_turn_on__t::slf__timer_widget_turn_on__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BB38);
+    FUNC_ADDRESS(address, &slf__timer_widget_turn_on__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__to_beam__entity__t : script_library_class::function {
+    slf__to_beam__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__to_beam__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067AE20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__to_beam__entity__t::slf__to_beam__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089ABBC);
+    FUNC_ADDRESS(address, &slf__to_beam__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__to_gun__entity__t : script_library_class::function {
+    slf__to_gun__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__to_gun__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00681950);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__to_gun__entity__t::slf__to_gun__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B5A0);
+    FUNC_ADDRESS(address, &slf__to_gun__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__to_item__entity__t : script_library_class::function {
+    slf__to_item__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__to_item__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006819B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__to_item__entity__t::slf__to_item__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B6BC);
+    FUNC_ADDRESS(address, &slf__to_item__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__to_polytube__entity__t : script_library_class::function {
+    slf__to_polytube__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__to_polytube__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006806D0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__to_polytube__entity__t::slf__to_polytube__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C238);
+    FUNC_ADDRESS(address, &slf__to_polytube__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__to_switch__entity__t : script_library_class::function {
+    slf__to_switch__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__to_switch__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067F7F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__to_switch__entity__t::slf__to_switch__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B8E4);
+    FUNC_ADDRESS(address, &slf__to_switch__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__trace__str__t : script_library_class::function {
+    slf__trace__str__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__trace__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006794C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__trace__str__t::slf__trace__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089AA14);
+    FUNC_ADDRESS(address, &slf__trace__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__trigger_is_valid__trigger__t : script_library_class::function {
+    slf__trigger_is_valid__trigger__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__trigger_is_valid__trigger__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00671900);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__trigger_is_valid__trigger__t::slf__trigger_is_valid__trigger__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089B9B8);
+    FUNC_ADDRESS(address, &slf__trigger_is_valid__trigger__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_off_boss_health__t : script_library_class::function {
+    slf__turn_off_boss_health__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_off_boss_health__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672B00);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_off_boss_health__t::slf__turn_off_boss_health__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBD0);
+    FUNC_ADDRESS(address, &slf__turn_off_boss_health__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_off_hero_health__t : script_library_class::function {
+    slf__turn_off_hero_health__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_off_hero_health__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672B20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_off_hero_health__t::slf__turn_off_hero_health__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBD8);
+    FUNC_ADDRESS(address, &slf__turn_off_hero_health__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_off_mission_text__t : script_library_class::function {
+    slf__turn_off_mission_text__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_off_mission_text__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00673060);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_off_mission_text__t::slf__turn_off_mission_text__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BC20);
+    FUNC_ADDRESS(address, &slf__turn_off_mission_text__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_off_third_party_health__t : script_library_class::function {
+    slf__turn_off_third_party_health__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_off_third_party_health__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672B40);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_off_third_party_health__t::slf__turn_off_third_party_health__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBE0);
+    FUNC_ADDRESS(address, &slf__turn_off_third_party_health__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_on_boss_health__num__entity__t : script_library_class::function {
+    slf__turn_on_boss_health__num__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_on_boss_health__num__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067FFF0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_on_boss_health__num__entity__t::slf__turn_on_boss_health__num__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBB8);
+    FUNC_ADDRESS(address, &slf__turn_on_boss_health__num__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_on_hero_health__num__entity__t : script_library_class::function {
+    slf__turn_on_hero_health__num__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_on_hero_health__num__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680040);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_on_hero_health__num__entity__t::slf__turn_on_hero_health__num__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBC0);
+    FUNC_ADDRESS(address, &slf__turn_on_hero_health__num__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__turn_on_third_party_health__num__entity__t : script_library_class::function {
+    slf__turn_on_third_party_health__num__entity__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__turn_on_third_party_health__num__entity__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00680090);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__turn_on_third_party_health__num__entity__t::slf__turn_on_third_party_health__num__entity__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089BBC8);
+    FUNC_ADDRESS(address, &slf__turn_on_third_party_health__num__entity__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__unload_script__t : script_library_class::function {
+    slf__unload_script__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__unload_script__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x006762B0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__unload_script__t::slf__unload_script__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C35C);
+    FUNC_ADDRESS(address, &slf__unload_script__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__unlock_all_exterior_districts__t : script_library_class::function {
+    slf__unlock_all_exterior_districts__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__unlock_all_exterior_districts__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676C30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__unlock_all_exterior_districts__t::slf__unlock_all_exterior_districts__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4CC);
+    FUNC_ADDRESS(address, &slf__unlock_all_exterior_districts__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__unlock_district__num__t : script_library_class::function {
+    slf__unlock_district__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__unlock_district__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676A30);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__unlock_district__num__t::slf__unlock_district__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C48C);
+    FUNC_ADDRESS(address, &slf__unlock_district__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__vibrate_controller__num__t : script_library_class::function {
+    slf__vibrate_controller__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__vibrate_controller__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A550);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__vibrate_controller__num__t::slf__vibrate_controller__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7C4);
+    FUNC_ADDRESS(address, &slf__vibrate_controller__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__vibrate_controller__num__num__t : script_library_class::function {
+    slf__vibrate_controller__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__vibrate_controller__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A510);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__vibrate_controller__num__num__t::slf__vibrate_controller__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7BC);
+    FUNC_ADDRESS(address, &slf__vibrate_controller__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__vibrate_controller__num__num__num__num__num__num__t : script_library_class::function {
+    slf__vibrate_controller__num__num__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__vibrate_controller__num__num__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A4C0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__vibrate_controller__num__num__num__num__num__num__t::slf__vibrate_controller__num__num__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A7B4);
+    FUNC_ADDRESS(address, &slf__vibrate_controller__num__num__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__vo_delay__num__num__num__num__t : script_library_class::function {
+    slf__vo_delay__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__vo_delay__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663230);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__vo_delay__num__num__num__num__t::slf__vo_delay__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A734);
+    FUNC_ADDRESS(address, &slf__vo_delay__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_animate_fog_color__vector3d__num__t : script_library_class::function {
+    slf__wait_animate_fog_color__vector3d__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_animate_fog_color__vector3d__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A100);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_animate_fog_color__vector3d__num__t::slf__wait_animate_fog_color__vector3d__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6FC);
+    FUNC_ADDRESS(address, &slf__wait_animate_fog_color__vector3d__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_animate_fog_distance__num__num__t : script_library_class::function {
+    slf__wait_animate_fog_distance__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_animate_fog_distance__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A2A0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_animate_fog_distance__num__num__t::slf__wait_animate_fog_distance__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A704);
+    FUNC_ADDRESS(address, &slf__wait_animate_fog_distance__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_animate_fog_distances__num__num__num__t : script_library_class::function {
+    slf__wait_animate_fog_distances__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_animate_fog_distances__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A370);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_animate_fog_distances__num__num__num__t::slf__wait_animate_fog_distances__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A70C);
+    FUNC_ADDRESS(address, &slf__wait_animate_fog_distances__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_change_blur__num__vector3d__num__num__num__num__num__num__t : script_library_class::function {
+    slf__wait_change_blur__num__vector3d__num__num__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_change_blur__num__vector3d__num__num__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679BA0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_change_blur__num__vector3d__num__num__num__num__num__num__t::slf__wait_change_blur__num__vector3d__num__num__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A66C);
+    FUNC_ADDRESS(address, &slf__wait_change_blur__num__vector3d__num__num__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num__t : script_library_class::function {
+    slf__wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679E50);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num__t::slf__wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A6A4);
+    FUNC_ADDRESS(address, &slf__wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_for_streamer_to_reach_equilibrium__t : script_library_class::function {
+    slf__wait_for_streamer_to_reach_equilibrium__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_for_streamer_to_reach_equilibrium__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00676B20);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_for_streamer_to_reach_equilibrium__t::slf__wait_for_streamer_to_reach_equilibrium__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089C4A4);
+    FUNC_ADDRESS(address, &slf__wait_for_streamer_to_reach_equilibrium__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_fps_test__num__num__vector3d__vector3d__t : script_library_class::function {
+    slf__wait_fps_test__num__num__vector3d__vector3d__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_fps_test__num__num__vector3d__vector3d__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A8F0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_fps_test__num__num__vector3d__vector3d__t::slf__wait_fps_test__num__num__vector3d__vector3d__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8EC);
+    FUNC_ADDRESS(address, &slf__wait_fps_test__num__num__vector3d__vector3d__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_frame__t : script_library_class::function {
+    slf__wait_frame__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_frame__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663110);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_frame__t::slf__wait_frame__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A714);
+    FUNC_ADDRESS(address, &slf__wait_frame__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_set_global_time_dilation__num__num__t : script_library_class::function {
+    slf__wait_set_global_time_dilation__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_set_global_time_dilation__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x0067A710);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_set_global_time_dilation__num__num__t::slf__wait_set_global_time_dilation__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A8A4);
+    FUNC_ADDRESS(address, &slf__wait_set_global_time_dilation__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__wait_set_zoom__num__num__t : script_library_class::function {
+    slf__wait_set_zoom__num__num__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__wait_set_zoom__num__num__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00679AE0);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__wait_set_zoom__num__num__t::slf__wait_set_zoom__num__num__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A634);
+    FUNC_ADDRESS(address, &slf__wait_set_zoom__num__num__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
+
+struct slf__write_to_file__str__str__t : script_library_class::function {
+    slf__write_to_file__str__str__t(const char *a3);
+
+    struct parms_t {
+        const char *field_0;
+        const char *field_4;
+    };
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
+    {
+        TRACE("slf__write_to_file__str__str__t::operator()");
+
+        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663620);
+        return func(this, nullptr, &stack, entry);
+    }
+};
+
+slf__write_to_file__str__str__t::slf__write_to_file__str__str__t(const char *a3) : function(a3)
+{
+    m_vtbl = CAST(m_vtbl, 0x0089A844);
+    FUNC_ADDRESS(address, &slf__write_to_file__str__str__t::operator());
+    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
+}
 
 #define BUILD_SLC_NAME(type) slc_ ## type ## _t
 
@@ -136,3757 +8823,13 @@ DECLARE_SLC(district, signaller, 0x0089A4FC);
 #undef DECLARE_SLC
 #undef BUILD_SLC_NAME
 
+
 #define BUILD_SLF_NAME(_KLASS, _TYPE) slf__ ## _KLASS ## __ ## _TYPE ## __t
-
-#define BUILD_GLOBAL_SLF_NAME(type) slf__ ## type ## __t
-
-#define DECLARE_GLOBAL_SLF_BEGIN(NAME, VTBL) \
-    struct BUILD_GLOBAL_SLF_NAME(NAME) : script_library_class::function { \
-        BUILD_GLOBAL_SLF_NAME(NAME) (const char *a3) : function(a3)  { \
-            m_vtbl = VTBL; \
-        }   \
-            \
-        bool operator()(vm_stack &stack, script_library_class::function::entry_t entry) const
-
-#define DECLARE_GLOBAL_SLF_END() \
-    };
-
-DECLARE_GLOBAL_SLF_BEGIN(abs_delay__num, 0x0089A724)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(acos__num, 0x0089A91C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_2d_debug_str__vector3d__vector3d__num__str, 0x0089A860)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_2d_debug_str__vector3d__vector3d__num__str__num, 0x0089A858)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_3d_debug_str__vector3d__vector3d__num__str, 0x0089A850)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_civilian_info__vector3d__num__num__num, 0x0089C5BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_civilian_info_entity__entity__num__num__num, 0x0089C5CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_debug_cyl__vector3d__vector3d__num, 0x0089A774)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_debug_cyl__vector3d__vector3d__num__vector3d__num, 0x0089A77C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_debug_line__vector3d__vector3d, 0x0089A764)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_debug_line__vector3d__vector3d__vector3d__num, 0x0089A76C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_debug_sphere__vector3d__num, 0x0089A754)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_debug_sphere__vector3d__num__vector3d__num, 0x0089A75C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str, 0x0089A548)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str__num, 0x0089A550)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str__num__vector3d, 0x0089A560)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_glass_house__str__vector3d, 0x0089A558)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_to_console__str, 0x0089A834)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(add_traffic_model__num__str, 0x0089C5A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(allow_suspend_thread__num, 0x0089A594)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(angle_between__vector3d__vector3d, 0x0089BA50)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(apply_donut_damage__vector3d__num__num__num__num__num, 0x0089A804)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(apply_radius_damage__vector3d__num__num__num__num, 0x0089A7FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(apply_radius_subdue__vector3d__num__num__num__num, 0x0089A80C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(assert__num__str, 0x0089A518)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(attach_decal__str__vector3d__num__vector3d__entity, 0x0089A9FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(begin_screen_recording__str__num, 0x0089B7B0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(blackscreen_off__num, 0x0089BCAC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(blackscreen_on__num, 0x0089BCA0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(bring_up_dialog_box__num__num, 0x0089BC28)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(bring_up_dialog_box_debug__str__num__str, 0x0089BC38)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(bring_up_dialog_box_title__num__num__num, 0x0089BC30)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(bring_up_medal_award_box__num, 0x0089BB10)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(bring_up_race_announcer, 0x0089BB08)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(calc_launch_vector__vector3d__vector3d__num__entity, 0x0089A98C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(can_load_pack__str, 0x0089C3F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(chase_cam, 0x0089AF04)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_all_grenades, 0x0089A95C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_civilians_within_radius__vector3d__num, 0x0089C5E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_controls, 0x0089BD48)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_debug_all, 0x0089A79C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_debug_cyls, 0x0089A794)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_debug_lines, 0x0089A78C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_debug_spheres, 0x0089A784)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_screen, 0x0089A944)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(clear_traffic_within_radius__vector3d__num, 0x0089C5DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(col_check__vector3d__vector3d__num, 0x0089A868)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(console_exec__str, 0x0089A83C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(copy_vector3d_list__vector3d_list__vector3d_list, 0x0089BED4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(cos__num, 0x0089A90C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_beam, 0x0089ABB4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_credits, 0x0089BAE8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_cut_scene__str, 0x0089B7C0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_debug_menu_entry__str, 0x0089C704)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_debug_menu_entry__str__str, 0x0089C70C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_decal__str__vector3d__num__vector3d, 0x0089A9F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_entity__str, 0x0089AF0C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_entity__str__str, 0x0089AF14)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_entity_in_hero_region__str, 0x0089AF2C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_entity_list, 0x0089BFCC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_entity_tracker__entity, 0x0089C594)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_item__str, 0x0089B6B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_line_info__vector3d__vector3d, 0x0089B708)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_lofi_stereo_sound_inst__str, 0x0089B818)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_num_list, 0x0089BF54)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_pfx__str, 0x0089C904)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_pfx__str__vector3d, 0x0089C90C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_polytube, 0x0089C228)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_polytube__str, 0x0089C230)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_progression_menu_entry__str__str, 0x0089C714)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_sound_inst, 0x0089B7F8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_sound_inst__str, 0x0089B800)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_stompable_music_sound_inst__str, 0x0089B808)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_str_list, 0x0089C044)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_taunt_entry__entity__str__num, 0x0089C63C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_taunt_exchange__entity__entity__num__num__num__num, 0x0089C6B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_taunt_exchange_list, 0x0089C0DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_threat_assessment_meter, 0x0089C6CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_time_limited_entity__str__num, 0x0089AF3C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_trigger__entity__num, 0x0089B970)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_trigger__str__vector3d__num, 0x0089B968)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_trigger__vector3d__num, 0x0089B960)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_unstompable_script_cutscene_sound_inst__str, 0x0089B810)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(create_vector3d_list, 0x0089BECC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(cross__vector3d__vector3d, 0x0089BA38)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(debug_breakpoint, 0x0089A510)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(debug_print__num__str, 0x0089A528)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(debug_print__num__vector3d__str, 0x0089A530)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(debug_print__str, 0x0089A520)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(debug_print_set_background_color__vector3d, 0x0089A538)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(delay__num, 0x0089A71C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_credits, 0x0089BAF0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_debug_menu_entry__debug_menu_entry, 0x0089C71C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_entity__entity, 0x0089AF34)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_entity_list__entity_list, 0x0089BFD4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_entity_tracker__entity_tracker, 0x0089C59C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_line_info__line_info, 0x0089B710)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_num_list__num_list, 0x0089BF5C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_pfx__pfx, 0x0089C914)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_str_list__str_list, 0x0089C04C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_taunt_entry__taunt_entry, 0x0089C644)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_taunt_exchange__taunt_exchange, 0x0089C6BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_taunt_exchange_list__taunt_exchange_list, 0x0089C0E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_threat_assessment_meter__tam, 0x0089C6D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_trigger__trigger, 0x0089B978)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(destroy_vector3d_list__vector3d_list, 0x0089BEDC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(dilated_delay__num, 0x0089A72C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(disable_marky_cam__num, 0x0089A5F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(disable_nearby_occlusion_only_obb__vector3d, 0x0089A5E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(disable_player_shadows, 0x0089A614)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(disable_subtitles, 0x0089A93C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(disable_vibrator, 0x0089A7DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(disable_zoom_map__num, 0x0089BBF0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance3d__vector3d__vector3d, 0x0089BA48)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_chase_widget_set_pos__num, 0x0089BB88)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_chase_widget_turn_off, 0x0089BB80)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_chase_widget_turn_on__num__num, 0x0089BB78)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_set_boss_pos__num, 0x0089BBA8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_set_hero_pos__num, 0x0089BBA0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_set_types__num__num, 0x0089BBB0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_turn_off, 0x0089BB98)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(distance_race_widget_turn_on, 0x0089BB90)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(district_id__str, 0x0089C47C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(district_name__num, 0x0089C484)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(dot__vector3d__vector3d, 0x0089BA30)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(dump_searchable_region_list__str, 0x0089A994)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_ai__num, 0x0089A6CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_civilians__num, 0x0089C5EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_controls__num, 0x0089BD40)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_entity_fading__num, 0x0089B05C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_interface__num, 0x0089A6C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_marky_cam__num, 0x0089A5BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_mini_map__num, 0x0089BBE8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_nearby_occlusion_only_obb__vector3d, 0x0089A5DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_obb__vector3d__num, 0x0089A588)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_pause__num, 0x0089A6AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_physics__num, 0x0089A6DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_player_shadows, 0x0089A61C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_pois__num, 0x0089A6EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_quad_path_connector__district__num__district__num__num, 0x0089A578)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_subtitles, 0x0089A934)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_tokens_of_type__num__num, 0x0089B54C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_traffic__num, 0x0089C5FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_user_camera__num, 0x0089A5D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(enable_vibrator, 0x0089A7E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(end_current_patrol, 0x0089C4FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(end_cut_scenes, 0x0089B7C8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(end_screen_recording, 0x0089B7B8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(entity_col_check__entity__entity, 0x0089A88C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(entity_exists__str, 0x0089AF24)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(entity_get_entity_tracker__entity, 0x0089B034)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(entity_has_entity_tracker__entity, 0x0089B02C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(exit_water__entity, 0x0089A604)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_closest_point_on_a_path_to_point__vector3d, 0x0089A570)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_district_for_point__vector3d, 0x0089A81C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_entities_in_radius__entity_list__vector3d__num__num, 0x0089B46C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_entity__str, 0x0089AF1C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_innermost_district__vector3d, 0x0089A824)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_outermost_district__vector3d, 0x0089A82C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_trigger__entity, 0x0089B950)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_trigger__str, 0x0089B948)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(find_trigger_in_district__district__str, 0x0089B958)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(float_random__num, 0x0089A74C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(force_mission__district__str__num, 0x0089C3B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(force_streamer_refresh, 0x0089C4AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(format_time_string__num, 0x0089BC74)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(freeze_hero__num, 0x0089A5FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(game_ini_get_flag__str, 0x0089A97C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(game_time_advance__num__num, 0x0089C4DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_all_execs_thread_count__str, 0x0089A9EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_all_instances_thread_count__str, 0x0089A9E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_attacker_entity, 0x0089AA24)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_attacker_member, 0x0089AA2C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_available_stack_size, 0x0089C4EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_character_packname_list, 0x0089C354)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_closest_point_on_lane_with_facing__num__vector3d__vector3d_list, 0x0089C61C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_col_hit_ent, 0x0089A884)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_col_hit_norm, 0x0089A87C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_col_hit_pos, 0x0089A874)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_control_state__num, 0x0089A7F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_control_trigger__num, 0x0089A7EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_current_instance_thread_count__str, 0x0089A9DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_pos, 0x0089A5B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_x_facing, 0x0089A59C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_y_facing, 0x0089A5A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_current_view_cam_z_facing, 0x0089A5AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_fog_color, 0x0089A8F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_fog_distance, 0x0089A8FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_game_info_num__str, 0x0089A8C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_game_info_str__str, 0x0089A8D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_glam_cam__num, 0x0089B780)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_global_time_dilation, 0x0089A894)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-
-struct slf__get_ini_flag__str__t : script_library_class::function {
-    slf__get_ini_flag__str__t(const char *a3) : function(a3) {
-        m_vtbl = 0x0089A94C;
-    }   
-
-    struct parms_t {
-        const char *str;
-    };
-        
-    bool operator()(vm_stack &stack, script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__get_ini_flag__str__t::operator()");
-
-        (void)entry;
-
-        SLF_PARMS;
-        mString v5 {parms->str};
-        auto result = (float) os_developer_options::instance()->get_flag(v5);
-
-        SLF_RETURN;
-
-        SLF_DONE;
-    }
-};
-
-DECLARE_GLOBAL_SLF_BEGIN(get_ini_num__str, 0x0089A954)
-{
-    (void) entry;
-    TRACE("slf__get_ini_num__str__t::operator()");
-
-    auto *v3 = stack.SP - 4;
-    stack.SP = v3;
-    mString v5 {*(const char **)v3};
-    auto v7 = (float)os_developer_options::instance()->get_int(v5);
-    *(float *)stack.SP = v7;
-    stack.SP += 4;
-    return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_int_num__num, 0x0089A92C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_camera_marker__num, 0x0089C414)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_camera_transform_marker__num, 0x0089C454)
-{
-    (void) stack;
-    (void) entry;
-    return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_entity, 0x0089C38C)
-{
-    (void) entry;
-    TRACE("slf__get_mission_entity__t::operator()");
-
-    *(DWORD *)stack.SP = (int)mission_manager::s_inst()->get_mission_key_entity();
-    stack.SP += 4;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_key_posfacing3d, 0x0089C36C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_key_position, 0x0089C364)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_marker__num, 0x0089C40C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_nums, 0x0089C3AC)
-{
-    (void) entry;
-
-    *(DWORD *)stack.SP = (int)mission_manager::s_inst()->get_mission_nums();
-    stack.SP += 4;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_patrol_waypoint, 0x0089C384)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_positions, 0x0089C39C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_strings, 0x0089C3A4)
-{
-    (void) entry;
-
-    *(DWORD *)stack.SP = (int)mission_manager::s_inst()->get_mission_strings();
-    stack.SP += 4;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_transform_marker__num, 0x0089C42C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_mission_trigger, 0x0089C394)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_missions_key_position_by_index__district__str__num, 0x0089C3BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_missions_nums_by_index__district__str__num__num_list, 0x0089C3CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_missions_patrol_waypoint_by_index__district__str__num, 0x0089C3C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_neighborhood_name__num, 0x0089C54C)
-{
-    (void) entry;
-
-    auto *v2 = stack.SP - 4;
-    stack.SP = v2;
-    *(DWORD *)stack.SP = (int)get_neighborhood_name((neighborhood_e)*(float *)v2);
-    stack.SP += 4;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_num_free_slots__str, 0x0089C3E4)
-{
-    (void) entry;
-
-    auto *v3 = stack.SP - 4;
-    stack.SP = v3;
-    auto **v4 = (const char **)v3;
-    if ( mission_stack_manager::s_inst()->waiting_for_push_or_pop() ) {
-        return false;
-    }
-
-    mString v7 {*v4};
-    auto *pack_group = mission_stack_manager::s_inst()->get_pack_group(v7);
-    auto num_free_slots = 0.0f;
-    if ( pack_group ) {
-        num_free_slots = (float)pack_group->get_num_free_slots();
-    }
-
-    *(float *)stack.SP = num_free_slots;
-    stack.SP += 4;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_num_mission_transform_marker, 0x0089C434)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_pack_group__str, 0x0089C3EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_pack_size__str, 0x0089C4E4)
-{
-    (void) entry;
-
-    auto *v3 = stack.SP - 4;
-    stack.SP = v3;
-    auto the_key = create_resource_key_from_path(*(const char **)v3, RESOURCE_KEY_TYPE_PACK);
-    resource_pack_location a2 {};
-    if (!resource_manager::get_pack_file_stats(the_key, &a2, nullptr, nullptr)) {
-        mString v7 {*(const char **)v3};
-        auto v5 = "Packfile " + v7 + " not found in amalgapak. Perhaps you need to repack it?";
-        auto *t = stack.get_thread();
-        t->slf_error(v5);
-    }
-
-    auto size = (double)a2.loc.m_size;
-    if ( a2.loc.m_size < 0 ) {
-        size += 4.2949673e9;
-    }
-
-    *(float *)stack.SP = size;
-    stack.SP += 4;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_patrol_difficulty__str, 0x0089C534)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_patrol_node_position_by_index__str__num, 0x0089C52C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_patrol_start_position__str, 0x0089C524)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_patrol_unlock_threshold__str, 0x0089C53C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_platform, 0x0089A508)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_render_opt_num__str, 0x0089A8E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_spider_reflexes_spiderman_time_dilation, 0x0089CAC4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_spider_reflexes_world_time_dilation, 0x0089CAD4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_time_inc, 0x0089A7A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_time_of_day, 0x0089A974)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_time_of_day_rate, 0x0089A96C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_token_index_from_id__num__num, 0x0089B554)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(get_traffic_spawn_point_near_camera__vector3d_list, 0x0089AA98)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(greater_than_or_equal_rounded__num__num, 0x0089BC90)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(hard_break, 0x0089AA1C)
-{
-    (void) stack;
-    (void) entry;
-
-    debug_print_va("Debug break requested by script.");
-    __debugbreak();
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(has_substring__str__str, 0x0089A580)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(hero, 0x0089AED4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(hero_exists, 0x0089AEDC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(hero_type, 0x0089AEE4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(hide_controller_gauge, 0x0089BB20)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(initialize_encounter_object, 0x0089AA0C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(initialize_encounter_objects, 0x0089AA04)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(insert_pack__str, 0x0089C3D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(invoke_pause_menu_unlockables, 0x0089BC98)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_ai_enabled, 0x0089A6D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_cut_scene_playing, 0x0089B7D0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_district_loaded__num, 0x0089C49C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_hero_frozen, 0x0089A60C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_hero_peter_parker, 0x0089AEFC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_hero_spidey, 0x0089AEEC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_hero_venom, 0x0089AEF4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_marky_cam_enabled, 0x0089A5C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_mission_active, 0x0089C50C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_mission_loading, 0x0089C514)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_pack_available__str, 0x0089C404)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_pack_loaded__str, 0x0089C3FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_pack_pushed__str, 0x0089C34C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_path_graph_inside_glass_house__str, 0x0089AAA0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_patrol_active, 0x0089C504)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_patrol_node_empty__num, 0x0089C544)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_paused, 0x0089A6B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_physics_enabled, 0x0089A6E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_point_inside_glass_house__vector3d, 0x0089A540)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_point_under_water__vector3d, 0x0089AA3C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(is_user_camera_enabled, 0x0089A5CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(load_anim__str, 0x0089AAF0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(load_level__str__vector3d, 0x0089A8AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(lock_all_districts, 0x0089C4C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(lock_district__num, 0x0089C494)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(lock_mission_manager__num, 0x0089C51C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(los_check__vector3d__vector3d, 0x0089A814)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(lower_hotpursuit_indicator_level, 0x0089BAE0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(malor__vector3d__num, 0x0089A984)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(normal__vector3d, 0x0089BA40)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(pause_game__num, 0x0089A6BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(play_credits, 0x0089BAF8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(play_prerender__str, 0x0089A8B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(pop_pack__str, 0x0089C344)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(post_message__str__num, 0x0089A73C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(pre_roll_all_pfx__num, 0x0089AA34)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(press_controller_gauge__num, 0x0089BB28)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(press_controller_gauge__num__num__num, 0x0089BB30)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(purge_district__num, 0x0089C4BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(push_pack__str, 0x0089C334)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(push_pack_into_district_slot__str, 0x0089C33C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(raise_hotpursuit_indicator_level, 0x0089BAD8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(random__num, 0x0089A744)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(remove_civilian_info__num, 0x0089C5C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(remove_civilian_info_entity__entity__num, 0x0089C5D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(remove_glass_house__str, 0x0089A568)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(remove_item_entity_from_world__entity, 0x0089AFFC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(remove_pack__str, 0x0089C3DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(remove_traffic_model__num, 0x0089C5AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(reset_externed_alses, 0x0089B064)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_all_anchors_activated__num, 0x0089CAEC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_blur__num, 0x0089A63C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_blur_blend_mode__num, 0x0089A664)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_blur_color__vector3d, 0x0089A644)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_blur_offset__num__num, 0x0089A654)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_blur_rot__num, 0x0089A65C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_blur_scale__num__num, 0x0089A64C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_clear_color__vector3d, 0x0089A6F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_current_mission_objective_caption__num, 0x0089CADC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_default_traffic_hitpoints__num, 0x0089C614)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_dialog_box_flavor__num, 0x0089BC5C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_dialog_box_lockout_time__num, 0x0089BC6C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_engine_property__str__num, 0x0089A99C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_fov__num, 0x0089A62C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_game_info_num__str__num, 0x0089A8BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_game_info_str__str__str, 0x0089A8CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_global_time_dilation__num, 0x0089A89C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_marky_cam_lookat__vector3d, 0x0089A5EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_max_streaming_distance__num, 0x0089C4B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_mission_key_pos_facing__vector3d__vector3d, 0x0089C37C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_mission_key_position__vector3d, 0x0089C374)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_mission_text__num, 0x0089BBF8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_mission_text_box_flavor__num, 0x0089BC64)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_mission_text_debug__str, 0x0089BC00)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_parking_density__num, 0x0089C60C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_pedestrian_density__num, 0x0089C5F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_render_opt_num__str__num, 0x0089A8DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_score_widget_score__num, 0x0089BAC8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_sound_category_volume__num__num__num, 0x0089A9D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur__num, 0x0089A674)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_blend_mode__num, 0x0089A69C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_color__vector3d, 0x0089A67C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_offset__num__num, 0x0089A68C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_rot__num, 0x0089A694)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_blur_scale__num__num, 0x0089A684)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_hero_meter_depletion_rate__num, 0x0089CAB4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_spiderman_time_dilation__num, 0x0089CABC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_spider_reflexes_world_time_dilation__num, 0x0089CACC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_state_of_the_story_caption__num, 0x0089CAE4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_target_info__entity__vector3d__vector3d, 0x0089B6C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_time_of_day__num, 0x0089A964)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_traffic_density__num, 0x0089C604)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_traffic_model_usage__num__num, 0x0089C5B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_vibration_resume__num, 0x0089A7D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_interp_rate__num, 0x0089B504)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_pitch_range__num__num, 0x0089B4FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_speed_range__num__num, 0x0089B4EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_whoosh_volume_range__num__num, 0x0089B4F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(set_zoom__num, 0x0089A624)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(show_controller_gauge, 0x0089BB18)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(show_hotpursuit_indicator__num, 0x0089BAD0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(show_score_widget__num, 0x0089BAC0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(shut_up_all_ai_voice_boxes, 0x0089B50C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(sin__num, 0x0089A904)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(sin_cos__num, 0x0089A924)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(soft_load__num, 0x0089BCBC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(soft_save__num, 0x0089BCB4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_add_hero_points__num, 0x0089CAA4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_bank_stylepoints, 0x0089C91C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_break_web, 0x0089C9E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_add_shake__num__num__num, 0x0089CB34)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_autocorrect__num, 0x0089C924)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_clear_fixedstatic, 0x0089CAFC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_enable_combat__num, 0x0089CB24)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_enable_lookaround__num, 0x0089CB1C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_fixedstatic__vector3d__vector3d, 0x0089CAF4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_follow__entity, 0x0089CB2C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_hero_underwater__num, 0x0089CB3C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_interpolation_time__num, 0x0089CB14)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_lockon_min_distance__num, 0x0089CB04)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_camera_set_lockon_y_offset__num, 0x0089CB0C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_charged_jump, 0x0089C98C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_enable_control_button__num__num, 0x0089CA94)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_enable_lockon__num, 0x0089C9AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_engage_lockon__num, 0x0089C9B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_engage_lockon__num__entity, 0x0089C9BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_get_hero_points, 0x0089CA9C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_get_max_zip_length, 0x0089C9DC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_get_spidey_sense_level, 0x0089C99C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_crawling, 0x0089C934)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_falling, 0x0089C964)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_jumping, 0x0089C96C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_on_ceiling, 0x0089C944)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_on_ground, 0x0089C94C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_on_wall, 0x0089C93C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_running, 0x0089C95C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_sprint_crawling, 0x0089C984)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_sprinting, 0x0089C974)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_swinging, 0x0089C954)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_is_wallsprinting, 0x0089C97C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_lock_spider_reflexes_off, 0x0089CA24)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_lock_spider_reflexes_on, 0x0089CA1C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_lockon_camera_engaged, 0x0089CA0C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_lockon_mode_engaged, 0x0089CA04)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_camera_target__entity, 0x0089CA14)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_desired_mode__num__vector3d__vector3d, 0x0089C9EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_health_beep_min_max_cooldown_time__num__num, 0x0089C9F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_health_beep_threshold__num, 0x0089C9FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_hero_meter_empty_rate__num, 0x0089CB44)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_max_height__num, 0x0089C9CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_max_zip_length__num, 0x0089C9D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_min_height__num, 0x0089C9C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_spidey_sense_level__num, 0x0089C994)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_set_swing_anchor_max_sticky_time__num, 0x0089C9A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_subtract_hero_points__num, 0x0089CAAC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_alternating_wall_run_occurrence_threshold__num, 0x0089CA74)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_alternating_wall_run_time_threshold__num, 0x0089CA6C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_big_air_height_threshold__num, 0x0089CA34)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_continuous_air_swings_threshold__num, 0x0089CA4C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_gain_altitude_height_threshold__num, 0x0089CA54)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_near_miss_trigger_radius__num, 0x0089CA84)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_near_miss_velocity_threshold__num, 0x0089CA8C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_orbit_min_radius_threshold__num, 0x0089CA3C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_soft_landing_velocity_threshold__num, 0x0089CA5C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_super_speed_speed_threshold__num, 0x0089CA7C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_swinging_wall_run_time_threshold__num, 0x0089CA64)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_td_set_wall_sprint_time_threshold__num, 0x0089CA44)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_unlock_spider_reflexes, 0x0089CA2C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spiderman_wait_add_threat__entity__str__num__num, 0x0089CB4C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(spidey_can_see__vector3d, 0x0089C92C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(sqrt__num, 0x0089A914)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(start_patrol__str, 0x0089C4F4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(stop_all_sounds, 0x0089B514)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(stop_credits, 0x0089BB00)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(stop_vibration, 0x0089A7CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(subtitle__num__num__num__num__num__num, 0x0089BCC4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(swap_hero_costume__str, 0x0089C4D4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(text_width__str, 0x0089A7AC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_get_count_up, 0x0089BB70)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_get_time, 0x0089BB60)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_set_count_up__num, 0x0089BB68)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_set_time__num, 0x0089BB58)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_start, 0x0089BB48)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_stop, 0x0089BB50)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_turn_off, 0x0089BB40)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(timer_widget_turn_on, 0x0089BB38)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(to_beam__entity, 0x0089ABBC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(to_gun__entity, 0x0089B5A0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(to_item__entity, 0x0089B6BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(to_polytube__entity, 0x0089C238)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(to_switch__entity, 0x0089B8E4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(trace__str, 0x0089AA14)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(trigger_is_valid__trigger, 0x0089B9B8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_off_boss_health, 0x0089BBD0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_off_hero_health, 0x0089BBD8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_off_mission_text, 0x0089BC20)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_off_third_party_health, 0x0089BBE0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_on_boss_health__num__entity, 0x0089BBB8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_on_hero_health__num__entity, 0x0089BBC0)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(turn_on_third_party_health__num__entity, 0x0089BBC8)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(unload_script, 0x0089C35C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(unlock_all_exterior_districts, 0x0089C4CC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(unlock_district__num, 0x0089C48C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(vibrate_controller__num, 0x0089A7C4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(vibrate_controller__num__num, 0x0089A7BC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(vibrate_controller__num__num__num__num__num__num, 0x0089A7B4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(vo_delay__num__num__num__num, 0x0089A734)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_animate_fog_color__vector3d__num, 0x0089A6FC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_animate_fog_distance__num__num, 0x0089A704)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_animate_fog_distances__num__num__num, 0x0089A70C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_change_blur__num__vector3d__num__num__num__num__num__num, 0x0089A66C)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_change_spider_reflexes_blur__num__vector3d__num__num__num__num__num__num, 0x0089A6A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_for_streamer_to_reach_equilibrium, 0x0089C4A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_fps_test__num__num__vector3d__vector3d, 0x0089A8EC)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_frame, 0x0089A714)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_set_global_time_dilation__num__num, 0x0089A8A4)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(wait_set_zoom__num__num, 0x0089A634)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-DECLARE_GLOBAL_SLF_BEGIN(write_to_file__str__str, 0x0089A844)
-{
-    (void) stack;
-    (void) entry;
-	return true;
-}
-DECLARE_GLOBAL_SLF_END()
-
-#undef DECLARE_GLOBAL_SLF_BEGIN
-#undef DECLARE_GLOBAL_SLF_END
 
 #define DECLARE_SLF_BEGIN(KLASS, NAME, VTBL) \
     struct BUILD_SLF_NAME(KLASS, NAME) : script_library_class::function { \
         BUILD_SLF_NAME(KLASS, NAME) (script_library_class *slc, const char *a3) : function(slc, a3)  { \
-            m_vtbl = VTBL; \
+            m_vtbl = CAST(m_vtbl, VTBL); \
         } \
     \
         bool operator()(vm_stack &stack, script_library_class::function::entry_t entry) const
@@ -6506,7 +11449,8 @@ void chuck_register_script_libs()
 {
     TRACE("chuck_register_script_libs");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         std::vector<script_library_class *> classes(39u);
         auto class_idx = 0u;
 
@@ -6569,6 +11513,9 @@ void chuck_register_script_libs()
         register_entity_lib();
 
 #undef CREATE_SLC
+
+
+#define BUILD_GLOBAL_SLF_NAME(type) slf__ ## type ## __t
 
 #define CREATE_GLOBAL_SLF(TYPE, NAME)              \
     new (mem_alloc(sizeof(BUILD_GLOBAL_SLF_NAME(TYPE)))) \
@@ -7660,11 +12607,6 @@ void slc_manager_patch()
 {
     script_lib_entity_patch();
 
-    {
-        FUNC_ADDRESS(address, &slf__get_ini_flag__str__t::operator());
-        set_vfunc(0x0089A950, address);
-    }
-    
     SET_JUMP(0x005AD720, slc_manager::init);
 
     SET_JUMP(0x005A5200, slc_manager::kill);

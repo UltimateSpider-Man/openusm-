@@ -19,7 +19,10 @@ struct script_library_class {
             RECALL_ENTRY,
         };
 
-        std::intptr_t m_vtbl;
+        struct {
+            void (__fastcall *finalize)(function *, void *edx, bool);
+            bool (__fastcall *__cl)(const function *, void *edx, vm_stack &stack, entry_t entry);
+        } *m_vtbl;
 
 #if SLC_NAME_FIELD
         const char *m_name;
