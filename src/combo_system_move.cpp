@@ -14,13 +14,13 @@ VALIDATE_SIZE(combo_system_move::link_info, 0x14);
 VALIDATE_SIZE(combo_system_move, 0xC8);
 
 
-void combo_system_move::dialation_info::_unmash(mash_info_struct *a1, void *a3)
+void combo_system_move::dialation_info::_unmash(mash_info_struct *, void *)
 {
     TRACE("combo_system_move::dialation_info::unmash");
     ;
 }
 
-void combo_system_move::link_info::_unmash(mash_info_struct *a1, void *a3)
+void combo_system_move::link_info::_unmash(mash_info_struct *a1, void *)
 {
     TRACE("combo_system_move::link_info::unmash");
 
@@ -33,6 +33,13 @@ int combo_system_move::link_info::get_mash_sizeof()
     return func(this);
 }
 
+combo_system_move::results::results()
+{
+    this->m_vtbl = 0x00879FC0;
+
+    this->initialize(false);
+}
+
 combo_system_move::results::results(const results &a2) {
     THISCALL(0x0048CBB0, this, &a2);
 }
@@ -40,6 +47,21 @@ combo_system_move::results::results(const results &a2) {
 combo_system_move::results::~results()
 {
     THISCALL(0x0043C0A0, this);
+}
+
+void combo_system_move::results::initialize(bool a2)
+{
+    if ( !a2 )
+    {
+        this->field_30 = 0;
+        this->field_34 = 0;
+        this->field_10 = {""};
+        this->field_38 = 0;
+        this->field_3C = 0.30000001;
+        this->field_68 = 0;
+        this->field_6C = 0;
+        this->field_78 = 2.0;
+    }
 }
 
 void combo_system_move::results::_unmash(mash_info_struct *a1, void *a3)
@@ -83,7 +105,7 @@ void combo_system_move::requirements::_unmash(mash_info_struct *a1, void *a3)
     }
 }
 
-void combo_system_move::_unmash(mash_info_struct *a2, void *a3)
+void combo_system_move::_unmash(mash_info_struct *a2, void *)
 {
     TRACE("combo_system_move::unmash");
 

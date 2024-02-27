@@ -18,7 +18,7 @@ struct fe_mini_map_dot {
     bool field_25;
     bool field_26;
     bool field_27;
-    int field_28;
+    int highlight_circle_count_down;
 
     //0x0063AB90
     fe_mini_map_dot(mini_map_dot_type a2, vector3d a3);

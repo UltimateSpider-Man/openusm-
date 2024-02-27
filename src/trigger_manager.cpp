@@ -14,7 +14,9 @@ VALIDATE_SIZE(trigger_manager, 8u);
 
 Var<trigger_manager *> trigger_manager::instance{0x0095FF98};
 
-trigger_manager::trigger_manager() : m_triggers(nullptr) {}
+trigger_manager::trigger_manager() : m_triggers(nullptr) {
+    this->m_vtbl = 0x00891274;
+}
 
 void trigger_manager::deinit() {
     purge();
@@ -35,6 +37,25 @@ void trigger_manager::purge() {
 
 void trigger_manager::update() {
     THISCALL(0x00541F30, this);
+}
+
+void trigger_manager::update_trigger(trigger **a1, trigger_struct *a2, int a3)
+{
+    auto *tmp = *a1;
+    assert(tmp != nullptr);
+
+    if ( tmp->is_box_trigger()
+        && bit_cast<box_trigger *>(tmp)->field_58.get_volatile_ptr() != nullptr
+        && bit_cast<box_trigger *>(tmp)->get_box_ent() == nullptr
+        || tmp->is_entity_trigger()
+        && bit_cast<entity_trigger *>(tmp)->get_ent() == nullptr )
+    {
+        this->remove(a1);
+    }
+    else
+    {
+        tmp->update(a2, a3);
+    }
 }
 
 trigger *trigger_manager::find_instance(entity_base *ent)

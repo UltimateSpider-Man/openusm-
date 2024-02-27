@@ -29,4 +29,6 @@ struct convex_box {
     bool sub_55EDB0(const vector3d &a2, const vector3d &a3);
 
     bool sub_55EE20(const vector3d &a2, const po &a3);
+
+    bool set_box_coords(const vector3d *a2);
 };

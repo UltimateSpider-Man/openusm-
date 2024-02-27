@@ -2,6 +2,8 @@
 
 #include "vector3d.h"
 
+inline constexpr auto MIN_CAPSULE_RADIUS = 0.0099999998f;
+
 struct capsule {
     vector3d base;
     vector3d end;

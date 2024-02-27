@@ -9,6 +9,8 @@
 #include "intraframe_trajectory.h"
 #include "line_segment.h"
 #include "local_collision.h"
+#include "pendulum.h"
+#include "physical_interface.h"
 #include "primitive_query_token.h"
 #include "scratchpad_stack.h"
 #include "stack_allocator.h"
@@ -267,6 +269,73 @@ void resolve_collisions(intraframe_trajectory_t **a1, Float a2) {
     CDECL_CALL(0x00604E30, a1, a2);
 }
 
-void resolve_moving_pendulums(intraframe_trajectory_t *a1, Float a2) {
-    CDECL_CALL(0x00605050, a1, a2);
+void resolve_moving_pendulums(intraframe_trajectory_t *a1, Float a2)
+{
+    if constexpr (1)
+    {
+        intraframe_trajectory_t *a1a = nullptr;
+
+        for ( auto *v2 = a1; v2 != nullptr; v2 = v2->field_15C )
+        {
+            if ( v2->ent->has_physical_ifc() )
+            {
+                auto *v3 = v2->ent->physical_ifc();
+                if ( v3->is_enabled() )
+                {
+                    if ( v3->get_num_active_pendulums() > 0 )
+                    {
+                        for ( auto j = 0; j < 5; ++j )
+                        {
+                            auto *the_pendulum = v3->get_pendulum(j);
+                            if ( the_pendulum != nullptr
+                                    && the_pendulum->has_a_moving_anchor() )
+                            {
+                                auto v65 = v2->ent->get_abs_po();
+                                auto v47 = v3->apply_positional_constraints(a2, v65.get_position(), false);
+                                v65.set_position(v47);
+
+                                auto *v9 = intraframe_trajectory_t::pool().allocate_new_block();
+                                auto *v11 = new (v9) intraframe_trajectory_t {v2->ent, a2, v65, nullptr};
+
+                                v11->field_15C = a1a;
+                                a1a = v11;
+                                v11->final_relcap = &v11->relcap0;
+                                if ( a2 > EPSILON )
+                                {
+                                    auto *v18 = the_pendulum->get_volatile_ptr();
+                                    auto v22 = v18->get_last_position();
+
+                                    auto v23 = v18->get_abs_position() - v22;
+                                    vector3d v51 = v23 / a2;
+
+                                    auto pos = ( v2->ent->field_A4 != 0
+                                                    ? v2->ent->get_last_collision_free_state()->xform.get_position()
+                                                    : v65.get_position()
+                                                    );
+
+                                    auto v34 = v2->ent->physical_ifc()->field_44;
+                                    auto v63 = (v47 - pos) / a2;
+                                    auto v60 = v63 + v34;
+                                    v2->field_150 = v60 + v51;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ( a1a != nullptr ) {
+            resolve_collisions(&a1a, a2);
+        }
+
+        intraframe_trajectory_t *v42 = nullptr;
+        for ( auto *k = a1a; k != nullptr; k = v42 )
+        {
+            v42 = k->field_15C;
+            intraframe_trajectory_t::pool().remove(k);
+        }
+    } else {
+        CDECL_CALL(0x00605050, a1, a2);
+    }
 }

@@ -11,6 +11,11 @@ VALIDATE_OFFSET(combat_inode, field_68, 0x68);
 
 VALIDATE_SIZE(combat_inode::incoming_move, 0x94);
 
+combat_inode::incoming_move::incoming_move()
+{
+    this->m_vtbl = 0x0087A1FC;
+}
+
 combat_inode::incoming_move::incoming_move(const ai::combat_inode::incoming_move &a2)
     : field_14(a2.field_14) {
     this->m_vtbl = 0x0087A1FC;

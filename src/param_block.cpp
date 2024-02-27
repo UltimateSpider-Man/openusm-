@@ -46,6 +46,18 @@ void param_block::unmash(mash_info_struct *a1, void *a3)
     }
 }
 
+void param_block::add_param(
+        string_hash a2,
+        param_types a3,
+        const void *a4,
+        string_hash a5)
+{
+    if constexpr (0) {
+    } else {
+        THISCALL(0x006D6710, this, a2, a3, a4, a5);
+    }
+}
+
 int param_block::get_parameter_data_type(string_hash a2) const
 {
     return this->param_array->common_find_data(a2)->my_type;
@@ -63,6 +75,21 @@ const char *param_block::get_pb_fixedstring(string_hash a2) const {
     }
 
     return v4->m_union.str;
+}
+
+void param_block::set_pb_float(string_hash a2, Float a3, bool a4)
+{
+    if ( a4 )
+    {
+        this->add_param(a2, static_cast<param_types>(0), &a3, string_hash {0});
+    }
+    else
+    {
+        auto *data = this->param_array->common_find_data(a2);
+        if ( data != nullptr ) {
+            this->add_param(a2, static_cast<param_types>(0), &a3, string_hash {0});
+        }
+    }
 }
 
 float param_block::get_pb_float(string_hash a2) {

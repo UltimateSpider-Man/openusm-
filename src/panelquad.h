@@ -19,7 +19,7 @@ struct PanelMeshSection;
 struct PanelQuad : PanelAnimObject {
     float field_14;
     float field_18;
-    mVector<PanelQuadSection> field_1C;
+    mVector<PanelQuadSection> pqs;
     PanelMeshSection *pmesh;
     int field_34;
     float field_38;
@@ -57,6 +57,9 @@ struct PanelQuad : PanelAnimObject {
 
     /* virtual */ void TurnOn(bool a2);
 
+    //virtual
+    void Rotate(Float a2, Float a3, Float a4, bool a5);
+
     /* virtual */ void SetColor(color32 a2);
 
     //0x006284D0
@@ -69,9 +72,10 @@ struct PanelQuad : PanelAnimObject {
 
     //0x0043F770
     //virtual
-    double GetCenterX();
+    float GetCenterX();
 
-    /* virtual */ double GetCenterY();
+    /* virtual */
+    float GetCenterY();
 
     //0x006166A0
     //virtual

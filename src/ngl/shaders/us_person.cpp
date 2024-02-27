@@ -1244,7 +1244,7 @@ void USPersonNode::Render() {
                 auto size = field_10->m_stride * 2;
 
                 void *data = nullptr;
-                this->field_10->m_vertexBuffer->lpVtbl->Lock(this->field_10->m_vertexBuffer, 0, size, &data, 0);
+                this->field_10->field_3C.m_vertexBuffer->lpVtbl->Lock(this->field_10->field_3C.m_vertexBuffer, 0, size, &data, 0);
 
                 struct vertexDecl_t {
                     float pos[3];
@@ -1258,7 +1258,7 @@ void USPersonNode::Render() {
 
                 sp_log("%s", vertexDecl[1].bone_indices.to_string());
 
-                this->field_10->m_vertexBuffer->lpVtbl->Unlock(this->field_10->m_vertexBuffer);
+                this->field_10->field_3C.m_vertexBuffer->lpVtbl->Unlock(this->field_10->field_3C.m_vertexBuffer);
             }
         }
 

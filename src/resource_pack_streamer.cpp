@@ -341,7 +341,7 @@ void resource_pack_streamer::flush(void (*a2)(void), Float a3) {
 
             nflUpdate();
 
-            timer.sub_58E230();
+            timer.reset();
             this->frame_advance({0.0}, &timer);
 
 #ifdef TARGET_XBOX

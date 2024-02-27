@@ -8,6 +8,7 @@
 #include "ngl_scene.h"
 #include "nglshader.h"
 #include "oldmath_po.h"
+#include "pcuv_shadermaterial.h"
 #include "trace.h"
 #include "utility.h"
 #include "vector3d.h"
@@ -27,42 +28,16 @@ void nglMeshInit() {
     CDECL_CALL(0x0076F420);
 }
 
-vector4d sub_76EE90(const vector4d &a2, const float *a3) {
+vector4d sub_76EE90(const vector4d &a2, const vector4d &a3)
+{
     auto v7 = a3[2];
 
-    float v3;
-    if (a2[3] <= v7) {
-        v3 = v7;
-    } else {
-        v3 = a2[3];
-    }
+    float w = (a2[3] <= v7 ? v7 : a2[3]);
+    float z = (a2[2] <= v7 ? v7 : a2[2]);
+    float y = (a2[1] <= v7 ? v7 : a2[1]);
+    float x = (a2[0] <= v7 ? v7 : a2[0]);
 
-    float v4;
-    if (a2[2] <= v7) {
-        v4 = v7;
-    } else {
-        v4 = a2[2];
-    }
-
-    float v5;
-    if (a2[1] <= v7) {
-        v5 = v7;
-    } else {
-        v5 = a2[1];
-    }
-
-    float x;
-    if (a2[0] <= (double) v7) {
-        x = v7;
-    } else {
-        x = a2[0];
-    }
-
-    vector4d result;
-    result[0] = x;
-    result[1] = v5;
-    result[2] = v4;
-    result[3] = v3;
+    vector4d result {x, y, z, w};
     return result;
 }
 
@@ -79,7 +54,8 @@ math::MatClass<4, 3> *nglListAddMesh_GetScaledMatrix(const math::MatClass<4, 3> 
 {
     TRACE("nglListAddMesh_GetScaledMatrix");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         auto v3 = a2->Scale.field_0[0];
         auto v4 = a2->Scale.field_0[1];
         auto v5 = a2->Scale.field_0[2];
@@ -90,7 +66,7 @@ math::MatClass<4, 3> *nglListAddMesh_GetScaledMatrix(const math::MatClass<4, 3> 
         v11[1] = std::abs(v4);
         v11[2] = std::abs(v5);
         v11[3] = std::abs(v6);
-        auto v12 = sub_76EE90(v11, &v11[0]);
+        auto v12 = sub_76EE90(v11, v11);
 
         float v7;
         if (v12[1] <= v11[0]) {
@@ -137,7 +113,8 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
 {
     TRACE("nglListAddMesh_GetLOD");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         nglMesh *result;
         if ((a2 & 0x80u) == 0) {
             math::VecClass<3, 1> v10 = sub_414360(a4, {nglCurScene()->field_14C});
@@ -183,7 +160,7 @@ matrix4x4 sub_507130(void *arg4) {
     return result;
 }
 
-bool sub_755520(math::VecClass<3, 1> a1, Float radius)
+bool nglIsSphereVisible(math::VecClass<3, 1> a1, Float radius)
 {
     for (auto i = 0u; i < 6u; ++i) {
         auto &v = nglCurScene()->field_2AC[i];
@@ -196,11 +173,11 @@ bool sub_755520(math::VecClass<3, 1> a1, Float radius)
     return true;
 }
 
-int sub_76F3E0(math::VecClass<3, 1> a1, Float radius, uint8_t a6)
+int nglListAddMesh_GetClipResult(math::VecClass<3, 1> a1, Float radius, int a6)
 {
     if constexpr (1)
     {
-        if ((a6 & 0x40) != 0 || sub_755520(a1, radius)) {
+        if ((a6 & 0x40) != 0 || nglIsSphereVisible(a1, radius)) {
             return 0;
         }
 
@@ -305,14 +282,14 @@ void nglListAddMesh(nglMesh *Mesh,
                 meshNode->field_8C = {0};
             }
 
-            if (sub_76F3E0(v18,
-                        Radius,
-                        v20) == -1)
+            if (nglListAddMesh_GetClipResult(v18, Radius, v20) == -1)
             {
                 nglListWorkPos() = v17;
-            } else
+            }
+            else
             {
-                for (auto i = 0u; i < Mesh->NSections; ++i) {
+                for (auto i = 0u; i < Mesh->NSections; ++i)
+                {
                     auto *MeshSection = Mesh->Sections[i].Section;
                     nglPerfInfo().m_num_verts += MeshSection->NVertices;
 
@@ -335,37 +312,45 @@ void nglListAddMesh(nglMesh *Mesh,
     }
 }
 
-void sub_407F10(nglMesh *Mesh, int a2, int a3, Float a5, const math::MatClass<4, 3> &a6) {
-    sp_log("sub_407F10:");
+void TentacleListAddNode(nglMesh *Mesh, nglBlendModeType a2, const math::VecClass<3, 1> &a3, Float a5, const math::MatClass<4, 3> &a6)
+{
+    TRACE("TentacleListAddNode");
 
-#if 0
-    sub_4150E0(&a1, a2);
-    sub_414360(&out, (const math::VecClass__3_1 *) a3, &a1);
-    nglMeshSetSphere(out, a5);
-    nglListAddMesh(Mesh, a2, 0, 0);
-#else
-    CDECL_CALL(0x00407F10, Mesh, a2, a3, a5, &a6);
-#endif
+    if constexpr (1)
+    {
+        auto v2 = sub_4150E0(a6);
+        auto v1 = sub_414360(a3, v2);
+        nglMeshSetSphere(v1, a5);
+        nglListAddMesh(Mesh, a6, nullptr, nullptr);
+    }
+    else
+    {
+        CDECL_CALL(0x00407F10, Mesh, a2, a3, a5, &a6);
+    }
 }
 
-void sub_407E90(nglMesh *Mesh,
-                int a2,
+void PolytubeListAddNode(nglMesh *Mesh,
+                nglBlendModeType a2,
                 const math::VecClass<3, 1> &a3,
                 Float a4,
                 const math::MatClass<4, 3> &a5,
-                nglMaterialBase *a6,
-                nglParamSet<nglShaderParamSet_Pool> *a7) {
-    //sp_log("sub_407E90: %f", a4.value);
+                PCUV_ShaderMaterial *a6,
+                nglParamSet<nglShaderParamSet_Pool> *a7)
+{
+    TRACE("PolytubeListAddNode");
 
-#if 0    
-    sub_4150E0(&a1, a2);
-    sub_414360(&out, a3, &a1);
-    nglMeshSetSphere(out, a4);
-    a6->field_24 = arg4;
-    nglListAddMesh(Mesh, a2, nullptr, a7);
-#else
-    CDECL_CALL(0x00407E90, Mesh, a2, &a3, a4, &a5, a6, a7);
-#endif
+    if constexpr (1)
+    {
+        auto v2 = sub_4150E0(a5);
+        auto v1 = sub_414360(a3, v2);
+        nglMeshSetSphere(v1, a4);
+        a6->field_24 = a2;
+        nglListAddMesh(Mesh, a5, nullptr, a7);
+    }
+    else
+    {
+        CDECL_CALL(0x00407E90, Mesh, a2, &a3, a4, &a5, a6, a7);
+    }
 
     if constexpr (0) {
         matrix4x4 mat{};
@@ -415,11 +400,9 @@ void nglMesh_patch()
 {
     //SET_JUMP(0x00770360, nglListAddMesh);
 
-    REDIRECT(0x005A62C5, sub_407F10);
+    SET_JUMP(0x00407F10, TentacleListAddNode);
 
     {
-        REDIRECT(0x005A6311, sub_407E90);
-        //REDIRECT(0x005A648C, sub_407E90);
-        //REDIRECT(0x005A6617, sub_407E90);
+        SET_JUMP(0x00407E90, PolytubeListAddNode);
     }
 }

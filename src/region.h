@@ -121,6 +121,8 @@ struct region
         return this->flags & 1;
     }
 
+    void get_region_extents(vector3d *min_extent, vector3d *max_extent) const;
+
     ai_region_paths *get_region_path_graph();
 
     void sub_5452D0();
@@ -170,6 +172,10 @@ struct region
 
     //0x00519BB0
     fixedstring<8> &get_name();
+
+    int get_num_neighbors() const;
+
+    region *get_neighbor(int neighbor_index) const;
 
     //0x0054FEC0
     void un_mash_lego_map(char *a2, int *a3);

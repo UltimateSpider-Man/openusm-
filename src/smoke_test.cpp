@@ -28,7 +28,7 @@ smoke_test::smoke_test(const char **a2, Float a3) {
         this->smoke_lvl_num = 0;
         this->field_0 = false;
         this->field_14 = -1;
-        v4->sub_58E230();
+        v4->reset();
         this->field_4 = 0.0;
         this->field_8 = 0.0;
         this->field_C = 0.0;
@@ -62,7 +62,7 @@ static Var<const char *[]> cheat_heroes{0x00922564};
 void smoke_test::sub_57B610()
 {
     mString a1 = *this->field_20[this->field_18].field_0;
-    this->field_10.sub_58E230();
+    this->field_10.reset();
     this->field_C = 0.0;
     this->field_4 = 0.0;
     this->field_8 = 0.0;

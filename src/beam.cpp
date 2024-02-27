@@ -1,17 +1,24 @@
 #include "beam.h"
 
+#include "app.h"
 #include "camera.h"
+#include "comic_panels.h"
+#include "common.h"
 #include "debug_render.h"
 #include "func_wrapper.h"
 #include "game.h"
 #include "geometry_manager.h"
 #include "local_collision.h"
 #include "ngl.h"
+#include "ngl_mesh.h"
 #include "ngl_dx_vertexdef.h"
+#include "oldmath_po.h"
 #include "pcuv_shadermaterial.h"
 #include "trace.h"
 
 #include <cmath>
+
+VALIDATE_SIZE(beam, 0xE8u);
 
 beam::beam()
 {
@@ -22,7 +29,132 @@ void beam::_render(Float a1)
 {
     TRACE("beam::render");
 
-    THISCALL(0x005406D0, this, a1);
+    if constexpr (1)
+    {
+        if ( this->field_A8 > 0.0f && this->field_78 < this->field_A8 )
+        {
+            auto *the_game = app::instance()->m_game;
+            auto *cam = the_game->get_current_view_camera(0);
+
+            vector3d abs_position = this->get_abs_position();
+            po &abs_po = this->get_abs_po();
+
+            vector3d cam_abs_pos = cam->get_abs_position();
+
+            auto minus_result = cam_abs_pos - abs_position;
+            auto y = dot(minus_result, abs_po.get_y_facing());
+            auto x = dot(minus_result, abs_po.get_x_facing());
+            minus_result = vector3d {x, y, 0.0};
+
+            auto len = minus_result.length2();
+            if ( len > 0.001f )
+            {
+                auto v16 = 1.0f / std::sqrt(len);
+                minus_result *= v16;
+
+                auto v52 = this->field_70 * 0.5f;
+
+                vector3d v45[3] {
+                                vector3d {0.0, 0.0, this->field_A8},
+                                vector3d {0.0, 0.0, this->field_78},
+                                vector3d {(0.0 - minus_result[1]) * v52, minus_result[0] * v52, 0.0}
+                                };
+
+                vector3d v44[4] {};
+                v44[3] = v45[1] - v45[2];
+                v44[2] = v45[1] + v45[2];
+                v44[1] = v45[0] + v45[2];
+                v44[0] = v45[0] - v45[2];
+
+                vector2d v43[4] {};
+
+                if ( this->field_DC <= 0.0f )
+                {
+                    v43[3] = this->field_CC[0];
+                    v43[2][0] = this->field_CC[1][0];
+                    v43[2][1] = this->field_CC[0][1];
+                    v43[1] = this->field_CC[1];
+                    v43[0][0] = this->field_CC[0][0];
+                    v43[0][1] = this->field_CC[1][1];
+                }
+                else
+                {
+                    float v42 = (this->field_A8 * this->field_DC) - 1.0;
+                    v43[3] = this->field_CC[0];
+                    v43[2][0] = this->field_CC[1][0];
+                    v43[2][1] = this->field_CC[0][1];
+                    v43[1][0] = this->field_CC[1][0];
+                    v43[1][1] = this->field_CC[1][1] + v42;
+                    v43[0][0] = this->field_CC[0][0];
+                    v43[0][1] = this->field_CC[1][1] + v42;
+                }
+
+                nglCreateMesh(0x40000u, 2u, 0, nullptr);
+
+                assert(this->my_material != nullptr);
+
+                auto v24 = (this->field_E2 != 0);
+                this->my_material->field_24 = static_cast<nglBlendModeType>(v24 + 2);
+
+                uint32_t color0 = color32::to_int(this->field_7C);
+                uint32_t color1 = color32::to_int(this->field_80);
+
+                nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base>::Iterator Iter {};
+                nglMaterialBase *v29 = ( this->my_material != nullptr
+                                            ? bit_cast<nglMaterialBase *>(&this->my_material->field_4)
+                                            : nullptr );
+
+                auto *v30 = sub_507920(v29, 3, 1, 0, nullptr, D3DPT_TRIANGLESTRIP, true);
+                Iter = v30->CreateIterator();
+                Iter.BeginStrip(3u);
+
+                Iter.Write(v44[3], color0, v43[3]);
+                ++Iter;
+
+                Iter.Write(v44[2], color0, v43[2]);
+                ++Iter;
+
+                Iter.Write(v44[1], color1, v43[1]);
+                ++Iter;
+
+                auto *v33 = Iter.field_4->field_4;
+                if ( (v33->Flags & 0x40000) == 0 ) {
+                    v33->field_3C.m_vertexBuffer->lpVtbl->Unlock(v33->field_3C.m_vertexBuffer);
+                }
+
+                nglMaterialBase *v36 = ( this->my_material != nullptr
+                                        ? bit_cast<nglMaterialBase *>(&this->my_material->field_4)
+                                        : nullptr);
+
+                auto *v37 = sub_507920(v36, 3, 1, 0, nullptr, D3DPT_TRIANGLESTRIP, true);
+                Iter = v37->CreateIterator();
+                Iter.BeginStrip(3u);
+
+                Iter.Write(v44[3], color0, v43[3]);
+                ++Iter;
+
+                Iter.Write(v44[0], color1, v43[0]);
+                ++Iter;
+
+                Iter.Write(v44[1], color1, v43[1]);
+                ++Iter;
+
+                auto *v40 = Iter.field_4->field_4;
+                if ( (v40->Flags & 0x40000) == 0 ) {
+                    v40->field_3C.m_vertexBuffer->lpVtbl->Unlock(v40->field_3C.m_vertexBuffer);
+                }
+
+
+                auto v49 = *bit_cast<math::MatClass<4, 3> *>(&this->get_abs_po().get_matrix());
+                auto v42 = nglCloseMesh();
+                nglListAddMesh(v42, v49, nullptr, nullptr);
+            }
+        }
+    }
+    else
+    {
+        THISCALL(0x005406D0, this, a1);
+    }
 }
 
 void beam::frame_advance_all_beams(Float a3) {

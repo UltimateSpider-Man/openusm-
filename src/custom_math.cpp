@@ -52,7 +52,8 @@ float sub_48A720(float a1, float a2)
     return flt_91F4D8;
 }
 
-float sub_4ADC40(float a1) {
+float sub_4ADC40(float a1)
+{
     static constexpr auto flt_880AE4 = 0.33333331f;
 
     static constexpr auto flt_880AEC = -0.1079625f;

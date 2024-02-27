@@ -1,10 +1,10 @@
 #pragma once
 
 #include "float.hpp"
-
-#include <vector.hpp>
+#include "pcuv_shadermaterial.h"
 
 #include <cstdint>
+#include <vector.hpp>
 
 struct fe_mini_map_dot;
 struct PanelQuad;
@@ -14,9 +14,9 @@ struct matrix4x4;
 
 struct fe_mini_map_widget {
     std::intptr_t m_vtbl{0x00895A00};
-
-    int field_4[216];
-
+    PCUV_ShaderMaterial field_4[12];
+    vector3d field_244[12];
+    vector3d field_2D4[12];
     _std::vector<fe_mini_map_dot *> field_364;
     PanelFile *mini_map_icons;
     PanelQuad *map_icon_spidey;
@@ -39,8 +39,11 @@ struct fe_mini_map_widget {
     //0x006343C0
     fe_mini_map_widget();
 
+    //virtual
+    ~fe_mini_map_widget();
+
     //0x00619690
-    int PrepareRegions();
+    void PrepareRegions();
 
     //0x00638C30
     void RenderMeshes(matrix4x4 *a2, float &a4);

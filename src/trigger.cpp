@@ -24,11 +24,52 @@ trigger::trigger(string_hash a2) : signaller(true) {
     this->field_48 = 0.0;
     this->m_next_trigger = nullptr;
     this->trigger_current_entities = nullptr;
-    this->field_4C = 0;
+    this->field_4C = {0};
 }
 
 trigger::~trigger() {
     THISCALL(0x0056FE50, this);
+}
+
+void trigger::update(trigger_struct *a2, int a3)
+{
+    THISCALL(0x0053C470, this, a2, a3);
+}
+
+void trigger::set_use_any_char(bool a2)
+{
+    auto v2 = this->field_4;
+    if ( a2 ) {
+        this->field_4 = (v2 | 0x10);
+    } else {
+        this->field_4 = (v2 & (~0x10));
+    }
+}
+
+void trigger::set_sees_dead_people(bool a2)
+{
+    auto v2 = this->field_4;
+    if ( a2 ) {
+        this->field_4 = (v2 | 0x20000);
+    } else {
+        this->field_4 = (v2 & (~0x20000));
+    }
+}
+
+entity *trigger::get_triggered_ent()
+{
+    auto v3 = this->field_4C;
+    if ( v3.get_volatile_ptr() == nullptr ) {
+        return nullptr;
+    }
+
+    v3 = this->field_4C;
+    auto *result = v3.get_volatile_ptr();
+    if ( result == nullptr ) {
+        this->field_4C = {0};
+    }
+
+    return result;
 }
 
 void trigger::set_multiple_entrance(bool a2) {

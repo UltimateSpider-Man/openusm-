@@ -1170,7 +1170,7 @@ void game::load_this_level()
     {
         assert(!flag.level_is_loaded);
 
-        this->field_2C0.sub_58E230();
+        this->field_2C0.reset();
         this->field_15F = false;
         this->field_15E = false;
         this->field_160 = false;
@@ -1469,7 +1469,7 @@ void game::load_this_level()
         }
 
         spider_monkey::on_level_load();
-        this->level.field_34.sub_58E230();
+        this->level.field_34.reset();
 
         mem_print_stats("at very end of load_this_level()");
 

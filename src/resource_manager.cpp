@@ -520,7 +520,7 @@ void frame_advance(Float a2)
                 timer = v4;
             }
 
-            timer.sub_58E230();
+            timer.reset();
 
             assert(partitions() != nullptr);
 

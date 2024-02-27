@@ -126,6 +126,12 @@ physical_interface::physical_interface(actor *a2) : field_188(), field_198() {
     }
 }
 
+pendulum *physical_interface::get_pendulum(uint32_t num)
+{
+    assert(num >= 0 && num < PHYS_IFC_MAX_PENDULUM_CONSTRAINTS);
+    return this->field_110[num];
+}
+
 void physical_interface::get_parent_terrain_type(string_hash *a2)
 {
     THISCALL(0x004C93E0, this, a2);
@@ -498,6 +504,27 @@ void physical_interface::calculate_force_vector(Float a1, Float a2, float *a3, f
     }
 }
 
+bool physical_interface::is_enabled() const
+{
+    return this->is_flag(1);
+}
+
+int physical_interface::get_num_active_pendulums() const
+{
+    int v3 = 0;
+    for ( auto &p : this->field_110 )
+    {
+        if ( p != nullptr )
+        {
+            if ( p->field_34 ) {
+                ++v3;
+            }
+        }
+    }
+
+    return v3;
+}
+
 void physical_interface::enable(bool a2) {
     if (a2) {
         this->field_C |= 1;
@@ -544,6 +571,16 @@ void physical_interface::set_gravity(bool a2) {
 
         this->field_A4 = 0;
     }
+}
+
+vector3d physical_interface::apply_positional_constraints(
+        Float a3,
+        const vector3d &a4,
+        bool a5)
+{
+    vector3d result;
+    THISCALL(0x004ECCD0, this, &result, a3, &a4, a5);
+    return result;
 }
 
 void physical_interface::apply_force_increment_in_biped_physics_mode(

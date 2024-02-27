@@ -82,8 +82,12 @@ struct combo_system_move : mash_virtual_base {
         int field_74;
         int field_78;
 
+        results();
+
         //0x0048CBB0
         results(const results &a2);
+
+        void initialize(bool a2);
 
         //virtual
         ~results(); 

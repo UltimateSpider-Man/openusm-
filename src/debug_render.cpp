@@ -281,30 +281,24 @@ void sub_CB3F80(const vector3d &a1,
 
 
     iter->BeginStrip(4);
-    iter->Write(a1, a5, 0.0, 0.0);
+
+    iter->Write(a1, a5, vector2d {0.0, 0.0});
     ++iter->field_8;
-    iter->Write(a2, a5, 0.0, 0.0);
+
+    iter->Write(a2, a5, vector2d {0.0, 0.0});
     ++iter->field_8;
-    iter->Write(a4, a5, 0.0, 0.0);
+
+    iter->Write(a4, a5, vector2d {0.0, 0.0});
     ++iter->field_8;
-    iter->Write(a3, a5, 0.0, 0.0);
+
+    iter->Write(a3, a5, vector2d {0.0, 0.0});
     ++iter->field_8;
 
     {
-        struct {
-            int field_0;
-            struct {
-                int field_0;
-                nglMeshSection *field_4;
-            } * field_4;
+        auto *v40 = iter->field_4->field_4;
 
-        } *local_iter = static_cast<decltype(local_iter)>(a6);
-
-        auto *v40 = local_iter->field_4->field_4;
-
-        if ((v40->Flags & 0x40000) == 0)
-        {
-            v40->m_vertexBuffer->lpVtbl->Unlock(v40->m_vertexBuffer);
+        if ((v40->Flags & 0x40000) == 0) {
+            v40->field_3C.m_vertexBuffer->lpVtbl->Unlock(v40->field_3C.m_vertexBuffer);
         }
     }
 }
@@ -322,8 +316,7 @@ void render_beam(const vector3d &a1, const vector3d &a2, color32 a3, Float a4, b
 
         auto *v4 = sub_507920(v7, 4, 1, 0, nullptr, 5, true);
 
-        nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base>::Iterator iter;
-        nglVertexDef__GetIterator(v4, 0, &iter);
+        nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base>::Iterator iter = v4->CreateIterator();
 
         auto v5 = color32::to_int(a3);
         sub_CB4800(a1, a2, v5, a4, &iter);
@@ -423,9 +416,10 @@ void debug_render_init()
 
     int a4 = 194;
 
-    debug_material = new PCUV_ShaderMaterial{nglWhiteTex(), nglBlendModeType{2}, 0, a4};
+    debug_material = new PCUV_ShaderMaterial{nglWhiteTex(), static_cast<nglBlendModeType>(2), 0, a4};
 
-    if (!g_is_the_packer()) {
+    if (!g_is_the_packer())
+    {
         auto *mesh_file = nglLoadMeshFile(tlFixedString{"debugobj"});
         assert(mesh_file != nullptr);
 
@@ -441,7 +435,7 @@ void debug_render_init()
         s_debug_disc = nglGetMesh(tlFixedString{"debug_disc"}, true);
         assert(s_debug_disc != nullptr);
 
-        dword_15BCE44 = new PCUV_ShaderMaterial{nglWhiteTex(), nglBlendModeType{2}, 0, a4};
+        dword_15BCE44 = new PCUV_ShaderMaterial{nglWhiteTex(), static_cast<nglBlendModeType>(2), 0, a4};
         assert(debug_strings == nullptr);
 
         debug_strings = new fixed_vector<debug_string_t, 25>{};

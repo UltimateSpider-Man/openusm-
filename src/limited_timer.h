@@ -9,7 +9,7 @@ struct limited_timer_base {
 
     limited_timer_base();
 
-    void sub_58E230();
+    void reset();
 
     double elapsed() const;
 };
@@ -20,4 +20,6 @@ struct limited_timer : limited_timer_base {
     limited_timer() = default;
 
     limited_timer(Float a1);
+
+    ~limited_timer();
 };

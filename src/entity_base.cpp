@@ -1522,7 +1522,8 @@ void entity_report(entity_base *a1, const mString &a2, bool a3) {
     CDECL_CALL(0x004E1490, a1, &a2, a3);
 }
 
-void entity_set_abs_position(entity_base *ent, const vector3d &pos) {
+void entity_set_abs_position(entity_base *ent, const vector3d &pos)
+{
     assert(ent != nullptr && "No Entity passed in");
     assert(pos.length2() < MAX_ALLOWED_POSITION_LENGTH_SQUARED);
 
@@ -1567,6 +1568,18 @@ void entity_set_abs_position(entity_base *ent, const vector3d &pos) {
     } else {
         CDECL_CALL(0x004E1230, ent, &pos);
     }
+}
+
+void entity_teleport_abs_po(entity_base *a1, const po &a2, bool a3)
+{
+    CDECL_CALL(0x004F3890, a1, &a2, a3);
+}
+
+void entity_teleport_abs_position(entity_base *a2, const vector3d &a3, bool a4)
+{
+    auto &v5= a2->get_abs_po();
+    v5.set_position(a3);
+    entity_teleport_abs_po(a2, v5, a4);
 }
 
 void check_po(entity_base *e)

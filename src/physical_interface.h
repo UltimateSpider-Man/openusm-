@@ -110,10 +110,16 @@ struct physical_interface {
     //0x004DF020
     physical_interface(actor *a2);
 
+    pendulum *get_pendulum(uint32_t num);
+
     bool is_flag(uint32_t a2) const
     {
         return (a2 & this->field_C) != 0;
     }
+
+    bool is_enabled() const;
+
+    int get_num_active_pendulums() const;
 
     //0x004C93E0
     void get_parent_terrain_type(string_hash *a2);
@@ -194,6 +200,11 @@ struct physical_interface {
 
     //0x004DF4A0
     void un_mash(generic_mash_header *a2, void *a3, void *a4, generic_mash_data_ptrs *a5);
+
+    vector3d apply_positional_constraints(
+        Float a3,
+        const vector3d &a4,
+        bool a5);
 
     //0x004C9430
     void apply_force_increment_in_biped_physics_mode(const vector3d &a2,

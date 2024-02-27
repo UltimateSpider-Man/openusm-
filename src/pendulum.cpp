@@ -27,6 +27,36 @@ pendulum::pendulum() {
     this->field_34 = 0;
 }
 
+bool pendulum::has_a_moving_anchor() const
+{
+    auto *ent = this->get_volatile_ptr();
+    if ( ent == nullptr) {
+        return false;
+    }
+
+    while ( ent != nullptr )
+    {
+        if (ent->is_flagged_in_the_moved_list() ) {
+            return true;
+        }
+
+        if ( ent->is_conglom_member() )
+        {
+            ent = ent->get_conglom_owner();
+        }
+        else
+        {
+            if ( ent->m_parent != nullptr ) {
+                ent = ent->get_parent();
+            } else {
+                ent = nullptr;
+            }
+        }
+    }
+
+    return false;
+}
+
 void pendulum::set_constraint(Float constraint) {
     assert(constraint > 0.001f);
 
@@ -49,7 +79,8 @@ void pendulum::set_attach_limb(int l) {
     }
 }
 
-vector3d &pendulum::get_pivot_abs_pos() {
+vector3d &pendulum::get_pivot_abs_pos()
+{
     auto *ent = this->get_volatile_ptr();
     if (ent != nullptr) {
         auto &local_po = ent->get_abs_po();

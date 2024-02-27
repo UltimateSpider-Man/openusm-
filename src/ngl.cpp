@@ -21,6 +21,7 @@
 #include "ngl_params.h"
 #include "ngl_scene.h"
 #include "ngl_support.h"
+#include "ngl_vertexdef.h"
 #include "ngldebugshader.h"
 #include "nglemptyshader.h"
 #include "nglshader.h"
@@ -81,7 +82,7 @@ VALIDATE_OFFSET(nglMeshFile, field_124, 0x124);
 VALIDATE_SIZE(nglMorphFile, 0x148);
 
 VALIDATE_SIZE(nglMeshSection, 0x60);
-VALIDATE_OFFSET(nglMeshSection, m_vertices, 0x3C);
+VALIDATE_OFFSET(nglMeshSection, field_3C, 0x3C);
 
 VALIDATE_OFFSET(nglMesh, NextMesh, 0x38);
 
@@ -104,8 +105,6 @@ Var<bool> nglLoadingIFL{0x00973844};
 Var<int> nglScratchMeshPos{0x00975310};
 
 Var<nglScratchBuffer_t> nglScratchBuffer {0x00972A18};
-
-Var<void *(*) (size_t, size_t, size_t)> nglMeshAllocFn{0x00973B1C};
 
 Var<bool> g_valid_texture_format{0x00971F9D};
 
@@ -1878,7 +1877,7 @@ void nglRebaseSection(uint32_t NewBase, uint32_t OldBase, nglMeshSection *a3)
 
     PTR_OFFSET(idx, a3->BonesIdx);
 
-    PTR_OFFSET(idx, a3->m_vertices);
+    PTR_OFFSET(idx, a3->field_3C.pad);
 
     PTR_OFFSET(idx, a3->m_indices);
 
@@ -2911,12 +2910,14 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                     [&v29](auto *MeshSection) -> void {
                         auto func = [](auto *MeshSection)
                         {
-                            auto v31 = (uint32_t) (MeshSection->field_40 >> 6);
-                            auto *v32 = (float *) (static_cast<char *>(MeshSection->m_vertices) +
+                            auto v31 = (uint32_t) (MeshSection->field_3C.Size >> 6);
+                            auto *v32 = (float *) (bit_cast<char *>(MeshSection->field_3C.pad) +
                                                    32);
                             MeshSection->field_5C = 2;
-                            if (v31 > 0) {
-                                for (; v31 != 0; --v31) {
+                            if (v31 > 0)
+                            {
+                                for (; v31 != 0; --v31)
+                                {
                                     if (equal(v32[7], 0.0f)) {
                                         if (not_equal(v32[6], 0.0f) && MeshSection->field_5C < 3u) {
                                             MeshSection->field_5C = 3;
@@ -2935,15 +2936,14 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                                 }
                             }
 
-                            ((nglVertexBuffer *) &MeshSection->m_vertices)
-                                ->createVertexBufferAndWriteData((const void *) MeshSection->m_vertices,
-                                                                 MeshSection->field_40,
+                            MeshSection->field_3C.createVertexBufferAndWriteData((const void *) MeshSection->field_3C.pad,
+                                                                 MeshSection->field_3C.Size,
                                                                  1028);
 
                             static Var<int> dword_973BC8{0x00973BC8};
 
-                            if (dword_973BC8() < (int) (24 * (MeshSection->field_40 >> 6))) {
-                                dword_973BC8() = 24 * (MeshSection->field_40 >> 6);
+                            if (dword_973BC8() < (int) (24 * (MeshSection->field_3C.Size >> 6))) {
+                                dword_973BC8() = 24 * (MeshSection->field_3C.Size >> 6);
                             }
 
                             MeshSection->m_stride = 24;
@@ -2952,9 +2952,9 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                         if (!EnableShader()) {
                             if (strncmp(v29, "uslod", 5u) == 0) {
                                 nglVertexBuffer::createIndexOrVertexBuffer(
-                                    (nglVertexBuffer *) &MeshSection->m_vertices,
+                                    &MeshSection->field_3C,
                                     ResourceType::VertexBuffer,
-                                    16 * (MeshSection->field_40 / 12),
+                                    16 * (MeshSection->field_3C.Size / 12),
                                     520,
                                     0,
                                     D3DPOOL_DEFAULT);
@@ -2965,10 +2965,11 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
 
                             if (!EnableShader()) {
                                 if (ChromeEffect()) {
-                                    if (strncmp(v29, "smshiny", 7u) == 0) {
-                                        int v30 = 48 * (MeshSection->field_40 / 60u);
-                                        ((nglVertexBuffer *) &MeshSection->m_vertices)
-                                            ->createVertexBuffer(v30, 520u);
+                                    if (strncmp(v29, "smshiny", 7u) == 0)
+                                    {
+                                        int v30 = 48 * (MeshSection->field_3C.Size / 60u);
+                                        MeshSection->field_3C
+                                            .createVertexBuffer(v30, 520u);
                                         MeshSection->m_stride = 48;
 
                                         static Var<int> dword_972960{0x00972960};
@@ -2999,9 +3000,8 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                         }
                         
 
-                        ((nglVertexBuffer *) &MeshSection->m_vertices)
-                            ->createVertexBufferAndWriteData((const void *) MeshSection->m_vertices,
-                                                             MeshSection->field_40,
+                        MeshSection->field_3C.createVertexBufferAndWriteData((const void *) MeshSection->field_3C.pad,
+                                                             MeshSection->field_3C.Size,
                                                              1028);
                     }(MeshSection);
 
@@ -3475,17 +3475,6 @@ void nglGetStringDimensions(
     nglGetStringDimensions(Font, nglFontBuffer(), arg4, a3, 1.0, 1.0);
 }
 
-static constexpr auto NGLMESH_TEMP = 0x40000;
-static constexpr auto NGLMESH_STATIC = 0x80000;
-
-void nglCreateMesh(uint32_t Flags, uint32_t num_sections, uint32_t a3, const void *a4) {
-    assert(((Flags & NGLMESH_TEMP) || (Flags & NGLMESH_STATIC)) &&
-           "Either NGLMESH_TEMP or NGLMESH_STATIC mesh flag mush be specified to nglCreateMesh "
-           "!\n");
-
-    CDECL_CALL(0x00775AE0, Flags, num_sections, a3, a4);
-}
-
 nglMesh *nglCreateMeshClone(nglMesh *a1) {
     if (a1 == nullptr) {
         return nullptr;
@@ -3586,18 +3575,20 @@ void mNglQuad::custom_unmash(mash_info_struct *a2, void *a3)
     }
 }
 
-void nglSetQuadRect(nglQuad *a1, Float a2, Float a3, Float a4, Float a5) {
-    a1->field_0[0].pos.field_0 = a2;
-    a1->field_0[1].pos.field_0 = a4;
-    a1->field_0[0].pos.field_4 = a3;
-    a1->field_0[1].pos.field_4 = a3;
-    a1->field_0[2].pos.field_0 = a2;
-    a1->field_0[2].pos.field_4 = a5;
-    a1->field_0[3].pos.field_0 = a4;
-    a1->field_0[3].pos.field_4 = a5;
+void nglSetQuadRect(nglQuad *a1, Float a2, Float a3, Float a4, Float a5)
+{
+    a1->field_0[0].pos.x = a2;
+    a1->field_0[1].pos.x = a4;
+    a1->field_0[0].pos.y = a3;
+    a1->field_0[1].pos.y = a3;
+    a1->field_0[2].pos.x = a2;
+    a1->field_0[2].pos.y = a5;
+    a1->field_0[3].pos.x = a4;
+    a1->field_0[3].pos.y = a5;
 }
 
-void nglSetQuadColor(nglQuad *a1, unsigned int a2) {
+void nglSetQuadColor(nglQuad *a1, unsigned int a2)
+{
     a1->field_0[0].m_color = a2;
     a1->field_0[1].m_color = a2;
     a1->field_0[2].m_color = a2;
@@ -3649,8 +3640,50 @@ void nglSaveTexture(nglTexture *Tex, const char *a2) {
     STDCALL(0x007CA210, Dest, 0, Tex->DXTexture, 0);
 }
 
-void nglCopySection(nglMesh *a1, int a2, nglMesh *a3, int a4) {
-    CDECL_CALL(0x00771E40, a1, a2, a3, a4);
+void nglCopySection(nglMesh *DstMesh, int a2, nglMesh *SrcMesh, int a4)
+{
+    TRACE("nglCopySection");
+
+    if constexpr (1)
+    {
+        auto *SrcSection = SrcMesh->Sections[a4].Section;
+        auto *DstSection = DstMesh->Sections[a2].Section;
+
+        assert(SrcSection->field_3C.Size == DstSection->field_3C.Size
+                && "Section VB sizes do not match !");
+
+        assert(SrcSection->NIndices == DstSection->NIndices
+                && "Section IB sizes do not match !");
+
+        void *SrcVertices = nullptr;
+        void *DstVertices = nullptr;
+
+        DstSection->field_3C.m_vertexBuffer->lpVtbl->Lock(DstSection->field_3C.m_vertexBuffer, 0, 0, &DstVertices, 0);
+        SrcSection->field_3C.m_vertexBuffer->lpVtbl->Lock(SrcSection->field_3C.m_vertexBuffer, 0, 0, &SrcVertices, 0);
+
+        std::memcpy(DstVertices, SrcVertices, DstSection->field_3C.Size);
+        DstSection->field_3C.m_vertexBuffer->lpVtbl->Unlock(DstSection->field_3C.m_vertexBuffer);
+        SrcSection->field_3C.m_vertexBuffer->lpVtbl->Unlock(SrcSection->field_3C.m_vertexBuffer);
+        if ( DstSection->m_indices != nullptr )
+        {
+            void *SrcIndices = nullptr;
+            void *DstIndices = nullptr;
+
+            DstSection->m_indexBuffer->lpVtbl->Lock(DstSection->m_indexBuffer, 0, 0, &DstIndices, 0);
+            SrcSection->m_indexBuffer->lpVtbl->Lock(SrcSection->m_indexBuffer, 0, 0, &SrcIndices, 0);
+
+            assert(SrcIndices != nullptr && DstIndices != nullptr
+                    && "About to access NULL pointer.");
+
+            std::memcpy(DstIndices, SrcIndices, 2 * DstSection->NIndices);
+            DstSection->m_indexBuffer->lpVtbl->Unlock(DstSection->m_indexBuffer);
+            SrcSection->m_indexBuffer->lpVtbl->Unlock(SrcSection->m_indexBuffer);
+        }
+    }
+    else
+    {
+        CDECL_CALL(0x00771E40, DstMesh, a2, SrcMesh, a4);
+    }
 }
 
 void nglCopyMesh(nglMesh *a1, nglMesh *a2) {
@@ -4321,8 +4354,20 @@ void nglDebugAddSphere(const math::MatClass<4, 3> &a1, math::VecClass<3, 1> a2, 
     }
 }
 
-void nglSetBufferSize(nglBufferType a1, uint32_t a2, bool a3) {
-    CDECL_CALL(0x0077B610, a1, a2, a3);
+void nglSetBufferSize(nglBufferType a1, uint32_t a2, bool a3)
+{
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        CDECL_CALL(0x0077B610, a1, a2, a3);
+    }
+}
+
+nglMesh *nglCloseMesh()
+{
+    return (nglMesh *) CDECL_CALL(0x00772130);
 }
 
 void nglListAddCustomNode(void (*a1)(unsigned int *&, void *), void *a2, const nglSortInfo *a3) {
@@ -4347,7 +4392,7 @@ void nglRenderQuad(nglQuad *a2)
         g_renderState().field_78 = 0;
     }
 
-    g_renderState().setBlending(a2->field_58.field_0, a2->field_5C, 128);
+    g_renderState().setBlending(a2->field_58, a2->field_5C, 128);
 
     if ( EnableShader() ) {
         SetVertexDeclarationAndShader(&stru_975780());
@@ -4359,15 +4404,16 @@ void nglRenderQuad(nglQuad *a2)
             (const D3DMATRIX *)nglCurScene()->field_24C);
     }
     
-    if ( struct_972688().field_30 && (nglCurScene()->field_334->field_34 & 4) != 0 ) {
-        a2->field_0[0].pos.field_0 = struct_972688().field_34 * a2->field_0[0].pos.field_0;
-        a2->field_0[0].pos.field_4 = struct_972688().field_38 * a2->field_0[0].pos.field_4;
-        a2->field_0[1].pos.field_0 = struct_972688().field_34 * a2->field_0[1].pos.field_0;
-        a2->field_0[1].pos.field_4 = struct_972688().field_38 * a2->field_0[1].pos.field_4;
-        a2->field_0[2].pos.field_0 = struct_972688().field_34 * a2->field_0[2].pos.field_0;
-        a2->field_0[2].pos.field_4 = struct_972688().field_38 * a2->field_0[2].pos.field_4;
-        a2->field_0[3].pos.field_0 = struct_972688().field_34 * a2->field_0[3].pos.field_0;
-        a2->field_0[3].pos.field_4 = struct_972688().field_38 * a2->field_0[3].pos.field_4;
+    if ( struct_972688().field_30 && (nglCurScene()->field_334->field_34 & 4) != 0 )
+    {
+        a2->field_0[0].pos.x *= struct_972688().field_34;
+        a2->field_0[0].pos.y *= struct_972688().field_38;
+        a2->field_0[1].pos.x *= struct_972688().field_34;
+        a2->field_0[1].pos.y *= struct_972688().field_38;
+        a2->field_0[2].pos.x *= struct_972688().field_34;
+        a2->field_0[2].pos.y *= struct_972688().field_38;
+        a2->field_0[3].pos.x *= struct_972688().field_34;
+        a2->field_0[3].pos.y *= struct_972688().field_38;
     }
 
     auto m_tex = a2->m_tex;
@@ -4428,9 +4474,10 @@ void nglRenderQuad(nglQuad *a2)
     } v9[4] {};
 
     auto *quads = &a2->field_0[0];
-    for ( auto &v2 : v9 ) {
-        v2.pos.x = sub_77E940(quads->pos.field_0);
-        v2.pos.y = sub_77EA00(quads->pos.field_4);
+    for ( auto &v2 : v9 )
+    {
+        v2.pos.x = sub_77E940(quads->pos.x);
+        v2.pos.y = sub_77EA00(quads->pos.y);
         v2.field_8 = v8;
         v2.m_color = quads->m_color;
         v2.uv.x = quads->uv.field_0;
@@ -4477,12 +4524,15 @@ void nglListAddQuad(nglQuad *Quad) {
                 }
 
                 std::memcpy(&v1->field_C, Quad, sizeof(v1->field_C));
-                if (((1 << Quad->field_58.field_0) & 3) != 0) {
+                if (((1 << Quad->field_58) & 3) != 0)
+                {
                     v1->field_8 = Quad->m_tex;
                     v1->field_4 = (nglQuadNode *) nglCurScene()->field_340;
                     nglCurScene()->field_340 = (int) v1;
                     ++nglCurScene()->OpaqueListCount;
-                } else {
+                }
+                else
+                {
                     v1->field_8 = (nglTexture *) (int) Quad->field_50;
                     v1->field_4 = (nglQuadNode *) nglCurScene()->field_344;
                     nglCurScene()->field_344 = (int) v1;
@@ -4673,10 +4723,10 @@ void nglDestroySection(nglMeshSection *a1) {
         a1->m_indexBuffer = nullptr;
     }
 
-    if (a1->m_vertexBuffer != nullptr)
+    if (a1->field_3C.m_vertexBuffer != nullptr)
     {
-        nglVertexBuffer::sub_77B5D0((nglVertexBuffer *) &a1->m_vertices, ResourceType::VertexBuffer);
-        a1->m_vertexBuffer = nullptr;
+        nglVertexBuffer::sub_77B5D0(&a1->field_3C, ResourceType::VertexBuffer);
+        a1->field_3C.m_vertexBuffer = nullptr;
     }
 
     a1->VertexDef->Destroy();
@@ -4713,23 +4763,27 @@ void nglDestroyMesh(nglMesh *Mesh) {
     }
 }
 
-void nglSetQuadVPos(nglQuad *a1, int a2, float a3, float a4) {
+void nglSetQuadVPos(nglQuad *a1, int a2, float a3, float a4)
+{
     auto &pos = a1->field_0[a2].pos;
-    pos.field_0 = a3;
-    pos.field_4 = a4;
+    pos.x = a3;
+    pos.y = a4;
 }
 
-void nglSetQuadVUV(nglQuad *a1, int a2, float a3, float a4) {
+void nglSetQuadVUV(nglQuad *a1, int a2, float a3, float a4)
+{
     auto &quad = a1->field_0[a2];
     quad.uv.field_0 = a3;
     quad.uv.field_4 = a4;
 }
 
-void nglSetQuadVColor(nglQuad *a1, int a2, unsigned int a3) {
+void nglSetQuadVColor(nglQuad *a1, int a2, unsigned int a3)
+{
     a1->field_0[a2].m_color = a3;
 }
 
-void nglSetQuadZ(nglQuad *a1, Float a2) {
+void nglSetQuadZ(nglQuad *a1, Float a2)
+{
     a1->field_50 = a2;
 }
 
@@ -4737,8 +4791,9 @@ void nglSetQuadMapFlags(nglQuad *a1, unsigned int a2) {
     a1->field_54 = a2;
 }
 
-void nglInitQuad(nglQuad *a1) {
-    memset(a1, 0, sizeof(nglQuad));
+void nglInitQuad(nglQuad *a1)
+{
+    std::memset(a1, 0, sizeof(nglQuad));
     a1->field_0[0].m_color = 0xFFFFFFFF;
     a1->field_0[1].m_color = 0xFFFFFFFF;
     a1->field_0[2].m_color = 0xFFFFFFFF;
@@ -4752,7 +4807,21 @@ void nglInitQuad(nglQuad *a1) {
     a1->field_0[2].uv.field_4 = 1.0;
     a1->field_0[3].uv.field_4 = 1.0;
     a1->field_54 = 194;
-    a1->field_58 = nglBlendModeType{2};
+    a1->field_58 = static_cast<nglBlendModeType>(2);
+}
+
+void nglRotateQuad(nglQuad *a2, Float a3, Float a4, Float a5)
+{
+    for ( int i = 0; i < 4; ++i )
+    {
+        auto &v8 = a2->field_0[i];
+        auto v7 = v8.pos.x - a3;
+        auto v6 = v8.pos.y - a4;
+        auto v4 = std::cos(a5) * v7;
+        v8.pos.x = v4 - std::sin(a5) * v6 + a3;
+        auto v5 = std::cos(a5) * v6;
+        v8.pos.y = std::sin(a5) * v7 + v5 + a4;
+    }
 }
 
 void sub_781980(int width, int height) {
@@ -5260,15 +5329,15 @@ void nglDumpQuad(nglQuad *Quad) {
     }
 
     nglHostPrintf(h_sceneDump(), "  TEXTURE %s\n", v2);
-    nglHostPrintf(h_sceneDump(), "  BLEND %d %d\n", Quad->field_58.field_0, Quad->field_5C);
+    nglHostPrintf(h_sceneDump(), "  BLEND %d %d\n", Quad->field_58, Quad->field_5C);
     nglHostPrintf(h_sceneDump(), "  MAPFLAGS 0x%x\n", Quad->field_54);
     nglHostPrintf(h_sceneDump(), "  Z %f\n", Quad->field_50);
 
     for (auto i = 0u; i < 4u; ++i) {
         nglHostPrintf(h_sceneDump(),
                       "  VERT %f %f 0x%08X %f %f\n",
-                      Quad->field_0[i].pos.field_0,
-                      Quad->field_0[i].pos.field_4,
+                      Quad->field_0[i].pos.x,
+                      Quad->field_0[i].pos.y,
                       Quad->field_0[i].m_color,
                       Quad->field_0[i].uv.field_0,
                       Quad->field_0[i].uv.field_4);
@@ -5279,7 +5348,8 @@ void nglDumpQuad(nglQuad *Quad) {
 
 void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *MeshParams)
 {
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ((Mesh->Flags & NGLMESH_SCRATCH_MESH) == 0) {
             nglHostPrintf(h_sceneDump(), "\n");
             nglHostPrintf(h_sceneDump(),
@@ -5300,12 +5370,16 @@ void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *M
             nglHostPrintf(h_sceneDump(), "  ROW3 %f %f %f %f\n", a2[2][0], a2[2][1], a2[2][2], 0.0f);
             nglHostPrintf(h_sceneDump(), "  ROW4 %f %f %f %f\n", a2[3][0], a2[3][1], a2[3][2], 1.f);
 
-            if (MeshParams != nullptr) {
-                if ((MeshParams->Flags & 0x3C) != 0) {
+            if (MeshParams != nullptr)
+            {
+                if ((MeshParams->Flags & 0x3C) != 0)
+                {
                     nglHostPrintf(h_sceneDump(), "  NBONES %d\n", MeshParams->NBones);
 
-                    if (MeshParams->NBones != 0) {
-                        for (auto i = 0; i < MeshParams->NBones; ++i) {
+                    if (MeshParams->NBones != 0)
+                    {
+                        for (auto i = 0; i < MeshParams->NBones; ++i)
+                        {
                             auto *v6 = MeshParams->field_8;
                             nglHostPrintf(
                                 h_sceneDump(),
@@ -5667,7 +5741,8 @@ void nglListAddPointLight(uint32_t a1, math::VecClass<3, 1> a2, Float a6, Float 
 {
     TRACE("nglListAddPointLight");
 
-    if ( sub_755520(a2, radius) ) {
+    if ( nglIsSphereVisible(a2, radius) )
+    {
         struct stru {
             math::VecClass<3, 1> field_0;
             math::VecClass<3, 1> field_10;

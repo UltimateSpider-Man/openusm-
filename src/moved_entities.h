@@ -19,7 +19,7 @@ namespace moved_entities {
     void add_moved(vhandle_type<entity> a1);
 
     intraframe_trajectory_t *get_all_trajectories(
-        Float a1, const moved_entities::trajectory_filter_t *filter);
+        Float a1, const trajectory_filter_t &filter);
 
     inline Var<int> moved_count{0x0095C890};
 

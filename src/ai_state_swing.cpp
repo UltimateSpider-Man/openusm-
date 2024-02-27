@@ -167,8 +167,9 @@ swing_state::swing_state() : enhanced_state() {
     
 }
 
-swing_state::swing_state(from_mash_in_place_constructor *a2) {
-    THISCALL(0x0045AC60, this, a2);
+swing_state::swing_state(from_mash_in_place_constructor *a2) : enhanced_state(a2)
+{
+    this->m_vtbl = 0x008774B8;
 }
 
 uint32_t swing_state::get_virtual_type_enum() {

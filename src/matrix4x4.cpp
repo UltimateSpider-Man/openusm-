@@ -4,6 +4,8 @@
 #include "func_wrapper.h"
 #include "log.h"
 #include "matrix4x3.h"
+#include "trace.h"
+#include "utility.h"
 #include "variable.h"
 #include "vector3d.h"
 
@@ -224,7 +226,10 @@ void matrix4x4::sub_415740(void *a2) {
     THISCALL(0x00415740, this, a2);
 }
 
-void matrix4x4::make_rotate(const vector3d &axis, Float angle) {
+void matrix4x4::make_rotate(const vector3d &axis, Float angle)
+{
+    TRACE("matrix4x4::make_rotate");
+
     float c;
     float s;
     fast_sin_cos_approx(angle, &s, &c);
@@ -298,7 +303,8 @@ void matrix4x4::scale(Float a2) {
 }
 
 void matrix4x4::make_projection(
-    Float fovy, Float aspect, Float near_plane, Float far_plane, Float a6) {
+    Float fovy, Float aspect, Float near_plane, Float far_plane, Float a6)
+{
 #ifndef USE_GLM
 
     assert((far_plane - near_plane) >= 0.01f);
@@ -325,6 +331,26 @@ void matrix4x4::make_projection(
 #else
 
 #endif
+}
+
+void matrix4x4::make_translate(const vector3d &a2)
+{
+    this->arr[0][0] = 1.0;
+    this->arr[0][1] = 0.0;
+    this->arr[0][2] = 0.0;
+    this->arr[0][3] = 0.0;
+    this->arr[1][0] = 0.0;
+    this->arr[1][1] = 1.0;
+    this->arr[1][2] = 0.0;
+    this->arr[1][3] = 0.0;
+    this->arr[2][0] = 0.0;
+    this->arr[2][1] = 0.0;
+    this->arr[2][2] = 1.0;
+    this->arr[2][3] = 0.0;
+    this->arr[3][0] = a2[0];
+    this->arr[3][1] = a2[1];
+    this->arr[3][2] = a2[2];
+    this->arr[3][3] = 1.0;
 }
 
 void matrix4x4::make_scale(const vector3d &v) {
@@ -393,4 +419,10 @@ vector3d sub_501B20(const matrix4x4 &a2, const vector3d &a3)
     vector3d result;
     CDECL_CALL(0x00501B20, &result, &a2, &a3);
     return result;
+}
+
+void matrix4x4_patch()
+{
+    FUNC_ADDRESS(address, &matrix4x4::make_rotate);
+    SET_JUMP(0x00597D50, address);
 }

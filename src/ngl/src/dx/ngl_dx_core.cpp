@@ -446,7 +446,7 @@ void nglListSend(bool Flip)
         nglScratchBuffer().field_44 ^= 1u;
         nglScratchBuffer().field_28 = 0;
         nglScratchBuffer().field_2C = 0;
-        nglScratchBuffer().field_24 = 0;
+        nglScratchBuffer().m_numVertices = 0;
         nglScratchBuffer().field_30 = 0;
 
         nglScratchBuffer().field_4C.m_vertexBuffer->lpVtbl->Unlock(nglScratchBuffer().field_4C.m_vertexBuffer);

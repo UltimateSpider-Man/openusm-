@@ -11,6 +11,8 @@ struct PCUV_Shader : nglShader {
     void Register();
 };
 
+inline Var<PCUV_Shader> gPCUV_Shader {0x0091E46C};
+
 struct nglMeshNode;
 struct nglMeshSection;
 

@@ -1,12 +1,14 @@
 #pragma once
 
 #include "entity.h"
+#include "entity_base_vhandle.h"
 #include "signaller.h"
 
+struct trigger_struct;
 
 struct trigger : signaller {
     float field_48;
-    int field_4C;
+    vhandle_type<entity> field_4C;
     _std::list<vhandle_type<entity>> *trigger_current_entities;
     trigger *m_next_trigger;
 
@@ -15,6 +17,15 @@ struct trigger : signaller {
 
     //0x0056FE50
     ~trigger();
+
+    //0x0053C470
+    void update(trigger_struct *a2, int a3);
+
+    void set_use_any_char(bool a2);
+
+    void set_sees_dead_people(bool a2);
+
+    entity *get_triggered_ent();
 
     //0x0053C390
     void set_multiple_entrance(bool a2);

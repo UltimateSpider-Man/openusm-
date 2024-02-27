@@ -85,6 +85,7 @@
 #include "femanager.h"
 #include "femenuentry.h"
 #include "femultilinetext.h"
+#include "fe_menu_nav_bar.h"
 #include "filespec.h"
 #include "fileusm.h"
 #include "frontendmenusystem.h"
@@ -128,7 +129,7 @@
 #include "material_file_resource_handler.h"
 #include "message_board.h"
 #include "meta_anim_interact.h"
-#include "fe_menu_nav_bar.h"
+#include "motion_effect_struct.h"
 #include "mission_manager.h"
 #include "morph_file_resource_handler.h"
 #include "moved_entities.h"
@@ -2413,6 +2414,8 @@ BOOL install_redirects()
     game_camera_patch();
 
     region_patch();
+    
+    matrix4x4_patch();
 
     ai_interaction_data_patch();
 
@@ -2430,6 +2433,8 @@ BOOL install_redirects()
 
     polytube_patch();
 
+    web_polytube_patch();
+
     entity_patch();
 
     wds_render_manager_patch();
@@ -2439,6 +2444,8 @@ BOOL install_redirects()
     beam_patch();
 
     app_patch();
+    
+    motion_effect_struct_patch();
 
     ngl_vertexdef_patch();
 
@@ -2780,7 +2787,6 @@ BOOL install_redirects()
 
     //spline_patch();
 
-    //web_polytube_patch();
 
     //camera_patch();
 

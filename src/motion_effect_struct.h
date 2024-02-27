@@ -8,6 +8,7 @@
 struct camera;
 struct hull;
 struct mString;
+struct nglVector;
 
 struct motion_effect_struct {
     int field_0[11];
@@ -34,6 +35,23 @@ struct motion_effect_struct {
                       vector3d a20,
                       vector3d a23);
 
+    //0x004DCA10
+    void render_distorted_trail(
+                    const vector3d &a1,
+                    const vector3d &a2,
+                    const vector3d &a3,
+                    const nglVector &a4,
+                    const nglVector &a5,
+                    const nglVector &a6,
+                    color32 a7,
+                    color32 a8,
+                    color32 a9,
+                    bool a10,
+                    vector3d &a11,
+                    vector3d &a12);
+
     //0x004EFA50
     static void record_all_motion_fx(Float a1);
 };
+
+extern void motion_effect_struct_patch();

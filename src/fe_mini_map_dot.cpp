@@ -30,7 +30,7 @@ void fe_mini_map_dot::Draw()
             nglListAddQuad(this->field_10);
         }
 
-        if (this->field_28) {
+        if (this->highlight_circle_count_down != 0) {
             this->field_4->Draw();
         }
     }

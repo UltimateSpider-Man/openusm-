@@ -12,12 +12,14 @@ struct entity_trigger;
 struct point_trigger;
 struct trigger;
 struct entity_base;
+struct trigger_struct;
 
 struct trigger_manager : singleton {
     trigger *m_triggers;
 
     trigger_manager();
 
+    //0x0051E5A0
     void deinit();
 
     //0x0050CBA0
@@ -25,6 +27,9 @@ struct trigger_manager : singleton {
 
     //0x00541F30
     void update();
+
+    //0x00541E90
+    void update_trigger(trigger **a1, trigger_struct *a2, int a3);
 
     trigger *find_instance(entity_base *a2);
 

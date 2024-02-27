@@ -206,6 +206,24 @@ struct world_dynamics_system {
 
 extern int get_hero_type_helper();
 
+inline constexpr auto MAX_REGIONS_IN_ARRAY = 30u;
+
+struct region_array {
+    region *m_data[MAX_REGIONS_IN_ARRAY];
+    int count;
+
+    auto &operator[](int idx) {
+        return m_data[idx];
+    }
+
+    bool contains(region *a2) const;
+
+    void push_back(region *a2);
+
+};
+
+extern void build_region_list_radius(region_array *arr, region *reg, const vector3d &a3, Float a4, bool a5);
+
 //0x00605470
 extern void collide_all_moved_entities(Float a1);
 

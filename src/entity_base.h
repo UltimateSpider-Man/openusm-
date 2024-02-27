@@ -414,6 +414,8 @@ struct entity_base : entity_base_vtable {
     }
 };
 
+extern void entity_teleport_abs_position(entity_base *a2, const vector3d &a3, bool a4);
+
 extern void check_po(entity_base *);
 
 extern int DEBUG_foster_conglom_warning;

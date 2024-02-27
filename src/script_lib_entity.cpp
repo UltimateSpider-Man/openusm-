@@ -1,13 +1,62 @@
 #include "script_lib_entity.h"
 
 #include "actor.h"
+#include "base_ai_core.h"
 #include "entity_base.h"
 #include "entity_base_vhandle.h"
 #include "entity_handle_manager.h"
 #include "memory.h"
+#include "osassert.h"
 #include "trace.h"
 #include "utility.h"
 #include "vm_stack.h"
+
+ai::ai_core *get_ai_core_from_vhandle(entity_base_vhandle a1)
+{
+    auto *ent = a1.get_volatile_ptr();
+    assert(ent != nullptr && "This entity is invalid!");
+
+    if ( ent == nullptr ) {
+        return nullptr;
+    }
+
+    assert(ent->is_an_actor() && "This entity is not an actor!");
+
+    if ( !ent->is_an_actor() ) {
+        return nullptr;
+    }
+
+    assert(bit_cast<actor *>(ent)->get_ai_core() && "This entity does not have an AI!");
+    return ent->get_ai_core();
+}
+
+string_hash get_ai_param_hash_and_core(
+        entity_base_vhandle a2,
+        const char *a3,
+        ai::ai_core **a4,
+        bool a5)
+{
+    *a4 = get_ai_core_from_vhandle(a2);
+    string_hash a1 {a3};
+    if ( *a4 )
+    {
+        if ( a5 )
+        {
+            auto *pb = (*a4)->get_param_block();
+            if ( !pb->does_parameter_exist(a1) )
+            {
+                auto *v8 = (*a4)->get_actor(0);
+                auto id = v8->get_id();
+                auto v10 = id.to_string();
+                mString v16 {0, "Unknown AI parameter %s requested by entity %s, from script", a3, v10};
+                auto *v11 = v16.c_str();
+                error(v11);
+            }
+        }
+    }
+
+    return a1;
+}
 
 struct slf__entity__abs_snap_to__entity__t : script_library_class::function {
     slf__entity__abs_snap_to__entity__t (script_library_class *slc, const char *a3) : function(slc, a3)  {
@@ -1582,7 +1631,11 @@ struct slf__entity__set_ai_param_float__str__num__t : script_library_class::func
         m_vtbl = (decltype(m_vtbl))0x0089B09C;
     }
 
-    bool operator()(vm_stack &, script_library_class::function::entry_t) const { return true;}
+    bool operator()(vm_stack &, script_library_class::function::entry_t) const
+    {
+
+        SLF_DONE;
+    }
 };
 
 struct slf__entity__set_ai_param_float_variance__str__num__num__t : script_library_class::function {

@@ -32,15 +32,7 @@ extern void nglSetDebugFlag(const char *Flag, uint8_t Set);
 
 enum nglFrameLockType {};
 
-struct nglBlendModeType {
-    int field_0;
-
-    nglBlendModeType() = default;
-
-    operator int() const {
-        return field_0;
-    }
-};
+enum nglBlendModeType {};
 
 struct nglTextureFileFormat {
     int field_0;
@@ -203,7 +195,7 @@ struct nglVertexBuffer
         struct
         {
             int pad;
-            uint32_t field_4;
+            uint32_t Size;
             IDirect3DVertexBuffer9 *m_vertexBuffer;
         };
     }; 
@@ -242,9 +234,7 @@ struct nglMeshSection {
     uint16_t *m_indices;
     IDirect3DIndexBuffer9 *m_indexBuffer;
     int NVertices;
-    void *m_vertices;
-    uint32_t field_40;
-    IDirect3DVertexBuffer9 *m_vertexBuffer;
+    nglVertexBuffer field_3C;
     int m_stride;
     int field_4C;
     int field_50;
@@ -421,8 +411,8 @@ nglMesh *nglGetMeshInFile(const tlFixedString &a1, nglMeshFile *a2);
 struct nglQuad {
     struct Quad {
         struct {
-            float field_0;
-            float field_4;
+            float x;
+            float y;
         } pos;
         struct {
             float field_0;
@@ -551,7 +541,7 @@ struct nglScratchBuffer_t
     nglVertexBuffer field_C;
     int field_18[2];
     int16_t *field_20;
-    int field_24;
+    int m_numVertices;
     int field_28;
     int field_2C;
     int field_30;
@@ -562,11 +552,36 @@ struct nglScratchBuffer_t
     int field_44;
     IDirect3DIndexBuffer9 *field_48;
     nglVertexBuffer field_4C;
+
+    int GetIndexCount() const
+    {
+        return this->field_30;
+    }
+
+    void IncreaseIndexCount(int a2)
+    {
+        this->field_30 += a2;
+    }
+
+    void SetCountVerts(int a2)
+    {
+        this->m_numVertices = a2;
+    }
+
+    int16_t * GetIndexBuffer()
+    {
+        return this->field_20;
+    }
+
+    int GetVertexOffset() const
+    {
+        return this->field_28;
+    }
 };
 
 extern Var<nglScratchBuffer_t> nglScratchBuffer;
 
-extern Var<void *(*) (size_t, size_t, size_t)> nglMeshAllocFn;
+inline Var<void * (*) (int, int, int)> nglMeshAllocFn {0x00973B1C};
 
 //0x0076F090
 extern nglMesh *nglGetNextMeshInFile(nglMesh *a1);
@@ -576,6 +591,8 @@ extern void *nglMeshScratchAlloc(int Size, int Alignment, int);
 
 //0x007756F0
 extern void *nglMeshMemAlloc(int Size, int Alignment, int a3);
+
+extern nglMesh *nglCloseMesh();
 
 //0x00773380
 extern void nglReleaseTexture(nglTexture *a1);
@@ -660,8 +677,7 @@ extern Var<char[1024]> nglFontBuffer;
 
 extern Var<nglMesh *> nglScratch;
 
-//0x00775AE0
-extern void nglCreateMesh(uint32_t Flags, uint32_t num_sections, uint32_t a3, const void *a4);
+inline Var<int> nglScratchSectionIdx {0x00973B18};
 
 //0x00775770
 extern nglMesh *nglCreateMeshClone(nglMesh *a1);
@@ -836,6 +852,9 @@ extern void nglSetQuadColor(nglQuad *a1, unsigned int a2);
 //0x0077AC40
 extern void nglInitQuad(nglQuad *a1);
 
+//0x0077ADE0
+extern void nglRotateQuad(nglQuad *a2, Float a3, Float a4, Float a5);
+
 //0x0076E3E0
 extern void nglInit(HWND hWnd);
 
@@ -875,6 +894,10 @@ extern Var<bool> EnableShader;
 extern Var<char[256]> nglTexturePath;
 
 extern Var<uint8_t *> nglListWorkPos;
+
+inline Var<int> nglScratchMeshWorkSize {0x009752F0};
+
+inline Var<int> nglPhysListWorkSize {0x009752F4};
 
 extern LARGE_INTEGER query_perf_counter();
 
@@ -932,9 +955,9 @@ extern double sub_77EA00(Float a1);
 
 extern bool sub_581C30();
 
-extern bool sub_755520(math::VecClass<3, 1> a1, Float radius);
-
 extern matrix4x4 sub_4150E0(const matrix4x4 &a2);
+
+extern bool nglIsSphereVisible(math::VecClass<3, 1> a1, Float radius);
 
 extern void Reset3DDevice();
 

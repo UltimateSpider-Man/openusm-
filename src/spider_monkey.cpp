@@ -28,16 +28,18 @@ void spider_monkey::on_level_unload() {
     CDECL_CALL(0x004B3B20);
 }
 
-void spider_monkey::start() {
-    if constexpr (1) {
+void spider_monkey::start()
+{
+    if constexpr (1)
+    {
         input_mgr::instance()->set_control_state_monkey_callback(spider_monkey::state_callback);
         input_mgr::instance()->set_control_delta_monkey_callback(spider_monkey::delta_callback);
-        spider_monkey::m_running() = 1;
-        spider_monkey::m_ook_timer() = 0.0;
-        spider_monkey::m_clock().sub_58E230();
-        spider_monkey::m_runtime() = 0.0;
-        spider_monkey::m_runtime_text() = 0;
-        spider_monkey::m_runtime_monkey_text() = 0;
+        m_running() = 1;
+        m_ook_timer() = 0.0;
+        m_clock().reset();
+        m_runtime() = 0.0;
+        m_runtime_text() = 0;
+        m_runtime_monkey_text() = 0;
         os_developer_options::instance()->set_int(9, 1); //MONKEY_MODE
     } else {
         CDECL_CALL(0x004B6690);

@@ -2,6 +2,7 @@
 
 #include "entity.h"
 
+#include "ngl_vertexdef.h"
 #include "spline.h"
 
 #include <cstdint>
@@ -11,6 +12,34 @@ struct PCUV_ShaderMaterial;
 
 struct polytube_pt_anim {
     float field_0[11];
+};
+
+struct PolytubeCustomOffset {
+    struct Iterator {
+        float *field_0;
+        int field_4;
+        uint32_t field_8;
+    };
+};
+
+struct PolytubeCustomVertex {
+    struct Iterator {
+        int field_0;
+        uint32_t field_4;
+        PolytubeCustomOffset::Iterator *field_8;
+        nglVertexDef_MultipassMesh<nglVertexDef_PCUV_Base>::Iterator field_C;
+        vector3d field_18;
+        vector3d field_24;
+        vector3d field_30;
+        float field_3C;
+        uint32_t field_40;
+        float field_44;
+        float field_48;
+
+        void Write(const vector3d &a2,
+                    const vector3d &a3);
+
+    };
 };
 
 struct polytube : entity {

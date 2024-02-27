@@ -7,7 +7,8 @@ struct vector3d;
 struct matrix4x3;
 
 struct matrix4x4 {
-    vector4d arr[4];
+    vector4d arr[3];
+    vector4d w;
 
     matrix4x4() {
         arr[0][0] = 0.0;
@@ -69,6 +70,9 @@ struct matrix4x4 {
     //0x00597D50
     void make_rotate(const vector3d &axis, Float angle);
 
+    //0x00588110
+    void make_translate(const vector3d &a2);
+
     //0x00587DA0
     void make_projection(Float a2, Float a3, Float near_plane, Float far_plane, Float a6);
 
@@ -112,3 +116,5 @@ extern vector3d sub_55DCB0(const matrix4x4 &a2, const vector3d &a3);
 extern vector3d sub_5B1370(const matrix4x4 &a2, vector3d a3);
 
 extern vector3d sub_501B20(const matrix4x4 &a2, const vector3d &a3);
+
+extern void matrix4x4_patch();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ai_param_types.h"
 #include "float.hpp"
 #include "string_hash.h"
 #include "variance_variable.h"
@@ -96,6 +97,13 @@ struct param_block {
     //0x006D56B0
     void unmash(mash_info_struct *a1, void *a3);
 
+    //0x006D6710
+    void add_param(
+        string_hash a2,
+        param_types a3,
+        const void *a4,
+        string_hash a5);
+
     //0x006CE130
     bool does_parameter_exist(string_hash a2) const;
 
@@ -116,6 +124,8 @@ struct param_block {
 
     //0x006CDD40
     const char *get_pb_fixedstring(string_hash a2) const;
+
+    void set_pb_float(string_hash a2, Float a3, bool a4);
 
     //0x006CDC60
     float get_pb_float(string_hash a2);

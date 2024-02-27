@@ -17,7 +17,11 @@ limited_timer::limited_timer(Float a1) : limited_timer_base() {
     field_4 = a1;
 }
 
-void limited_timer_base::sub_58E230() {
+limited_timer::~limited_timer() {
+    this->reset();
+}
+
+void limited_timer_base::reset() {
     this->field_0 = timeGetTime();
 }
 

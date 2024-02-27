@@ -20,6 +20,7 @@
 #include "generic_anim_controller.h"
 #include "item.h"
 #include "interactable_interface.h"
+#include "intraframe_trajectory.h"
 #include "lego_map.h"
 #include "memory.h"
 #include "nal_system.h"
@@ -38,6 +39,8 @@
 
 VALIDATE_SIZE(actor, 0xC0u);
 VALIDATE_OFFSET(actor, adv_ptrs, 0x78);
+
+static Var<collision_free_state *> collision_free_states {0x00968504};
 
 actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3)
 {
@@ -86,6 +89,16 @@ void actor::common_construct()
     this->field_A8[0] = 0;
     this->field_AC = {};
     this->field_B8 = 0;
+}
+
+collision_free_state *actor::get_last_collision_free_state() const
+{
+    auto v1 = this->field_A4;
+    if ( v1 != 0 ) {
+        return collision_free_states() + v1;
+    }
+
+    return nullptr;
 }
 
 void actor::set_colgeom(collision_geometry *a2)

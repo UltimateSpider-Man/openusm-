@@ -53,6 +53,11 @@ struct ai_core {
         return field_64;
     }
 
+    param_block * get_param_block()
+    {
+        return &this->field_50;
+    }
+
     bool push_base_machine(resource_key a2, int a3);
 
     bool pop_base_machine(int );

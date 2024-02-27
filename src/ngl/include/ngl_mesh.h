@@ -20,8 +20,11 @@ struct nglMeshParams {
     nglMeshParams(uint32_t f) : Flags(f) {}
 };
 
-extern inline constexpr auto NGLMESH_PROCESSED = 0x10000;
-extern inline constexpr auto NGLMESH_SCRATCH_MESH = 0x20000;
+inline constexpr auto NGLMESH_PROCESSED = 0x10000;
+inline constexpr auto NGLMESH_SCRATCH_MESH = 0x20000;
+inline constexpr auto NGLMESH_TEMP = 0x40000;
+inline constexpr auto NGLMESH_STATIC = 0x80000;
+
 
 struct nglMesh {
     tlHashString Name;

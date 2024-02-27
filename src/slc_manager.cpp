@@ -2880,12 +2880,31 @@ slf__entity_col_check__entity__entity__t::slf__entity_col_check__entity__entity_
 struct slf__entity_exists__str__t : script_library_class::function {
     slf__entity_exists__str__t(const char *a3);
 
+    struct parms_t {
+        vm_str_t name;
+    };
+
     bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
     {
         TRACE("slf__entity_exists__str__t::operator()");
 
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668BF0);
-        return func(this, nullptr, &stack, entry);
+        if constexpr (1)
+        {
+            SLF_PARMS;
+
+            string_hash entity_name {parms->name};
+            auto *ent = entity_handle_manager::find_entity(entity_name, IGNORE_FLAVOR, true);
+
+            float result = (ent != nullptr);
+            SLF_RETURN;
+            SLF_DONE;
+            
+        }
+        else
+        {
+            bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00668BF0);
+            return func(this, nullptr, &stack, entry);
+        }
     }
 };
 

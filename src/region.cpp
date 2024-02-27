@@ -16,6 +16,7 @@
 #include "wds.h"
 
 #include <cassert>
+#include <cfloat>
 #include <cmath>
 
 VALIDATE_SIZE(region, 0x134u);
@@ -215,7 +216,24 @@ bool region::is_loaded() {
     return (this->flags & 0x10) != 0;
 }
 
-ai_region_paths *region::get_region_path_graph() {
+void region::get_region_extents(vector3d *min_extent, vector3d *max_extent) const
+{
+    assert(min_extent != nullptr);
+
+    assert(max_extent != nullptr);
+
+    this->obb->get_extents(min_extent, max_extent);
+
+    assert(min_extent->x != FLT_MAX
+            && min_extent->y != FLT_MAX
+            && min_extent->z != FLT_MAX
+            && max_extent->x != -FLT_MAX
+            && max_extent->y != -FLT_MAX
+            && max_extent->z != -FLT_MAX);
+}
+
+ai_region_paths *region::get_region_path_graph()
+{
     if (this->is_loaded()) {
         return this->field_104;
     }
@@ -350,6 +368,22 @@ int region::get_district_variant()
 	} else {
 		return this->field_C4;
 	}
+}
+
+int region::get_num_neighbors() const
+{
+    return this->neighbors.size();
+}
+
+region *region::get_neighbor(int neighbor_index) const
+{
+    assert(neighbor_index >= 0);
+
+    assert(neighbor_index < this->neighbors.size());
+
+    auto v4 = this->neighbors[neighbor_index];
+    auto *the_terrain = g_world_ptr()->get_the_terrain();
+    return the_terrain->get_region(v4);
 }
 
 void region_patch()

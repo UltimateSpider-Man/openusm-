@@ -63,6 +63,8 @@ struct VecClass {
     }
 };
 
+inline const VecClass<3, 1> Float4_0001 {0, 0, 0, 1};
+
 template<typename T, bool>
 struct MatKind_Tran {};
 

@@ -157,7 +157,7 @@ app::app() : field_4(), field_34()
     init_shadow_targets();
     mem_print_stats("after init_shadow_targets()");
 
-    this->field_34.sub_58E230();
+    this->field_34.reset();
     this->field_38 = 0;
     geometry_manager::create_inst();
     string_hash_dictionary::create_inst();
@@ -261,12 +261,12 @@ void app::tick()
     if constexpr (0)
     {
         limited_timer_base local_timer;
-        local_timer.sub_58E230();
+        local_timer.reset();
 
         scratchpad_stack::reset();
 
         limited_timer_base total_timer;
-        total_timer.sub_58E230();
+        total_timer.reset();
 
         sub_77B2F0(0);
 
@@ -355,7 +355,8 @@ void app::cleanup()
 {
     TRACE("app::cleanup");
 
-    if constexpr (0) {
+    if constexpr (1)
+    {
         gab_manager::delete_inst();
 
         if ( !os_developer_options::instance()->get_flag(mString {"DISABLE_AUDIO_BOXES"}) ) { 

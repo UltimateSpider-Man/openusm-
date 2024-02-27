@@ -23,6 +23,7 @@
 #include "dirty_sphere.h"
 #include "dynamic_rtree.h"
 #include "entity_mash.h"
+#include "event.h"
 #include "facial_expression_interface.h"
 #include "femanager.h"
 #include "fixed_pool.h"
@@ -49,6 +50,7 @@
 #include "moved_entities.h"
 #include "nal_system.h"
 #include "nearby_hero_regions.h"
+#include "osassert.h"
 #include "ped_spawner.h"
 #include "physical_interface.h"
 #include "poi.h"
@@ -67,6 +69,7 @@
 #include "sound_interface.h"
 #include "spawnable.h"
 #include "spiderman_camera.h"
+#include "subdivision_node_obb_base.h"
 #include "stack_allocator.h"
 #include "thrown_item.h"
 #include "terrain.h"
@@ -172,9 +175,69 @@ world_dynamics_system::~world_dynamics_system()
     }
 }
 
-void world_dynamics_system::malor_point(const vector3d &a2, int a3, bool a4)
+void world_dynamics_system::malor_point(const vector3d &xyz, int a3, bool a4)
 {
-    THISCALL(0x00530460, this, &a2, a3, a4);
+    if constexpr (0) {
+        auto *hero_ptr = this->get_hero_ptr(a3);
+        entity_teleport_abs_position(hero_ptr, xyz, a4);
+        if ( this->the_terrain != nullptr )
+        {
+            auto *reg = this->the_terrain->find_region(xyz, nullptr);
+            if ( reg != nullptr ) {
+                hero_ptr->update_regions(&reg, 1);
+            }
+        }
+    } else {
+        THISCALL(0x00530460, this, &xyz, a3, a4);
+    }
+}
+
+bool region_array::contains(region *a2) const
+{
+    for ( int i = 0; i < this->count; ++i )
+    {
+        if ( this->m_data[i] == a2 ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void region_array::push_back(region *a2)
+{
+    assert(count < MAX_REGIONS_IN_ARRAY);
+
+    if ( this->count >= 30 ) {
+        error("Region list overflow");
+    } else {
+        this->m_data[this->count++] = a2;
+    }
+}
+
+void build_region_list_radius(region_array *arr, region *reg, const vector3d &a3, Float a4, bool a5)
+{
+    if ( reg != nullptr && arr != nullptr && !arr->contains(reg) )
+    {
+        if ( !a5 || reg->is_loaded() ) {
+            arr->push_back(reg);
+        }
+
+        for ( auto i = 0; i < reg->get_num_neighbors(); ++i )
+        {
+            auto *neighbor = reg->get_neighbor(i);
+            if ( !a5 || neighbor->is_loaded() )
+            {
+                assert(neighbor != nullptr);
+
+                auto *aabb_ptr = neighbor->obb;
+                assert(aabb_ptr != nullptr);
+                if ( aabb_ptr->sphere_intersection(a3, a4) ) {
+                    build_region_list_radius(arr, neighbor, a3, a4, a5);
+                }
+            }
+        }
+    }
 }
 
 void cleanup_actor_scene_anim_state_hash() {
@@ -218,7 +281,7 @@ void collide_all_moved_entities(Float a1) {
         scratchpad_stack::save_state(&allocator);
         //sub_A4B0D0();
         collision_trajectory_filter_t filter{};
-        auto *trajectories = moved_entities::get_all_trajectories(a1, &filter);
+        auto *trajectories = moved_entities::get_all_trajectories(a1, filter);
 
         fixed_vector<intraframe_trajectory_t *, 300> v10{};
 
@@ -453,12 +516,12 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
         [[maybe_unused]] auto dword_15684A8 = 0;
 
         auto sub_6A1898 = [](limited_timer_base &a1) -> void {
-            a1.sub_58E230();
+            a1.reset();
         };
 
         auto sub_68D9F1 = [](limited_timer_base &a1) -> double {
             auto result = a1.elapsed();
-            a1.sub_58E230();
+            a1.reset();
             return result;
         };
 
@@ -468,7 +531,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
 
         sub_6A1898(v81);
         std::list<region *> list_regions {};
-        while ( v87 < v85 )
+        for ( ; v87 < v85; ++v87 )
         {
             assert((buffer_index % 4) == 0);
 
@@ -615,7 +678,6 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             }
 
             brew.field_28.clear();
-            ++v87;
         }
 
         dword_1568498 = sub_68D9F1(v81);
@@ -801,7 +863,7 @@ bool world_dynamics_system::un_mash_scene_box_triggers(const resource_key &a1, r
             buffer_index += 4;
             limited_timer v8{};
             auto dword_15684C0 = 0.0;
-            v8.sub_58E230();
+            v8.reset();
             assert(( buffer_index % 4 ) == 0);
 
             auto *box_trigger_instances = slot_ptr->get_box_trigger_instances();
@@ -1168,8 +1230,89 @@ camera *world_dynamics_system::get_chase_cam_ptr(int a2) {
     return bit_cast<camera *>(v1);
 }
 
-void world_dynamics_system::create_water_kill_trigger() {
-    THISCALL(0x0054A430, this);
+void wds_enter_water_trigger_callback(event *, entity_base_vhandle a2, void *)
+{
+    assert(g_world_ptr() != nullptr);
+
+    auto *ptr = a2.get_volatile_ptr();
+    assert(ptr != nullptr);
+
+    assert(ptr->is_a_trigger());
+
+    auto *trig = bit_cast<trigger *>(ptr);
+    auto *ent = trig->get_triggered_ent();
+
+    auto v5 = ent->my_handle.field_0;
+    auto *list = &g_world_ptr()->field_254;
+    auto *m_head = list->m_head;
+    auto *Prev = m_head->_Prev;
+
+    decltype(m_head) (_fastcall *_Buynode)(void *, void *edx, decltype(m_head), decltype(m_head), uint32_t *) = CAST(_Buynode, 0x006B78D0);
+    auto *v8 = _Buynode(list, nullptr, m_head, Prev, &v5);
+
+    void (__fastcall *sub_566E00)(void *, void *edx, uint32_t) = CAST(sub_566E00, 0x00566E00);
+    sub_566E00(list, nullptr, 1u);
+
+    m_head->_Prev = v8;
+    v8->_Prev->_Next = v8;
+}
+
+void world_dynamics_system::create_water_kill_trigger()
+{
+    TRACE("world_dynamics_system::create_water_kill_trigger");
+
+    if constexpr (1)
+    {
+        convex_box a3{};
+        
+        static constexpr auto stru_921BB4 = -3.0f;
+
+        vector3d a2[8] {};
+        a2[0][0] = -9999.0;
+        a2[0][1] = -80.0;
+        a2[0][2] = 9999.0;
+
+        a2[1][0] = 9999.0;
+        a2[1][1] = -80.0;
+        a2[1][2] = 9999.0;
+
+        a2[2][0] = 9999.0;
+        a2[2][1] = -80.0;
+        a2[2][2] = -9999.0;
+
+        a2[3][0] = -9999.0;
+        a2[3][1] = -80.0;
+        a2[3][2] = -9999.0;
+
+        a2[4][0] = -9999.0;
+        a2[4][1] = stru_921BB4;
+        a2[4][2] = 9999.0;
+
+        a2[5][0] = 9999.0;
+        a2[5][1] = stru_921BB4;
+        a2[5][2] = 9999.0;
+
+        a2[6][0] = 9999.0;
+        a2[6][1] = stru_921BB4;
+        a2[6][2] = -9999.0;
+
+        a2[7][0] = -9999.0;
+        a2[7][1] = stru_921BB4;
+        a2[7][2] = -9999.0;
+        a3.set_box_coords(a2);
+
+        string_hash water_id {int(to_hash("WATER_TRIGGER"))};
+        auto *trig = this->ent_mgr.create_and_add_box_trigger(water_id, ZEROVEC, a3);
+        assert(trig != nullptr);
+
+        trig->set_use_any_char(true);
+        trig->set_multiple_entrance(true);
+        trig->set_sees_dead_people(true);
+
+        trig->add_callback(event::ENTER, wds_enter_water_trigger_callback, nullptr, false);
+    } else {
+        THISCALL(0x0054A430, this);
+    }
 }
 
 int world_dynamics_system::add_player(const mString &a2)

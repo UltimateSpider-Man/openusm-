@@ -10,6 +10,7 @@
 
 #include <list>
 
+struct collision_free_state;
 struct nalAnyPose;
 
 template<typename T>
@@ -84,6 +85,8 @@ struct actor : entity {
     ~actor();
 
     void common_construct();
+
+    collision_free_state *get_last_collision_free_state() const;
 
     void set_colgeom(collision_geometry *a2);
 

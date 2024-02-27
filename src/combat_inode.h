@@ -20,6 +20,9 @@ struct combat_inode : info_node {
         combo_system_move::results field_14;
         bool field_90;
 
+        //0x00467020
+        incoming_move();
+
         //0x0048DB20
         incoming_move(const incoming_move &a2);
     };
