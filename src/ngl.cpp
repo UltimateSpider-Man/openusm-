@@ -368,11 +368,13 @@ void nglSetOrthoMatrix(Float nearz, Float farz) {
     nglCurScene()->field_3E4 = true;
 }
 
-void sub_781F80(int a1, int a2, int a3) {
+void sub_781F80(nglVertexBuffer *a1, int a2, uint32_t a3)
+{
     CDECL_CALL(0x00781F80, a1, a2, a3);
 }
 
-bool nglVertexBuffer::createIndexBufferAndWriteData(const void *a2, int size) {
+bool nglVertexBuffer::createIndexBufferAndWriteData(const void *a2, int size)
+{
     bool result = false;
 
     if constexpr (1)
@@ -387,8 +389,11 @@ bool nglVertexBuffer::createIndexBufferAndWriteData(const void *a2, int size) {
         this->m_indexBuffer->lpVtbl->Unlock(this->m_indexBuffer);
 
         result = true;
-    } else {
-        result = (bool) THISCALL(0x007707D0, this, a2, size);
+    }
+    else
+    {
+        bool (__fastcall *func)(void *, void *, const void *, int) = CAST(func, 0x007707D0);
+        result = func(this, nullptr, a2, size);
     }
 
     return result;
@@ -428,7 +433,8 @@ void nglMeshSetSphere(math::VecClass<3, 1> a1, Float a2) {
     CDECL_CALL(0x00775650, a1, a2);
 }
 
-bool nglVertexBuffer::createVertexBuffer(int size, uint32_t flags) {
+bool nglVertexBuffer::createVertexBuffer(int size, uint32_t flags)
+{
     return createIndexOrVertexBuffer(this,
                                      ResourceType::VertexBuffer,
                                      size,
@@ -538,11 +544,12 @@ HRESULT nglVertexBuffer::createIndexOrVertexBuffer(nglVertexBuffer *a1,
                                                             int32_t size,
                                                             uint32_t usage,
                                                             int fvf,
-                                                            D3DPOOL pool) {
+                                                            D3DPOOL pool)
+{
     TRACE("nglVertexBuffer::createIndexOrVertexBuffer");
 
     if (resource_type == ResourceType::VertexBuffer && pool == D3DPOOL_DEFAULT) {
-        sub_781F80(bit_cast<int>(a1), size, usage);
+        sub_781F80(a1, size, usage);
     }
 
     int num;
@@ -1886,7 +1893,7 @@ void nglRebaseSection(uint32_t NewBase, uint32_t OldBase, nglMeshSection *a3)
 
     PTR_OFFSET(idx, a3->BonesIdx);
 
-    PTR_OFFSET(idx, a3->field_3C.pad);
+    PTR_OFFSET(idx, a3->field_3C.m_vertexData);
 
     PTR_OFFSET(idx, a3->m_indices);
 
@@ -2191,7 +2198,7 @@ vector4d sub_411750(const vector4d &a2, const vector4d &a3) {
 
 struct nglMeshFileHeader
 {
-	uint32_t Tag;                 // 'PCM '
+	char Tag[4];                 // 'PCM '
 	uint32_t Version;
 	uint32_t NDirectoryEntries;
 
@@ -2235,7 +2242,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
 
         MeshFile->field_134 = (int) Header;
         MeshFile->field_144 = -1;
-        if (strncmp(bit_cast<char *>(&Header->Tag), "XBXM", 4u) != 0)
+        if (strncmp(Header->Tag, "XBXM", 4u) != 0)
         {
             sp_log("Corrupted mesh file: %s%s%s.\n", nglMeshPath(), FileName.to_string(), ext);
 
@@ -2600,12 +2607,13 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
         }
 
         vector4d a3a;
-
-        vector4d v103;
-        v103[0] = -1.0e32;
         a3a[0] = 1.0e32;
         a3a[1] = 1.0e32;
         a3a[2] = 1.0e32;
+
+        vector4d v103;
+
+        v103[0] = -1.0e32;
         v103[1] = -1.0e32;
         v103[2] = -1.0e32;
         v103[3] = -a3a[3];
@@ -2690,15 +2698,11 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             {
                 if ((v67->Flags & NGLMESH_PROCESSED) == 0)
                 {
-                    auto v79 = v96[0] - v67->field_20.field_0[0];
-                    a3a[0] = v79;
-                    auto v82 = v96[1] - v67->field_20.field_0[1];
-                    a3a[1] = v82;
-                    auto v85 = v96[2] - v67->field_20.field_0[2];
-                    a3a[2] = v85;
-                    auto v88 = v96[3] - v67->field_20.field_0[3];
-                    a3a[3] = v88;
-                    auto v76 = std::sqrt(v85 * v85 + v82 * v82 + v79 * v79) + v67->SphereRadius;
+                    a3a[0] = v96[0] - v67->field_20.field_0[0];
+                    a3a[1] = v96[1] - v67->field_20.field_0[1];
+                    a3a[2] = v96[2] - v67->field_20.field_0[2];
+                    a3a[3] = v96[3] - v67->field_20.field_0[3];
+                    auto v76 = vector3d {a3a[0], a3a[1], a3a[3]}.length() + v67->SphereRadius;
                     if (v69 <= v76) {
                         v69 = v76;
                     }
@@ -2740,7 +2744,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
 
         MeshFile->field_134 = (int) Header;
         MeshFile->field_144 = -1;
-        if (strncmp(bit_cast<char *>(&Header->Tag), "PCM ", 4u) != 0)
+        if (strncmp(Header->Tag, "PCM ", 4u) != 0)
         {
             sp_log("Corrupted mesh file: %s%s%s.\n", nglMeshPath(), FileName.to_string(), ext);
 
@@ -2811,12 +2815,14 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                 }
 
                 LastMaterial = Material;
-                if (Header->field_10 == 0) {
+                if (Header->field_10 == 0)
+                {
                     auto *v17 = bit_cast<tlFixedString *>(Material->field_4);
                     tlHashString a2 = v17->m_hash;
 
                     auto *v18 = nglShaderBank().Search(a2);
-                    if (v18 != nullptr) {
+                    if (v18 != nullptr)
+                    {
                         auto *shader = static_cast<nglShader *>(v18->field_20);
 
                         if (shader->CheckMaterialVersion(Material)) {
@@ -2920,7 +2926,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                         auto func = [](auto *MeshSection)
                         {
                             auto v31 = (uint32_t) (MeshSection->field_3C.Size >> 6);
-                            auto *v32 = (float *) (bit_cast<char *>(MeshSection->field_3C.pad) +
+                            auto *v32 = (float *) (MeshSection->field_3C.m_vertexData +
                                                    32);
                             MeshSection->field_5C = 2;
                             if (v31 > 0)
@@ -2945,7 +2951,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                                 }
                             }
 
-                            MeshSection->field_3C.createVertexBufferAndWriteData((const void *) MeshSection->field_3C.pad,
+                            MeshSection->field_3C.createVertexBufferAndWriteData(MeshSection->field_3C.m_vertexData,
                                                                  MeshSection->field_3C.Size,
                                                                  1028);
 
@@ -3009,7 +3015,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                         }
                         
 
-                        MeshSection->field_3C.createVertexBufferAndWriteData((const void *) MeshSection->field_3C.pad,
+                        MeshSection->field_3C.createVertexBufferAndWriteData(MeshSection->field_3C.m_vertexData,
                                                              MeshSection->field_3C.Size,
                                                              1028);
                     }(MeshSection);
@@ -3073,22 +3079,26 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
         }
 
         vector4d a3a;
-
-        vector4d v103;
-        v103[0] = -1.0e32;
         a3a[0] = 1.0e32;
         a3a[1] = 1.0e32;
         a3a[2] = 1.0e32;
+
+        vector4d v103;
+        v103[0] = -1.0e32;
         v103[1] = -1.0e32;
         v103[2] = -1.0e32;
         v103[3] = -a3a[3];
 
         bool v46 = false;
 
-        for (auto *Mesh = MeshFile->FirstMesh; Mesh != nullptr; Mesh = Mesh->NextMesh) {
-            if ((Mesh->Flags & NGLMESH_PROCESSED) == 0) {
-                if (Mesh->NBones != 0) {
-                    for (int i = 0; i < Mesh->NBones; ++i) {
+        for (auto *Mesh = MeshFile->FirstMesh; Mesh != nullptr; Mesh = Mesh->NextMesh)
+        {
+            if ((Mesh->Flags & NGLMESH_PROCESSED) == 0)
+            {
+                if (Mesh->NBones != 0)
+                {
+                    for (int i = 0; i < Mesh->NBones; ++i)
+                    {
                         Mesh->Bones[i] = sub_4150E0(Mesh->Bones[i]);
                     }
 
@@ -3137,49 +3147,40 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
         if (v46)
         {
             auto v60 = sub_411750(a3a, v103);
-            auto v78 = v60[0] * 0.5f;
-            auto v61 = v78;
-            auto v62 = v60[1];
 
             vector4d v96;
-            v96[0] = v78;
-            auto v81 = v62 * 0.5f;
+            v96[0] = v60[0] * 0.5f;
+            v96[1] = v60[1] * 0.5f;
+            v96[2] = v60[2] * 0.5f;
+            v96[3] = v60[3] * 0.5f;
 
-            v96[1] = v81;
-            auto v84 = v60[2] * 0.5f;
-
-            auto *v67 = MeshFile->FirstMesh;
-
-            auto v87 = v60[3] * 0.5f;
-            auto v68 = v87;
             auto v69 = 0.0f;
-            v96[2] = v84;
-            v96[3] = v87;
+    
+            auto *v67 = MeshFile->FirstMesh;
             for (; v67 != nullptr; v67 = v67->NextMesh)
             {
-                if ((v67->Flags & NGLMESH_PROCESSED) == 0) {
-                    auto v79 = v96[0] - v67->field_20.field_0[0];
-                    a3a[0] = v79;
-                    auto v82 = v96[1] - v67->field_20.field_0[1];
-                    a3a[1] = v82;
-                    auto v85 = v96[2] - v67->field_20.field_0[2];
-                    a3a[2] = v85;
-                    auto v88 = v96[3] - v67->field_20.field_0[3];
-                    a3a[3] = v88;
-                    auto v76 = std::sqrt(v85 * v85 + v82 * v82 + v79 * v79) + v67->SphereRadius;
+                if ((v67->Flags & NGLMESH_PROCESSED) == 0)
+                {
+                    a3a[0] = v96[0] - v67->field_20.field_0[0];
+                    a3a[1] = v96[1] - v67->field_20.field_0[1];
+                    a3a[2] = v96[2] - v67->field_20.field_0[2];
+                    a3a[3] = v96[3] - v67->field_20.field_0[3];
+                    auto v76 = vector3d {a3a[0], a3a[1], a3a[2]}.length() + v67->SphereRadius;
                     if (v69 <= v76) {
                         v69 = v76;
                     }
                 }
             }
 
-            for (auto *Mesh = v67; Mesh != nullptr; Mesh = Mesh->NextMesh) {
-                if ((Mesh->Flags & NGLMESH_PROCESSED) == 0) {
+            for (auto *Mesh = v67; Mesh != nullptr; Mesh = Mesh->NextMesh)
+            {
+                if ((Mesh->Flags & NGLMESH_PROCESSED) == 0)
+                {
                     Mesh->SphereRadius = v69;
-                    Mesh->field_20.field_0[0] = v61;
-                    Mesh->field_20.field_0[1] = v81;
-                    Mesh->field_20.field_0[2] = v84;
-                    Mesh->field_20.field_0[3] = v68;
+                    Mesh->field_20.field_0[0] = v96[0];
+                    Mesh->field_20.field_0[1] = v96[1];
+                    Mesh->field_20.field_0[2] = v96[2];
+                    Mesh->field_20.field_0[3] = v96[3];
                     Mesh->Flags |= NGLMESH_PROCESSED;
                 }
             }
@@ -3190,12 +3191,12 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
     }
     else
     {
-        auto result = static_cast<bool>(CDECL_CALL(0x0076F500, &FileName, MeshFile, ext));
+        bool (*func)(const tlFixedString *, nglMeshFile *, const char *) = CAST(func, 0x0076F500);
+        auto result = func(&FileName, MeshFile, ext);
 
         return result;
     }
 }
-
 #endif
 
 bool nglCanReleaseMeshFile(nglMeshFile *a1) {
@@ -3268,7 +3269,7 @@ nglTexture *nglGetTexture(uint32_t a1)
 
     Vtbl *vtbl = CAST(vtbl, address);
 
-    return vtbl->Find(nglTextureDirectory(), 0, a1);
+    return vtbl->Find(nglTextureDirectory(), nullptr, a1);
 }
 
 nglTexture *nglGetTexture(const tlFixedString &a1)
@@ -4382,7 +4383,15 @@ void nglSetBufferSize(nglBufferType a1, uint32_t a2, bool a3)
 
 nglMesh *nglCloseMesh()
 {
-    return (nglMesh *) CDECL_CALL(0x00772130);
+    TRACE("nglCloseMesh");
+
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        return (nglMesh *) CDECL_CALL(0x00772130);
+    }
 }
 
 void nglListAddCustomNode(void (*a1)(unsigned int *&, void *), void *a2, const nglSortInfo *a3) {
@@ -4731,7 +4740,8 @@ nglMesh *nglGetMesh(const tlHashString &a1, bool a2)
     return v4;
 }
 
-void nglDestroySection(nglMeshSection *a1) {
+void nglDestroySection(nglMeshSection *a1)
+{
     if (a1->m_indexBuffer != nullptr)
     {
         nglVertexBuffer::sub_77B5D0((nglVertexBuffer *) &a1->m_indexBuffer, ResourceType::IndexBuffer);

@@ -16,8 +16,11 @@ gab_database_resource_handler::gab_database_resource_handler(worldly_pack_slot *
     this->field_10 = RESOURCE_KEY_TYPE_GAB_DATABASE;
 }
 
-bool gab_database_resource_handler::handle_resource(worldly_resource_handler::eBehavior a2,
-                                                    resource_location *a3) {
+bool gab_database_resource_handler::_handle_resource(worldly_resource_handler::eBehavior a2,
+                                                    resource_location *a3)
+{
+    TRACE("gab_database_resource_handler::handle_resource");
+
     assert(my_slot->get_resource_directory().get_resource_count(RESOURCE_KEY_TYPE_GAB_DATABASE) ==
            1);
 
@@ -57,6 +60,6 @@ bool gab_database_resource_handler::handle_resource(worldly_resource_handler::eB
 
 void gab_database_resource_handler_patch()
 {
-    FUNC_ADDRESS(address, &gab_database_resource_handler::handle_resource);
+    FUNC_ADDRESS(address, &gab_database_resource_handler::_handle_resource);
     set_vfunc(0x00888B00, address);
 }

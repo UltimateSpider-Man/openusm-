@@ -194,7 +194,7 @@ struct nglVertexBuffer
         IDirect3DIndexBuffer9 *m_indexBuffer;
         struct
         {
-            int pad;
+            char *m_vertexData;
             uint32_t Size;
             IDirect3DVertexBuffer9 *m_vertexBuffer;
         };

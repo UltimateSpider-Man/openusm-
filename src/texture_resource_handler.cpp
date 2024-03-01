@@ -28,10 +28,12 @@ bool texture_resource_handler::_handle(worldly_resource_handler::eBehavior a2, l
 }
 
 void texture_resource_handler::handle_resource_internal(tlresource_location *loc,
-                                                        nglTextureFileFormat a3) {
+                                                        nglTextureFileFormat a3)
+{
     TRACE("texture_resource_handler::handle_resource_internal", loc->name.to_string());
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         assert(loc != nullptr);
 
         auto *v4 = loc->name.to_string();
@@ -123,9 +125,12 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
 {
     TRACE("texture_resource_handler::handle_resource");
 
-    if constexpr (1) {
-        if (behavior == UNLOAD) {
-            if (tlres_loc->get_type() != 15) {
+    if constexpr (1)
+    {
+        if (behavior == UNLOAD)
+        {
+            if (tlres_loc->get_type() != 15)
+            {
                 auto *tex = bit_cast<nglTexture *>(tlres_loc->field_8);
                 if (tex != nullptr) {
                     if ((tex->field_34 & 2) == 0) {
@@ -140,7 +145,9 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
 
             ++this->field_C;
 
-        } else {
+        }
+        else
+        {
             auto v4 = this->field_14;
             if (v4 || tlres_loc->get_type() != 14) {
                 if (v4 == 1 && tlres_loc->get_type() == TLRESOURCE_TYPE_TEXTURE) {
@@ -161,7 +168,9 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
                 }
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0056BB00, this, behavior, tlres_loc);
     }
 

@@ -243,7 +243,7 @@ void PolytubeCustomVertex::Iterator::Write(
                             float field_C[2];
                             int field_14;
                         } *v1;
-                        return bit_cast<decltype(v1)>(a1->field_4->field_4C + a1->field_4->field_3C.pad);
+                        return bit_cast<decltype(v1)>(a1->field_4->field_4C + int(a1->field_4->field_3C.m_vertexData));
                     };
 
                     auto *v5 = sub_681610(self->field_4) + self->field_8;

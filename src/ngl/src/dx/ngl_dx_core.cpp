@@ -72,7 +72,8 @@ void nglListInit()
 {
     TRACE("nglListInit");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         nglFrameVBlankCount() = nglVBlankCount();
         nglPerfInfo().field_38 = query_perf_counter();
         nglListWorkPos() = CAST(nglListWorkPos(), nglListWork());
@@ -93,18 +94,19 @@ void nglListInit()
         nglCurScene() = nullptr;
         nglListBeginScene(nglSceneParamType {0});
         nglSceneDumpStart();
-        auto *v3 = (int16_t *)&nglScratchBuffer().field_0[0].pad;
+        auto *v3 = nglScratchBuffer().field_0[0].m_vertexData;
         auto v0 = nglScratchBuffer().field_44;
         nglScratchBuffer().field_4C = nglScratchBuffer().field_0[v0];
 
         nglScratchBuffer().field_48 = (IDirect3DIndexBuffer9 *)nglScratchBuffer().field_18[v0];
         if ( nglScratchBuffer().field_4C.m_vertexBuffer != nullptr ) {
             nglScratchBuffer().field_4C.m_vertexBuffer->lpVtbl->Lock(nglScratchBuffer().field_4C.m_vertexBuffer, 0, 0, (void **)&v3, D3DLOCK_DISCARD);
-            nglScratchBuffer().field_4C.pad = (int)v3;
+            nglScratchBuffer().field_4C.m_vertexData = v3;
         }
 
         auto *v2 = nglScratchBuffer().field_48;
         if ( v2 != nullptr ) {
+            int16_t *v3 = nullptr;
             v2->lpVtbl->Lock(v2, 0, 0, (void **)&v3, 0);
             nglScratchBuffer().field_20 = v3;
         }
