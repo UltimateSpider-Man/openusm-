@@ -97,12 +97,20 @@ entity_base *parse_entity_mash(_std::vector<entity *> *ent_vec_ptr,
         entity_base *ent_ptr = nullptr;
 
 #if 1
-        auto v6 = (bool) CDECL_CALL(0x00509D70, &ent_ptr, a3, a7,
-                                            (unsigned int *) ent_v_table_lookup(),
-                                            (unsigned int *) ent_size_lookup(),
-                                            0x1Cu,
-                                            4u,
-                                            a8);
+        bool (* func)(entity_base **,
+                        void *,
+                        const string_hash *,
+                        uint32_t *,
+                        uint32_t *,
+                        unsigned int ,
+                        unsigned int ,
+                        void *) = CAST(func, 0x00509D70);
+        auto v6 = func(&ent_ptr, a3, a7,
+                        (unsigned int *) ent_v_table_lookup(),
+                        (unsigned int *) ent_size_lookup(),
+                        0x1Cu,
+                        4u,
+                        a8);
 #else
         auto v6 = parse_generic_object_mash(ent_ptr,
                                             a3,
@@ -116,9 +124,9 @@ entity_base *parse_entity_mash(_std::vector<entity *> *ent_vec_ptr,
         assert(ent_ptr != nullptr);
 
         if (v6) {
-            ent_ptr->field_8 |= 0x400;
+            ent_ptr->field_8 |= 0x400u;
         } else {
-            ent_ptr->field_8 &= 0xFFFFFBFF;
+            ent_ptr->field_8 &= ~0x400u;
         }
 
         return ent_ptr;
@@ -129,8 +137,8 @@ entity_base *parse_entity_mash(_std::vector<entity *> *ent_vec_ptr,
     }
 }
 
-void entity_mash_patch() {
-
+void entity_mash_patch()
+{
     if constexpr (1)
     {
         REDIRECT(0x0055A8D9, parse_entity_mash);

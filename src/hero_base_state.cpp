@@ -66,9 +66,10 @@ state_trans_action hero_base_state::check_transition(Float a3)
         if (v21 != subdued_state::default_id) {
             if (v7->field_26) {
                 v8 = this->get_actor();
-                if (v8->damage_ifc()) {
+                if (v8->damage_ifc())
+                {
                     v9 = this->get_actor();
-                    if (v9->damage_ifc()->field_1FC[0] <= 0.0f) {
+                    if (v9->damage_ifc()->field_1FC.field_0[0] <= 0.0f) {
                         result = state_trans_action {0, subdued_state::default_id, TRANS_TOTAL_MSGS, nullptr};
                         return result;
                     }

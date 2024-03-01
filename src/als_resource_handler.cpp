@@ -13,7 +13,9 @@
 
 VALIDATE_SIZE(als_resource_handler, 0x14);
 
-als_resource_handler::als_resource_handler(worldly_pack_slot *a2) {
+als_resource_handler::als_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x008889F8;
     this->my_slot = a2;
     this->field_10 = RESOURCE_KEY_TYPE_ALS_FILE;
 }
@@ -26,14 +28,12 @@ bool als_resource_handler::_handle(worldly_resource_handler::eBehavior a2,
     return base_engine_resource_handler::_handle(a2, a3);
 }
 
-static constexpr auto handle_resource_hook = 1;
-
 bool als_resource_handler::_handle_resource(worldly_resource_handler::eBehavior a2,
                                            resource_location *a3)
 {
     TRACE("als_resource_handler::handle_resource", a3->field_0.get_platform_string(g_platform()).c_str());
 
-    if constexpr (handle_resource_hook)
+    if constexpr (1)
     {
         auto &v3 = this->my_slot->get_resource_directory();
         auto *resource = v3.get_resource(a3, nullptr);
@@ -78,7 +78,6 @@ bool als_resource_handler::_handle_resource(worldly_resource_handler::eBehavior 
 
 void als_resource_handler_patch()
 {
-    if constexpr (handle_resource_hook)
     {
         FUNC_ADDRESS(address, &als_resource_handler::_handle_resource);
         set_vfunc(0x00888A04, address);

@@ -13,7 +13,9 @@
 
 VALIDATE_SIZE(texture_resource_handler, 0x18);
 
-texture_resource_handler::texture_resource_handler(worldly_pack_slot *a2) {
+texture_resource_handler::texture_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888A28;
     this->my_slot = a2;
     this->field_10 = TLRESOURCE_TYPE_TEXTURE;
 }

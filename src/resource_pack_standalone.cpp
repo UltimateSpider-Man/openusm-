@@ -20,9 +20,9 @@
 VALIDATE_OFFSET(resource_pack_standalone, res_dir_mash, 0x38);
 VALIDATE_OFFSET(resource_pack_standalone, base_offset, 0x3C);
 
-resource_pack_standalone::resource_pack_standalone() : m_header() {
+resource_pack_standalone::resource_pack_standalone() : m_header()
+{
     this->m_vtbl = 0x00889928;
-    this->name.sub_41FFA0();
 
     auto *header = &this->m_header;
     header->field_0 = {};

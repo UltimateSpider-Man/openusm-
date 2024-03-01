@@ -499,7 +499,8 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
 {
     TRACE("actor::un_mash");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         auto &v4 = a5;
         auto &v5 = a3;
         entity::un_mash(a3, a4, a5);
@@ -782,9 +783,9 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
                 rebase(v4->field_0, 4u);
 
                 this->m_damage_interface = (damage_interface *)v4->field_0;
-                v4->field_0 += 572;
-                this->m_damage_interface->base.m_vtbl = ifc_v_table_lookup[1];
-                (*(void (__stdcall **)(generic_mash_header *, actor *, damage_interface *, generic_mash_data_ptrs *))(this->m_damage_interface->base.m_vtbl + 28))(
+                v4->field_0 += sizeof(damage_interface);
+                this->m_damage_interface->m_vtbl = ifc_v_table_lookup[1];
+                this->m_damage_interface->un_mash(
                     a3,
                     this,
                     this->m_damage_interface,
@@ -1004,8 +1005,14 @@ damage_interface *actor::damage_ifc() {
     return func(this);
 }
 
-void actor::create_damage_ifc() {
-    this->m_damage_interface = new damage_interface{this};
+void actor::create_damage_ifc()
+{
+    TRACE("actor::create_damage_ifc");
+
+    assert(m_damage_interface == nullptr);
+
+    auto *mem = mem_alloc(sizeof(damage_interface));
+    this->m_damage_interface = new (mem) damage_interface {this};
 }
 
 double actor::get_colgeom_radius() {
@@ -1293,6 +1300,11 @@ void setup_hero_capsule(actor *act) {
 
 void actor_patch()
 {
+    {
+        FUNC_ADDRESS(address, &actor::create_damage_ifc);
+        SET_JUMP(0x004E2670, address);
+    }
+
     {
         SET_JUMP(0x004B8D00, actor_get_render_color);
     }

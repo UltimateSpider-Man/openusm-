@@ -136,7 +136,10 @@ void polytube::set_max_length(Float a2) {
     this->max_length = a2;
 }
 
-void polytube::frame_advance_all_polytubes(Float a1) {
+void polytube::frame_advance_all_polytubes(Float a1)
+{
+    TRACE("polytube::frame_advance_all_polytubes");
+
     CDECL_CALL(0x0059B490, a1);
 }
 
@@ -278,6 +281,8 @@ void polytube_patch()
         FUNC_ADDRESS(address, &polytube::_render);
         //set_vfunc(0x0088F46C, address);
     }
+
+    REDIRECT(0x005584E8, polytube::frame_advance_all_polytubes);
 
     {
         FUNC_ADDRESS(address, &PolytubeCustomVertex::Iterator::Write);

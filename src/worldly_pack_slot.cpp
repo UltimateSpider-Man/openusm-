@@ -8,7 +8,6 @@
 #include "box_trigger_resource_handler.h"
 #include "common.h"
 #include "cut_scene_resource_handler.h"
-#include "entity_resource_handler.h"
 #include "func_wrapper.h"
 #include "gab_database_resource_handler.h"
 #include "glass_house_resource_handler.h"
@@ -37,8 +36,29 @@
 
 VALIDATE_SIZE(worldly_pack_slot, 0xFC);
 
-worldly_pack_slot::worldly_pack_slot() : resource_pack_slot() {
-    if constexpr (1) {
+worldly_pack_slot::worldly_pack_slot()
+{
+    TRACE("worldly_pack_slot::worldly_pack_slot");
+    if constexpr (1)
+    {
+        {
+            this->m_vtbl = CAST(m_vtbl, 0x008899D0);
+
+            auto replace_vfunc = [](auto &vfunc, auto func)
+            {
+                FUNC_ADDRESS(address, func);
+                vfunc = CAST(vfunc, address);
+            };
+
+            replace_vfunc(this->m_vtbl->on_load, &worldly_pack_slot::_on_load);
+
+            replace_vfunc(this->m_vtbl->on_unload, &worldly_pack_slot::_on_unload);
+
+            replace_vfunc(this->m_vtbl->clear_slot, &worldly_pack_slot::_clear_slot);
+
+            replace_vfunc(this->m_vtbl->clear_pack, &worldly_pack_slot::_clear_pack);
+        }
+
         auto *mem = mem_alloc(sizeof(skeleton_resource_handler));
         this->m_handlers[0] = new (mem) skeleton_resource_handler{this};
 
@@ -103,26 +123,32 @@ worldly_pack_slot::worldly_pack_slot() : resource_pack_slot() {
         mem = mem_alloc(sizeof(sound_alias_database_resource_handler));
         this->m_handlers[20] = new (mem) sound_alias_database_resource_handler{this};
 
-        this->clear_slot();
+        this->_clear_slot();
     } else {
         THISCALL(0x00532220, this);
     }
 }
 
-void worldly_pack_slot::clear_slot() {
-    if constexpr (1) {
+void worldly_pack_slot::_clear_slot()
+{
+    TRACE("worldly_pack_slot::clear_slot");
+
+    if constexpr (1)
+    {
         resource_pack_slot::clear_slot();
 
-        this->clear_pack();
+        this->_clear_pack();
     } else {
         THISCALL(0x0050ECE0, this);
     }
 }
 
-worldly_pack_slot::~worldly_pack_slot() {
-    if constexpr (1) {
-        this->clear_slot();
-        this->clear_pack();
+worldly_pack_slot::~worldly_pack_slot()
+{
+    if constexpr (1)
+    {
+        this->_clear_slot();
+        this->_clear_pack();
         for (auto &handler : m_handlers)
         {
             if (handler != nullptr) {
@@ -141,14 +167,14 @@ bool worldly_pack_slot::_on_load(limited_timer *a2)
 
     if constexpr (1)
     {
-        if (a2 != nullptr) {
+        if (a2 != nullptr)
+        {
             if (a2->elapsed() >= a2->field_4) {
                 return true;
             }
         }
 
-        if (this->field_94.is_done())
-        {
+        if (this->field_94.is_done()) {
             return false;
         }
 
@@ -156,10 +182,11 @@ bool worldly_pack_slot::_on_load(limited_timer *a2)
             this->field_94.start();
         }
 
+        sp_log("worldly_pack_slot::on_load(): end");
+
         for (auto &handler : this->m_handlers)
         {
             if (handler->handle(worldly_resource_handler::LOAD, a2)) {
-                //sp_log("worldly_pack_slot::on_load(): end");
                 return true;
             }
         }
@@ -171,8 +198,10 @@ bool worldly_pack_slot::_on_load(limited_timer *a2)
 
         return false;
     }
-    else {
-        return (bool) THISCALL(0x0050ED20, this, a2);
+    else
+    {
+        bool (__fastcall *func)(void *, void *, limited_timer *) = CAST(func, 0x0050ED20);
+        return func(this, nullptr, a2);
     }
 }
 
@@ -254,12 +283,17 @@ bool worldly_pack_slot::_on_unload(limited_timer *a2)
         result = false;
 
         return result;
-    } else {
+    }
+    else
+    {
         return (bool) THISCALL(0x0052AC90, this, a2);
     }
 }
 
-void worldly_pack_slot::clear_pack() {
+void worldly_pack_slot::_clear_pack()
+{
+    TRACE("worldly_pack_slot::clear_pack");
+
     resource_pack_slot::clear_pack();
 
     this->field_94.clear();
@@ -284,7 +318,97 @@ _std::vector<box_trigger *> *worldly_pack_slot::get_box_trigger_instances()
     return this->box_trigger_instances;
 }
 
-void worldly_pack_slot_patch() {
+VALIDATE_SIZE(entity_resource_handler, 0x10);
+
+entity_resource_handler::entity_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888A70;
+    this->my_slot = a2;
+}
+
+int entity_resource_handler::_get_num_resources()
+{
+    if (this->my_slot->entity_instances != nullptr) {
+        return this->my_slot->entity_instances->size();
+    }
+
+    return 0;
+}
+
+bool entity_resource_handler::_handle_resource(worldly_resource_handler::eBehavior behavior)
+{
+    TRACE("entity_resource_handler::handle_resource");
+
+    if constexpr (1)
+    {
+        assert(behavior == UNLOAD);
+
+        bool result;
+
+        auto *entity_instances = this->my_slot->entity_instances;
+        auto *entities = g_world_ptr()->ent_mgr.get_entities();
+
+        if (entities->get_vector_index(entity_instances) > 0)
+        {
+            assert(my_slot->entity_instances != nullptr);
+
+            auto &v4 = this->my_slot->entity_instances->at(this->field_C);
+            if (v4 != nullptr)
+            {
+                if (!v4->is_conglom_member())
+                {
+                    g_world_ptr()->ent_mgr.remove_entity_from_misc_lists(v4);
+                    entity_handle_manager::check_world_lists() = false;
+                    if (v4->is_dynamic())
+                    {
+                        void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(v4->m_vtbl, 0x0));
+                        finalize(v4, nullptr, true);
+                    }
+                    else
+                    {
+                        void (__fastcall *release_mem)(void *) = CAST(release_mem, get_vfunc(v4->m_vtbl, 0x10));
+                        release_mem(v4);
+                    }
+
+                    v4 = nullptr;
+                    entity_handle_manager::check_world_lists() = true;
+                }
+            }
+
+            ++this->field_C;
+            result = false;
+        }
+        else
+        {
+            this->field_C = this->get_num_resources();
+            result = true;
+        }
+
+        return result;
+    }
+    else
+    {
+        bool (__fastcall *func)(void *, void *, worldly_resource_handler::eBehavior) = CAST(func, 0x0056BFA0);
+        return func(this, nullptr, behavior);
+    }
+}
+
+void entity_resource_handler::_post_handle_resources(worldly_resource_handler::eBehavior)
+{
+    if (this->my_slot->entity_instances != nullptr) {
+        g_world_ptr()->ent_mgr.entities.sub_572FB0(this->my_slot->entity_instances);
+        this->my_slot->entity_instances = nullptr;
+    }
+}
+
+void worldly_pack_slot_patch()
+{
+    {
+        FUNC_ADDRESS(address, &entity_resource_handler::_handle_resource);
+        set_vfunc(0x00888A7C, address);
+    }
+
+#if 0
     {
         FUNC_ADDRESS(address, &worldly_pack_slot::_on_load);
         set_vfunc(0x008899D0, address);
@@ -294,4 +418,5 @@ void worldly_pack_slot_patch() {
         FUNC_ADDRESS(address, &worldly_pack_slot::_on_unload);
         set_vfunc(0x008899D4, address);
     }
+#endif
 }

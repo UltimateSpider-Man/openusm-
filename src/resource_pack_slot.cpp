@@ -26,27 +26,41 @@ VALIDATE_SIZE(resource_pack_slot, 0x94);
 
 Var<resource_pack_slot *> resource_pack_slot::current_alloc_slot{0x0095C820};
 
-resource_pack_slot::resource_pack_slot() {
-    if constexpr (1) {
-        this->pack_directory = {};
+resource_pack_slot::resource_pack_slot()
+{
+    TRACE("resource_pack_slot::resource_pack_slot");
 
-        this->field_78 = {};
+    if constexpr (1)
+    {
+        {
+            this->m_vtbl = CAST(m_vtbl, 0x008899BC);
 
-        this->field_84 = 0;
+            auto replace_vfunc = [](auto &vfunc, auto func)
+            {
+                FUNC_ADDRESS(address, func);
+                vfunc = CAST(vfunc, address);
+            };
+
+            replace_vfunc(this->m_vtbl->on_load, &resource_pack_slot::on_load);
+
+            replace_vfunc(this->m_vtbl->on_unload, &resource_pack_slot::on_unload);
+
+            replace_vfunc(this->m_vtbl->clear_slot, &resource_pack_slot::clear_slot);
+
+            replace_vfunc(this->m_vtbl->clear_pack, &resource_pack_slot::clear_pack);
+        }
+
         this->m_slot_state = SLOT_STATE_EMPTY;
-        this->slot_size = 0;
-        this->header_mem_addr = nullptr;
-        this->m_callback = nullptr;
-        this->clear_pack();
+        this->clear_slot();
     } else {
         THISCALL(0x00531C70, this);
     }
 }
 
-resource_pack_slot::~resource_pack_slot() {
+resource_pack_slot::~resource_pack_slot()
+{
     if constexpr (1) {
-        clear_slot();
-
+        this->clear_slot();
     } else {
         THISCALL(0x00531CF0, this);
     }
@@ -79,7 +93,10 @@ uint8_t *resource_pack_slot::get_resource(const resource_key &resource_id,
     return res_dir.get_resource(resource_id, a3, a4);
 }
 
-void resource_pack_slot::clear_slot() {
+void resource_pack_slot::clear_slot()
+{
+    TRACE("resource_pack_slot::clear_slot");
+
     this->slot_size = 0;
     this->header_mem_addr = nullptr;
     this->m_callback = nullptr;
@@ -87,8 +104,11 @@ void resource_pack_slot::clear_slot() {
     this->clear_pack();
 }
 
-void resource_pack_slot::clear_pack() {
-    if constexpr (0)
+void resource_pack_slot::clear_pack()
+{
+    TRACE("resource_pack_slot::clear_pack");
+
+    if constexpr (1)
     {
         assert(m_slot_state == SLOT_STATE_EMPTY);
 
@@ -103,8 +123,7 @@ void resource_pack_slot::clear_pack() {
     }
     else
     {
-        void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x10));
-        func(this);
+        this->m_vtbl->clear_pack(this);
     }
 }
 
@@ -180,7 +199,10 @@ bool resource_pack_slot::is_empty() {
     return m_slot_state == SLOT_STATE_EMPTY;
 }
 
-bool resource_pack_slot::try_callback(callback_enum a2, limited_timer *a3) {
+bool resource_pack_slot::try_callback(callback_enum a2, limited_timer *a3)
+{
+    TRACE("resource_pack_slot::try_callback");
+
     if constexpr (1)
     {
         auto *cb = this->m_callback;
@@ -191,29 +213,35 @@ bool resource_pack_slot::try_callback(callback_enum a2, limited_timer *a3) {
         bool result = cb(a2, &this->field_88->streamer, this, a3);
         return result;
 
-    } else {
+    }
+    else
+    {
         return (bool) THISCALL(0x0050E210, this, a2, a3);
     }
 }
 
-bool resource_pack_slot::on_load(limited_timer *a1) {
-    if constexpr (0)
+bool resource_pack_slot::on_load(limited_timer *a1)
+{
+    TRACE("resource_pack_slot::on_load");
+
+    if constexpr (1)
     {
         return (a1 != nullptr && a1->elapsed() >= a1->field_4);
     }
     else
     {
-        bool (__fastcall *func)(resource_pack_slot *, int, limited_timer *) =
-            CAST(func, get_vfunc(m_vtbl, 0x0));
-        return func(this, 0, a1);
+        return this->m_vtbl->on_load(this, nullptr, a1);
     }
 }
 
 bool resource_pack_slot::on_unload([[maybe_unused]] limited_timer *a2)
 {
-    if constexpr (0)
+    TRACE("resource_pack_slot::on_unload");
+
+    if constexpr (1)
     {
-        if (!this->field_80.is_done()) {
+        if (!this->field_80.is_done())
+        {
             if (!this->field_80.is_started()) {
                 this->field_80.start();
             }
@@ -229,13 +257,12 @@ bool resource_pack_slot::on_unload([[maybe_unused]] limited_timer *a2)
     }
     else
     {
-        bool (__fastcall *func)(void *, int, limited_timer *) = 
-            CAST(func, get_vfunc(m_vtbl, 0x4));
-        return func(this, 0, a2);
+        return this->m_vtbl->on_unload(this, nullptr, a2);
     }
 }
 
-bool resource_pack_slot::slot_allocators_empty() {
+bool resource_pack_slot::slot_allocators_empty()
+{
     auto *v1 = &this->pack_directory;
     auto *v2 = v1->get_resource_directory();
     return v2->sub_9C2EE0();
@@ -259,7 +286,7 @@ void resource_pack_slot::frame_advance([[maybe_unused]] Float a2, limited_timer 
             auto *__old_context = resource_manager::push_resource_context(resource_context);
 
             {
-                if (!this->on_load(a3) && !this->try_callback(CALLBACK_CONSTRUCT, a3))
+                if (!this->m_vtbl->on_load(this, nullptr, a3) && !this->try_callback(CALLBACK_CONSTRUCT, a3))
                 {
                     assert(this->slot_allocators_empty());
 
@@ -276,7 +303,7 @@ void resource_pack_slot::frame_advance([[maybe_unused]] Float a2, limited_timer 
             auto *__old_context = resource_manager::push_resource_context(this);
 
             {
-                if (!this->try_callback(CALLBACK_DESTRUCT, a3) && !this->on_unload(a3))
+                if (!this->try_callback(CALLBACK_DESTRUCT, a3) && !this->m_vtbl->on_unload(this, nullptr, a3))
                 {
                     this->m_slot_state = SLOT_STATE_EMPTY;
                 }

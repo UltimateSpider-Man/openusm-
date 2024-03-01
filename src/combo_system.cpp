@@ -16,7 +16,6 @@ void combo_system_chain::telegraph_info::_unmash(mash_info_struct *a1, void *a2)
     ;
 }
 
-
 int combo_system_chain::telegraph_info::get_mash_sizeof()
 {
     int (__fastcall *func)(combo_system_chain::telegraph_info *) = CAST(func, get_vfunc(m_vtbl, 0x18));
@@ -46,13 +45,20 @@ void combo_system::unmash(mash_info_struct *a1, void *a3)
 {
     TRACE("combo_system::unmash");
 
-    a1->unmash_class_in_place(this->field_0, this);
+    if constexpr (0)
+    {
+        a1->unmash_class_in_place(this->field_0, this);
 
-    a1->unmash_class_in_place(this->field_14, this);
+        a1->unmash_class_in_place(this->field_14, this);
 
-    a1->unmash_class_in_place(this->field_28, this);
+        a1->unmash_class_in_place(this->field_28, this);
 
-    a1->unmash_class_in_place(this->field_3C, this);
+        a1->unmash_class_in_place(this->field_3C, this);
+    }
+    else
+    {
+        THISCALL(0x00489720, this, a1, a3);
+    }
 }
 
 void combo_system_patch()
@@ -60,5 +66,10 @@ void combo_system_patch()
     {
         FUNC_ADDRESS(address, &combo_system_chain::telegraph_info::_unmash);
         set_vfunc(0x008737C4, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &combo_system::unmash);
+        REDIRECT(0x006D7265, address);
     }
 }

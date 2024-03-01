@@ -158,8 +158,22 @@ float entity_base::sub_57CB80() {
     return std::asin(v3);
 }
 
-entity_base::~entity_base() {
-    THISCALL(0x004F8FA0, this);
+entity_base::~entity_base()
+{
+    if constexpr (0)
+    {
+        assert(is_dynamic());
+        this->common_destruct();
+        if ( !this->is_conglom_member() && this->my_rel_po != nullptr )
+        {
+            mem_dealloc(this->my_rel_po, sizeof(po));
+            this->my_rel_po = nullptr;
+        }
+    }
+    else
+    {
+        THISCALL(0x004F8FA0, this);
+    }
 }
 
 int entity_base::get_entity_size() {
@@ -180,10 +194,11 @@ void entity_base::release_mem()
     {
         assert(!is_dynamic());
 
-        auto v3 = ((this->field_8 & 0x400) != 0);
+        auto v3 = this->is_ext_flagged(0x400);;
         auto v2 = this->is_mashed_member();
         this->common_destruct();
-        if (!v2) {
+        if (!v2)
+        {
             if (v3) {
                 mem_freealign(this);
             } else {

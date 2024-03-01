@@ -132,7 +132,7 @@ void HealthVariable::setValue(const mString &arg0, const mString &a1) {
                         v7->field_1FC.sub_48BFB0(v22);
 
                         auto *v8 = v35->damage_ifc();
-                        int v33 = v8->field_1FC[0];
+                        int v33 = v8->field_1FC.field_0[0];
 
                         auto *v9 = a1.c_str();
                         mString v32{0, "%s's current hit points are now %d\n", v9, v33};

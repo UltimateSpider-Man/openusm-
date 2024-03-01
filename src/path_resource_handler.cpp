@@ -12,7 +12,9 @@
 
 VALIDATE_SIZE(path_resource_handler, 0x14);
 
-path_resource_handler::path_resource_handler(worldly_pack_slot *a2) {
+path_resource_handler::path_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888AA4;
     this->my_slot = a2;
     this->field_10 = RESOURCE_KEY_TYPE_PATH;
 }

@@ -7,8 +7,10 @@
 #include "entity_base_vhandle.h"
 #include "fixedstring.h"
 #include "func_wrapper.h"
+#include "fx_cache.h"
 #include "log.h"
 #include "oldmath_po.h"
+#include "osassert.h"
 #include "parse_generic_mash.h"
 #include "resource_allocation_pool.h"
 #include "resource_location.h"
@@ -24,8 +26,9 @@ template<>
 void mashable_vector<resource_directory *>::custom_un_mash([[maybe_unused]] generic_mash_header *a2,
                                                            [[maybe_unused]] void *a3,
                                                            generic_mash_data_ptrs *a4,
-                                                           [[maybe_unused]] void *a5) {
-    //sp_log("mashable_vector<resource_directory *>::custom_un_mash():");
+                                                           [[maybe_unused]] void *a5)
+{
+    TRACE("mashable_vector<resource_directory *>::custom_un_mash");
 
     assert(from_mash());
 
@@ -54,26 +57,28 @@ void mashable_vector<resource_directory *>::custom_un_mash([[maybe_unused]] gene
 
 //0x004C72E0
 template<>
-void mashable_vector<dsg_region_container>::custom_un_mash(generic_mash_header *a2,
+void mashable_vector<dsg_region_container>::custom_un_mash(generic_mash_header *header,
                                                            [[maybe_unused]] void *a3,
                                                            generic_mash_data_ptrs *a4,
-                                                           [[maybe_unused]] void *a5) {
-    if (this->m_shared) {
-        sp_log("dsg_region_container's cannot be shared!");
-        assert(0);
-    } else {
-        rebase(a4->field_0, 4);
-
-        rebase(a4->field_0, 4);
-
-        this->m_data = a4->get<dsg_region_container>(this->m_size);
-        
-        for (auto i = 0u; i < this->m_size; ++i) {
-            this->m_data[i].un_mash(a2, &this->m_data[i], a4);
-        }
-
-        rebase(a4->field_0, 4);
+                                                           [[maybe_unused]] void *a5)
+{
+    if (this->is_shared()) {
+        error("dsg_region_container's cannot be shared!");
     }
+
+    rebase(a4->field_0, 4);
+
+    rebase(a4->field_0, 4);
+
+    this->m_data = a4->get<dsg_region_container>(this->m_size);
+    
+    for (auto i = 0u; i < this->m_size; ++i)
+    {
+        assert(((int)header) % 4 == 0);
+        this->m_data[i].un_mash(header, &this->m_data[i], a4);
+    }
+
+    rebase(a4->field_0, 4);
 }
 
 //0x004C7380
@@ -81,26 +86,23 @@ template<>
 void mashable_vector<dsg_box_container>::custom_un_mash(generic_mash_header *a2,
                                                         [[maybe_unused]] void *a3,
                                                         generic_mash_data_ptrs *a4,
-                                                        [[maybe_unused]] void *a5) {
-    if (this->m_shared) {
-        sp_log("dsg_box_container's cannot be shared!");
-        assert(0);
-    } else {
-
-        rebase(a4->field_0, 4);
-
-        rebase(a4->field_0, 4);
-
-        this->m_data = a4->get<dsg_box_container>(this->m_size);
-
-        if (this->m_size != 0) {
-            for (auto i = 0; i < this->m_size; ++i) {
-                this->m_data[i].un_mash(a2, &this->m_data[i], a4);
-            }
-        }
-
-        rebase(a4->field_0, 4);
+                                                        [[maybe_unused]] void *a5)
+{
+    if (this->is_shared()) {
+        error("dsg_box_container's cannot be shared!");
     }
+
+    rebase(a4->field_0, 4);
+
+    rebase(a4->field_0, 4);
+
+    this->m_data = a4->get<dsg_box_container>(this->m_size);
+
+    for (auto i = 0; i < this->m_size; ++i) {
+        this->m_data[i].un_mash(a2, &this->m_data[i], a4);
+    }
+
+    rebase(a4->field_0, 4);
 }
 
 //0x004C7DC0
@@ -308,7 +310,8 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
                                                                [[maybe_unused]] void *a3,
                                                                generic_mash_data_ptrs *a4,
                                                                [[maybe_unused]] void *a5) {
-    if (this->is_shared()) {
+    if (this->is_shared())
+    {
         rebase(a4->field_4, 4u);
 
         auto offset = *a4->get_from_shared<uint32_t>();
@@ -500,10 +503,10 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
 
         auto v8 = (int)a4->field_4;
         auto v9 = (int *)(v8 + 4);
-        auto a4a = *(DWORD *)v8;
+        auto offset = *(DWORD *)v8;
         auto v10 = (uint8_t *)(v8 + 16);
         a4->field_4 = (uint8_t *)(v8 + 4);
-        auto v11 = *(DWORD *)(v8 + 4);
+        auto offset1 = *(DWORD *)(v8 + 4);
         auto v12 = 8 - (((BYTE)v8 + 16) & 7);
         a4->field_4 = v10;
         if ( v12 < 8 )
@@ -517,10 +520,10 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
 
         if ( v9[2] )
         {
-            a4->field_0 += a4a;
-            a4->field_4 += v11 - 0x24 * this->m_size;
+            a4->field_0 += offset;
+            a4->field_4 += offset1 - sizeof(value_t) * this->m_size;
         }
-        else if ( this->m_size != 0 )
+        else
         {
             for ( auto i {0u}; i < this->m_size; ++i )
             {
@@ -540,10 +543,8 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
 
         this->m_data = a4->get<anim_info>(this->m_size);
 
-        if ( this->m_size != 0 ) {
-            for ( auto i {0u}; i < this->m_size; ++i ) {
-                this->m_data[i].un_mash(a2, &this->m_data[i], a4);
-            }
+        for ( auto i {0u}; i < this->m_size; ++i ) {
+            this->m_data[i].un_mash(a2, &this->m_data[i], a4);
         }
 
         rebase(a4->field_0, 4);
@@ -551,20 +552,19 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
 }
 
 template<>
-void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2, void *, generic_mash_data_ptrs *a4, void *)
+void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *header, void *, generic_mash_data_ptrs *a4, void *)
 {
-    if ( this->m_shared )
+    if ( this->is_shared() )
     {
         rebase(a4->field_4, 8);
 
         auto v8 = (int)a4->field_4;
-        auto v24 = *(DWORD *)v8;
+        auto offset = *(DWORD *)v8;
         auto v9 = (int *)(v8 + 4);
         auto v10 = (uint8_t *)(v8 + 16);
         a4->field_4 = (uint8_t *)(v8 + 4);
-        auto v11 = *(DWORD *)(v8 + 4);
+        auto offset1 = *(DWORD *)(v8 + 4);
         auto v12 = 8 - (((BYTE)v8 + 16) & 7);
-        auto a4a = v9;
         a4->field_4 = v10;
         if ( v12 < 8 )
         {
@@ -577,17 +577,15 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2
 
         if ( v9[2] )
         {
-            a4->field_0 += v24;
-            a4->field_4 += v11 - 16 * this->m_size;
+            a4->field_0 += offset;
+            a4->field_4 += offset1 - sizeof(value_t) * this->m_size;
         }
         else
         {
-            if ( this->m_size ) {
-                for ( auto i = 0; i < this->m_size; ++i ) {
-                    this->m_data[i].field_8.custom_un_mash(a2, &this->m_data[i].field_8, a4, nullptr);
-                }
-
-                v9 = a4a;
+            for ( auto i = 0; i < this->m_size; ++i )
+            {
+                assert(((int) header) % 4 == 0);
+                this->m_data[i].field_8.custom_un_mash(header, &this->m_data[i].field_8, a4, nullptr);
             }
         }
 
@@ -603,13 +601,71 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *a2
 
         this->m_data = a4->get<anim_map_ptr_entry>(this->m_size);
 
-        if ( this->m_size != 0 ) {
-            for ( auto i = 0; i < this->m_size; ++i ) {
-                this->m_data[i].field_8.custom_un_mash(a2, &this->m_data[i].field_8, a4, nullptr);
-            }
+        for ( auto i = 0; i < this->m_size; ++i )
+        {
+            assert(((int) header) % 4 == 0);
+            this->m_data[i].field_8.custom_un_mash(header, &this->m_data[i].field_8, a4, nullptr);
         }
 
         rebase(a4->field_0, 4);
+    }
+}
+
+//0x004CE640
+template<>
+void mashable_vector<fx_cache_ent>::custom_un_mash(
+        generic_mash_header *header,
+        void *a3,
+        generic_mash_data_ptrs *a4,
+        void *a5)
+{
+    TRACE("mashable_vector<fx_cache_ent>::custom_un_mash");
+
+    if constexpr (1)
+    {
+        if ( this->is_shared() )
+        {
+            rebase(a4->field_4, 8u);
+
+            auto offset = *a4->get_from_shared<int>();
+            auto offset1 = *a4->get_from_shared<int>();
+
+            a4->field_4 += 4;
+
+            auto *v9 = a4->get_from_shared<int>();
+
+            rebase(a4->field_4, 8u);
+
+            rebase(a4->field_4, 4u);
+
+            this->m_data = a4->get_from_shared<fx_cache_ent>(this->m_size);
+
+            if ( v9[0] != 0 )
+            {
+                a4->field_0 += offset;
+                a4->field_4 += offset1 - sizeof(value_t) * this->m_size;
+            }
+            else
+            {
+                for ( int i = 0; i < this->m_size; ++i )
+                {
+                    assert(((int) header) % 4 == 0);
+                    auto *ent = &this->m_data[i];
+                    ent->un_mash(header, static_cast<cached_special_effect *>(a5), ent, a4);
+                }
+            }
+
+            ++v9[0];
+
+            rebase(a4->field_4, 4u);
+        }
+    }
+    else
+    {
+        THISCALL(0x004CE640, this, header,
+                        a3,
+                        a4,
+                        a5);
     }
 }
 
@@ -618,6 +674,11 @@ void mashable_vector_patch() {
     {
         FUNC_ADDRESS(address, &mashable_vector<resource_directory *>::custom_un_mash);
         REDIRECT(0x0051F70B, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &mashable_vector<fx_cache_ent>::custom_un_mash);
+        REDIRECT(0x004D36F5, address);
     }
 
 #if 0

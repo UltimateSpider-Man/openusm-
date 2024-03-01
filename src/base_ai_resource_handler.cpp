@@ -10,9 +10,11 @@
 
 VALIDATE_SIZE(base_ai_resource_handler, 0x14);
 
-base_ai_resource_handler::base_ai_resource_handler(worldly_pack_slot *a2) {
+base_ai_resource_handler::base_ai_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888A08;
     this->my_slot = a2;
-    this->field_10 = RESOURCE_KEY_TYPE_AI_STATE_GRAPH;
+    this->field_10 = RESOURCE_KEY_TYPE_BASE_AI;
 }
 
 bool base_ai_resource_handler::_handle(worldly_resource_handler::eBehavior a2, limited_timer *a3)
@@ -20,7 +22,7 @@ bool base_ai_resource_handler::_handle(worldly_resource_handler::eBehavior a2, l
     TRACE("base_ai_resource_handler::handle");
 
 #ifdef TARGET_XBOX
-        this->field_10 = RESOURCE_KEY_TYPE_BASE_AI;
+    this->field_10 = RESOURCE_KEY_TYPE_BASE_AI;
 #endif
 
     return base_engine_resource_handler::_handle(a2, a3);
@@ -31,39 +33,48 @@ bool base_ai_resource_handler::_handle_resource(worldly_resource_handler::eBehav
 {
     TRACE("base_ai_resource_handler::handle_resource", a3->field_0.get_platform_string(g_platform()).c_str());
 
-    auto &res_dir = this->my_slot->get_resource_directory();
-    auto *resource = res_dir.get_resource(a3, nullptr);
-    assert(resource != nullptr);
-
-    if ( behavior == UNLOAD )
+    if constexpr (1)
     {
-        bit_cast<ai::core_ai_resource *>(resource)->destruct_mashed_class();
+        auto &res_dir = this->my_slot->get_resource_directory();
+        auto *resource = res_dir.get_resource(a3, nullptr);
+        assert(resource != nullptr);
+
+        if ( behavior == UNLOAD )
+        {
+            bit_cast<ai::core_ai_resource *>(resource)->destruct_mashed_class();
+        }
+        else
+        {
+            auto *new_ai_resource = bit_cast<ai::core_ai_resource *>(resource);
+            assert(new_ai_resource != nullptr);
+
+#ifndef TARGET_XBOX
+            mash_info_struct info_struct {resource, a3->m_size};
+#else
+            mash_info_struct info_struct {mash::UNMASH_MODE, resource, a3->m_size, true};
+#endif
+
+            info_struct.unmash_class(new_ai_resource, nullptr
+#ifdef TARGET_XBOX
+                , mash::NORMAL_BUFFER
+#endif 
+                    );
+            mash_info_struct::construct_class(new_ai_resource);
+
+#ifdef TARGET_XBOX
+            a3->m_offset += info_struct.get_header_size();
+#endif
+        }
+
+        ++this->field_C;
+        return false;
     }
     else
     {
-        auto *new_ai_resource = bit_cast<ai::core_ai_resource *>(resource);
-        assert(new_ai_resource != nullptr);
-
-#ifndef TARGET_XBOX
-        mash_info_struct info_struct {resource, a3->m_size};
-#else
-        mash_info_struct info_struct {mash::UNMASH_MODE, resource, a3->m_size, true};
-#endif
-
-        info_struct.unmash_class(new_ai_resource, nullptr
-#ifdef TARGET_XBOX
-            , mash::NORMAL_BUFFER
-#endif 
-                );
-        mash_info_struct::construct_class(new_ai_resource);
-
-#ifdef TARGET_XBOX
-        a3->m_offset += info_struct.get_header_size();
-#endif
+        bool (__fastcall *func)(void *, void *, worldly_resource_handler::eBehavior ,
+                                               resource_location *) = CAST(func, 0x00568A10);
+        return func(this, nullptr, behavior, a3); 
     }
-
-    ++this->field_C;
-    return false;
 }
 
 void base_ai_resource_handler_patch()

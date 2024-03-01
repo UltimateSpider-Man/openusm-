@@ -11,9 +11,11 @@
 
 VALIDATE_SIZE(cut_scene_resource_handler, 0x14);
 
-cut_scene_resource_handler::cut_scene_resource_handler(worldly_pack_slot *a2) {
+cut_scene_resource_handler::cut_scene_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888AD4;
     this->my_slot = a2;
-    this->field_10 = RESOURCE_KEY_TYPE_BASE_AI;
+    this->field_10 = RESOURCE_KEY_TYPE_CUT_SCENE;
 }
 
 bool cut_scene_resource_handler::_handle(worldly_resource_handler::eBehavior a2, limited_timer *a3)

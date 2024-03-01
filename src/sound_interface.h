@@ -27,3 +27,6 @@ struct sound_interface : generic_interface {
     //0x004D1910
     static void frame_advance_all_sound_ifc(Float a3);
 };
+
+
+extern void sound_interface_patch();

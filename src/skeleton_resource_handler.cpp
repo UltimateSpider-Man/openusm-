@@ -13,7 +13,9 @@
 
 VALIDATE_SIZE(skeleton_resource_handler, 0x14u);
 
-skeleton_resource_handler::skeleton_resource_handler(worldly_pack_slot *a1) {
+skeleton_resource_handler::skeleton_resource_handler(worldly_pack_slot *a1)
+{
+    this->m_vtbl = 0x008889C8;
     this->my_slot = a1;
     this->field_10 = TLRESOURCE_TYPE_SKELETON;
 }

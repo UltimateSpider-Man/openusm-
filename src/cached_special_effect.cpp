@@ -1,41 +1,27 @@
 #include "cached_special_effect.h"
 
-#include "fx_cache.h"
-
 #include "common.h"
-
 #include "func_wrapper.h"
+#include "fx_cache.h"
+#include "trace.h"
+#include "utility.h"
 
-VALIDATE_SIZE(cached_special_effect, 64u);
+VALIDATE_SIZE(cached_special_effect, 0x40u);
 
-cached_special_effect::cached_special_effect() {
-    this->field_0 = resource_key();
-    this->field_8 = resource_key();
-    this->field_24 = 0;
-    this->field_3C = 0;
-    this->field_3D = 0;
-    this->field_10[1] = 0.0f;
-    this->field_10[2] = 0.0f;
-    this->field_10[0] = 1.0f;
-    this->field_8.m_hash.source_hash_code = 0;
-    this->field_8.m_type = RESOURCE_KEY_TYPE_NONE;
-    this->field_1C = 0;
-    this->field_20 = 0;
-    this->field_0.m_hash.source_hash_code = 0;
-    this->field_0.m_type = RESOURCE_KEY_TYPE_NONE;
-    this->field_34 = 0;
-    this->field_36 = 0;
-    this->field_24 = 0;
-    this->field_28 = 0;
-    this->field_30 = nullptr;
-    this->field_8.m_type = RESOURCE_KEY_TYPE_ENTITY;
+cached_special_effect::cached_special_effect()
+{
+    TRACE("cached_special_effect::cached_special_effect");
+
+    this->field_10 = vector3d {1.0f, 0.0f, 0.0f};
+    this->field_8.set_type(RESOURCE_KEY_TYPE_ENTITY);
     this->field_2C = -1.0f;
-    this->field_3C = 0;
-    this->field_3D = 0;
+    this->field_3C = false;
+    this->field_3D = false;
     this->field_38 = 5;
 }
 
-void cached_special_effect::frame_advance(Float a2) {
+void cached_special_effect::frame_advance(Float a2)
+{
     auto *v2 = this->field_30;
     if (v2 != nullptr) {
         v2->frame_advance(a2);
@@ -50,10 +36,89 @@ void cached_special_effect::spawn(bool a1,
                                   entity_base *a8,
                                   const vector3d &a9,
                                   bool a10,
-                                  bool a11) {
+                                  bool a11)
+{
+    TRACE("cached_special_effect::spawn");
+
     THISCALL(0x004EFC00, this, a1, &a2, &a3, a6, a7, a8, &a9, a10, a11);
 }
 
-void cached_special_effect::fill_cache() {
-    THISCALL(0x004D4E10, this);
+void cached_special_effect::fill_cache()
+{
+    TRACE("cached_special_effect::fill_cache");
+
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x004D4E10, this);
+    }
+}
+
+void cached_special_effect::un_mash(
+        generic_mash_header *a2,
+        void *a3,
+        generic_mash_data_ptrs *a4)
+{
+    TRACE("cached_special_effect::un_mash");
+
+    if constexpr (1)
+    {
+        this->field_24 = 0;
+        this->field_30 = nullptr;
+        this->field_28 = nullptr;
+
+        rebase(a4->field_4, 4u);
+
+        auto v5 = *a4->get_from_shared<int>();
+
+        this->field_1C = int(a4->field_4);
+
+        a4->field_4 += v5;
+
+        rebase(a4->field_4, 4u);
+
+        auto v9 = *a4->get_from_shared<int>();
+
+        this->field_20 = int(a4->field_4);
+        a4->field_4 += v9;
+
+        rebase(a4->field_4, 4u);
+
+        this->field_30 = a4->get_from_shared<fx_cache>();
+
+        auto *v13 = this->field_30;
+        v13->un_mash(a2, this, v13, a4);
+
+        this->field_3C = false;
+        this->field_3D = false;
+    }
+    else
+    {
+        THISCALL(0x004D3650, this, a2, a3, a4);
+    }
+}
+
+void * __fastcall cached_special_effect_constructor(void *mem)
+{
+    return new (mem) cached_special_effect {};
+}
+
+void cached_special_effect_patch()
+{
+    {
+        auto *func = cached_special_effect_constructor;
+        REDIRECT(0x004DEABA, func);
+    }
+
+    {
+        FUNC_ADDRESS(address, &cached_special_effect::un_mash);
+        REDIRECT(0x004D9EF8, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &cached_special_effect::fill_cache);
+        REDIRECT(0x0054AC6D, address);
+        REDIRECT(0x0054AD0D, address);
+    }
 }

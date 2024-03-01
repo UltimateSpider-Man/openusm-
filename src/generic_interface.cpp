@@ -1,6 +1,9 @@
 #include "generic_interface.h"
 
+#include "common.h"
 #include "vtbl.h"
+
+VALIDATE_SIZE(generic_interface, 0x4);
 
 generic_interface::generic_interface()
 {

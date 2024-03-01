@@ -10,7 +10,10 @@ Var<void *> aeps::s_activeStructs{0x0095B83C};
 
 void aeps::FrameAdvance(Float a1)
 {
-    if constexpr (0) {
+    TRACE("aeps::FrameAdvance");
+
+    if constexpr (0)
+    {
 #if 0
         int v1;   // eax
         char *v2; // esi
@@ -41,7 +44,9 @@ void aeps::FrameAdvance(Float a1)
 
 #endif
 
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x004D3980, a1);
     }
 }
@@ -72,6 +77,8 @@ void aeps::Init()
 
 void aeps_patch()
 {
+    REDIRECT(0x005584F4, aeps::FrameAdvance);
+
     REDIRECT(0x005AD2DF, aeps::Init);
 }
 

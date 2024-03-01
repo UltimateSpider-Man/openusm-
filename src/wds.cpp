@@ -332,10 +332,12 @@ entity *world_dynamics_system::get_hero_ptr(int index) {
     return result;
 }
 
-void world_dynamics_system::frame_advance(Float a2) {
+void world_dynamics_system::frame_advance(Float a2)
+{
     TRACE("world_dynamics_system::frame_advance");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         this->field_158.frame_advance(a2);
         this->field_28.frame_advance(a2);
         this->field_A0.frame_advance(a2);
@@ -375,6 +377,7 @@ void world_dynamics_system::frame_advance(Float a2) {
         manage_standing_for_all_physical_interfaces(a2);
         zero_xz_velocity_for_effectively_standing_physical_interfaces();
         collide_all_moved_entities(a2);
+
         line_info::frame_advance(2);
         beam::frame_advance_all_beams(a2);
         item::frame_advance_all_items(a2);
@@ -382,6 +385,7 @@ void world_dynamics_system::frame_advance(Float a2) {
         manip_obj::frame_advance_all_manip_objs(a2);
         polytube::frame_advance_all_polytubes(a2);
         motion_effect_struct::record_all_motion_fx(a2);
+
         aeps::FrameAdvance(a2);
         sound_interface::frame_advance_all_sound_ifc(a2);
         damage_interface::frame_advance_all_damage_ifc(a2);
@@ -437,7 +441,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
 {
     TRACE("world_dynamics_system::un_mash_scene_entities");
 
-    if constexpr (1)
+    if constexpr (0)
     {
         if (brew.field_0.is_done()) {
             return false;
@@ -515,10 +519,6 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
         static auto dword_15684A4 {0.0};
         [[maybe_unused]] auto dword_15684A8 = 0;
 
-        auto sub_6A1898 = [](limited_timer_base &a1) -> void {
-            a1.reset();
-        };
-
         auto sub_68D9F1 = [](limited_timer_base &a1) -> double {
             auto result = a1.elapsed();
             a1.reset();
@@ -529,7 +529,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             return a1.elapsed();
         };
 
-        sub_6A1898(v81);
+        v81.reset();
         std::list<region *> list_regions {};
         for ( ; v87 < v85; ++v87 )
         {
@@ -556,7 +556,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 buffer_index += sizeof(int);
 
                 sub_692686(buffer_index, 16);
-                sub_6A1898(v80);
+                v80.reset();
                 auto *tmp_e = parse_entity_mash(ent_vec_ptr, item_vec_ptr, &buffer_ptr[buffer_index], nullptr, a6, true);
                 assert(tmp_e->is_an_entity());
                 auto *ent_ptr = bit_cast<entity *>(tmp_e);
@@ -632,10 +632,10 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
 
                 buffer_index += sizeof(fixedstring<8>) * v68;
 
-                sub_6A1898(v79);
+                v79.reset();
                 {
                     assert(ent_ptr != nullptr);
-                    sub_6A1898(v78);
+                    v78.reset();
                     g_world_ptr()->ent_mgr.add_ent_to_lists(ent_vec_ptr, item_vec_ptr, ent_ptr);
                     dword_15684A4 += sub_68D9F1(v78);
                     //sp_log("adding entities to lists = %f sec", dword_15684A4);
@@ -698,7 +698,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             case 3u: {
                 limited_timer_base v58{};
                 auto dword_15684AC = 0.0;
-                sub_6A1898(v58);
+                v58.reset();
 
                 assert(the_terrain != nullptr);
                 if ( reg == nullptr )
@@ -730,7 +730,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             case 9u: {
                 limited_timer_base v60{};
                 auto dword_15684BC = 0.0;
-                sub_6A1898(v60);
+                v60.reset();
                 assert(the_terrain != nullptr);
 
                 if ( reg == nullptr )
@@ -832,8 +832,11 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
         brew.field_38.done();
         brew.field_0.done();
         return false;
-    } else {
-        return (bool) THISCALL(0x0055A680, this, &a2, reg, slot_ptr, a5, brew);
+    }
+    else
+    {
+        bool (__fastcall *func)(void *, void *, const resource_key *, region *, worldly_pack_slot *, bool , scene_entity_brew *) = CAST(func, 0x0055A680);
+        return func(this, nullptr, &a2, reg, slot_ptr, a5, &brew);
     }
 }
 
@@ -1464,25 +1467,29 @@ int world_dynamics_system::add_player(const mString &a2)
     }
 }
 
-void world_dynamics_system::deactivate_corner_web_splats() {
-    resource_key *v2 = &this->field_1F0.field_8;
-    if (v2->sub_48AB80()) {
-        v2->m_hash.source_hash_code = 0;
-        v2->m_type = RESOURCE_KEY_TYPE_NONE;
+void world_dynamics_system::deactivate_corner_web_splats()
+{
+    resource_key &v2 = this->field_1F0.field_8;
+    if ( v2.is_set() )
+    {
+        v2 = {};
+
         this->field_1F0.field_10[0] = 0.0;
         this->field_1F0.field_10[2] = 0.0;
         this->field_1F0.field_10[1] = 0.0;
         this->field_1F0.field_38 = 0;
+
         fx_cache *v3 = this->field_1F0.field_30;
-        char v4 = v3->field_F;
-        char *v5 = (char *) &v3->field_8;
-        if (!v4) {
-            if (*(uint32_t *) v5) {
-                operator delete[](*(void **) v5);
+        auto &v5 = v3->field_8;
+        if (!v5.field_7)
+        {
+            if (v5.m_data != nullptr) {
+                operator delete[](v5.m_data);
             }
         }
-        *(uint32_t *) v5 = 0;
-        *(bit_cast<uint16_t *>(v5) + 4) = 0;
+
+        v5.m_data = nullptr;
+        v5.m_size = 0;
     }
 }
 
@@ -1500,17 +1507,15 @@ terrain *world_dynamics_system::create_terrain(const mString &a2) {
     }
 }
 
-void world_dynamics_system::activate_corner_web_splats() {
-    //sp_log("activate_corner_web_splats:");
+void world_dynamics_system::activate_corner_web_splats()
+{
+    TRACE("world_dynamics_system::activate_corner_web_splats");
 
-    auto *act = (actor *) this->get_hero_ptr(0);
+    auto *act = bit_cast<actor *>(this->get_hero_ptr(0));
 
     auto *__old_context = resource_manager::push_resource_context(act->field_BC);
 
-    string_hash v3{"websplat_crnr"};
-
-    resource_key a2;
-    a2.set(v3, RESOURCE_KEY_TYPE_ENTITY);
+    resource_key a2 {string_hash {"websplat_crnr"}, RESOURCE_KEY_TYPE_ENTITY};
 
     this->field_1F0.field_8 = a2;
 
@@ -1521,6 +1526,7 @@ void world_dynamics_system::activate_corner_web_splats() {
     this->field_1F0.field_38 = 5;
     this->field_1F0.fill_cache();
     resource_manager::pop_resource_context();
+
     assert(resource_manager::get_resource_context() == __old_context);
 }
 
@@ -1567,26 +1573,29 @@ void world_dynamics_system::activate_web_splats()
     }
 }
 
-void world_dynamics_system::deactivate_web_splats() {
-    resource_key *v2 = &this->field_1B0.field_8;
-    if (v2->sub_48AB80()) {
-        v2->m_hash.source_hash_code = 0;
-        v2->m_type = RESOURCE_KEY_TYPE_NONE;
+void world_dynamics_system::deactivate_web_splats()
+{
+    resource_key &v2 = this->field_1B0.field_8;
+    if ( v2.is_set() )
+    {
+        v2 = {};
+
         this->field_1B0.field_10[0] = 0.0;
         this->field_1B0.field_10[1] = 0.0;
         this->field_1B0.field_10[2] = 0.0;
 
         this->field_1B0.field_38 = 0;
         fx_cache *v3 = this->field_1B0.field_30;
-        char v4 = v3->field_F;
-        char *v5 = (char *) &v3->field_8;
-        if (!v4) {
-            if (*(uint32_t *) v5) {
-                operator delete[](*(void **) v5);
+        auto *v5 = &v3->field_8;
+        if (!v5->field_7)
+        {
+            if (v5->m_data != nullptr) {
+                operator delete[](v5->m_data);
             }
         }
-        *(uint32_t *) v5 = 0;
-        *(bit_cast<uint16_t *>(v5) + 4) = 0;
+
+        v5->m_data = nullptr;
+        v5->m_size = 0;
     }
 }
 
@@ -1646,7 +1655,8 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
 {
     TRACE("world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_entities");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         void *mem_for_visitor = nullptr;
         update_limbo_list_if_needed();
 
@@ -1797,7 +1807,8 @@ void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(F
 {
     TRACE("world_dynamics_system::update_collision_proximity_maps_for_moved_entities");
 
-    if constexpr (1) {
+    if constexpr (0)
+    {
         for (int i = 0; i < moved_entities::moved_count(); ++i)
         {
             auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
@@ -1823,7 +1834,9 @@ void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(F
         }
 
         collision_dynamic_rtree().sort();
-    } else {
+    }
+    else
+    {
         THISCALL(0x0054A610, this, a1);
     }
 }
@@ -1832,7 +1845,8 @@ void world_dynamics_system::update_light_proximity_maps_for_moved_entities(Float
 {
     TRACE("world_dynamics_system::update_light_proximity_maps_for_moved_entities");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         for (int i = 0; i < moved_entities::moved_count(); ++i)
         {
             auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
@@ -1918,7 +1932,12 @@ int get_hero_type_helper() {
     return 0;
 }
 
-void world_dynamics_system_patch() {
+void world_dynamics_system_patch()
+{
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::update_collision_proximity_maps_for_moved_entities);
+        REDIRECT(0x00558517, address);
+    }
 
     {
         FUNC_ADDRESS(address, &world_dynamics_system::create_terrain);

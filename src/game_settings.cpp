@@ -158,12 +158,16 @@ void game_settings::export_game_options() {
     }
 }
 
-void game_settings::export_game_settings() {
-    if (g_world_ptr() != nullptr) {
+void game_settings::export_game_settings()
+{
+    if (g_world_ptr() != nullptr)
+    {
         auto *v1 = g_world_ptr()->get_hero_ptr(0);
-        if (v1 != nullptr) {
-            if (v1->has_damage_ifc()) {
-                auto &v3 = v1->damage_ifc()->field_1FC[2];
+        if (v1 != nullptr)
+        {
+            if (v1->has_damage_ifc())
+            {
+                auto &v3 = v1->damage_ifc()->field_1FC.field_0[2];
                 auto *v2 = v1->damage_ifc();
                 v2->field_1FC.sub_48BFB0(v3);
             }
@@ -283,13 +287,18 @@ int *GetSystemDate(int *out) {
     return (int *) CDECL_CALL(0x00573510, out);
 }
 
-void game_settings::collect_game_settings() {
-    if constexpr (1) {
-        if (g_world_ptr() != nullptr) {
+void game_settings::collect_game_settings()
+{
+    if constexpr (1)
+    {
+        if (g_world_ptr() != nullptr)
+        {
             auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
-            if (hero_ptr != nullptr) {
-                if (hero_ptr->has_damage_ifc()) {
-                    this->field_340.m_hero_health = hero_ptr->damage_ifc()->field_1FC[0];
+            if (hero_ptr != nullptr)
+            {
+                if (hero_ptr->has_damage_ifc())
+                {
+                    this->field_340.m_hero_health = hero_ptr->damage_ifc()->field_1FC.field_0[0];
                     this->field_4BF = true;
                     return;
                 }

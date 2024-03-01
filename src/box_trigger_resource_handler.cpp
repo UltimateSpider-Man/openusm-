@@ -11,7 +11,9 @@
 
 VALIDATE_SIZE(box_trigger_resource_handler, 0x10u);
 
-box_trigger_resource_handler::box_trigger_resource_handler(worldly_pack_slot *a2) {
+box_trigger_resource_handler::box_trigger_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888A48;
     this->my_slot = a2;
 }
 

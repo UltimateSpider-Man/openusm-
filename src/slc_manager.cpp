@@ -33,16 +33,24 @@ Var<std::vector<script_library_class *> *>
 
 #endif
 
-void register_standard_script_libs() {
+void register_standard_script_libs()
+{
+    TRACE("register_standard_script_libs");
+
     CDECL_CALL(0x005AB800);
 }
 
-void construct_client_script_libs() {
+void construct_client_script_libs()
+{
+    TRACE("construct_client_script_libs");
+
     CDECL_CALL(0x0058F9C0);
 }
 
 void destruct_client_script_libs()
 {
+    TRACE("destruct_client_script_libs");
+
     CDECL_CALL(0x0058FA50);
 }
 
@@ -12491,7 +12499,8 @@ void slc_manager::init()
 {
     TRACE("slc_manager::init");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if (slc_manager_classes == nullptr) {
             slc_manager_classes = new std::set<script_library_class *>{};
         }

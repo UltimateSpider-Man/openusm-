@@ -15,7 +15,9 @@
 
 VALIDATE_SIZE(sound_alias_database_resource_handler, 0x14);
 
-sound_alias_database_resource_handler::sound_alias_database_resource_handler(worldly_pack_slot *a2) {
+sound_alias_database_resource_handler::sound_alias_database_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888B14;
     this->my_slot = a2;
     this->field_10 = RESOURCE_KEY_TYPE_SOUND_ALIAS_DATABASE;
 }

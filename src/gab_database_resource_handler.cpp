@@ -9,7 +9,9 @@
 
 VALIDATE_SIZE(gab_database_resource_handler, 0x14);
 
-gab_database_resource_handler::gab_database_resource_handler(worldly_pack_slot *a2) {
+gab_database_resource_handler::gab_database_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888AF4;
     this->my_slot = a2;
     this->field_10 = RESOURCE_KEY_TYPE_GAB_DATABASE;
 }

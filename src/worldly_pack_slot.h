@@ -2,7 +2,12 @@
 
 #include "resource_pack_slot.h"
 
+#include "base_entity_resource_handler.h"
+#include "worldly_resource_handler.h"
+
 #include <vector.hpp>
+
+#include <cstdint>
 
 struct entity;
 struct item;
@@ -22,6 +27,10 @@ struct worldly_pack_slot : resource_pack_slot {
     //0x00532220
     worldly_pack_slot();
 
+    //0x005327E0
+    //virtual
+    ~worldly_pack_slot();
+
     //0x00558DF0
     _std::vector<item *> *get_item_instances();
 
@@ -29,6 +38,8 @@ struct worldly_pack_slot : resource_pack_slot {
     _std::vector<entity *> *get_entity_instances();
 
     void clear_progress();
+
+private:
 
     //0x0050ED20
     //virtual
@@ -38,22 +49,31 @@ struct worldly_pack_slot : resource_pack_slot {
     //virtual
     bool _on_unload(limited_timer *a2) /*override*/;
 
-    //0x005327E0
-    //virtual
-    ~worldly_pack_slot();
-
     //0x0050ECE0
     //virtual
-    void clear_slot() /*override*/;
+    void _clear_slot() /*override*/;
 
     //0x0052AC40
     //virtual
-    void clear_pack() /*override*/;
+    void _clear_pack() /*override*/;
 
-    void sub_531C70();
+public:
 
     //0x005382F0
     _std::vector<box_trigger *> *get_box_trigger_instances();
+};
+
+struct entity_resource_handler : base_entity_resource_handler {
+    entity_resource_handler(worldly_pack_slot *a2);
+
+    //0x00563130
+    /* virtual */ int _get_num_resources() /* override */;
+
+    //0x0056BFA0
+    /* virtual */ bool _handle_resource(worldly_resource_handler::eBehavior behavior) /* override */;
+
+    //0x00572FF0
+    /* virtual */ void _post_handle_resources(eBehavior) /* override */;
 };
 
 extern void worldly_pack_slot_patch();

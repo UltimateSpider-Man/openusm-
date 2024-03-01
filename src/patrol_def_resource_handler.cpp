@@ -7,7 +7,9 @@
 
 VALIDATE_SIZE(patrol_def_resource_handler, 0x14);
 
-patrol_def_resource_handler::patrol_def_resource_handler(worldly_pack_slot *a2) {
+patrol_def_resource_handler::patrol_def_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888AB4;
     this->my_slot = a2;
     this->field_10 = RESOURCE_KEY_TYPE_PATROL_DEF;
 }

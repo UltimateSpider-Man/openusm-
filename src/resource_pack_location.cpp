@@ -7,8 +7,6 @@ VALIDATE_SIZE(resource_pack_location, 0x50u);
 VALIDATE_OFFSET(resource_pack_location, m_name, 0x30u);
 
 resource_pack_location::resource_pack_location() : loc() {
-    loc.field_0.sub_41FFA0();
-
     loc.clear();
     this->clear();
 }

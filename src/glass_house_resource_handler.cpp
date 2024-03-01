@@ -7,7 +7,9 @@
 
 VALIDATE_SIZE(glass_house_resource_handler, 0x14);
 
-glass_house_resource_handler::glass_house_resource_handler(worldly_pack_slot *a2) {
+glass_house_resource_handler::glass_house_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888B04;
     this->my_slot = a2;
     this->field_10 = static_cast<resource_key_type>(39);
 }

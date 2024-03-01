@@ -1,9 +1,9 @@
 #pragma once
 
-#include "progress.h"
 #include "resource_key.h"
 #include "resource_pack_directory.h"
 #include "resource_pack_token.h"
+#include "timed_progress.h"
 
 #include "float.hpp"
 
@@ -28,7 +28,13 @@ struct resource_pack_slot {
         CALLBACK_DESTRUCT = 5,
     };
 
-    int m_vtbl;
+    struct {
+        bool (__fastcall *on_load)(resource_pack_slot *, void *, limited_timer *);
+        bool (__fastcall *on_unload)(resource_pack_slot *, void *, limited_timer *);
+        resource_pack_slot * (__fastcall *finalize)(resource_pack_slot *, void *, bool);
+        void (__fastcall *clear_slot)(resource_pack_slot *);
+        void (__fastcall *clear_pack)(resource_pack_slot *);
+    } *m_vtbl;
 
 private:
     resource_key field_4;
@@ -45,8 +51,7 @@ private:
 public:
     resource_pack_directory pack_directory;
     resource_pack_token field_78;
-    progress field_80;
-    int field_84;
+    timed_progress field_80;
     resource_partition *field_88;
 
     bool (*m_callback)(callback_enum,
@@ -57,6 +62,10 @@ public:
 
     //0x00531C70
     resource_pack_slot();
+
+    //0x00531CF0
+    //virtual
+    ~resource_pack_slot();
 
     auto &get_name_key() const
     {
@@ -132,10 +141,6 @@ public:
     //0x0052A910
     //virtual
     bool on_unload(limited_timer *a2);
-
-    //0x00531CF0
-    //virtual
-    ~resource_pack_slot();
 
     //0x0050E170
     //virtual

@@ -72,7 +72,8 @@ resource_pack_streamer::resource_pack_streamer()
 
 }
 
-resource_pack_streamer::~resource_pack_streamer() {
+resource_pack_streamer::~resource_pack_streamer()
+{
     if constexpr (0)
     {
         this->clear();
@@ -85,6 +86,22 @@ resource_pack_streamer::~resource_pack_streamer() {
     {
         THISCALL(0x00537C00, this);
     }
+}
+
+void resource_pack_streamer::init(
+        resource_partition *a2,
+        _std::vector<resource_pack_slot *> *slots)
+{
+    assert(!currently_streaming);
+
+    this->clear();
+    this->field_68 = (int)a2;
+
+    assert(slots != nullptr);
+
+    this->pack_slots = slots;
+    this->field_7C = 0.0;
+    this->m_data_size = 0;
 }
 
 resource_directory *g_resource_directory = nullptr;
@@ -237,11 +254,11 @@ void resource_pack_streamer::cancel_load(int which_slot_idx)
 
     assert(v3->m_slot_state == SLOT_STATE_STREAMING);
     v3->m_slot_state = SLOT_STATE_EMPTY;
-    v3->clear_pack();
+    v3->m_vtbl->clear_pack(v3);
     auto *v5 = v3->m_callback;
     if ( v5 != nullptr )
     {
-        v5((resource_pack_slot::callback_enum) 2, &v3->field_88->streamer, v3, nullptr);
+        v5(static_cast<resource_pack_slot::callback_enum>(2), &v3->field_88->streamer, v3, nullptr);
     }
 
     this->currently_streaming = false;

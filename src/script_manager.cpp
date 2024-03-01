@@ -21,7 +21,6 @@
 
 #include <set.hpp>
 
-
 #if !SCRIPT_MANAGER_STANDALONE 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
 
@@ -155,7 +154,8 @@ void init_game_var()
 {
     TRACE("script_manager::init_game_var");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ( script_manager_game_var_container() == nullptr ) {
             resource_key a1 {string_hash {"master"}, RESOURCE_KEY_TYPE_SCRIPT_GV};
             auto *v0 = resource_manager::get_resource(a1, nullptr, nullptr);
@@ -411,11 +411,14 @@ float get_time_inc()
     return script_manager_time_inc();
 }
 
-void init() {
+void init()
+{
     TRACE("script_manager::init");
 
-    if constexpr (1) {
-        if ( !script_manager_initialized() ) {
+    if constexpr (1)
+    {
+        if ( !script_manager_initialized() )
+        {
             script_manager_time_inc() = 0.0;
 
             using script_manager_execs_pending_link_list_t = std::decay_t<decltype(*script_manager_execs_pending_link_list())>;
@@ -438,9 +441,13 @@ void init() {
                 assert(script_manager_script_allocated_stuff_map() != nullptr);
             }
 
-            if ( script_manager_callbacks() == nullptr ) {
+            if ( script_manager_callbacks() == nullptr )
+            {
                 using script_manager_callbacks_t = std::decay_t<decltype(*script_manager_callbacks())>;
-                script_manager_callbacks() = new script_manager_callbacks_t {};
+
+                auto *mem = mem_alloc(12u);
+                script_manager_callbacks() = new (mem) script_manager_callbacks_t {};
+
                 assert(script_manager_callbacks() != nullptr);
             }
 
@@ -889,11 +896,17 @@ int register_callback(
 
     assert(script_manager_callbacks() != nullptr && "need to initialize the script_manager first!!!");
 
-    //sp_log("%d", script_manager_callbacks()->size());
-    [[maybe_unused]] auto ret = script_manager_callbacks()->insert(a2);
+    if constexpr (1)
+    {
+        auto ret = script_manager_callbacks()->insert(a2);
+        assert(ret.second && "c is already registered!!!!");
 
-    //assert(ret.second && "c is already registered!!!!");
-    return 0;
+        return 0;
+    }
+    else
+    {
+        return CDECL_CALL(0x005A3600, a2);
+    }
 }
 
 }
@@ -938,7 +951,7 @@ void script_manager_patch()
         SET_JUMP(0x005A0870, find_object);
     }
 
-    SET_JUMP(0x005A3600, script_manager::register_callback);
+    REDIRECT(0x006607E5, script_manager::register_callback);
 
     SET_JUMP(0x005A52F0, script_manager::destroy_game_var);
 

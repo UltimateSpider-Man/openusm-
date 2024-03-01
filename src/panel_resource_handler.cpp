@@ -20,7 +20,9 @@
 
 VALIDATE_SIZE(panel_resource_handler, 0x14);
 
-panel_resource_handler::panel_resource_handler(worldly_pack_slot *a2) {
+panel_resource_handler::panel_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888AC4;
     this->my_slot = a2;
     this->field_10 = RESOURCE_KEY_TYPE_PANEL;
 }

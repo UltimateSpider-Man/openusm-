@@ -272,19 +272,17 @@ void add_resource_pack_modified_callback(void (*callback)(_std::vector<resource_
     //push_back
     auto *v18 = resource_pack_modified_callbacks().m_last;
     auto *a2 = callback;
-    if ( resource_pack_modified_callbacks().m_first
-        && resource_pack_modified_callbacks().m_last
-        - resource_pack_modified_callbacks().m_first < (unsigned int)(resource_pack_modified_callbacks().m_end
-                                                                     - resource_pack_modified_callbacks().m_first) )
+    if ( resource_pack_modified_callbacks().size() < resource_pack_modified_callbacks().capacity()
+         )
     {
         *resource_pack_modified_callbacks().m_last = a2;
         resource_pack_modified_callbacks().m_last = v18 + 1;
     }
     else
     {
-        void (__fastcall *_Insert_n)(void *, int, void *, int, decltype(&callback)) = CAST(_Insert_n, 0x0056A260);
+        void (__fastcall *_Insert_n)(void *, void *, void *, int, decltype(&callback)) = CAST(_Insert_n, 0x0056A260);
         _Insert_n(&resource_pack_modified_callbacks(),
-                0,
+                nullptr,
                 resource_pack_modified_callbacks().m_last,
                 1,
                 &a2);
@@ -414,40 +412,55 @@ void reload_amalgapak()
 }
 
 
-resource_pack_slot *get_best_context(resource_pack_slot *slot) {
-    if constexpr (1) {
+resource_pack_slot *get_best_context(resource_pack_slot *slot)
+{
+    TRACE("resource_manager::get_best_context");
+
+    if constexpr (1)
+    {
         assert(slot != nullptr);
         assert(slot->is_data_ready());
         assert(partitions() != nullptr);
 
-        auto *result = slot;
-
         resource_partition *the_partition = nullptr;
 
         const auto &vec = (*partitions());
-        for (const auto &my_partition : vec) {
-            for (uint32_t i = 0; i < my_partition->m_pack_slots.size(); ++i) {
+        sp_log("%d", vec.size());
+        for (const auto &my_partition : vec)
+        {
+            assert(my_partition != nullptr);
+
+            for (uint32_t i = 0; i < my_partition->m_pack_slots.size(); ++i)
+            {
                 if (my_partition->m_pack_slots[i] == slot) {
                     the_partition = my_partition;
+                    sp_log("%d", i);
                     break;
                 }
             }
         }
 
         assert(the_partition != nullptr && "what partition uses this slot!?");
-        if (the_partition->field_0 == 2) {
+
+        if (the_partition->field_0 != 2) {
             return slot;
         }
 
         assert(!the_partition->get_pack_slots().empty());
 
+        auto *result = the_partition->get_pack_slots().front();
+        //sp_log("0x%08X", result->pack_directory.field_4.m_vtbl);
+
         return result;
-    } else {
+    }
+    else
+    {
         return (resource_pack_slot *) CDECL_CALL(0x005375A0, slot);
     }
 }
 
-resource_pack_slot *get_and_push_resource_context(resource_partition_enum a1) {
+resource_pack_slot *get_and_push_resource_context(resource_partition_enum a1)
+{
     auto *v1 = get_best_context(a1);
     return push_resource_context(v1);
 }
@@ -471,11 +484,14 @@ bool get_pack_location(int a1, resource_pack_location *a2)
     return true;
 }
 
-resource_pack_slot *get_best_context(resource_partition_enum a1) {
-    if constexpr (1) {
+resource_pack_slot *get_best_context(resource_partition_enum a1)
+{
+    if constexpr (1)
+    {
         assert(partitions() != nullptr);
 
         resource_partition *the_partition = partitions()->at(a1);
+        assert(the_partition != nullptr);
 
         const auto &pack_slots = the_partition->get_pack_slots();
         if (pack_slots.empty()) {
@@ -595,8 +611,12 @@ bool get_pack_file_stats(const resource_key &a1, resource_pack_location *a2, mSt
     }
 }
 
-resource_pack_slot *push_resource_context(resource_pack_slot *pack_slot) {
-    if constexpr (1) {
+resource_pack_slot *push_resource_context(resource_pack_slot *pack_slot)
+{
+    TRACE("resource_manager::push_resource_context");
+
+    if constexpr (1)
+    {
         assert(pack_slot != nullptr);
 
         resource_pack_slot *v2 = get_resource_context();
@@ -659,10 +679,14 @@ resource_directory *get_resource_directory(const resource_key &a1) {
     }
 }
 
-void set_active_resource_context(resource_pack_slot *a1) {
-    if constexpr (0) {
+void set_active_resource_context(resource_pack_slot *a1)
+{
+    TRACE("resource_manager::set_active_resource_context");
 
-        if (a1 != nullptr && a1->is_data_ready()) {
+    if constexpr (0)
+    {
+        if (a1 != nullptr && a1->is_data_ready())
+        {
             nglSetTextureDirectory(&a1->pack_directory.field_4);
             nglSetMeshFileDirectory(&a1->pack_directory.field_C);
             nglSetMeshDirectory(&a1->pack_directory.field_14);
@@ -673,7 +697,9 @@ void set_active_resource_context(resource_pack_slot *a1) {
             nalSetAnimFileDirectory(&a1->pack_directory.field_3C);
             nalSetAnimDirectory(&a1->pack_directory.field_44);
             nalSetSceneAnimDirectory(&a1->pack_directory.field_4C);
-        } else {
+        }
+        else
+        {
             nglSetTextureDirectory(tlresource_directory<nglTexture, tlFixedString>::system_dir());
             nglSetMeshFileDirectory(tlresource_directory<nglMeshFile, tlFixedString>::system_dir());
             nglSetMeshDirectory(tlresource_directory<nglMesh, tlHashString>::system_dir());
@@ -696,18 +722,28 @@ void set_active_resource_context(resource_pack_slot *a1) {
     }
 }
 
-resource_pack_slot *pop_resource_context() {
-    if constexpr (1) {
+resource_pack_slot *pop_resource_context()
+{
+    TRACE("resource_manager::pop_resource_context");
+
+    if constexpr (1)
+    {
         auto *old_context = get_resource_context();
         assert(old_context != nullptr);
 
-        if (!resource_context_stack().empty()) {
+#if 0 
+        if (!resource_context_stack().empty())
+        {
 #ifndef TEST_CASE
             --resource_context_stack().m_last;
 #else
             resource_context_stack().resize(resource_context_stack().size() - 1);
 #endif
         }
+    
+#else
+        resource_context_stack().pop_back();
+#endif
 
         auto *v0 = get_resource_context();
         resource_manager::set_active_resource_context(v0);
@@ -855,7 +891,8 @@ void configure_packs_by_memory_map(int idx)
 
         for (uint32_t i = pop_start_idx; i < RESOURCE_PARTITION_END; ++i)
         {
-            auto *new_partition = new resource_partition{(resource_partition_enum) i};
+            auto *mem = mem_alloc(sizeof(resource_partition));
+            auto *new_partition = new (mem) resource_partition{(resource_partition_enum) i};
 
             auto &memory_map = memory_maps()[idx];
             auto &tmp = memory_map.field_10[i];
@@ -871,7 +908,8 @@ void configure_packs_by_memory_map(int idx)
             new_partition->partition_buffer_used = 0;
             new_partition->field_A8 = &resource_buffer()[resource_buffer_used()];
             resource_buffer_used() += new_partition->partition_buffer_size;
-            if (new_partition->field_0 >= 0 && new_partition->field_0 <= 1) {
+            if (new_partition->field_0 >= 0 && new_partition->field_0 <= 1)
+            {
                 for (int j = 0; j < tmp.field_C; ++j) {
                     new_partition->push_pack_slot(tmp.field_8, nullptr);
                 }
@@ -987,7 +1025,8 @@ nflFileID open_pack(const char *name) {
     }
 }
 
-resource_pack_slot *get_resource_context() {
+resource_pack_slot *get_resource_context()
+{
     resource_pack_slot *result = nullptr;
 
     if (!resource_context_stack().empty()) {
@@ -1036,8 +1075,11 @@ uint8_t *get_resource(const resource_key &resource_id, int *mash_data_size, reso
         //sp_log("resource_manager::get_resource:");
 
         return result;
-    } else {
-        return (uint8_t *) CDECL_CALL(0x00531B30, &resource_id, mash_data_size, a3);
+    }
+    else
+    {
+        uint8_t * (* func)(const resource_key *, int *, resource_pack_slot **) = CAST(func, 0x00531B30);
+        return func(&resource_id, mash_data_size, a3);
     }
 }
 
@@ -1052,6 +1094,15 @@ void resource_manager_patch()
 {
     SET_JUMP(0x00542740, resource_manager::push_resource_context);
 
+    SET_JUMP(0x00537530, resource_manager::pop_resource_context);
+
+    //REDIRECT(0x00594836, resource_manager::get_resource);
+
+    {
+        resource_pack_slot * (* func)(resource_pack_slot *) = &resource_manager::get_best_context;
+        REDIRECT(0x00542A04, func);
+    }
+
     //REDIRECT(0x0055A6E1, resource_manager::get_resource_if_exists);
 
     REDIRECT(0x005D70A6, resource_manager::frame_advance);
@@ -1059,8 +1110,6 @@ void resource_manager_patch()
     SET_JUMP(0x0052A820, resource_manager::get_pack_file_stats);
 
     SET_JUMP(0x00537650, resource_manager::load_amalgapak);
-
-    //REDIRECT(0x00594836, resource_manager::get_resource);
 
     SET_JUMP(0x0055BA30, resource_manager::create_inst);
 

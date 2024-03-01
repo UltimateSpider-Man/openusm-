@@ -10,7 +10,9 @@
 
 VALIDATE_SIZE(material_file_resource_handler, 0x14);
 
-material_file_resource_handler::material_file_resource_handler(worldly_pack_slot *a2) {
+material_file_resource_handler::material_file_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888A94;
     this->my_slot = a2;
     this->field_10 = TLRESOURCE_TYPE_MATERIAL_FILE;
 }

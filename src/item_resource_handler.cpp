@@ -12,7 +12,9 @@
 
 VALIDATE_SIZE(item_resource_handler, 0x10);
 
-item_resource_handler::item_resource_handler(worldly_pack_slot *a2) {
+item_resource_handler::item_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x00888A5C;
     this->my_slot = a2;
 }
 

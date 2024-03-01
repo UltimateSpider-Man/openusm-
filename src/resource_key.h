@@ -114,8 +114,6 @@ struct resource_key {
 
     mString get_platform_string(int a1) const;
 
-    void sub_41FFA0();
-
     //0x004201C0
     void set(const resource_key &a2);
 
@@ -131,8 +129,6 @@ struct resource_key {
     static void calc_resource_string_and_type_from_path(const char *in_string,
                                                         mString *out_string,
                                                         resource_key_type *type_override);
-
-    bool sub_48AB80();
 };
 
 extern Var<const char *[4][70]> resource_key_type_ext;

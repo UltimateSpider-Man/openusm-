@@ -169,17 +169,6 @@ void resource_key::calc_resource_string_and_type_from_path(const char *in_string
     *out_string = Dest;
 }
 
-bool resource_key::sub_48AB80() {
-    string_hash v3;
-    v3.initialize(0, nullptr, 0);
-    return this->m_hash.source_hash_code != v3.source_hash_code;
-}
-
-void resource_key::sub_41FFA0() {
-    this->m_hash.source_hash_code = 0;
-    this->m_type = RESOURCE_KEY_TYPE_NONE;
-}
-
 void resource_key::operator=(const resource_key &a2) {
     if (&a2 != this) {
         this->m_hash = a2.m_hash;
@@ -187,7 +176,8 @@ void resource_key::operator=(const resource_key &a2) {
     }
 }
 
-bool resource_key::is_set() const {
+bool resource_key::is_set() const
+{
     resource_key temp_key{};
     temp_key.m_hash.initialize(0, nullptr, 0);
 

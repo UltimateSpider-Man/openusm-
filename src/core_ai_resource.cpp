@@ -5,6 +5,7 @@
 #include "func_wrapper.h"
 #include "resource_key.h"
 #include "trace.h"
+#include "utility.h"
 
 #include <cassert>
 
@@ -25,7 +26,7 @@ void core_ai_resource::unmash(mash_info_struct *a1, void *a3)
 {
     TRACE("ai::core_ai_resource::unmash");
 
-    if constexpr (1)
+    if constexpr (0)
     {
         a1->unmash_class_in_place(this->field_0, this);
         a1->unmash_class_in_place(this->my_base_graphs, this);
@@ -115,3 +116,11 @@ bool core_ai_resource::does_locomotion_graph_exist(resource_key the_graph) const
 }
 
 } // namespace ai
+
+void core_ai_resource_patch()
+{
+    {
+        FUNC_ADDRESS(address, &ai::core_ai_resource::unmash);
+        REDIRECT(0x00568A67, address);
+    }
+}

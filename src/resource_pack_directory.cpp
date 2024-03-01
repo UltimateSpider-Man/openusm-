@@ -5,8 +5,10 @@
 
 VALIDATE_SIZE(resource_pack_directory, 0x5C);
 
-resource_pack_directory::resource_pack_directory() {
-    if constexpr (1) {
+resource_pack_directory::resource_pack_directory()
+{
+    if constexpr (0)
+    {
         //this->field_4 = &tlresource_directory<nglTexture, tlFixedString>::`vtbl;
         this->field_8 = nullptr;
         //this->field_C = &tlresource_directory<nglMeshFile, tlFixedString>::`vtbl;
@@ -31,7 +33,9 @@ resource_pack_directory::resource_pack_directory() {
         this->field_58 = nullptr;
         this->field_0 = nullptr;
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x0052A9A0, this);
     }
 }

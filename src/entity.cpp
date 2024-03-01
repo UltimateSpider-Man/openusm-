@@ -42,7 +42,32 @@ void entity::destroy_static_entity_pointers() {
 
 entity::~entity()
 {
-    THISCALL(0x004F91C0, this);
+    if constexpr (0)
+    {
+        this->remove_from_regions();
+        if ( this->has_time_ifc() )
+        {
+            auto *v2 = this->field_58;
+            if ( v2->field_8 )
+            {
+                if ( v2 != nullptr ) {
+                    void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(v2->m_vtbl, 0x0));
+                    finalize(v2, nullptr, true);
+                }
+            }
+            else
+            {
+                void (__fastcall *func)(void *) = CAST(func, get_vfunc(v2->m_vtbl, 0x24));
+                func(v2);
+            }
+
+            this->field_58 = nullptr;
+        }
+    }
+    else
+    {
+        THISCALL(0x004F91C0, this);
+    }
 }
 
 void entity::randomize_position(const vector3d &a2, Float a3, Float a4, Float a5)
@@ -549,7 +574,8 @@ void entity::remove_from_regions()
 {
     TRACE("entity::remove_from_regions");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         assert("regions[ 0 ] can not be NULL when regions[ 1 ] is not. "
                     && ( this->regions[ 1 ] ? this->regions[ 0 ] != nullptr: 1 ));
 
@@ -577,8 +603,7 @@ void entity::remove_from_regions()
                 for (auto v5 = 0; v5 < this->extended_regions->size(); ++v5)
                 {
                     auto *reg = this->extended_regions->m_data[v5];
-                    if ( reg != nullptr && reg->is_loaded() )
-                    {
+                    if ( reg != nullptr && reg->is_loaded() ) {
                         reg->remove(this);
                     }
                 }
@@ -587,7 +612,9 @@ void entity::remove_from_regions()
                 this->extended_regions = nullptr;
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x004CB750, this);
     }
 }

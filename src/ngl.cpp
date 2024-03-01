@@ -1567,9 +1567,12 @@ void nglTextureInit()
 {
     TRACE("nglTextureInit");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
 
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x00773830);
     }
 }
@@ -1708,7 +1711,13 @@ tlFixedString *nglMeshFile::get_string(nglMeshFile *a1) {
     return &a1->field_0;
 }
 
-void nglSetTextureDirectory(tlResourceDirectory<nglTexture, tlFixedString> *a1) {
+void nglSetTextureDirectory(tlResourceDirectory<nglTexture, tlFixedString> *a1)
+{
+    TRACE("nglSetTextureDirectory");
+
+    sp_log("0x%08X", a1->m_vtbl);
+    sp_log("0x%08x", tlresource_directory<nglTexture,tlFixedString>::system_dir()->m_vtbl);
+
     if constexpr (1) {
         nglTextureDirectory() = CAST(nglTextureDirectory(), a1);
     } else {
@@ -3248,20 +3257,26 @@ nglMesh *nglGetMeshInFile(const tlHashString &a1, nglMeshFile *a2)
     return nglGetMesh(a1, true);
 }
 
-nglTexture *nglGetTexture(uint32_t a1) {
+nglTexture *nglGetTexture(uint32_t a1)
+{
     struct Vtbl {
         int empty[2];
-        nglTexture *(__fastcall *field_8)(void *, int, uint32_t);
+        nglTexture *(__fastcall *Find)(void *, void *, uint32_t);
     };
 
     void *address = get_vtbl(nglTextureDirectory());
 
     Vtbl *vtbl = CAST(vtbl, address);
 
-    return vtbl->field_8(nglTextureDirectory(), 0, a1);
+    return vtbl->Find(nglTextureDirectory(), 0, a1);
 }
 
-nglTexture *nglGetTexture(const tlFixedString &a1) {
+nglTexture *nglGetTexture(const tlFixedString &a1)
+{
+    TRACE("nglGetTexture", a1.to_string());
+
+    sp_log("0x%08x", nglTextureDirectory()->m_vtbl);
+
     nglTexture * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(nglTextureDirectory()->m_vtbl, 0x8));
     return Find(nglTextureDirectory(), nullptr, a1.m_hash);
 }
@@ -5786,6 +5801,13 @@ void ngl_patch()
     SET_JUMP(0x0076C970, nglListBeginScene);
 
     SET_JUMP(0x0076B6D0, nglSetViewport);
+
+    {
+        nglTexture * (* func)(const tlFixedString &) = &nglGetTexture;
+        SET_JUMP(0x00773230, func);
+    }
+
+    SET_JUMP(0x007730B0, nglSetTextureDirectory);
 
     //SET_JUMP(0x0076C400, nglSetDefaultSceneParams);
 

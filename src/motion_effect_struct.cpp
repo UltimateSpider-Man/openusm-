@@ -56,12 +56,17 @@ void motion_effect_struct::render_distorted_trail(
     THISCALL(0x004DCA10, this, &a1, &a2, &a3, &a4, &a5, &a6, a7, a8, a9, a10, &a11, &a12);
 }
 
-void motion_effect_struct::record_all_motion_fx(Float a1) {
+void motion_effect_struct::record_all_motion_fx(Float a1)
+{
+    TRACE("motion_effect_struct::record_all_motion_fx");
+
     CDECL_CALL(0x004EFA50, a1);
 }
 
 void motion_effect_struct_patch()
 {
+    REDIRECT(0x005584EE, motion_effect_struct::record_all_motion_fx);
+
     {
         FUNC_ADDRESS(address, &motion_effect_struct::render_trail);
         REDIRECT(0x004E7865, address);

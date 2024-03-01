@@ -6,11 +6,10 @@
 #include <list.hpp>
 #include <map.hpp>
 
-#define SCRIPT_MANAGER_STANDALONE 1 
+#define SCRIPT_MANAGER_STANDALONE 1
 #if SCRIPT_MANAGER_STANDALONE
 #include <map>
 #endif
-
 
 struct mString;
 struct script_var_container;

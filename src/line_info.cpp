@@ -196,7 +196,10 @@ bool is_noncrawlable_surface(line_info &a1) {
     return (bool) CDECL_CALL(0x0068A9D0, &a1);
 }
 
-void line_info::frame_advance(int a1) {
+void line_info::frame_advance(int a1)
+{
+    TRACE("line_info::frame_advance");
+
     CDECL_CALL(0x0052F120, a1);
 }
 
@@ -205,6 +208,8 @@ void line_info_patch() {
         FUNC_ADDRESS(address, &line_info::render);
         SET_JUMP(0x00519F00, address);
     }
+
+    REDIRECT(0x005584CA, line_info::frame_advance);
 
     {
         FUNC_ADDRESS(address, &line_info::check_collision);

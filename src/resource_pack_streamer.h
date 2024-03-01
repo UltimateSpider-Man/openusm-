@@ -56,6 +56,10 @@ struct resource_pack_streamer {
     //0x00537C00
     ~resource_pack_streamer();
 
+    void init(
+        resource_partition *a2,
+        _std::vector<resource_pack_slot *> *slots);
+
     inline auto *get_pack_slots() {
         return this->pack_slots;
     }

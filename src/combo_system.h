@@ -54,3 +54,5 @@ struct combo_system {
     //0x00446A50
     int get_num_weapons();
 };
+
+extern void combo_system_patch();

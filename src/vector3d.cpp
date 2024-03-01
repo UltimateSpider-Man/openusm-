@@ -225,19 +225,6 @@ float vector3d::length() const {
     return std::sqrt(this->length2());
 }
 
-void vector3d::sub_48BFB0(const float &a2) {
-    auto &self = *this;
-
-    self[0] = a2;
-    if (a2 > self[2]) {
-        self[0] = self[2];
-    }
-
-    if (self[0] < self[1]) {
-        self[0] = self[1];
-    }
-}
-
 vector4d vector3d::sub_48D010() {
     vector4d result;
     THISCALL(0x0048D010, this, &result);

@@ -9,7 +9,7 @@ struct entity;
 struct time_interface {
     std::intptr_t m_vtbl;
     entity *field_4;
-    char field_8;
+    bool field_8;
     float field_C;
     float field_10;
     float field_14;

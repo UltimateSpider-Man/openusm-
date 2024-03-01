@@ -11,7 +11,9 @@
 
 VALIDATE_SIZE(scene_anim_resource_handler, 0x14);
 
-scene_anim_resource_handler::scene_anim_resource_handler(worldly_pack_slot *a2) {
+scene_anim_resource_handler::scene_anim_resource_handler(worldly_pack_slot *a2)
+{
+    this->m_vtbl = 0x008889E8;
     this->my_slot = a2;
     this->field_10 = TLRESOURCE_TYPE_SCENE_ANIM;
 }

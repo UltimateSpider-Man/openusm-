@@ -8,6 +8,10 @@ struct fx_cache;
 struct vector3d;
 struct handheld_item;
 struct entity_base;
+struct entity;
+
+struct generic_mash_header;
+struct generic_mash_data_ptrs;
 
 struct cached_special_effect {
     resource_key field_0;
@@ -16,14 +20,14 @@ struct cached_special_effect {
     int field_1C;
     int field_20;
     sound_instance_id field_24;
-    int field_28;
+    entity *field_28;
     float field_2C;
     fx_cache *field_30;
     int16_t field_34;
     int16_t field_36;
     int field_38;
-    char field_3C;
-    char field_3D;
+    bool field_3C;
+    bool field_3D;
 
     //0x005020D0
     cached_special_effect();
@@ -42,6 +46,13 @@ struct cached_special_effect {
     //0x004D4E10
     void fill_cache();
 
+    void un_mash(
+        generic_mash_header *a2,
+        void *a3,
+        generic_mash_data_ptrs *a4);
+
     //0x004D81F0
     void frame_advance(Float a2);
 };
+
+extern void cached_special_effect_patch();

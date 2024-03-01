@@ -28,7 +28,7 @@ struct slc_manager {
     static void un_mash_all_funcs();
 };
 
-#define SLC_MANAGER_STANDALONE 1
+#define SLC_MANAGER_STANDALONE 1 
 #if !SLC_MANAGER_STANDALONE
 extern Var<_std::vector<script_library_class *> *> slc_manager_class_array;
 #else

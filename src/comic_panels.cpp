@@ -20,7 +20,17 @@ Var<panel *> game_play_panel{0x0096F7D4};
 
 Var<fixed_vector<panel *, 48>> panels{0x0096F9F8};
 
-void init() {
+void sub_7315A0()
+{
+    TRACE("sub_7315A0");
+
+    CDECL_CALL(0x007315A0);
+}
+
+void init()
+{
+    TRACE("comic_panels::init");
+
     CDECL_CALL(0x00736A60);
 }
 
@@ -111,7 +121,8 @@ void __fastcall sub_742C50(void *self, int, comic_panels::panel_component_base *
     THISCALL(0x00742C50, self, a2);
 }
 
-void comic_panels_patch() {
+void comic_panels_patch()
+{
     FUNC_ADDRESS(address, &comic_panels::panel::add_camera_component);
     REDIRECT(0x006424BB, address);
 
@@ -120,6 +131,8 @@ void comic_panels_patch() {
         REDIRECT(0x0073E84C, address);
         REDIRECT(0x0073EA2E, address);
     }
+
+    REDIRECT(0x00736AE5, comic_panels::sub_7315A0);
 
     {
         REDIRECT(0x005D7112, comic_panels::render);

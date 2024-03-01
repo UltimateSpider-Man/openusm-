@@ -81,7 +81,7 @@ struct Struct_984498
     int free;
 };
 
-#define NFL_STANDALONE 1 
+#define NFL_STANDALONE 0
 
 #define make_var(type, name) \
     static type g_##name {}; \

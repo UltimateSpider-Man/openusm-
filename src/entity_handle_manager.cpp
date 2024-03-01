@@ -310,9 +310,13 @@ int entity_handle_manager::get_free_slot()
     return free_slot_indices().pop_front();
 }
 
-int entity_handle_manager::add_entity(entity_base *ent_to_add) {
-    if constexpr (1) {
-        static constexpr entity_base_vhandle INVALID_VHANDLE = {0};
+int entity_handle_manager::add_entity(entity_base *ent_to_add)
+{
+    TRACE("entity_handle_manager::add_entity");
+
+    if constexpr (1)
+    {
+        static constexpr entity_base_vhandle INVALID_VHANDLE {0};
 
         assert(ent_to_add != nullptr);
         assert(ent_to_add->get_my_vhandle() == INVALID_VHANDLE && "re-adding an entity!");
@@ -332,7 +336,9 @@ int entity_handle_manager::add_entity(entity_base *ent_to_add) {
     }
 }
 
-void entity_handle_manager_patch() {
+void entity_handle_manager_patch()
+{
+    SET_JUMP(0x004CCF60, entity_handle_manager::add_entity);
 
     REDIRECT(0x005AD2E4, entity_handle_manager::create_inst);
 

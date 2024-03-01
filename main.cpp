@@ -46,6 +46,7 @@
 #include "base_tl_resource_handler.h"
 #include "beam.h"
 #include "box_trigger_resource_handler.h"
+#include "cached_special_effect.h"
 #include "camera.h"
 #include "camera_target_info.h"
 #include "character_anim_controller.h"
@@ -59,14 +60,17 @@
 #include "collision_capsule.h"
 #include "colmesh.h"
 #include "combat_state.h"
+#include "combo_system.h"
 #include "combo_system_move.h"
 #include "common.h"
 #include "conglom.h"
+#include "core_ai_resource.h"
 #include "cursor.h"
 #include "custom_math.h"
 #include "cut_scene.h"
 #include "cut_scene_player.h"
 #include "cut_scene_resource_handler.h"
+#include "damage_interface.h"
 #include "daynight.h"
 #include "debug_struct.h"
 #include "eligible_pack.h"
@@ -76,7 +80,6 @@
 #include "entity_base_vhandle.h"
 #include "entity_handle_manager.h"
 #include "entity_mash.h"
-#include "entity_resource_handler.h"
 #include "event_manager.h"
 #include "fe_dialog_text.h"
 #include "fe_mini_map_widget.h"
@@ -90,6 +93,7 @@
 #include "fileusm.h"
 #include "frontendmenusystem.h"
 #include "func_wrapper.h"
+#include "fx_cache.h"
 #include "gab_database_resource_handler.h"
 #include "game.h"
 #include "game_camera.h"
@@ -205,6 +209,7 @@
 #include "sound_alias_database.h"
 #include "sound_alias_database_resource_handler.h"
 #include "sound_bank_slot.h"
+#include "sound_interface.h"
 #include "spawnable.h"
 #include "spiderman_camera.h"
 #include "spider_monkey.h"
@@ -246,6 +251,7 @@
 #include "vm_thread.h"
 #include "vtbl.h"
 #include "wds.h"
+#include "web_interface.h"
 #include "web_polytube.h"
 #include "window_manager.h"
 #include "worldly_pack_slot.h"
@@ -2399,117 +2405,347 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC52F, parse_cmd);
 
-    nfl_system_patch();
+    fx_cache_patch();
 
-    sound_bank_slot_patch();
+    cached_special_effect_patch();
 
-    settings_patch();
-
-    static_region_list_methods_patch();
-
-    aeps_patch();
-
-    game_patch();
-
-    game_camera_patch();
-
-    region_patch();
-    
-    matrix4x4_patch();
-
-    ai_interaction_data_patch();
-
-    animation_controller_patch();
-
-    collision_capsule_patch();
-
-    city_lod_patch();
-
-    swing_inode_patch();
-
-    swing_state_patch();
-
-    comic_panels_patch();
-
-    polytube_patch();
-
-    web_polytube_patch();
-
-    entity_patch();
-
-    wds_render_manager_patch();
-
-    wds_token_manager_patch();
-
-    beam_patch();
-
-    app_patch();
-    
-    motion_effect_struct_patch();
-
-    ngl_vertexdef_patch();
-
-    actor_patch();
-
-    camera_target_info_patch();
-
-    spiderman_camera_patch();
-
-    script_data_interface_patch();
-
-    animation_interface_patch();
+    damage_interface_patch();
 
     mashable_vector_patch();
 
-    conglomerate_patch();
+    if constexpr (1)
+    {
+        resource_directory_patch();
 
-    entity_base_patch();
+        core_ai_resource_patch();
 
-    entity_mash_patch();
+        sound_bank_slot_patch();
 
-    anim_record_patch();
+        settings_patch();
 
-    us_person_patch();
+        static_region_list_methods_patch();
 
-    ai_interact_resource_handler_patch();
+        aeps_patch();
 
-    cut_scene_resource_handler_patch();
+        game_patch();
 
-    patrol_def_resource_handler_patch();
+        game_camera_patch();
 
-    item_resource_handler_patch();
+        region_patch();
+        
+        matrix4x4_patch();
 
-    box_trigger_resource_handler_patch();
+        ai_interaction_data_patch();
 
-    path_resource_handler_patch();
+        animation_controller_patch();
 
-    ai_state_graph_resource_handler_patch();
+        collision_capsule_patch();
 
-    scene_anim_resource_handler_patch();
+        city_lod_patch();
 
-    anim_resource_handler_patch();
+        swing_inode_patch();
 
-    combo_system_move_patch();
+        swing_state_patch();
 
-    base_ai_resource_handler_patch();
+        comic_panels_patch();
 
-    skeleton_resource_handler_patch();
+        polytube_patch();
 
-    sound_alias_database_resource_handler_patch();
+        web_interface_patch();
 
-    glass_house_resource_handler_patch();
+        web_polytube_patch();
 
-    material_file_resource_handler_patch();
+        entity_patch();
 
-    morph_file_resource_handler_patch();
+        wds_render_manager_patch();
 
-    mesh_file_resource_handler_patch();
+        wds_token_manager_patch();
 
-    panel_resource_handler_patch();
+        beam_patch();
 
-    meta_anim_interact_patch();
+        app_patch();
+        
+        motion_effect_struct_patch();
+
+        ngl_vertexdef_patch();
+
+        actor_patch();
+
+        camera_target_info_patch();
+
+        spiderman_camera_patch();
+
+        script_data_interface_patch();
+
+        animation_interface_patch();
+
+        conglomerate_patch();
+
+        entity_base_patch();
+
+        entity_mash_patch();
+
+        anim_record_patch();
+
+        us_person_patch();
+
+        sound_interface_patch();
+
+        combo_system_patch();
+
+        combo_system_move_patch();
+
+        meta_anim_interact_patch();
+
+        input_mgr_patch();
+
+        script_executable_patch();
+
+        sin_container_patch();
+
+        daynight_patch();
+
+        vm_patch();
+
+        vm_thread_patch();
+
+        vm_executable_patch();
+
+        us_decal_patch();
+
+        resource_key_patch();
+
+        us_lod_patch();
+
+        FrontEnd_Shader_patch();
+
+        us_translucentshader_patch();
+
+        us_simpleshader_patch();
+
+        nglShader_patch();
+
+        mission_manager_patch();
+
+        resource_pack_streamer_patch();
+
+        resource_partition_patch();
+
+        resource_pack_slot_patch();
+
+        resource_pack_standalone_patch();
+
+        tlresource_directory_patch();
+
+        tlResourceDirectory_patch();
+        
+        PanelMeshSection_patch();
+
+        fe_mini_map_widget_patch();
+
+        IGOFrontEnd_patch();
+
+        spider_monkey_patch();
+
+        FEManager_patch();
+
+        ngl_patch();
+
+        MultiLineString_patch();
+
+        pause_menu_message_log_patch();
+
+        pause_menu_save_load_display_patch();
+
+        pause_menu_controller_patch();
+
+        pause_menu_options_display_patch();
+
+        pause_menu_transition_patch();
+
+        menu_nav_bar_patch();
+
+        unlockables_menu_patch();
+
+        pause_menu_status_patch();
+
+        pause_menu_root_patch();
+
+        PauseMenuSystem_patch();
+
+        cg_mesh_patch();
+
+        FEFloatingText_patch();
+
+        FEMultiLineText_patch();
+
+        mash_virtual_base_patch();
+
+        PanelAnimFile_patch();
+
+        fe_dialog_text_patch();
+
+        PanelQuad_patch();
+
+        FEText_patch();
+
+        PanelFile_patch();
+
+        localized_string_table_patch();
+
+        animation_logic_sytem_shared_patch();
+
+        mash_info_struct_patch();
+
+        string_hash_dictionary_patch();
+
+        worldly_pack_slot_patch();
+
+        nsl_patch();
+
+        wds_script_manager_patch();
+
+        world_dynamics_system_patch();
+
+        entity_handle_manager_patch();
+
+        eligible_pack_patch();
+
+        terrain_patch();
+
+        chuck_callbacks_patch();
+
+        os_file_patch();
+
+        traffic_patch();
+
+        traffic_path_lane_patch();
+
+        script_instance_patch();
+
+        script_access_patch();
+
+        trigger_manager_patch();
+
+        spawnable_patch();
+
+        ai_path_patch();
+
+        ai_core_patch();
+        
+        interactable_interface_patch();
+
+        animation_logic_system_patch();
+
+        event_manager_patch();
+
+        variant_interface_patch();
+
+        nalStreamInstance_patch();
+
+        script_memtrack_patch();
+
+        scratchpad_stack_patch();
+
+        hero_inode_patch();
+
+        nal_anim_controller_patch();
+
+        character_anim_controller_patch();
+
+        usm_anim_player_patch();
+
+        anim_handle_patch();
+
+        plr_loco_crawl_state_patch();
+
+        plr_loco_crawl_transition_state_patch();
+
+        ai_player_controller_patch();
+
+        ai_state_machine_patch();
+
+        line_info_patch();
+        
+        local_collision_patch();
+
+        hierarchical_entity_proximity_map_patch();
+
+        spidey_base_state_patch();
+
+        hero_base_state_patch();
+        
+        enhanced_state_patch();
+
+        CharComponentBase_patch();
+        
+        nalChar_patch();
+
+        ped_spawner_patch();
+    }
+
+    //standalone patches
+    if constexpr (1)
+    {
+        resource_manager_patch();
+
+        slc_manager_patch();
+
+        script_manager_patch();
+
+        slab_allocator_patch();
+
+        tl_patch();
+
+        nfl_system_patch();
+    }
+
+    //resource handler patches
+    if constexpr (1)
+    {
+        ai_interact_resource_handler_patch();
+
+        cut_scene_resource_handler_patch();
+
+        patrol_def_resource_handler_patch();
+
+        item_resource_handler_patch();
+
+        box_trigger_resource_handler_patch();
+
+        path_resource_handler_patch();
+
+        ai_state_graph_resource_handler_patch();
+
+        scene_anim_resource_handler_patch();
+
+        anim_resource_handler_patch();
+
+        base_ai_resource_handler_patch();
+
+        skeleton_resource_handler_patch();
+
+        sound_alias_database_resource_handler_patch();
+
+        glass_house_resource_handler_patch();
+
+        material_file_resource_handler_patch();
+
+        morph_file_resource_handler_patch();
+
+        mesh_file_resource_handler_patch();
+
+        panel_resource_handler_patch();
+
+        texture_resource_handler_patch();
+
+        gab_database_resource_handler_patch();
+
+        als_resource_handler_patch();
+    }
 
     //als
+    if constexpr (1)
     {
         als_meta_anim_base_patch();
 
@@ -2548,209 +2784,7 @@ BOOL install_redirects()
         als_mocomp_patch();
 
         als_motion_compensator_patch();
-
-        als_resource_handler_patch();
     }
-
-    input_mgr_patch();
-
-    script_executable_patch();
-
-    sin_container_patch();
-
-    script_manager_patch();
-
-    daynight_patch();
-
-    slc_manager_patch();
-
-    vm_patch();
-
-    vm_thread_patch();
-
-    vm_executable_patch();
-
-    resource_directory_patch();
-
-    us_decal_patch();
-
-    resource_key_patch();
-
-    us_lod_patch();
-
-    FrontEnd_Shader_patch();
-
-    us_translucentshader_patch();
-
-    us_simpleshader_patch();
-
-    nglShader_patch();
-
-    mission_manager_patch();
-
-    resource_manager_patch();
-
-    resource_pack_streamer_patch();
-
-    resource_partition_patch();
-
-    resource_pack_slot_patch();
-
-    resource_pack_standalone_patch();
-
-    slab_allocator_patch();
-
-    tlresource_directory_patch();
-
-    tlResourceDirectory_patch();
-    
-    PanelMeshSection_patch();
-
-    fe_mini_map_widget_patch();
-
-    IGOFrontEnd_patch();
-
-    spider_monkey_patch();
-
-    tl_patch();
-
-    FEManager_patch();
-
-    ngl_patch();
-
-    MultiLineString_patch();
-
-    pause_menu_message_log_patch();
-
-    pause_menu_save_load_display_patch();
-
-    pause_menu_controller_patch();
-
-    pause_menu_options_display_patch();
-
-    pause_menu_transition_patch();
-
-    menu_nav_bar_patch();
-
-    unlockables_menu_patch();
-
-    pause_menu_status_patch();
-
-    pause_menu_root_patch();
-
-    PauseMenuSystem_patch();
-
-    texture_resource_handler_patch();
-
-    FEFloatingText_patch();
-
-    FEMultiLineText_patch();
-
-    mash_virtual_base_patch();
-
-    PanelAnimFile_patch();
-
-    fe_dialog_text_patch();
-
-    PanelQuad_patch();
-
-    FEText_patch();
-
-    PanelFile_patch();
-
-    localized_string_table_patch();
-
-    animation_logic_sytem_shared_patch();
-
-    gab_database_resource_handler_patch();
-
-    mash_info_struct_patch();
-
-    string_hash_dictionary_patch();
-
-    worldly_pack_slot_patch();
-
-    nsl_patch();
-
-    wds_script_manager_patch();
-
-    world_dynamics_system_patch();
-
-    entity_handle_manager_patch();
-
-    eligible_pack_patch();
-
-    terrain_patch();
-
-    chuck_callbacks_patch();
-
-    os_file_patch();
-
-    traffic_patch();
-
-    traffic_path_lane_patch();
-
-    script_instance_patch();
-
-    script_access_patch();
-
-    trigger_manager_patch();
-
-    spawnable_patch();
-
-    ai_path_patch();
-
-    ai_core_patch();
-    
-    interactable_interface_patch();
-
-    animation_logic_system_patch();
-
-    event_manager_patch();
-
-    variant_interface_patch();
-
-    nalStreamInstance_patch();
-
-    script_memtrack_patch();
-
-    scratchpad_stack_patch();
-
-    hero_inode_patch();
-
-    nal_anim_controller_patch();
-
-    character_anim_controller_patch();
-
-    usm_anim_player_patch();
-
-    anim_handle_patch();
-
-    plr_loco_crawl_state_patch();
-
-    plr_loco_crawl_transition_state_patch();
-
-    ai_player_controller_patch();
-
-    ai_state_machine_patch();
-
-    line_info_patch();
-    
-    local_collision_patch();
-
-    hierarchical_entity_proximity_map_patch();
-
-    spidey_base_state_patch();
-
-    hero_base_state_patch();
-    
-    enhanced_state_patch();
-
-    CharComponentBase_patch();
-    
-    nalChar_patch();
-
-    ped_spawner_patch();
 
     {
         DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
@@ -2795,8 +2829,6 @@ BOOL install_redirects()
     if constexpr (0) {
 
         anchor_query_visitor_patch();
-
-        cg_mesh_patch();
 
 
         PanelQuadSection_patch();
@@ -2994,9 +3026,6 @@ BOOL install_redirects()
         cut_scene_player_patch();
 
         resource_partition_patch();
-
-
-        entity_resource_handler_patch();
 
         eligible_pack_streamer_patch();
 

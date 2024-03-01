@@ -15,22 +15,14 @@ VALIDATE_SIZE(resource_partition, 0xB4u);
 
 VALIDATE_OFFSET(resource_partition, streamer, 0x18);
 
-resource_partition::resource_partition(resource_partition_enum a2) {
-    if constexpr (0)
+resource_partition::resource_partition(resource_partition_enum a2)
+{
+    if constexpr (1)
     {
-        auto *vec = &this->m_pack_slots;
-
-        this->streamer = {};
-
         this->field_4 = a2;
         this->clear();
 
-        resource_pack_streamer &streamer = this->streamer;
-        streamer.clear();
-        streamer.field_68 = (int) this;
-        streamer.pack_slots = vec;
-        streamer.field_7C = 0.0;
-        streamer.m_data_size = 0;
+        this->streamer.init(this, &this->m_pack_slots);
     }
     else
     {
@@ -56,7 +48,8 @@ void resource_partition::frame_advance(Float a1, limited_timer *a2) {
     this->streamer.frame_advance({a1}, a2);
 }
 
-bool resource_partition::has_room_for_slot(int a2) {
+bool resource_partition::has_room_for_slot(int a2)
+{
     auto v2 = a2;
     if (a2 % 4096 > 0) {
         v2 = (a2 / 4096 + 1) << 12;
@@ -73,7 +66,8 @@ void resource_partition::clear()
 
     if constexpr (1)
     {
-        for (uint32_t i = 0; i < this->m_pack_slots.size(); ++i) {
+        for (uint32_t i = 0; i < this->m_pack_slots.size(); ++i)
+        {
             auto *slot = this->m_pack_slots[i];
 
             worldly_pack_slot *delete_me = CAST(delete_me, slot);
@@ -82,10 +76,7 @@ void resource_partition::clear()
             assert(delete_me->is_empty());
 
             if (delete_me != nullptr) {
-                void (__fastcall *func)(void *, void *, bool) = CAST(func, get_vfunc(delete_me->m_vtbl, 0x8));
-
-                //THISCALL(vtbl[2], v4, true);
-                func(delete_me, nullptr, true);
+                delete_me->m_vtbl->finalize(delete_me, nullptr, true);
             }
         }
 
@@ -133,7 +124,10 @@ void resource_partition::pop_pack_slot() {
     }
 }
 
-void resource_partition::push_pack_slot(int memory_amount_to_reserve, void *a3) {
+void resource_partition::push_pack_slot(int memory_amount_to_reserve, void *a3)
+{
+    TRACE("resource_partition::push_pack_slot");
+
     if constexpr (0)
     {
         assert(memory_amount_to_reserve > 0);
@@ -184,9 +178,14 @@ void resource_partition::push_pack_slot(int memory_amount_to_reserve, void *a3) 
     }
 }
 
-void resource_partition_patch() {
-    FUNC_ADDRESS(address, &resource_partition::push_pack_slot);
-    //REDIRECT(0x00558C18, address);
+void resource_partition_patch()
+{
+    {
+        FUNC_ADDRESS(address, &resource_partition::push_pack_slot);
+        REDIRECT(0x00558C18, address);
+        REDIRECT(0x005D208F, address);
+        REDIRECT(0x005D81A8, address);
+    }
 
     {
         FUNC_ADDRESS(address, &resource_partition::clear);

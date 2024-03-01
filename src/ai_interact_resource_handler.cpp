@@ -11,9 +11,11 @@
 
 VALIDATE_SIZE(ai_interact_resource_handler, 0x14);
 
-ai_interact_resource_handler::ai_interact_resource_handler(worldly_pack_slot *a2) {
+ai_interact_resource_handler::ai_interact_resource_handler(worldly_pack_slot *a2) 
+{
+    this->m_vtbl = 0x00888AE4;
     this->my_slot = a2;
-    this->field_10 = RESOURCE_KEY_TYPE_CUT_SCENE;
+    this->field_10 = RESOURCE_KEY_TYPE_AI_INTERACTION;
 }
 
 bool ai_interact_resource_handler::_handle(worldly_resource_handler::eBehavior a2, limited_timer *a3)

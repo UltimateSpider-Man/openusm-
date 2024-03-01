@@ -291,11 +291,13 @@ void resource_directory::constructor_common(resource_pack_slot *a2, uint8_t *a3,
     }
 }
 
-void resource_directory::remove_parent(resource_directory *bye) {
+void resource_directory::remove_parent(resource_directory *bye)
+{
     assert(bye != nullptr);
 
     auto size = this->parents.size();
-    for (auto i = 0; i < size; ++i) {
+    for (auto i = 0; i < size; ++i)
+    {
         if (this->parents.m_data[i] == bye)
         {
             assert((i == parents.size() - 1 || parents[i + 1] == nullptr) && "must remove the LAST parent from directory");
@@ -310,7 +312,10 @@ void resource_directory::remove_parent(resource_directory *bye) {
 
 }
 
-void resource_directory::add_parent(resource_directory *new_dir) {
+void resource_directory::add_parent(resource_directory *new_dir)
+{
+    TRACE("resource_directory::add_parent");
+
     assert(new_dir != nullptr);
 
     auto size = this->parents.m_size;
@@ -390,7 +395,9 @@ bool resource_directory::find_resource(const resource_key &a2,
             *v5 = this;
             *out_loc = &this->resource_locations.m_data[idx];
             result = true;
-        } else {
+        }
+        else
+        {
             if (this->parents.size() != 0)
             {
                 for (auto i = 0u; i < this->parents.size(); ++i)
@@ -566,8 +573,12 @@ uint8_t *resource_directory::get_resource(const resource_location *loc, resource
 
 uint8_t *resource_directory::get_resource(const resource_key &resource_id,
                                           int *mash_data_size,
-                                          resource_pack_slot **a4) {
-    if constexpr (1) {
+                                          resource_pack_slot **a4)
+{
+    TRACE("resource_directory::get_resource");
+
+    if constexpr (1)
+    {
         assert(resource_id.is_set());
         assert(resource_id.get_type() != RESOURCE_KEY_TYPE_NONE);
         assert(pack_slot != nullptr);
@@ -949,12 +960,28 @@ void resource_directory::release_mem() {
     THISCALL(0x0051F7D0, this);
 }
 
-void resource_directory_patch() {
+void resource_directory_patch()
+{
+    {
+        FUNC_ADDRESS(address, &resource_directory::add_parent);
+        REDIRECT(0x005D1FB3, address);
+    }
 
     {
         FUNC_ADDRESS(address, &resource_directory::find_resource);
         SET_JUMP(0x0051F550, address);
     }
+
+    {
+        uint8_t * (resource_directory::*func)(
+            const resource_key &resource_id,
+            int *a3,
+            resource_pack_slot **a4) = &resource_directory::get_resource;
+
+        FUNC_ADDRESS(address, func);
+        REDIRECT(0x0062F022, address);
+    }
+
     return;
 
     {

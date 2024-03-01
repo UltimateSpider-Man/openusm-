@@ -10,6 +10,7 @@ struct from_mash_in_place_constructor;
 struct mash_info_struct;
 
 namespace ai {
+
 struct core_ai_resource {
     param_block field_0;
     int field_C;
@@ -34,4 +35,7 @@ struct core_ai_resource {
     //0x006C4D00
     bool does_locomotion_graph_exist(resource_key the_graph) const;
 };
+
 } // namespace ai
+
+extern void core_ai_resource_patch();
