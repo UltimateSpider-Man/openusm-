@@ -86,10 +86,10 @@ struct nglTexture {
     void sub_774F20();
 };
 
-extern inline constexpr auto NGLP_SCALE = 0x2;
+inline constexpr auto NGLP_SCALE = 0x2;
 
-extern inline constexpr auto NGLP_NO_CULLING = 0x40;
-extern inline constexpr auto NGLP_FORCE_LOD = 0x80;
+inline constexpr auto NGLP_NO_CULLING = 0x40;
+inline constexpr auto NGLP_FORCE_LOD = 0x80;
 
 extern Var<bool> g_valid_texture_format;
 
@@ -118,7 +118,7 @@ struct nglMaterialBase
     nglShader *field_4;
 
     nglMeshFile *File;
-    nglMaterialBase *field_C;
+    nglMaterialBase *NextMaterial;
     int field_10;
     int field_14;
 
@@ -312,15 +312,15 @@ extern Var<char[256]> nglMeshPath;
 struct nglMorphSet;
 
 struct nglMeshFile {
-    tlFixedString field_0;
-    char field_20[256];
+    tlFixedString FileName;
+    char FilePath[256];
     int field_120;
-    tlFileBuf field_124;
+    tlFileBuf FileBuf;
     bool field_130;
     int field_134;
     nglMesh *FirstMesh;
-    nglMaterialBase *field_13C;
-    nglMorphSet *field_140;
+    nglMaterialBase *FirstMaterial;
+    nglMorphSet *FirstMorph;
     int field_144;
 
     //0x00402050

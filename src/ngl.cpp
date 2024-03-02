@@ -77,7 +77,7 @@ VALIDATE_SIZE(nglPalette, 0xC);
 VALIDATE_OFFSET(nglTexture, field_60, 0x60);
 
 VALIDATE_SIZE(nglMeshFile, 0x148);
-VALIDATE_OFFSET(nglMeshFile, field_124, 0x124);
+VALIDATE_OFFSET(nglMeshFile, FileBuf, 0x124);
 
 VALIDATE_SIZE(nglMorphFile, 0x148);
 
@@ -1715,7 +1715,7 @@ void nglMeshFile::un_mash_start(generic_mash_header *header,
 }
 
 tlFixedString *nglMeshFile::get_string(nglMeshFile *a1) {
-    return &a1->field_0;
+    return &a1->FileName;
 }
 
 void nglSetTextureDirectory(tlResourceDirectory<nglTexture, tlFixedString> *a1)
@@ -1762,8 +1762,10 @@ nglMaterialBase *nglGetMaterialInFile(const tlFixedString &a1, nglMeshFile *Mesh
     TRACE("nglGetMaterialInFile", tlHashString {a1.GetHash()}.c_str(), a1.to_string());
 
     nglMaterialBase *result = nullptr;
-    if constexpr (1) {
-        for (result = MeshFile->field_13C; result != nullptr; result = result->field_C) {
+    if constexpr (1)
+    {
+        for (result = MeshFile->FirstMaterial; result != nullptr; result = result->NextMaterial)
+        {
             if (*result->Name == a1) {
                 return result;
             }
@@ -1772,8 +1774,11 @@ nglMaterialBase *nglGetMaterialInFile(const tlFixedString &a1, nglMeshFile *Mesh
         assert(0);
 
         return nullptr;
-    } else {
-        result = (nglMaterialBase *) CDECL_CALL(0x0076F0F0, &a1, MeshFile);
+    }
+    else
+    {
+        nglMaterialBase * (*func)(const tlFixedString *, nglMeshFile *) = CAST(func, 0x0076F0F0);
+        result = func(&a1, MeshFile);
     }
 
     return result;
@@ -1975,9 +1980,9 @@ void nglProcessMorph(nglMeshFile *MeshFile, nglDirectoryEntry *a2, int base) {
 
         auto duplicate_morph = Add(nglMorphDirectory(), nullptr, Morph);
         if (duplicate_morph != nullptr) {
-            auto *v7 = duplicate_morph->field_C->field_0.to_string();
-            auto *v6 = duplicate_morph->field_C->field_20;
-            auto *v5 = MeshFile->field_0.to_string();
+            auto *v7 = duplicate_morph->field_C->FileName.to_string();
+            auto *v6 = duplicate_morph->field_C->FilePath;
+            auto *v5 = MeshFile->FileName.to_string();
             auto *v3 = Morph->field_0.c_str();
             sp_log(
                 "Duplicate morph %s found in %s%s.pcmorph.  Originally contained in "
@@ -1990,8 +1995,8 @@ void nglProcessMorph(nglMeshFile *MeshFile, nglDirectoryEntry *a2, int base) {
         }
 
         Morph->field_C = MeshFile;
-        if (MeshFile->field_140 == nullptr) {
-            MeshFile->field_140 = Morph;
+        if (MeshFile->FirstMorph == nullptr) {
+            MeshFile->FirstMorph = Morph;
         }
 
         if (Morph->field_4 != 0) {
@@ -2740,7 +2745,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
 
     if constexpr (1)
     {
-        nglMeshFileHeader *Header = CAST(Header, MeshFile->field_124.Buf);
+        nglMeshFileHeader *Header = CAST(Header, MeshFile->FileBuf.Buf);
 
         MeshFile->field_134 = (int) Header;
         MeshFile->field_144 = -1;
@@ -2774,13 +2779,13 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             return false;
         }
 
-        auto Base = bit_cast<uint32_t>(&MeshFile->field_124.Buf[-Header->field_10]);
+        auto Base = bit_cast<uint32_t>(&MeshFile->FileBuf.Buf[-Header->field_10]);
 
         nglRebaseHeader(Base, Header);
 
         MeshFile->FirstMesh = nullptr;
-        MeshFile->field_13C = nullptr;
-        MeshFile->field_140 = nullptr;
+        MeshFile->FirstMaterial = nullptr;
+        MeshFile->FirstMorph = nullptr;
         uint32_t num_dir_entries = Header->NDirectoryEntries;
 
         nglMesh *LastMesh = nullptr;
@@ -2799,19 +2804,19 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             switch (type_dir_entry) {
             case TypeDirectoryEntry::MATERIAL: {
 
-                nglMaterialBase *Material = (decltype(Material)) dir_entry.field_4;
+                nglMaterialBase *Material = CAST(Material, dir_entry.field_4);
 
                 PTR_OFFSET(Base, Material->Name);
 
                 PTR_OFFSET(Base, Material->field_4);
 
                 Material->File = MeshFile;
-                if (MeshFile->field_13C == nullptr) {
-                    MeshFile->field_13C = Material;
+                if (MeshFile->FirstMaterial == nullptr) {
+                    MeshFile->FirstMaterial = Material;
                 }
 
                 if (LastMaterial != nullptr) {
-                    LastMaterial->field_C = Material;
+                    LastMaterial->NextMaterial = Material;
                 }
 
                 LastMaterial = Material;
@@ -3068,14 +3073,12 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             }
         });
 
-        if (LastMesh != nullptr)
-        {
+        if (LastMesh != nullptr) {
             LastMesh->NextMesh = nullptr;
         }
 
-        if (LastMaterial != nullptr)
-        {
-            LastMaterial->field_C = nullptr;
+        if (LastMaterial != nullptr) {
+            LastMaterial->NextMaterial = nullptr;
         }
 
         vector4d a3a;
@@ -3186,7 +3189,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             }
         }
 
-        Header->field_10 = (int) MeshFile->field_124.Buf;
+        Header->field_10 = (int) MeshFile->FileBuf.Buf;
         return true;
     }
     else
@@ -5320,7 +5323,8 @@ void nglDebugInit() {
 }
 
 //0x00783A90
-int nglHostPrintf(HANDLE hObject, const char *a2, ...) {
+int nglHostPrintf(HANDLE hObject, const char *a2, ...)
+{
     va_list va;
     va_start(va, a2);
 
@@ -5375,21 +5379,25 @@ void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *M
 {
     if constexpr (1)
     {
-        if ((Mesh->Flags & NGLMESH_SCRATCH_MESH) == 0) {
+        if ((Mesh->Flags & NGLMESH_SCRATCH_MESH) == 0)
+        {
             nglHostPrintf(h_sceneDump(), "\n");
             nglHostPrintf(h_sceneDump(),
                           "MESHFILE %s  // Path: %s\n",
-                          Mesh->File->field_0.field_4,
-                          Mesh->File->field_20);
+                          Mesh->File->FileName.to_string(),
+                          Mesh->File->FilePath);
             nglHostPrintf(h_sceneDump(), "\n");
             nglHostPrintf(h_sceneDump(), "MODEL %s\n", Mesh->Name.c_str());
 
             if (MeshParams != nullptr && (MeshParams->Flags & NGLP_SCALE) != 0)
+            {
                 nglHostPrintf(h_sceneDump(),
                               "  SCALE %f %f %f\n",
                               MeshParams->Scale.field_0[0],
                               MeshParams->Scale.field_0[1],
                               MeshParams->Scale.field_0[2]);
+            }
+
             nglHostPrintf(h_sceneDump(), "  ROW1 %f %f %f %f\n", a2[0][0], a2[0][1], a2[0][2], 0.0f);
             nglHostPrintf(h_sceneDump(), "  ROW2 %f %f %f %f\n", a2[1][0], a2[1][1], a2[1][2], 0.0f);
             nglHostPrintf(h_sceneDump(), "  ROW3 %f %f %f %f\n", a2[2][0], a2[2][1], a2[2][2], 0.0f);
@@ -5401,32 +5409,29 @@ void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *M
                 {
                     nglHostPrintf(h_sceneDump(), "  NBONES %d\n", MeshParams->NBones);
 
-                    if (MeshParams->NBones != 0)
+                    for (auto i = 0; i < MeshParams->NBones; ++i)
                     {
-                        for (auto i = 0; i < MeshParams->NBones; ++i)
-                        {
-                            auto *v6 = MeshParams->field_8;
-                            nglHostPrintf(
-                                h_sceneDump(),
-                                "  BONE %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
-                                i,
-                                v6[i][0][0],
-                                v6[i][0][1],
-                                v6[i][0][2],
-                                0.0f,
-                                v6[i][1][0],
-                                v6[i][1][1],
-                                v6[i][1][2],
-                                0.0f,
-                                v6[i][2][0],
-                                v6[i][2][1],
-                                v6[i][2][2],
-                                0.0f,
-                                v6[i][3][0],
-                                v6[i][3][1],
-                                v6[i][3][2],
-                                1.f);
-                        }
+                        auto *v6 = MeshParams->field_8;
+                        nglHostPrintf(
+                            h_sceneDump(),
+                            "  BONE %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
+                            i,
+                            v6[i][0][0],
+                            v6[i][0][1],
+                            v6[i][0][2],
+                            0.0f,
+                            v6[i][1][0],
+                            v6[i][1][1],
+                            v6[i][1][2],
+                            0.0f,
+                            v6[i][2][0],
+                            v6[i][2][1],
+                            v6[i][2][2],
+                            0.0f,
+                            v6[i][3][0],
+                            v6[i][3][1],
+                            v6[i][3][2],
+                            1.f);
                     }
                 }
             }
@@ -5434,7 +5439,9 @@ void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *M
             nglHostPrintf(h_sceneDump(), "ENDMODEL\n");
         }
 
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x007825A0, Mesh, &a2, MeshParams);
     }
 }

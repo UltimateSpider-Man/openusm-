@@ -199,13 +199,13 @@ nglMeshFile *tlResourceDirectory<nglMeshFile, tlFixedString>::StandardLoad(const
         char Dest[256] {};
         _snprintf(Dest, 256u, "%s%s%s", nglMeshPath(), a1.to_string(), ".pcmesh");
         auto *MeshFile = static_cast<nglMeshFile *>(tlMemAlloc(sizeof(nglMeshFile), 8, 0x1000000u));
-        strcpy(MeshFile->field_20, nglMeshPath());
-        MeshFile->field_0 = a1;
+        strcpy(MeshFile->FilePath, nglMeshPath());
+        MeshFile->FileName = a1;
         MeshFile->field_120 = 1;
         MeshFile->field_130 = false;
 
         nglMeshFile *result = nullptr;
-        if (tlReadFile(Dest, &MeshFile->field_124, 4u, 0))
+        if (tlReadFile(Dest, &MeshFile->FileBuf, 4u, 0))
         {
             if (nglLoadMeshFileInternal(a1, MeshFile,
 #ifdef TARGET_XBOX
@@ -224,7 +224,7 @@ nglMeshFile *tlResourceDirectory<nglMeshFile, tlFixedString>::StandardLoad(const
 
                 result = MeshFile;
             } else {
-                tlReleaseFile(&MeshFile->field_124);
+                tlReleaseFile(&MeshFile->FileBuf);
                 tlMemFree(MeshFile);
 
                 result = nullptr;

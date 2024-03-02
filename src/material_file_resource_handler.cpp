@@ -56,7 +56,7 @@ bool material_file_resource_handler::_handle_resource(worldly_resource_handler::
             parse_generic_object_mash(v4, struct_mash, nullptr, nullptr, nullptr, 0, 0, nullptr);
         assert(!alloced_mem && "This should NOT allocate anything!");
 
-        v4->field_124.Buf = a3->field_8;
+        v4->FileBuf.Buf = a3->field_8;
         tlFixedString _14C{a3->name.to_string()};
         if (!nglLoadMeshFileInternal(_14C, v4, resource_key_type_ext()[g_platform()][23])) {
             sp_log("Invalid material file %s", a3->name.to_string());

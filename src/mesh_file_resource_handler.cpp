@@ -112,7 +112,7 @@ bool mesh_file_resource_handler::_handle_resource(worldly_resource_handler::eBeh
             assert(!alloced_mem && "This should NOT allocate anything!");
 
             auto *v5 = loc;
-            meshFile->field_124.Buf = loc->field_8;
+            meshFile->FileBuf.Buf = loc->field_8;
 
             auto *v7 = loc->name.to_string();
             tlFixedString v20{v7};
