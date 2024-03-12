@@ -171,9 +171,12 @@ bool Console::StrnCopy(const char *src, char *dest, int *a3) {
     return true;
 }
 
-ConsoleCommand *Console::getCommand(const mString &a1) {
-    if (g_console_cmds != nullptr) {
-        for (auto &cmd : (*g_console_cmds)) {
+ConsoleCommand *Console::getCommand(const std::string &a1)
+{
+    if (g_console_cmds != nullptr)
+    {
+        for (auto &cmd : (*g_console_cmds))
+        {
             if (cmd != nullptr) {
                 if (cmd->match(a1)) {
                     return cmd;
@@ -185,7 +188,7 @@ ConsoleCommand *Console::getCommand(const mString &a1) {
     return nullptr;
 }
 
-ConsoleVariable *Console::getVariable(const mString &a1) {
+ConsoleVariable *Console::getVariable(const std::string &a1) {
     if (g_console_vars != nullptr) {
         for (auto &var : (*g_console_vars)) {
             if (var != nullptr) {
@@ -248,19 +251,20 @@ void Console::processCommand(const char *a2, bool is_log) {
             this->addToCommandLog(a2);
         }
 
-        std::vector<mString> v17{};
+        std::vector<std::string> v17{};
 
         char a1[256]{};
 
         auto a3a = 0;
         this->StrnCopy(a2, a1, &a3a);
         mString v11{a1};
-
         v11.to_lower();
-        auto *v10 = this->getCommand(v11);
-        if (v10 != nullptr) {
+
+        auto *v10 = this->getCommand(v11.c_str());
+        if (v10 != nullptr)
+        {
             while (this->StrnCopy(a2, a1, &a3a)) {
-                mString v5{a1};
+                std::string v5{a1};
 
                 v17.push_back(v5);
             }
@@ -269,16 +273,17 @@ void Console::processCommand(const char *a2, bool is_log) {
                 this->addToLog(a2);
             }
 
-            if (!v10->process_cmd(v17)) {
+            if (!v10->process_cmd(v17))
+            {
                 if (is_log) {
                     this->addToLog("??? %s", a2);
                 }
             }
-        } else if (this->getVariable(v11)) {
-            v17.push_back(v11);
+        } else if (this->getVariable(v11.c_str())) {
+            v17.push_back(v11.c_str());
 
             while (this->StrnCopy(a2, a1, &a3a)) {
-                auto v4 = mString{a1};
+                std::string v4 {a1};
 
                 v17.push_back(v4);
             }
@@ -288,12 +293,12 @@ void Console::processCommand(const char *a2, bool is_log) {
             }
 
             if (v17.size() <= 1) {
-                mString v8{"get"};
+                std::string v8{"get"};
 
                 v10 = this->getCommand(v8);
 
             } else {
-                mString v7{"set"};
+                std::string v7{"set"};
 
                 v10 = this->getCommand(v7);
             }
@@ -427,8 +432,10 @@ void Console::getMatchingCmds(const char *a2, std::list<mString> &cmds) {
 
     if (g_console_cmds != nullptr) {
         for (auto &cmd : (*g_console_cmds)) {
-            if (cmd != nullptr) {
-                if (strncmp(cmd->field_4, a2, a3a) == 0) {
+            if (cmd != nullptr)
+            {
+                if (strncmp(cmd->field_4, a2, a3a) == 0)
+                {
                     mString v12{cmd->field_4};
 
                     cmds.push_back(v12);

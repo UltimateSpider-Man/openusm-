@@ -39,6 +39,44 @@ po::po() {
     m[3][3] = 1.0;
 }
 
+po::po(float a2,
+        float a3,
+        float a4,
+        float a5,
+        float a6,
+        float a7,
+        float a8,
+        float a9,
+        float a10,
+        float a11,
+        float a12,
+        float a13)
+{
+    auto &v13 = this->m[0];
+    v13[0] = a2;
+    v13[1] = a3;
+    v13[2] = a4;
+    v13[3] = 0.0;
+
+    auto &v17 = this->m[1];
+    v17[0] = a5;
+    v17[1] = a6;
+    v17[2] = a7;
+    v17[3] = 0.0;
+
+    auto &v21 = this->m[2];
+    v21[0] = a8;
+    v21[1] = a9;
+    v21[2] = a10;
+    v21[3] = 0.0;
+
+    auto &v25 = this->m[3];
+    v25[0] = a11;
+    v25[1] = a12;
+    v25[2] = a13;
+    v25[3] = 1.0;
+}
+
 po::po(const matrix4x4 &a1) : m(a1) {
     assert(!has_nonuniform_scaling());
 }

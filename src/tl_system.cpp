@@ -33,8 +33,7 @@ Var<char[256]> tlHostPrefix{0x00970D88};
 
 Var<tlInstanceBank> nglShaderBank = (0x00972840);
 
-#define TL_SYSTEM_STANDALONE 1
-#if !TL_SYSTEM_STANDALONE
+#if !STANDALONE_SYSTEM
 
 Var<int> tlMemAllocCounter = (0x00970D58);
 
@@ -471,8 +470,9 @@ int tlResourceDirectory<nglTexture, tlFixedString>::StandardRelease(nglTexture *
             return 1;
         }
 
-        if (a3) {
-            if (a3 == 1 && tex->m_format != 16) {
+        if (a3)
+        {
+            if (a3 == 1 && tex->m_format != NGLTEX_ANIMATED) {
                 return tex->field_8;
             }
 
@@ -794,14 +794,15 @@ nglMesh *tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Impl::Find(cons
 
     Node *v7 = this->field_8;
     Node *v6 = nullptr;
-    for (auto i = this->m_size; i >= 0; --i) {
+    for (auto i = this->m_size; i >= 0; --i)
+    {
         v6 = v7->field_4[i];
         if (v6 == nullptr) {
             break;
         }
 
         auto *v3 = nglMesh::get_string(v6->field_0);
-        auto v5 = v3->compare(a2);
+        auto v5 = v3->compare(*bit_cast<tlFixedString *>(&a2));
         if (v5 == 0) {
             return v6->field_0;
         }
@@ -815,7 +816,7 @@ nglMesh *tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Impl::Find(cons
 
     if (v6 != nullptr) {
         const auto v4 = *nglMesh::get_string(v6->field_0);
-        if (v4 == a2) {
+        if (v4 == *bit_cast<tlFixedString *>(a2)) {
             return v6->field_0;
         }
     }
@@ -873,6 +874,14 @@ void tl_patch() {
         set_vfunc(0x008B8D24, address);
     }
 
+    {
+        auto func = &tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Find;
+
+        FUNC_ADDRESS(address, func);
+        set_vfunc(0x008B81E0, address);
+    }
+
+
     return;
 
     {
@@ -894,13 +903,6 @@ void tl_patch() {
 
         FUNC_ADDRESS(address, func);
         set_vfunc(0x008B818C, address);
-    }
-
-    {
-        auto func = &tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Find;
-
-        FUNC_ADDRESS(address, func);
-        set_vfunc(0x008B81E0, address);
     }
 
     {

@@ -124,7 +124,7 @@ void nglVertexDef_MultipassMesh_Base::AddMeshSection(nglVertexDef *vertexDef,
         Section->m_stride = stride;
         if ( a9 )
         {
-            Section->field_58 = nglScratchBuffer().field_30;
+            Section->StartIndex = nglScratchBuffer().field_30;
             Section->m_indexBuffer = nglScratchBuffer().field_48;
         }
         else

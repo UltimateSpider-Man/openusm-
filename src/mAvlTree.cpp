@@ -291,44 +291,37 @@ int mAvlTree<string_hash_entry>::addHelper(mAvlNode<string_hash_entry> *a2,
 }
 
 template<>
-void mAvlTree<string_hash_entry>::unmash(mash_info_struct *a2, [[maybe_unused]] void *a3) {
+void mAvlTree<string_hash_entry>::unmash(mash_info_struct *a2, [[maybe_unused]] void *a3)
+{
     if constexpr (1)
     {
-        auto size = this->m_size;
-        auto **v5 = &this->m_head;
-        auto *v6 = a2;
         this->m_head = nullptr;
+        auto real_size = this->m_size;
         this->m_size = 0;
-        if (size > 0) {
-            auto i = size;
-            do {
-                auto *v7 = (mAvlNode<string_hash_entry> *)
-                               v6->read_from_buffer(
-#ifdef TARGET_XBOX
-                                       mash::NORMAL_BUFFER,
-#endif 
-                                       sizeof(mAvlNode<string_hash_entry>), 4);
-                if (v7->m_key != nullptr) {
-                    auto *v8 = (string_hash_entry *) v6->read_from_buffer(
-#ifdef TARGET_XBOX
-                        mash::NORMAL_BUFFER,
-#endif
-                            sizeof(string_hash_entry), 4);
 
-                    v7->m_key = v8;
-                    v6->unmash_class_in_place(v8->field_4, v8);
-                }
-
-                this->addHelper(v7, *v5, nullptr);
-                --i;
-            } while (i);
+        for (auto i = 0u; i < real_size; ++i)
+        {
+            mAvlNode<string_hash_entry> *v7 = nullptr;
+            a2->unmash_class(v7, this);
+            this->addHelper(v7, this->m_head, nullptr);
         }
 
-        this->field_0 = (int) &v6->mash_image_ptr[v6->buffer_size_used[0] - (DWORD) this];
+        assert(real_size == this->m_size);
+
+        this->field_0 = (int) &a2->mash_image_ptr[a2->buffer_size_used[0] - (DWORD) this];
     }
-    else {
+    else
+    {
         THISCALL(0x00570900, this, a2, a3);
     }
+}
+
+template<>
+void mAvlNode<string_hash_entry>::unmash(
+                            mash_info_struct *a3,
+                            void *)
+{
+    a3->unmash_class(this->m_key, this);
 }
 
 void mAvlTree_patch() {

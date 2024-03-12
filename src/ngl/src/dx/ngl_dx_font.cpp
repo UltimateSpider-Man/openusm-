@@ -42,32 +42,35 @@ void nglStringNode::Render()
         return;
     }
 
-    if constexpr (0) {
-        if ( this->field_C != nullptr ) {
+    if constexpr (0)
+    {
+        if ( this->field_C != nullptr )
+        {
             nglFont *v2 = this->field_10;
             auto v3 = v2->field_40;
-            if ( v2->field_24 != nullptr ) {
+            if ( v2->field_24 != nullptr )
+            {
                 auto perf_counter = query_perf_counter();
 
                 g_renderState().setCullingMode(D3DCULL_NONE);
-                g_renderState().setBlending(this->field_10->field_44, this->field_10->field_48, 128);
+                g_renderState().setBlending(v2->m_blend_mode, this->field_10->field_48, 128);
 
                 if ( (v3 & 0x40) != 0 ) {
-                    SetSamplerState(0, D3DSAMP_ADDRESSU, 3u);
+                    nglSetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
                 } else {
-                    SetSamplerState(0, D3DSAMP_ADDRESSU, 1u);
+                    nglSetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
                 }
 
                 if ( (v3 & 0x80u) == 0 ) {
-                    SetSamplerState(0, D3DSAMP_ADDRESSV, 1u);
+                    nglSetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
                 } else {
-                    SetSamplerState(0, D3DSAMP_ADDRESSV, 3u);
+                    nglSetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
                 }
 
                 nglDxSetTexture(0, this->field_10->field_24, v3, 3);
 
                 if ( EnableShader() ) {
-                    SetVertexDeclarationAndShader(&stru_975780());
+                    nglSetVertexDeclarationAndShader(&stru_975780());
                 } else {
                     g_Direct3DDevice()->lpVtbl->SetVertexDeclaration(
                             g_Direct3DDevice(), dword_9738E0()[28]);
@@ -80,14 +83,14 @@ void nglStringNode::Render()
                 if ( EnableShader() ) {
                     SetPixelShader(&dword_9757A0());
                 } else {
-                    SetTextureStageState(0, D3DTSS_COLOROP, 4u);
-                    SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
-                    SetTextureStageState(0, D3DTSS_COLORARG2, 0);
-                    SetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
-                    SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
-                    SetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
-                    SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
-                    SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+                    nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
+                    nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+                    nglSetTextureStageState(0, D3DTSS_COLORARG2, 0);
+                    nglSetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
+                    nglSetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+                    nglSetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
+                    nglSetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+                    nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
                     g_renderState().setLighting(0);
                 }
 

@@ -10,6 +10,7 @@ struct generic_mash_header;
 struct generic_mash_data_ptrs;
 struct time_interface;
 struct collision_geometry;
+struct light_manager;
 struct terrain;
 struct nglMesh;
 
@@ -118,7 +119,7 @@ struct entity : signaller {
 
     float get_render_zbias() const;
 
-    int get_light_set();
+    light_manager *get_light_set() const;
 
     bool can_be_a_lego();
 

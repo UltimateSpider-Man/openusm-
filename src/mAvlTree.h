@@ -26,6 +26,9 @@ struct mAvlNode {
         this->m_left = nullptr;
         this->m_key = a2;
     }
+
+    void unmash(mash_info_struct *a3,
+                void *a4);
 };
 
 template<typename T>
@@ -34,7 +37,8 @@ struct mAvlTree : mContainer {
         mAvlNode<string_hash_entry> *field_0;
 
         //0x00743470
-        void iterate() {
+        void iterate()
+        {
 #if 1
             auto *v1 = this->field_0->m_right;
             if (v1 != nullptr) {
@@ -83,6 +87,11 @@ struct mAvlTree : mContainer {
     mAvlTree(int a1) : mContainer(a1) {}
 
     mAvlTree(from_mash_in_place_constructor *a2) : mContainer(a2) {}
+
+    bool get_destruct_contents() const
+    {
+        return this->field_C;
+    }
 
     void sub_420EE0() {
         this->m_size = 0;

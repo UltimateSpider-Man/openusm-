@@ -3,7 +3,7 @@
 #include <list>
 #include <vector>
 
-struct mString;
+#include <string>
 
 struct ConsoleCommand {
     char field_4[32];
@@ -12,23 +12,25 @@ struct ConsoleCommand {
 
     virtual ~ConsoleCommand() = default;
 
-    virtual bool process_cmd(const std::vector<mString> &);
+    virtual bool process_cmd(const std::vector<std::string> &);
 
-    virtual const char *helpText();
+    virtual const char *helpText() const {
+        return "No help available.";
+    }
 
-    mString getName();
+    std::string getName();
 
-    void setName(const mString &pName);
+    void setName(const std::string &pName);
 
-    bool match(const mString &a2);
+    bool match(const std::string &a2);
 };
 
 extern std::list<ConsoleCommand *> *g_console_cmds;
 
 struct ExecCommand : ConsoleCommand {
-    virtual bool process_cmd(const std::vector<mString> &a1) override;
+    virtual bool process_cmd(const std::vector<std::string> &a1) override;
 
-    virtual const char *helpText() override {
+    virtual const char *helpText() const override {
         return "exec [file] -> Executes a console script file";
     }
 };
@@ -36,9 +38,9 @@ struct ExecCommand : ConsoleCommand {
 struct HelpCommand : ConsoleCommand {
     HelpCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &a1) override;
+    virtual bool process_cmd(const std::vector<std::string> &a1) override;
 
-    virtual const char *helpText() override {
+    virtual const char *helpText() const override {
         return "Retrieves help for console / command";
     }
 };
@@ -46,9 +48,9 @@ struct HelpCommand : ConsoleCommand {
 struct ListEntsCommand : ConsoleCommand {
     ListEntsCommand();
 
-    bool process_cmd(const std::vector<mString> &) override;
+    bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override {
+    virtual const char *helpText() const override {
         return "List visible entities";
     }
 };
@@ -56,9 +58,9 @@ struct ListEntsCommand : ConsoleCommand {
 struct LoadLevelCommand : ConsoleCommand {
     LoadLevelCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &a1) override;
+    virtual bool process_cmd(const std::vector<std::string> &a1) override;
 
-    virtual const char *helpText() override {
+    virtual const char *helpText() const override {
         return "Loads a new level (nuking the current one)";
     }
 };
@@ -66,9 +68,9 @@ struct LoadLevelCommand : ConsoleCommand {
 struct VariableList : ConsoleCommand {
     VariableList();
 
-    bool process_cmd(const std::vector<mString> &) override;
+    bool process_cmd(const std::vector<std::string> &) override;
 
-    const char *helpText() override {
+    const char *helpText() const override {
         return "Lists all available variables";
     }
 };
@@ -76,9 +78,9 @@ struct VariableList : ConsoleCommand {
 struct SetCommand : ConsoleCommand {
     SetCommand();
 
-    bool process_cmd(const std::vector<mString> &a2) override;
+    bool process_cmd(const std::vector<std::string> &a2) override;
 
-    const char *helpText() override {
+    const char *helpText() const override {
         return "set [name] [val] -> Sets the value of a variable";
     }
 };
@@ -86,9 +88,9 @@ struct SetCommand : ConsoleCommand {
 struct GetCommand : ConsoleCommand {
     GetCommand();
 
-    bool process_cmd(const std::vector<mString> &a2) override;
+    bool process_cmd(const std::vector<std::string> &a2) override;
 
-    const char *helpText() override {
+    const char *helpText() const override {
         return "get [name] -> Gets the value of a variable";
     }
 };
@@ -96,9 +98,9 @@ struct GetCommand : ConsoleCommand {
 struct GameStateCommand : ConsoleCommand {
     GameStateCommand();
 
-    bool process_cmd(const std::vector<mString> &cmds) override;
+    bool process_cmd(const std::vector<std::string> &cmds) override;
 
-    const char *helpText() override {
+    const char *helpText() const override {
         return "get / set game_state variables";
     }
 };
@@ -106,9 +108,9 @@ struct GameStateCommand : ConsoleCommand {
 struct QuitCommand : ConsoleCommand {
     QuitCommand();
 
-    bool process_cmd(const std::vector<mString> &) override;
+    bool process_cmd(const std::vector<std::string> &) override;
 
-    const char *helpText() override {
+    const char *helpText() const override {
         return "quit -> exit program.  good for test scripts.";
     }
 };
@@ -116,17 +118,19 @@ struct QuitCommand : ConsoleCommand {
 struct CommandList : ConsoleCommand {
     CommandList();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override;
+    virtual const char *helpText() const override {
+        return "Lists all available commands";
+    }
 };
 
 struct ForceMissionCommand : ConsoleCommand {
     ForceMissionCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override
+    virtual const char *helpText() const override
     {
         return "force_mission of given district, name, and instance";
     }
@@ -136,9 +140,9 @@ struct ListDebugVariablesCommand : ConsoleCommand
 {
     ListDebugVariablesCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override
+    virtual const char *helpText() const override
     {
         return "Lists all available debug variables";
     } 
@@ -148,9 +152,9 @@ struct ListMissionsCommand : ConsoleCommand
 {
     ListMissionsCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override
+    virtual const char *helpText() const override
     {
         return "list_missions currently available";
     }
@@ -161,33 +165,41 @@ struct DebugRenderCommand : ConsoleCommand
 {
     DebugRenderCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override;
+    virtual const char *helpText() const override {
+        return "render <flag> <value>";
+    }
 };
 
 struct PlayAnimCommand : ConsoleCommand
 {
     PlayAnimCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override;
+    virtual const char *helpText() const override {
+        return "play_anim <anim_name> [<entity_id>]";
+    }
 };
 
 struct ListNearbyEntsCommand : ConsoleCommand
 {
     ListNearbyEntsCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override;
+    virtual const char *helpText() const override {
+        return "List nearby entities <radius=10>";
+    }
 };
 
 struct DumpThreadsCommand : ConsoleCommand {
     DumpThreadsCommand();
 
-    virtual bool process_cmd(const std::vector<mString> &) override;
+    virtual bool process_cmd(const std::vector<std::string> &) override;
 
-    virtual const char *helpText() override;
+    virtual const char *helpText() const override {
+        return "Dumps script threads to the console (pass a '1' to dump to a file)";
+    }
 };

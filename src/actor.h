@@ -228,7 +228,7 @@ struct actor : entity {
     vector3d _get_visual_center();
 
     //0x004B8BB0
-    nglMesh *get_mesh();
+    nglMesh *_get_mesh();
 
     //0x004C0F80
     ai::ai_core *_get_ai_core();

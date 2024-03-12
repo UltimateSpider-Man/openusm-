@@ -6,6 +6,7 @@
 #include <matrix4x3.h>
 #include <mstring.h>
 #include <ngl.h>
+#include <trace.h>
 #include <variables.h>
 #include <vtbl.h>
 
@@ -20,6 +21,8 @@
 #include <d3dx9shader.h>
 
 Var<IDirect3DVertexDeclaration9 *[1]> dword_9738E0 { 0x009738E0 };
+
+Var<_std::list<void *>> g_pixelShaderList{0x00972B10};
 
 //0x007CA2E8
 int __stdcall hookD3DXAssembleShader(const char *data,
@@ -40,8 +43,10 @@ int CreatePixelShader(IDirect3DPixelShader9 **a1, const DWORD *a2) {
     return CDECL_CALL(0x00772500, a1, a2);
 }
 
-void CreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, const DWORD *a3) {
-    if constexpr (1) {
+void nglCreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, const DWORD *a3)
+{
+    if constexpr (1)
+    {
         struct {
             IDirect3DVertexShader9 *field_0;
             IDirect3DVertexDeclaration9 *field_4;
@@ -50,7 +55,6 @@ void CreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, con
         g_Direct3DDevice()->lpVtbl->CreateVertexDeclaration(g_Direct3DDevice(), a2, &v1->field_4);
         g_Direct3DDevice()->lpVtbl->CreateVertexShader(g_Direct3DDevice(), a3, &v1->field_0);
 
-        static Var<_std::list<IDirect3DVertexShader9 *>> g_vertexShaderList{0x00972AC0};
         auto *v3 = g_vertexShaderList().m_head;
         assert(v3 != nullptr);
 
@@ -63,7 +67,9 @@ void CreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, con
         v3->_Prev = v4;
         v4->_Prev->_Next = v4;
 
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x007724A0, a1, a2, a3);
     }
 }
@@ -71,7 +77,8 @@ void CreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, con
 const DWORD *g_codes = nullptr;
 
 void nglCreateVShader(
-    const D3DVERTEXELEMENT9 *a2, void *a1, [[maybe_unused]] BOOL a3, const char *SrcCode, ...) {
+    const D3DVERTEXELEMENT9 *a2, void *a1, [[maybe_unused]] BOOL a3, const char *SrcCode, ...)
+{
     va_list va;
     va_start(va, SrcCode);
 
@@ -108,7 +115,7 @@ void nglCreateVShader(
     auto *v7 = static_cast<const DWORD *>(pShader->lpVtbl->GetBufferPointer(pShader));
     g_codes = v7;
 
-    CreateVertexDeclarationAndShader(a1, a2, v7);
+    nglCreateVertexDeclarationAndShader(a1, a2, v7);
 
     va_end(va);
 }
@@ -123,14 +130,16 @@ int size_codes(const DWORD *code) {
     return size;
 }
 
-bool compare_codes(const DWORD *code0, const DWORD *code1, int size) {
-    for (int i = 0; i < size; ++i) {
+bool compare_codes(const DWORD *code0, const DWORD *code1, int size)
+{
+    for (int i = 0; i < size; ++i)
+    {
         auto c0 = code0[i];
         auto c1 = code1[i];
 
         if (c0 != c1) {
             sp_log("Codes not equal!: %d 0x%08X 0x%08X", i, c0, c1);
-            break;
+            return false;
         }
     }
 
@@ -224,8 +233,8 @@ HRESULT nglSetupVShaderBonesDX(int a5, nglMeshNode *a6, nglMeshSection *Section)
     return result;
 }
 
-void SetVertexDeclarationAndShader(VShader *a1) {
-    //sp_log("SetVertexDeclarationAndShader: 0x%08X", a1);
+void nglSetVertexDeclarationAndShader(VShader *a1) {
+    TRACE("SetVertexDeclarationAndShader");
 
     g_Direct3DDevice()->lpVtbl->SetVertexDeclaration(g_Direct3DDevice(), a1->field_4);
     g_Direct3DDevice()->lpVtbl->SetVertexShader(g_Direct3DDevice(), a1->field_0);
@@ -235,7 +244,8 @@ void SetPixelShader(IDirect3DPixelShader9 **a1) {
     g_Direct3DDevice()->lpVtbl->SetPixelShader(g_Direct3DDevice(), *a1);
 }
 
-std::vector<DWORD> CompileVShader(const char *file_name, const D3DXMACRO *defines) {
+std::vector<DWORD> CompileVShader(const char *file_name, const D3DXMACRO *defines)
+{
     ID3DXBuffer *pShader = nullptr;
     ID3DXBuffer *error_messages = nullptr;
 
@@ -249,7 +259,8 @@ std::vector<DWORD> CompileVShader(const char *file_name, const D3DXMACRO *define
                                   D3DXSHADER_USE_LEGACY_D3DX9_31_DLL,
                                   &pShader,
                                   &error_messages,
-                                  nullptr) != D3D_OK) {
+                                  nullptr) != D3D_OK)
+    {
         sp_log("%s",
                static_cast<const char *>(error_messages->lpVtbl->GetBufferPointer(error_messages)));
 
@@ -330,8 +341,6 @@ void nglCreatePShader(IDirect3DPixelShader9 **a3, const char *SrcCode, ...) {
 
         IDirect3DPixelShader9 *v2;
         v6->CreatePixelShader(g_Direct3DDevice(), v7, &v2);
-
-        static Var<_std::list<void *>> g_pixelShaderList{0x00972B10};
 
         auto *v8 = g_pixelShaderList().m_head;
         auto *v9 = (decltype(v8)) THISCALL(0x00772C60,

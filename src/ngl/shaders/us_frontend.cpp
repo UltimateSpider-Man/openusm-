@@ -86,7 +86,7 @@ void FrontEnd_Shader::Register() {
             if constexpr (1) {
                 auto pShader = CompileVShader("shaders/us_frontend_VS.hlsl");
 
-                CreateVertexDeclarationAndShader(&stru_970610(), &stru_91E2BC(), pShader.data());
+                nglCreateVertexDeclarationAndShader(&stru_970610(), &stru_91E2BC(), pShader.data());
             } else {
                 static const char *text =
                     "dcl_position v0\n"
@@ -131,7 +131,8 @@ void FrontEnd_Shader::Register() {
     }
 }
 
-void FrontEnd_ShaderNode::Render() {
+void FrontEnd_ShaderNode::Render()
+{
     if constexpr (0) {
         static Var<int> dword_956D40{0x00956D40};
 
@@ -140,14 +141,23 @@ void FrontEnd_ShaderNode::Render() {
 
             g_renderState().setCullingMode(D3DCULL_NONE);
 
-            g_renderState().setBlending(this->field_14[11], 0, 0);
+
+            struct {
+                char field_0[0x20];
+                nglTexture *field_20;
+                uint32_t field_24;
+                uint32_t field_28;
+                nglBlendModeType field_2C;
+            } *Material = CAST(Material, this->field_14);
+
+            g_renderState().setBlending(Material->field_2C, 0, 0);
             if (EnableShader()) {
                 g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(),
                                                                      0,
                                                                      &this->field_C->field_40[0][0],
                                                                      4);
 
-                SetVertexDeclarationAndShader(&stru_970610());
+                nglSetVertexDeclarationAndShader(&stru_970610());
             } else {
                 g_Direct3DDevice()->lpVtbl->SetTransform(g_Direct3DDevice(),
                                                          (D3DTRANSFORMSTATETYPE) 256,
@@ -156,26 +166,28 @@ void FrontEnd_ShaderNode::Render() {
                                                                  dword_9738E0()[22]);
             }
 
-            nglDxSetTexture(0, *((nglTexture **) this->field_14 + 8), 2u, 3);
-            SetSamplerState(0, D3DSAMP_ADDRESSU, 2 * (this->field_14[9] != 0) + 1);
-            SetSamplerState(0, D3DSAMP_ADDRESSV, 2 * (this->field_14[10] != 0) + 1);
+            nglDxSetTexture(0, Material->field_20, 2u, 3);
+            nglSetSamplerState(0, D3DSAMP_ADDRESSU, 2 * (Material->field_24 != 0) + 1);
+            nglSetSamplerState(0, D3DSAMP_ADDRESSV, 2 * (Material->field_28 != 0) + 1);
 
             if (EnableShader()) {
                 SetPixelShader(&dword_9562F4());
             } else {
-                SetTextureStageState(0, D3DTSS_COLOROP, 4u);
-                SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
-                SetTextureStageState(0, D3DTSS_COLORARG2, 0);
-                SetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
-                SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
-                SetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
-                SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
-                SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+                nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
+                nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+                nglSetTextureStageState(0, D3DTSS_COLORARG2, 0);
+                nglSetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
+                nglSetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+                nglSetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
+                nglSetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+                nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
             }
 
-            SetStreamSourceAndDrawPrimitive(this->field_10);
+            nglSetStreamSourceAndDrawPrimitive(this->field_10);
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x00406E50, this);
     }
 }

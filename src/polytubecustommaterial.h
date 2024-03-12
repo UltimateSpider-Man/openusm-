@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pcuv_shadermaterial.h"
+#include "us_pcuv_shader.h"
 
 struct nglTexture;
 

@@ -4,9 +4,6 @@
 
 extern void us_outline_patch();
 
-struct USInteriorMaterial {};
-struct USExteriorMaterial {};
-
 struct nglMaterialBase;
 struct nglTexture;
 

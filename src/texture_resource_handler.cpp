@@ -45,35 +45,37 @@ void texture_resource_handler::handle_resource_internal(tlresource_location *loc
         }
 
         loc->field_8 = bit_cast<char *>(Tex);
-        if (a3 == 1) {
+        if (a3 == 1)
+        {
             if (Tex == nglDefaultTex()) {
                 error("ERROR: multipalette texture not found: %s", loc->name.to_string());
             }
 
-            if (Tex->m_num_palettes != 0) {
-                for (auto i = 0u; i < Tex->m_num_palettes; ++i) {
-                    auto &v19 = Tex->Frames[i]->field_60;
+            for (auto i = 0u; i < Tex->m_num_palettes; ++i)
+            {
+                auto &v19 = Tex->Frames[i]->field_60;
 
-                    tlresource_location *found_tlres_loc = nullptr;
+                tlresource_location *found_tlres_loc = nullptr;
 
-                    auto &dir = this->my_slot->get_resource_directory();
+                auto &dir = this->my_slot->get_resource_directory();
 
-                    auto found = dir.find_tlresource(v19.m_hash,
-                                                     TLRESOURCE_TYPE_TEXTURE,
-                                                     nullptr,
-                                                     &found_tlres_loc);
+                auto found = dir.find_tlresource(v19.m_hash,
+                                                 TLRESOURCE_TYPE_TEXTURE,
+                                                 nullptr,
+                                                 &found_tlres_loc);
 
-                    if (!found || found_tlres_loc == nullptr) {
-                        auto *v7 = v19.to_string();
-                        error("ERROR: multipalette sub-texture not found: %s", v7);
-                    }
-
-                    found_tlres_loc->field_8 = bit_cast<char *>(&Tex->Frames[i]);
+                if (!found || found_tlres_loc == nullptr) {
+                    auto *v7 = v19.to_string();
+                    error("ERROR: multipalette sub-texture not found: %s", v7);
                 }
+
+                found_tlres_loc->field_8 = bit_cast<char *>(&Tex->Frames[i]);
             }
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x0056BBC0, this, loc, a3);
     }
 }
@@ -84,12 +86,14 @@ void texture_resource_handler::_pre_handle_resources(worldly_resource_handler::e
 
     if constexpr (1)
     {
-        if (a2 == LOAD) {
+        if (a2 == LOAD)
+        {
             auto &res_dir = this->my_slot->get_resource_directory();
 
             const auto size = res_dir.get_tlresource_count(TLRESOURCE_TYPE_TEXTURE);
             //sp_log("pre_handle_resources: %u", size);
-            for (int i = 0; i < size; ++i) {
+            for (int i = 0; i < size; ++i)
+            {
                 auto *loc = res_dir.get_tlresource_location(i, TLRESOURCE_TYPE_TEXTURE);
                 assert(loc != nullptr
                        //&& loc->get_size() >= 4
@@ -132,8 +136,10 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
             if (tlres_loc->get_type() != 15)
             {
                 auto *tex = bit_cast<nglTexture *>(tlres_loc->field_8);
-                if (tex != nullptr) {
-                    if ((tex->field_34 & 2) == 0) {
+                if (tex != nullptr)
+                {
+                    if ((tex->field_34 & 2) == 0)
+                    {
                         if (!nglCanReleaseTexture(tex)) {
                             return true;
                         }
@@ -149,19 +155,23 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
         else
         {
             auto v4 = this->field_14;
-            if (v4 || tlres_loc->get_type() != 14) {
+            if (v4 || tlres_loc->get_type() != 14)
+            {
                 if (v4 == 1 && tlres_loc->get_type() == TLRESOURCE_TYPE_TEXTURE) {
-                    this->handle_resource_internal(tlres_loc, nglTextureFileFormat{0});
+                    this->handle_resource_internal(tlres_loc, static_cast<nglTextureFileFormat>(0));
                 } else if (v4 == 2 && tlres_loc->get_type() == 13) {
-                    this->handle_resource_internal(tlres_loc, nglTextureFileFormat{3});
+                    this->handle_resource_internal(tlres_loc, static_cast<nglTextureFileFormat>(3));
                 }
-            } else {
-                this->handle_resource_internal(tlres_loc, nglTextureFileFormat{1});
+            }
+            else
+            {
+                this->handle_resource_internal(tlres_loc, static_cast<nglTextureFileFormat>(1));
             }
 
             auto *dir = this->my_slot->pack_directory.field_0;
             ++this->field_C;
-            if (this->field_C >= dir->texture_locations.size()) {
+            if (this->field_C >= dir->texture_locations.size())
+            {
                 if (auto v7 = this->field_14; v7 < 2) {
                     this->field_C = 0;
                     ++this->field_14;

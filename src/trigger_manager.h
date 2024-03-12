@@ -52,6 +52,8 @@ struct trigger_manager : singleton {
 
     box_trigger *new_box_trigger(string_hash a2, entity_base *a3);
 
+    static void create_inst();
+
     static Var<trigger_manager *> instance;
 };
 

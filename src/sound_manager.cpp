@@ -2,10 +2,12 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "sound_alias_database.h"
 #include "sound_bank_slot.h"
+#include "trace.h"
+#include "utility.h"
 #include "variable.h"
 #include "variables.h"
-#include "sound_alias_database.h"
 
 static constexpr int SM_MAX_SOURCE_TYPES = 8;
 
@@ -48,7 +50,10 @@ void sound_manager::delete_inst()
     CDECL_CALL(0x00543EF0);
 }
 
-void sound_manager::frame_advance(Float a1) {
+void sound_manager::frame_advance(Float a1)
+{
+    TRACE("sound_manager::frame_advance");
+
     CDECL_CALL(0x00551C20, a1);
 }
 
@@ -120,4 +125,12 @@ void sub_54DC10(const char *a1, bool a2) {
 
 int sub_79A160() {
     return CDECL_CALL(0x0079A160);
+}
+
+void sound_manager_patch()
+{
+    {
+        REDIRECT(0x0055D6F4, sound_manager::frame_advance);
+        REDIRECT(0x00559F87, sound_manager::frame_advance);
+    }
 }

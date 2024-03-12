@@ -942,9 +942,10 @@ void actor::_render(Float a2)
         {
             assert(mesh != nullptr && is_visible() && is_renderable());
 
-            nglParamSet<nglShaderParamSet_Pool> ShaderParams{1};
+            nglParamSet<nglShaderParamSet_Pool> ShaderParams{static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
 
-            if (this->is_material_switching()) {
+            if (this->is_material_switching())
+            {
                 auto *root_node = this->get_lego_map_root();
                 if (root_node != nullptr) {
                     USMMaterialListParam list_param{root_node->field_4};
@@ -1203,8 +1204,10 @@ nglMesh **actor::sub_4B8BCA() {
     return this->field_90.field_0;
 }
 
-nglMesh *actor::get_mesh() {
-    if constexpr (0) {
+nglMesh *actor::_get_mesh()
+{
+    if constexpr (0)
+    {
         nglMesh *result;
 
         if (this->field_90.field_5 <= 1u)
@@ -1212,8 +1215,11 @@ nglMesh *actor::get_mesh() {
         else
             result = this->field_90.field_0[this->field_90.field_4];
         return result;
-    } else {
-        return (nglMesh *) THISCALL(0x004B8BB0, this);
+    }
+    else
+    {
+        nglMesh * (__fastcall *func)(void *) = CAST(func, 0x004B8BB0);
+        return func(this);
     }
 }
 

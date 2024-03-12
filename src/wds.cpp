@@ -468,7 +468,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
             brew.buffer_index = (brew.buffer_index + 15) & 0xFFFFFFF0;
             if ( v91 ) {
                 reg->field_38 = v91;
-                reg->field_34 = (int *)&brew.field_10[brew.buffer_index];
+                reg->vobbs_for_region_meshes = (int *)&brew.field_10[brew.buffer_index];
                 brew.buffer_index += 0x30 * v91;
             }
 

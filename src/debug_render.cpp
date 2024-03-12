@@ -14,7 +14,7 @@
 #include "ngl.h"
 #include "oldmath_po.h"
 #include "os_developer_options.h"
-#include "pcuv_shadermaterial.h"
+#include "us_pcuv_shader.h"
 #include "render_text.h"
 #include "trace.h"
 #include "variables.h"
@@ -92,7 +92,8 @@ void sub_CB4800(const vector3d &a1,
         auto v34 = v6 - camera_pos;
         auto v33 = vector3d::cross(v34, v42);
 
-        if (v33.length2() >= 9.9999997e-10 || geometry_manager::is_scene_analyzer_enabled()) {
+        if (v33.length2() >= 9.9999997e-10 || geometry_manager::is_scene_analyzer_enabled())
+        {
             auto sub_665974 = [&sub_68FD4B](vector3d &self, float a2) -> void {
                 auto v4 = self.length2();
                 if (v4 > (0.0000099999997 * 0.0000099999997)) {
@@ -503,7 +504,7 @@ void render_debug_capsule(const vector3d &a2, const vector3d &a3, Float a4, colo
     matrix4x4 v32 {v37, v36, v35, v39};
 
     nglMeshParams v31 {};
-    nglParamSet<nglShaderParamSet_Pool> v30 {1};
+    nglParamSet<nglShaderParamSet_Pool> v30 {static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
 
     v31.Flags |= 2u;
     v31.Scale[0] = v34;
@@ -540,7 +541,7 @@ void render_debug_box(const vector3d &a2, const vector3d &a3, color32 a4)
 
     nglMeshParams v13{};
 
-    nglParamSet<nglShaderParamSet_Pool> v12{1};
+    nglParamSet<nglShaderParamSet_Pool> v12{static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
 
     v13.Flags |= 2u;
 

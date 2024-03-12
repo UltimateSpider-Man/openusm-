@@ -63,7 +63,6 @@ struct tlFixedString {
         return this->m_hash;
     }
 
-
     const char *to_string() const {
         return field_4;
     }

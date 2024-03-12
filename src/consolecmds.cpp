@@ -32,12 +32,12 @@ ConsoleCommand::ConsoleCommand() {
 
 static constexpr auto MAX_COMMAND_NAME_LEN = 32;
 
-mString ConsoleCommand::getName() {
-    mString out{this->field_4};
+std::string ConsoleCommand::getName() {
+    std::string out{this->field_4};
     return out;
 }
 
-void ConsoleCommand::setName(const mString &pName) {
+void ConsoleCommand::setName(const std::string &pName) {
     assert(pName.size() < MAX_COMMAND_NAME_LEN);
 
     auto *v2 = pName.c_str();
@@ -45,24 +45,20 @@ void ConsoleCommand::setName(const mString &pName) {
     strlwr(this->field_4);
 }
 
-bool ConsoleCommand::process_cmd(const std::vector<mString> &) {
+bool ConsoleCommand::process_cmd(const std::vector<std::string> &) {
     return false;
 }
 
-const char *ConsoleCommand::helpText() {
-    return "No help available.";
-}
-
-bool ConsoleCommand::match(const mString &a2) {
-    mString v4{this->field_4};
+bool ConsoleCommand::match(const std::string &a2) {
+    std::string v4{this->field_4};
 
     return (v4 == a2);
 }
 
-bool ExecCommand::process_cmd(const std::vector<mString> &a1) {
+bool ExecCommand::process_cmd(const std::vector<std::string> &a1) {
     if (a1.size()) {
         auto &v1 = a1.front();
-        g_console->exec(v1);
+        g_console->exec(v1.c_str());
     }
 
     return true;
@@ -71,23 +67,23 @@ bool ExecCommand::process_cmd(const std::vector<mString> &a1) {
 static HelpCommand g_HelpCommand{};
 
 HelpCommand::HelpCommand() {
-    setName(mString{"help"});
+    setName(std::string{"help"});
 }
 
-bool HelpCommand::process_cmd(const std::vector<mString> &a2) {
+bool HelpCommand::process_cmd(const std::vector<std::string> &a2) {
     if (!a2.empty()) {
         g_console->addToLog("");
         auto &v2 = a2[0];
 
-        mString v9{v2};
+        mString v9{v2.c_str()};
         v9.to_lower();
 
-        auto *v8 = g_console->getCommand(v9);
+        auto *v8 = g_console->getCommand(v9.c_str());
         if (v8 != nullptr) {
             auto *v3 = v8->helpText();
             g_console->addToLog(v3);
         } else {
-            auto *v7 = g_console->getVariable(v9);
+            auto *v7 = g_console->getVariable(v9.c_str());
             if (v7 != nullptr) {
                 auto *v4 = v7->helpText();
                 g_console->addToLog(v4);
@@ -121,10 +117,10 @@ bool HelpCommand::process_cmd(const std::vector<mString> &a2) {
 static ListEntsCommand g_ListEntsCommand{};
 
 ListEntsCommand::ListEntsCommand() {
-    setName(mString{"list_ents"});
+    setName(std::string{"list_ents"});
 }
 
-bool ListEntsCommand::process_cmd(const std::vector<mString> &) {
+bool ListEntsCommand::process_cmd(const std::vector<std::string> &) {
     g_console->addToLog("visible entities:");
     auto *v10 = g_world_ptr()->ent_mgr.get_entities();
     auto it = v10->begin();
@@ -156,7 +152,7 @@ LoadLevelCommand::LoadLevelCommand() {
     setName("load_level");
 }
 
-bool LoadLevelCommand::process_cmd(const std::vector<mString> &a1) {
+bool LoadLevelCommand::process_cmd(const std::vector<std::string> &a1) {
     if (a1.size() != 1) {
         return false;
     }
@@ -165,7 +161,7 @@ bool LoadLevelCommand::process_cmd(const std::vector<mString> &a1) {
     auto *v3 = v2.c_str();
     g_console->addToLog("Now loading level %s", v3);
     auto &v4 = a1[0];
-    g_game_ptr()->load_new_level(v4, -1);
+    g_game_ptr()->load_new_level(v4.c_str(), -1);
     return true;
 }
 
@@ -175,7 +171,7 @@ VariableList::VariableList() {
     setName("varlist");
 }
 
-bool VariableList::process_cmd(const std::vector<mString> &) {
+bool VariableList::process_cmd(const std::vector<std::string> &) {
     g_console->addToLog("");
     g_console->addToLog("<-- Console Variables -->");
 
@@ -211,12 +207,12 @@ SetCommand::SetCommand() {
     setName("set");
 }
 
-bool SetCommand::process_cmd(const std::vector<mString> &a2) {
+bool SetCommand::process_cmd(const std::vector<std::string> &a2) {
     if (a2.size() > 1) {
         auto &v2 = a2[0];
         auto *v12 = g_console->getVariable(v2);
         if (v12 != nullptr) {
-            auto v9 = v12->match(mString{"health"});
+            auto v9 = v12->match(std::string{"health"});
             if (v9 && a2.size() == 3) {
                 v12->setValue(a2[1], a2[2]);
             } else {
@@ -239,7 +235,7 @@ GetCommand::GetCommand() {
     setName("get");
 }
 
-bool GetCommand::process_cmd(const std::vector<mString> &a2) {
+bool GetCommand::process_cmd(const std::vector<std::string> &a2) {
     if (a2.size()) {
         auto &v2 = a2[0];
         auto *v11 = g_console->getVariable(v2);
@@ -268,10 +264,10 @@ GameStateCommand::GameStateCommand() {
     setName("game_state");
 }
 
-bool GameStateCommand::process_cmd(const std::vector<mString> &cmds) {
+bool GameStateCommand::process_cmd(const std::vector<std::string> &cmds) {
     if (cmds.size() && cmds.size() <= 2) {
         auto &v3 = cmds[0];
-        mString a1 = v3;
+        mString a1 {v3.c_str()};
 
         bool a2 = false;
         script_library_class *var_type = nullptr;
@@ -321,7 +317,7 @@ QuitCommand::QuitCommand() {
     setName("quit");
 }
 
-bool QuitCommand::process_cmd(const std::vector<mString> &) {
+bool QuitCommand::process_cmd(const std::vector<std::string> &) {
     g_game_ptr()->field_164 = true;
     return true;
 }
@@ -329,10 +325,10 @@ bool QuitCommand::process_cmd(const std::vector<mString> &) {
 static CommandList g_CommandList{};
 
 CommandList::CommandList() {
-    this->setName(mString{"cmdlist"});
+    this->setName("cmdlist");
 }
 
-bool CommandList::process_cmd(const std::vector<mString> &) {
+bool CommandList::process_cmd(const std::vector<std::string> &) {
     g_console->addToLog("");
     g_console->addToLog("<-- Console Commands -->");
     if (g_console_cmds != nullptr && g_console_cmds->size()) {
@@ -358,10 +354,6 @@ bool CommandList::process_cmd(const std::vector<mString> &) {
     return true;
 }
 
-const char *CommandList::helpText() {
-    return "Lists all available commands";
-}
-
 bool is_int_format(const mString &a1)
 {
     if ( a1.size() == 0 )
@@ -385,21 +377,21 @@ static ForceMissionCommand g_ForceMissionCommand{};
 
 ForceMissionCommand::ForceMissionCommand()
 {
-    setName(mString{"force_mission"});
+    setName("force_mission");
 }
 
-bool ForceMissionCommand::process_cmd(const std::vector<mString> &a1)
+bool ForceMissionCommand::process_cmd(const std::vector<std::string> &a1)
 {
     if ( a1.size() == 3 )
     {
         auto &v2 = a1.at(2);
-        if ( is_int_format(v2) )
+        if ( is_int_format(v2.c_str()) )
         {
-            auto &v3 = a1.at(2);
+            mString v3 {a1.at(2).c_str()};
             auto v19 = v3.to_int();
-            auto &v4 = a1.at(1);
+            mString v4 {a1.at(1).c_str()};
             auto *v16 = v4.c_str();
-            auto &v5 = a1.at(0);
+            mString v5 {a1.at(0).c_str()};
             auto v14 = v5.to_int();
             auto *v6 = mission_manager::s_inst();
             v6->force_mission(v14, v16, v19, nullptr);
@@ -410,7 +402,7 @@ bool ForceMissionCommand::process_cmd(const std::vector<mString> &a1)
             auto *v20 = v7.c_str();
             auto &v8 = a1.at(1);
             auto *v17 = v8.c_str();
-            auto &v9 = a1.at(0);
+            mString v9 {a1.at(0).c_str()};
             auto v15 = v9.to_int();
             auto *v10 = mission_manager::s_inst();
             v10->force_mission(v15, v17, 0, v20);
@@ -438,10 +430,10 @@ static ListDebugVariablesCommand g_ListDebugVariablesCommand{};
 
 ListDebugVariablesCommand::ListDebugVariablesCommand()
 {
-    setName(mString{"dvarlist"});
+    setName("dvarlist");
 }
 
-bool ListDebugVariablesCommand::process_cmd(const std::vector<mString> &)
+bool ListDebugVariablesCommand::process_cmd(const std::vector<std::string> &)
 {
     return false;
 }
@@ -450,10 +442,10 @@ static ListMissionsCommand g_ListMissionsCommand{};
 
 ListMissionsCommand::ListMissionsCommand()
 {
-    setName(mString{"list_missions"});
+    setName("list_missions");
 }
 
-bool ListMissionsCommand::process_cmd(const std::vector<mString> &)
+bool ListMissionsCommand::process_cmd(const std::vector<std::string> &)
 {
     auto *v2 = mission_manager::s_inst();
     auto v25 = v2->get_district_table_count();
@@ -498,17 +490,17 @@ static DebugRenderCommand g_DebugRenderCommand{};
 
 DebugRenderCommand::DebugRenderCommand()
 {
-    this->setName(mString {"render"});
+    this->setName("render");
 }
 
-bool DebugRenderCommand::process_cmd(const std::vector<mString> &a2)
+bool DebugRenderCommand::process_cmd(const std::vector<std::string> &a2)
 {
     int result;
     auto v17 = a2.size();
     if ( v17 != 0 )
     {
         auto &v4 = a2.at(0);
-        mString v15 = v4;
+        mString v15 {v4.c_str()};
         v15.to_upper();
         int v14 = -1;
         for ( auto i = 0; i < 51; ++i )
@@ -568,33 +560,28 @@ bool DebugRenderCommand::process_cmd(const std::vector<mString> &a2)
     return result;
 }
 
-const char *DebugRenderCommand::helpText()
-{
-    return "render <flag> <value>";
-}
-
-
 static PlayAnimCommand g_PlayAnimCommand{};
 
 PlayAnimCommand::PlayAnimCommand()
 {
-    this->setName(mString {"play_anim"});
+    this->setName("play_anim");
 }
 
-bool PlayAnimCommand::process_cmd(const std::vector<mString> &a2)
+bool PlayAnimCommand::process_cmd(const std::vector<std::string> &a2)
 {
     if (a2.size() == 1 || a2.size() == 2 )
     {
         auto &v3 = a2.at(0);
-        filespec v35 {v3};
-        mString a1 {v3};
+        mString a1 {v3.c_str()};
+        filespec v35 {a1};
         v35.m_ext = resource_key_type_ext()[g_platform()][RESOURCE_KEY_TYPE_ANIMATION];
         actor *v33 = nullptr;
         if ( a2.size() == 2 )
         {
             auto &v5 = a2.at(1);
-            mString v32 {v5};
+            mString v32 {v5.c_str()};
             v32.to_upper();
+
             auto *v6 = v32.c_str();
             string_hash v31 {v6};
             auto *ent = entity_handle_manager::find_entity(v31, IGNORE_FLAVOR, true);
@@ -711,18 +698,13 @@ bool PlayAnimCommand::process_cmd(const std::vector<mString> &a2)
     return 1;
 }
 
-const char *PlayAnimCommand::helpText()
-{
-    return "play_anim <anim_name> [<entity_id>]";
-}
-
 static ListNearbyEntsCommand g_ListNearbyEntsCommand{};
 
 ListNearbyEntsCommand::ListNearbyEntsCommand() {
-    this->setName(mString {"list_nearby_ents"});
+    this->setName("list_nearby_ents");
 }
 
-bool ListNearbyEntsCommand::process_cmd(const std::vector<mString> &a2)
+bool ListNearbyEntsCommand::process_cmd(const std::vector<std::string> &a2)
 {
     auto *v3 = g_world_ptr()->get_hero_ptr(0);
     auto &abs_position = v3->get_abs_position();
@@ -730,7 +712,7 @@ bool ListNearbyEntsCommand::process_cmd(const std::vector<mString> &a2)
     float v25 = 10.0;
     if ( a2.size() == 1 )
     {
-        auto &v5 = a2.at(0);
+        mString v5 {a2.at(0).c_str()};
         v25 = v5.to_float();
     }
 
@@ -765,18 +747,13 @@ bool ListNearbyEntsCommand::process_cmd(const std::vector<mString> &a2)
     return true;
 }
 
-const char *ListNearbyEntsCommand::helpText() {
-    return "List nearby entities <radius=10>";
-}
-
-
 static DumpThreadsCommand g_DumpThreadsCommand{};
 
 DumpThreadsCommand::DumpThreadsCommand() {
-    this->setName(mString {"dump_threads"});
+    this->setName("dump_threads");
 }
 
-bool DumpThreadsCommand::process_cmd(const std::vector<mString> &a2) {
+bool DumpThreadsCommand::process_cmd(const std::vector<std::string> &a2) {
     if ( a2.size() != 0 ) {
         auto &v2 = a2.at(0);
         if ( v2 != "1" ) {
@@ -793,9 +770,5 @@ bool DumpThreadsCommand::process_cmd(const std::vector<mString> &a2) {
     }
     
     return true; 
-}
-
-const char *DumpThreadsCommand::helpText() {
-    return "Dumps script threads to the console (pass a '1' to dump to a file)";
 }
 

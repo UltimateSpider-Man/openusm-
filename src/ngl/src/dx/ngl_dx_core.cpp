@@ -42,7 +42,24 @@ void nglVif1RenderScene()
 {
     TRACE("nglVif1RenderScene");
 
-    CDECL_CALL(0x0077D060);
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x0077D060);
+    }
+}
+
+void nglVif1SetupScene(nglScene *a1)
+{
+    TRACE("nglVif1SetupScene");
+
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x0077CBB0, a1);
+    }
 }
 
 void sub_781A30()
@@ -92,7 +109,7 @@ void nglListInit()
 
         nglSyncDebug() = nglDebug();
         nglCurScene() = nullptr;
-        nglListBeginScene(nglSceneParamType {0});
+        nglListBeginScene(static_cast<nglSceneParamType>(0));
         nglSceneDumpStart();
         auto *v3 = nglScratchBuffer().field_0[0].m_vertexData;
         auto v0 = nglScratchBuffer().field_44;

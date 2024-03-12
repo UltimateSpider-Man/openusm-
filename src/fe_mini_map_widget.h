@@ -1,7 +1,7 @@
 #pragma once
 
 #include "float.hpp"
-#include "pcuv_shadermaterial.h"
+#include "us_pcuv_shader.h"
 
 #include <cstdint>
 #include <vector.hpp>

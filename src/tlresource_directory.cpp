@@ -193,7 +193,7 @@ nglMesh *tlresource_directory<nglMesh,tlHashString>::Find(const tlHashString &a2
 template<>
 void tlresource_directory<nglMesh, tlHashString>::Add(nglMesh *Mesh)
 {
-    TRACE("tlresource_directory<nglMesh, tlHashString>::Add", Mesh->Name.c_str());
+    TRACE("tlresource_directory<nglMesh, tlHashString>::Add");
     ;
 }
 
@@ -251,7 +251,7 @@ nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedS
 {
     TRACE("tlresource_directory<nglTexture, tlFixedString>::Find", a1.to_string());
 
-    if constexpr (1)
+    if constexpr (0)
     {
         nglTexture *v5 = nullptr;
         if ( this->field_4 != nullptr )

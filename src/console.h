@@ -7,6 +7,7 @@
 
 #include <list>
 #include <stack>
+#include <string>
 
 struct tokenizer;
 struct color32;
@@ -80,9 +81,9 @@ struct Console {
 
     virtual void addToCommandLog(const char *a1);
 
-    virtual ConsoleCommand *getCommand(const mString &a1);
+    virtual ConsoleCommand *getCommand(const std::string &a1);
 
-    virtual ConsoleVariable *getVariable(const mString &a1);
+    virtual ConsoleVariable *getVariable(const std::string &a1);
 
     virtual bool isVisible() const;
 

@@ -16,3 +16,8 @@ void texture_to_frame_map::un_mash(char *image_ptr, int *a3)
     *((int *)image_ptr + 11) = (int) (image_ptr + 0x30);
     *a3 = 0x24 * this->total_textures + 0x30;
 }
+
+mString texture_to_frame_map::get_ifl_name() const
+{
+    return {this->field_4};
+}

@@ -46,21 +46,20 @@ int full_slab_count[44]{};
 int free_slab_count{};
 int total_slab_count{};
 
-#define SLAB_ALLOCATOR_STANDALONE 1
-#if !SLAB_ALLOCATOR_STANDALONE
+#if !STANDALONE_SYSTEM
 
 Var<bool> initialized{0x00965F33};
 
 Var<bool> g_dump_slab_info{0x00965F40};
 
-Var<char *> slab_allocator::static_slab_arena = {0x00965F34};
-Var<slab_allocator::slab_t *> static_slab_headers = {0x00965F38};
+Var<char *> static_slab_arena = {0x00965F34};
+Var<slab_t *> static_slab_headers = {0x00965F38};
 
-Var<slab_allocator::slab_list_t *> slab_partial_list{0x00965984};
+Var<slab_list_t *> slab_partial_list{0x00965984};
 
-Var<slab_allocator::slab_list_t *> slab_full_list{0x00965980};
+Var<slab_list_t *> slab_full_list{0x00965980};
 
-Var<slab_allocator::slab_list_t *> slab_free_list{0x0096597C};
+Var<slab_list_t *> slab_free_list{0x0096597C};
 #else
 
 #define make_var(type, name) \

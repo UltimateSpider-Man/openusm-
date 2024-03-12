@@ -1,6 +1,7 @@
 #pragma once
 
 #include "float.hpp"
+#include "ngl.h"
 #include "variable.h"
 
 #include <d3d9.h>
@@ -25,11 +26,11 @@ struct RenderState_t {
     int field_3C;
     int field_40;
     bool field_44;
-    uint32_t field_48;
+    D3DCMPFUNC field_48;
     uint32_t field_4C;
     bool field_50;
-    int field_54;
-    int field_58;
+    D3DBLEND field_54;
+    D3DBLEND field_58;
     uint32_t field_5C;
     D3DBLENDOP field_60;
     int field_64;
@@ -37,16 +38,16 @@ struct RenderState_t {
     int field_6C;
     int field_70;
     bool field_74;
-    int field_78;
+    D3DZBUFFERTYPE field_78;
     D3DCMPFUNC field_7C;
     int field_80;
     int field_84;
     bool field_88;
     uint32_t field_8C;
     int field_90;
-    int field_94;
-    int field_98;
-    int field_9C;
+    float field_94;
+    float field_98;
+    uint32_t field_9C;
     int field_A0;
     int field_A4;
     uint32_t field_A8;
@@ -58,7 +59,7 @@ struct RenderState_t {
     int field_C0;
     int field_C4;
     int field_C8;
-    int field_CC;
+    uint32_t m_blend_mode;
     int field_D0;
     int field_D4;
 
@@ -112,7 +113,9 @@ struct RenderState_t {
     void Clear();
 
     //0x00401BF0
-    void setAplhaFunction(uint32_t a2);
+    void setAlphaFunction(D3DCMPFUNC a2);
+
+    void setDepthBuffer(D3DZBUFFERTYPE Type);
 
     void setDepthBufferFunction(D3DCMPFUNC func);
 
@@ -128,7 +131,7 @@ struct RenderState_t {
     void setAlphaTesting(bool a2);
 
     //0x00774A90
-    void setBlending(int a2, int a3, int ref_value);
+    void setBlending(nglBlendModeType a2, uint32_t a3, uint32_t ref_value);
 
     //0x0077E2B0
     void setLighting(uint8_t a2);
@@ -141,11 +144,15 @@ struct RenderState_t {
 
     void setStencilRefValue(uint32_t v11);
 
+    void setSrcBlend(D3DBLEND a2);
+
+    void setDestBlend(D3DBLEND a2);
+
     //0x007745E0
-    void setBlendingFactor(unsigned int a2);
+    void setBlendingFactor(uint32_t a2);
 
     //0x00401C20
-    void setAlphaReferenceValue(unsigned int a2);
+    void setAlphaReferenceValue(uint32_t a2);
 
     //0x00401AA0
     void setStencilPassOperation(D3DSTENCILOP op);
@@ -157,13 +164,13 @@ struct RenderState_t {
     void setStencilBufferCompareMask(unsigned int a2);
 
     //0x00401B90
-    void setStencilBufferWriteMask(D3DSTENCILOP op);
+    void setStencilBufferWriteMask(uint32_t op);
 
     //0x00401DD0
     void setCullingMode(D3DCULL a2);
 
     //0x00401C80
-    void setBlendingOperation(D3DBLENDOP op);
+    void setBlendOperation(D3DBLENDOP op);
 
     //0x00401D40
     void setFogEnable(bool a2);
@@ -172,7 +179,7 @@ struct RenderState_t {
 
     void sub_55DFE0(Float a2);
 
-    void sub_55E010(int a2);
+    void sub_55E010(Float a2);
 };
 
 extern Var<RenderState_t> g_renderState;

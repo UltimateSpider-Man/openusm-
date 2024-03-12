@@ -9,7 +9,7 @@
 struct mString;
 struct vm_stack;
 
-#define SLC_NAME_FIELD 1
+#define SLC_NAME_FIELD 0
 #define SLC_FUNC_LIST_FIELD 0 
 
 struct script_library_class {
@@ -38,11 +38,13 @@ struct script_library_class {
         /* virtual */ bool operator()(vm_stack &a2,
                                       script_library_class::function::entry_t a3) const;
 
-#if SLC_NAME_FIELD
         const char *get_name() const { 
+#if SLC_NAME_FIELD
             return this->m_name;
-        }
+#else
+            return "";
 #endif
+        }
     };
 
     std::intptr_t m_vtbl;
@@ -54,7 +56,7 @@ struct script_library_class {
     _std::list<script_library_class::function *> func_list;
 #endif
 
-    script_library_class::function **funcs;
+    script_library_class::function **funcs = nullptr;
     int total_funcs;
     int next_func_slot;
     uint32_t field_1C;

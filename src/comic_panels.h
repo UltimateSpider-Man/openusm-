@@ -6,6 +6,7 @@
 #include "vector2d.h"
 #include "vector4d.h"
 #include "camera.h"
+#include "color.h"
 
 struct cut_scene_player;
 struct vector3d;
@@ -26,6 +27,8 @@ struct panel_params_t {
     uint8_t field_D0;
     uint8_t field_D1;
 };
+
+void set_default_bgcolor(const color &a1);
 
 //0x0x00736A60
 void init();
@@ -100,6 +103,8 @@ extern Var<camera *> current_view_camera;
 extern Var<panel *> game_play_panel;
 
 extern Var<fixed_vector<panel *, 48>> panels;
+
+inline Var<color> default_bgcol {0x009392EC};
 
 } // namespace comic_panels
 

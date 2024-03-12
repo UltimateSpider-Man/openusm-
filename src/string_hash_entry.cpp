@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "mash_info_struct.h"
 
 VALIDATE_SIZE(string_hash_entry, 20u);
 
@@ -33,4 +34,15 @@ mString string_hash_entry::sub_50DBC0(const char *a3) {
 
         return result;
     }
+}
+
+void string_hash_entry::unmash(mash_info_struct *a1, void *a2)
+{
+    this->custom_unmash(a1, a2);
+}
+
+void string_hash_entry::custom_unmash(mash_info_struct *a2, void *)
+{
+    a2->unmash_class_in_place(this->field_0, this);
+    a2->unmash_class_in_place(this->field_4, this);
 }

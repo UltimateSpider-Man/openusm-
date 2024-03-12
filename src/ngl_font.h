@@ -2,6 +2,7 @@
 
 #include "fixedstring.h"
 #include "float.hpp"
+#include "ngl.h"
 #include "variable.h"
 
 struct nglTexture;
@@ -36,7 +37,7 @@ struct nglFont {
     } Header;
 
     int field_40;
-    int field_44;
+    nglBlendModeType m_blend_mode;
     int field_48;
 
     nglGlyphSize *field_4C;

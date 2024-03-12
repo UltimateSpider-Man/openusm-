@@ -29,7 +29,7 @@ int nglDebugShader::Register() {
             if constexpr (0) {
                 static Var<DWORD *> off_946A30{0x00946A30};
 
-                CreateVertexDeclarationAndShader(&stru_976E74(), &stru_946940(), off_946A30());
+                nglCreateVertexDeclarationAndShader(&stru_976E74(), &stru_946940(), off_946A30());
             } else {
                 static const char *text =
                     "dcl_position v0\n"

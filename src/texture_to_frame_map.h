@@ -1,5 +1,7 @@
 #pragma once
 
+#include "mstring.h"
+
 struct texture_to_frame_map {
     int field_0;
     int field_4;
@@ -15,4 +17,6 @@ struct texture_to_frame_map {
     int total_textures;
 
     void un_mash(char *a2, int *a3);
+
+    mString get_ifl_name() const;
 };

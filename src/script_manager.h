@@ -6,8 +6,7 @@
 #include <list.hpp>
 #include <map.hpp>
 
-#define SCRIPT_MANAGER_STANDALONE 1
-#if SCRIPT_MANAGER_STANDALONE
+#if STANDALONE_SYSTEM
 #include <map>
 #endif
 
@@ -92,7 +91,7 @@ namespace script_manager {
     int get_total_loaded();
 
 
-#if !SCRIPT_MANAGER_STANDALONE 
+#if !STANDALONE_SYSTEM
     _std::map<script_executable_entry_key, script_executable_entry> *get_exec_list();
 #else
     std::map<script_executable_entry_key, script_executable_entry> *get_exec_list();

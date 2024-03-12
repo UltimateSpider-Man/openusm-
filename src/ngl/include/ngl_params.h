@@ -5,12 +5,7 @@
 
 #include <ngl_dx_scene.h>
 
-struct nglSceneParamType {
-    int field_0;
-
-    operator int() {
-        return field_0;
-    }
+enum nglSceneParamType {
 };
 
 struct nglParam {
@@ -26,6 +21,14 @@ struct nglShaderParamSet_Pool {
 
 struct nglSceneParamSet_Pool {
     static Var<int> NextID;
+};
+
+namespace comic_panels {
+struct panel_params_t;
+}
+
+struct SMPanelParams {
+    comic_panels::panel_params_t *field_0;
 };
 
 struct vector4d;
@@ -78,6 +81,8 @@ struct USMMaterialIndicesParam {
 template<typename T>
 struct nglParamSet
 {
+    enum nglParamSetType {};
+
     nglParam *field_0;
 
     bool IsSet(int id) {
@@ -89,7 +94,7 @@ public:
 
     nglParamSet() = default;
 
-    nglParamSet(int a2)
+    nglParamSet(nglParamSetType a2)
     {
         if (a2 != 0)
         {
@@ -101,9 +106,16 @@ public:
                 field_0->field_0 = 0;
                 field_0->field_4 = 0;
             }
-        } else {
+        }
+        else
+        {
             this->field_0 = &EmptyParam();
         }
+    }
+
+    void copy(const nglParamSet &params) {
+        auto v2 = 4 * T::NextID() + 8;
+        return std::memcpy(this->field_0, params.field_0, v2);
     }
 
     void operator=(const nglParamSet &params) {
@@ -123,7 +135,7 @@ public:
             struct {
                 int field_0;
             } field_8[1];
-        } *temp = CAST(temp, this->field_0);
+        } *temp = bit_cast<decltype(temp)>(this->field_0);
         return &temp->field_8[id];
     }
 
@@ -141,6 +153,14 @@ public:
     template<typename Param>
     void SetParam(const Param &param) {
         this->Set(Param::ID(), (void *) param.field_0);
+    }
+
+    template<typename Param>
+    void Set(uint32_t a2 = Param::ID())
+    {
+        auto *v2 = this->field_0;
+        v2->field_0 &= ~(1 << a2);
+        v2->field_4 = 0;
     }
 
     template<typename Param>

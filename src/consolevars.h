@@ -1,8 +1,7 @@
 #pragma once
 
 #include <list>
-
-struct mString;
+#include <string>
 
 struct ConsoleVariable {
     char field_4[32];
@@ -11,21 +10,21 @@ struct ConsoleVariable {
 
     virtual ~ConsoleVariable() = default;
 
-    virtual void setValue(const mString &, const mString &);
+    virtual void setValue(const std::string &, const std::string &);
 
-    virtual void setValue(const mString &);
+    virtual void setValue(const std::string &);
 
-    virtual mString getValue();
+    virtual std::string getValue();
 
     virtual const char *helpText() {
         return "No help available.";
     }
 
-    void setName(const mString &pName);
+    void setName(const std::string &pName);
 
-    bool match(mString a2);
+    bool match(std::string a2);
 
-    mString getName();
+    std::string getName();
 };
 
 extern std::list<ConsoleVariable *> *g_console_vars;
@@ -33,9 +32,9 @@ extern std::list<ConsoleVariable *> *g_console_vars;
 struct ConsoleHeightVariable : ConsoleVariable {
     ConsoleHeightVariable();
 
-    virtual void setValue(const mString &a2) override;
+    virtual void setValue(const std::string &a2) override;
 
-    virtual mString getValue() override;
+    virtual std::string getValue() override;
 
     virtual const char *helpText() override {
         return "Height of the console in pixels";
@@ -45,9 +44,9 @@ struct ConsoleHeightVariable : ConsoleVariable {
 struct HealthVariable : ConsoleVariable {
     HealthVariable();
 
-    void setValue(const mString &arg0, const mString &a1) override;
+    void setValue(const std::string &arg0, const std::string &a1) override;
 
-    void setValue(const mString &arg0) override;
+    void setValue(const std::string &arg0) override;
 
     virtual ~HealthVariable() = default;
 };
@@ -55,9 +54,9 @@ struct HealthVariable : ConsoleVariable {
 struct RenderFramerateVariable : ConsoleVariable {
     RenderFramerateVariable();
 
-    void setValue(const mString &a1) override;
+    void setValue(const std::string &a1) override;
 
-    mString getValue() override;
+    std::string getValue() override;
 
     const char *helpText() override {
         return "Render frames per second";
@@ -67,9 +66,9 @@ struct RenderFramerateVariable : ConsoleVariable {
 struct ProjZoomVariable : ConsoleVariable {
     ProjZoomVariable();
 
-    void setValue(const mString &a2) override;
+    void setValue(const std::string &a2) override;
 
-    mString getValue() override;
+    std::string getValue() override;
 
     const char *helpText() override {
         return "FOV factor";
@@ -79,9 +78,9 @@ struct ProjZoomVariable : ConsoleVariable {
 struct DifficultyVariable : ConsoleVariable {
     DifficultyVariable();
 
-    void setValue(const mString &a2) override;
+    void setValue(const std::string &a2) override;
 
-    mString getValue() override;
+    std::string getValue() override;
 
     const char *helpText() override {
         return "Difficulty level (0=bleep, 1=ez, 2=norm, 3=hero, 4=super hero)";

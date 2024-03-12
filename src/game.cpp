@@ -241,8 +241,8 @@ game::game()
         this->field_165 = 0;
         this->field_166 = 0;
         this->field_163 = 0;
-        this->field_161 = 0;
-        this->field_162 = 0;
+        this->field_161 = false;
+        this->field_162 = false;
         this->flag.level_is_loaded = 0;
         this->field_170 = 0;
         this->field_167 = 0;
@@ -299,7 +299,9 @@ game::game()
 
         g_debug_mem_dump_frame() = os_developer_options::instance()->get_int(mString {"MEM_DUMP_FRAME"});
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00557610, this);
     }
 }
@@ -563,13 +565,14 @@ void game::render_world()
 
                 g_indoors() = v3->is_indoors();
                 nglSetClearFlags(0);
-                nglListBeginScene(nglSceneParamType{1});
+                nglListBeginScene(static_cast<nglSceneParamType>(1));
                 sub_5935D0();
                 nglListEndScene();
                 auto *v6 = comic_panels::get_panel_params();
                 auto *v7 = v6;
-                if ((!v6 || (v6->field_0 & 0x40) != 0) && !g_indoors() && byte_922558()) {
-                    nglListBeginScene(nglSceneParamType{1});
+                if ((!v6 || (v6->field_0 & 0x40) != 0) && !g_indoors() && byte_922558())
+                {
+                    nglListBeginScene(static_cast<nglSceneParamType>(1));
                     nglCurScene()->field_408 = true;
                     nglSetSceneCallBack(static_cast<nglSceneCallbackType>(0), UploadLightConsts, nullptr);
                     nglSetSceneCallBack(static_cast<nglSceneCallbackType>(2), sub_510770, nullptr);
@@ -587,7 +590,7 @@ void game::render_world()
                     nglListEndScene();
                 }
 
-                nglListBeginScene(nglSceneParamType{1});
+                nglListBeginScene(static_cast<nglSceneParamType>(1));
                 fpf = v3->get_far_plane_factor();
 
                 assert(fpf >= 0.0001f && fpf <= 1.0f);
@@ -763,7 +766,8 @@ void game::one_time_init_stuff()
     }
 }
 
-void game::pop_process() {
+void game::pop_process()
+{
     assert(process_stack.size() != 0);
 
     if constexpr (1) {
@@ -994,21 +998,17 @@ void game::handle_game_states(const Float &a2)
 
     if constexpr (0)
     {
-        auto &last = this->process_stack.back();
-
         switch (this->get_cur_state()) {
         case game_state::LEGAL: {
             this->advance_state_legal(a2);
             break;
         }
         case static_cast<game_state>(2):
-        case static_cast<game_state>(3):
-        case static_cast<game_state>(10):
-        case static_cast<game_state>(12):
-        case static_cast<game_state>(13): {
             this->go_next_state();
             break;
-        }
+        case static_cast<game_state>(3):
+            this->go_next_state();
+            break;
         case game_state::WAIT_LINK: {
             this->advance_state_wait_link(a2);
             break;
@@ -1026,21 +1026,27 @@ void game::handle_game_states(const Float &a2)
         case static_cast<game_state>(8): {
             nglBeginHiresScreenShot(hires_screenshot::params::width(),
                                     hires_screenshot::params::height());
-            ++last.index;
+            this->go_next_state();
             break;
         }
         case static_cast<game_state>(9): {
             if (!nglSaveHiresScreenshot()) {
-                ++last.index;
+                this->go_next_state();
             }
 
             this->advance_state_paused(a2);
             break;
         }
+        case static_cast<game_state>(10):
         case static_cast<game_state>(11):
             this->advance_state_paused(a2);
-            ++last.index;
+            this->go_next_state();
             break;
+        case static_cast<game_state>(12):
+        case static_cast<game_state>(13): {
+            this->go_next_state();
+            break;
+        }
         case static_cast<game_state>(14):
             this->pop_process();
             break;
@@ -1618,10 +1624,6 @@ void system_idle() {
     }
 }
 
-void us_lighting_switch_time_of_day(int a1) {
-    CDECL_CALL(0x00408790, a1);
-}
-
 camera *game::get_current_view_camera(int a2) {
     if constexpr (1) {
         auto *cam = comic_panels::get_current_view_camera(a2);
@@ -1992,11 +1994,11 @@ void game::render_ui()
 {
     if constexpr (0)
     {
-        nglListBeginScene(nglSceneParamType{1});
+        nglListBeginScene(static_cast<nglSceneParamType>(1));
         render_motion_blur();
         nglListEndScene();
 
-        nglListBeginScene(nglSceneParamType{1});
+        nglListBeginScene(static_cast<nglSceneParamType>(1));
 
         static Var<bool> g_preserve_z_buffer{0x0095C878};
         nglSetClearFlags(g_preserve_z_buffer() ? 0 : 6);
@@ -2046,7 +2048,7 @@ void game::render_ui()
             g_femanager().Draw();
         }
 
-        nglListBeginScene(nglSceneParamType{1});
+        nglListBeginScene(static_cast<nglSceneParamType>(1));
         nglSetClearFlags(g_preserve_z_buffer() ? 0 : 6);
         sub_769DE0(7);
         if (!EnableShader())
@@ -2147,12 +2149,16 @@ void hook_nglListEndScene()
     nglCurScene() = nglCurScene()->field_30C;
 }
 
-void game::advance_state_running(Float a2) {
+void game::advance_state_running(Float a2)
+{
     TRACE("game::advance_state_running");
 
-    if constexpr (1) {
-        if (!this->field_162 && !this->field_161 &&
-            !os_developer_options::instance()->get_int(mString{"FORCE_WIN"})) {
+    if constexpr (1)
+    {
+        if (!this->field_162
+                && !this->field_161
+                && os_developer_options::instance()->get_int(mString{"FORCE_WIN"}) == 0)
+        {
             if (this->field_164) {
                 this->unload_current_level();
                 this->soft_reset_process();

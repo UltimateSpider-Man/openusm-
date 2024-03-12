@@ -306,8 +306,18 @@ void entity::render(Float a2) {
     func(this, nullptr, a2);
 }
 
-nglMesh *entity::get_mesh() {
-    return nullptr;
+nglMesh *entity::get_mesh()
+{
+    if constexpr (0)
+    {
+        return nullptr;
+    }
+    else
+    {
+        nglMesh * (__fastcall *func)(const entity *) = CAST(func, get_vfunc(m_vtbl, 0x1B0));
+
+        return func(this);
+    }
 }
 
 bool entity::has_mesh() {
@@ -385,8 +395,9 @@ float entity::get_render_zbias() const {
     return 0.0;
 }
 
-int entity::get_light_set() {
-    return 0;
+light_manager *entity::get_light_set() const {
+    light_manager * (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x1E0));
+    return func(this);
 }
 
 bool entity::can_be_a_lego() {

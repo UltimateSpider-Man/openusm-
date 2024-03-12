@@ -41,7 +41,12 @@ script_library_class::script_library_class(
         const char *a4,
         bool a5)
 {
-    THISCALL(0x005AA860, this, a2, a3, a4, a5);
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x005AA860, this, a2, a3, a4, a5);
+    }
 }
 
 void script_library_class::store_name(const char *a2)
@@ -61,7 +66,8 @@ void verify_parms_integrity(
         unsigned int *parms,
         int parms_size)
 {
-    for ( auto i = 0; i < parms_size; ++i ) {
+    for ( auto i = 0; i < parms_size; ++i )
+    {
         if ( parms[i] == UNINITIALIZED_SCRIPT_PARM ) {
             auto v6 = mString {"uninitialized parameters in call to "} + func->get_name();
             the_stack->get_thread()->slf_error(v6);

@@ -42,7 +42,8 @@ bool mesh_file_resource_handler::_handle_resource(worldly_resource_handler::eBeh
                my_slot->get_resource_directory().get_resource_count(
                    RESOURCE_KEY_TYPE_MESH_FILE_STRUCT));
 
-        if (behavior == UNLOAD) {
+        if (behavior == UNLOAD)
+        {
             if (loc->field_8 != nullptr &&
                 !nglCanReleaseMeshFile(bit_cast<nglMeshFile *>(loc->field_8))) {
                 return true;
@@ -87,7 +88,9 @@ bool mesh_file_resource_handler::_handle_resource(worldly_resource_handler::eBeh
                 }
             }
 
-        } else { //LOAD
+        }
+        else
+        { //LOAD
             auto &res_dir = my_slot->get_resource_directory();
             auto idx = this->field_C +
                 res_dir.get_type_start_idxs(RESOURCE_KEY_TYPE_MESH_FILE_STRUCT);
@@ -129,7 +132,9 @@ bool mesh_file_resource_handler::_handle_resource(worldly_resource_handler::eBeh
 
         ++this->field_C;
         return false;
-    } else {
+    }
+    else
+    {
         bool result = (bool) THISCALL(0x0056BD00, this, behavior, loc);
 
         return result;

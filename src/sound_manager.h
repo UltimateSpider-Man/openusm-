@@ -47,3 +47,5 @@ extern void sub_54DC10(const char *a1, bool a2);
 extern char *sub_50F010();
 
 extern int sub_79A160();
+
+extern void sound_manager_patch();

@@ -81,13 +81,12 @@ struct Struct_984498
     int free;
 };
 
-#define NFL_STANDALONE 0
 
 #define make_var(type, name) \
     static type g_##name {}; \
     Var<type> name {(int) &g_##name}
 
-#if !NFL_STANDALONE 
+#if !STANDALONE_SYSTEM
 
 static Var<nflInitParams> nfl_initParams {0x00949730};
 

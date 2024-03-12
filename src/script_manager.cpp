@@ -21,7 +21,7 @@
 
 #include <set.hpp>
 
-#if !SCRIPT_MANAGER_STANDALONE 
+#if !STANDALONE_SYSTEM
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_link_list {0x00965EF4};
 
 Var<_std::list<script_executable_entry> *> script_manager_execs_pending_first_run {0x00965EF8};
@@ -640,7 +640,7 @@ void destroy_game_var() {
     }
 }
 
-#if !SCRIPT_MANAGER_STANDALONE 
+#if !STANDALONE_SYSTEM
 _std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()
 #else
 std::map<script_executable_entry_key, script_executable_entry> *get_exec_list()

@@ -32,6 +32,7 @@
 #include "scratchpad_stack.h"
 #include "script_memtrack.h"
 #include "script_sound_manager.h"
+#include "shadow.h"
 #include "smoke_test.h"
 #include "sound_manager.h"
 #include "spider_monkey.h"
@@ -58,15 +59,14 @@ Var<int> dword_966F8C{0x00966F8C};
 
 Var<nglTexture *> g_shadow_target_unblurred{0x00965F48};
 
-void sub_592E40() {
-    nglTexture **v0 = &g_shadow_target_blurred();
-    do {
-        if (*v0 != nullptr) {
-            nglDestroyTexture(*v0);
+void sub_592E40()
+{
+    for (auto &s : g_shadow())
+    {
+        if (s.field_44 != nullptr) {
+            nglDestroyTexture(s.field_44);
         }
-
-        v0 += 19;
-    } while ((signed int) v0 < (signed int) &dword_966F8C());
+    }
 
     if (g_shadow_target_unblurred() != nullptr) {
         nglDestroyTexture(g_shadow_target_unblurred());
@@ -74,21 +74,23 @@ void sub_592E40() {
 }
 
 //0x00592E80
-void init_shadow_targets() {
+void init_shadow_targets()
+{
+    TRACE("init_shadow_targets");
+
 #ifdef ENABLE_DEBUG_MENU
     debug_menu::init();
 #endif
 
     sub_592E40();
 
-    nglTexture **v0 = &g_shadow_target_blurred();
     tlFixedString v1;
-    do {
-        *v0 = nglCreateTexture(4609, 128, 128, 0, 1);
+    for ( auto &s : g_shadow() )
+    {
+        s.field_44 = nglCreateTexture(4609, 128, 128, 0, 1);
         v1 = tlFixedString{"blurred shadow texture"};
-        (*v0)->field_60 = v1;
-        v0 += 19;
-    } while ((signed int) v0 < (signed int) &dword_966F8C());
+        s.field_44->field_60 = v1;
+    }
 
     g_shadow_target_unblurred() = nglCreateTexture(4609u, 256, 256, 0, 1);
 
@@ -134,8 +136,9 @@ void colgeom_destroy_lists()
     CDECL_CALL(0x005489A0);
 }
 
-app::app() : field_4(), field_34()
+app::app()
 {
+    TRACE("app::app");
     this->m_vtbl = 0x00891634;
 
     unit_tests();
@@ -163,7 +166,7 @@ app::app() : field_4(), field_34()
     string_hash_dictionary::create_inst();
     event_manager::create_inst();
 
-    trigger_manager::instance() = new trigger_manager();
+    trigger_manager::create_inst();
     pc_input_mgr::create_inst();
     input_mgr::create_inst();
     sound_manager::create_inst();
@@ -215,8 +218,10 @@ app::~app()
     this->m_vtbl = 0x0088E4C8;
 }
 
-void app::internal::begin_screen_recording(const mString &a2, int a3) {
-    if (this->field_18 != 2) {
+void app::internal::begin_screen_recording(const mString &a2, int a3)
+{
+    if (this->field_18 != 2)
+    {
         this->field_18 = 2;
         this->field_0 = a2;
         this->field_14 = 0;
@@ -229,7 +234,8 @@ void app::internal::end_screen_recording() {
     os_developer_options::instance()->set_int(mString{"CAMERA_CENTRIC_STREAMER"}, 0);
 }
 
-void app::internal::sub_5B8670() {
+void app::internal::sub_5B8670()
+{
     if constexpr (1) {
         if (g_smoke_test() != nullptr) {
             g_smoke_test()->frame_advance();
@@ -239,7 +245,8 @@ void app::internal::sub_5B8670() {
     char Dest[64];
 
     auto v2 = this->field_18;
-    if (v2) {
+    if (v2 != 0)
+    {
         if (v2 == 1) {
             sprintf(Dest, "screenshot%.4d", this->field_10++);
         } else {
@@ -344,8 +351,7 @@ void app::create_inst()
     assert(instance() == nullptr);
 
     if constexpr (1) {
-        auto *mem = mem_alloc(sizeof(app));
-        app::instance() = new (mem) app{};
+        instance() = new app {};
     } else {
         CDECL_CALL(0x005B2450);
     }
@@ -404,14 +410,12 @@ void app_patch()
         REDIRECT(0x005E10BF, unit_tests);
     }
 
-
     REDIRECT(0x005AD2E9, app::create_inst);
 
     {
         FUNC_ADDRESS(address, &app::tick);
         REDIRECT(0x005AD495, address);
     }
-    return;
 
     {
         FUNC_ADDRESS(address, &app::internal::sub_5B8670);

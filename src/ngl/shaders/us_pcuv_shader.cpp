@@ -14,9 +14,33 @@
 #include <ngl_dx_state.h>
 #include <ngl_dx_texture.h>
 
+#include "common.h"
+
 static Var<IDirect3DPixelShader9 *> PCUV_PShader{0x009562C8};
 
 static Var<VShader> dword_970AD0{0x00970AD0};
+
+VALIDATE_SIZE(PCUV_ShaderMaterial, 0x30u);
+
+PCUV_ShaderMaterial::PCUV_ShaderMaterial()
+{
+    this->field_1C = nullptr;
+    this->m_texture = nullptr;
+    this->m_blend_mode = static_cast<nglBlendModeType>(0);
+    this->field_28 = 2;
+    this->field_2C = 0;
+    this->field_8 = &gPCUV_Shader();
+}
+
+PCUV_ShaderMaterial::PCUV_ShaderMaterial(nglTexture *a2, nglBlendModeType a3, int a4, int a5)
+{
+    this->m_texture = a2;
+    this->m_blend_mode = a3;
+
+    this->field_28 = a5;
+    this->field_2C = a4;
+    this->field_8 = &gPCUV_Shader();
+}
 
 PCUV_Shader::PCUV_Shader() {}
 
@@ -33,7 +57,7 @@ void PCUV_Shader::Register() {
                 auto pShader = CompileVShader("shaders/us_pcuv_VS.hlsl");
 
                 //static Var<DWORD *> off_939FB0{0x00939FB0};
-                CreateVertexDeclarationAndShader(&dword_970AD0(), &stru_91E1B4(), pShader.data());
+                nglCreateVertexDeclarationAndShader(&dword_970AD0(), &stru_91E1B4(), pShader.data());
             } else {
                 static const char *text =
                     "dcl_position v0\n"
@@ -72,22 +96,25 @@ void PCUV_Shader::Register() {
     }
 }
 
-void PCUV_ShaderNode::Render() {
+void PCUV_ShaderNode::Render()
+{
     static Var<int> dword_956D34{0x00956D34};
 
-    if (dword_956D34() == 0) {
+    if (dword_956D34() == 0)
+    {
         THISCALL(0x00413AF0, this);
 
         g_renderState().setCullingMode(D3DCULL_NONE);
 
-        g_renderState().setBlending(this->field_14[9], this->field_14[11], 0);
-        if (EnableShader()) {
+        g_renderState().setBlending(this->field_14->m_blend_mode, this->field_14->field_2C, 0);
+        if (EnableShader())
+        {
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(),
                                                                  0,
                                                                  &this->field_C->field_40[0][0],
                                                                  4);
 
-            SetVertexDeclarationAndShader(&dword_970AD0());
+            nglSetVertexDeclarationAndShader(&dword_970AD0());
         } else {
             g_Direct3DDevice()->lpVtbl->SetTransform(g_Direct3DDevice(),
                                                      (D3DTRANSFORMSTATETYPE) 256,
@@ -103,29 +130,29 @@ void PCUV_ShaderNode::Render() {
             g_renderState().setCullingMode(D3DCULL_CCW);
         }
 
-        nglDxSetTexture(0, *((nglTexture **) this->field_14 + 8), 2u, 3);
-        uint32_t v2 = this->field_14[10];
-        SetSamplerState(0, D3DSAMP_ADDRESSU, ((v2 & 0x40) | 0x20u) >> 5);
-        SetSamplerState(0, D3DSAMP_ADDRESSV, ((v2 & 0x80) | 0x40u) >> 6);
+        nglDxSetTexture(0, this->field_14->m_texture, 2u, 3);
+        uint32_t v2 = this->field_14->field_28;
+        nglSetSamplerState(0, D3DSAMP_ADDRESSU, ((v2 & 0x40) | 0x20u) >> 5);
+        nglSetSamplerState(0, D3DSAMP_ADDRESSV, ((v2 & 0x80) | 0x40u) >> 6);
 
         if (EnableShader()) {
             SetPixelShader(&PCUV_PShader());
         } else {
-            SetTextureStageState(0, D3DTSS_COLOROP, 4u);
-            SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
-            SetTextureStageState(0, D3DTSS_COLORARG2, 0);
-            SetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
-            SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
-            SetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
-            SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
-            SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+            nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
+            nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+            nglSetTextureStageState(0, D3DTSS_COLORARG2, 0);
+            nglSetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
+            nglSetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+            nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
         }
 
         if (byte_95C718() && nglCurScene()->field_3BA && !sub_581C30()) {
             g_renderState().setFogEnable(false);
         }
 
-        SetStreamSourceAndDrawPrimitive(this->field_10);
+        nglSetStreamSourceAndDrawPrimitive(this->field_10);
 
         if (byte_95C718() && nglCurScene()->field_3BA) {
             g_renderState().setFogEnable(true);

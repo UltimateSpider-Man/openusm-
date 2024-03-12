@@ -9,6 +9,8 @@ struct string_hash;
 struct Input;
 struct InputSettings;
 
+inline constexpr bool STANDALONE_SYSTEM = 0;
+
 inline Var<float> s_camera_target_radius_factor {0x0087EBC4};
 
 extern Var<float> flt_87EBD4;

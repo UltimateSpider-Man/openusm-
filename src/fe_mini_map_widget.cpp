@@ -45,7 +45,7 @@ fe_mini_map_widget::~fe_mini_map_widget()
 
     for ( auto &mat : this->field_4 )
     {
-        mat.field_20 = nullptr;
+        mat.m_texture = nullptr;
     }
 }
 
@@ -90,7 +90,7 @@ void fe_mini_map_widget::PrepareRegions()
     if constexpr (0)
     {
         for (auto &mat : this->field_4 ) {
-            mat.field_20 = nullptr;
+            mat.m_texture = nullptr;
         }
 
         auto *hero_or_marky_cam_ptr = g_world_ptr()->get_hero_or_marky_cam_ptr();
@@ -116,7 +116,7 @@ void fe_mini_map_widget::PrepareRegions()
                     {
                         auto v13 = reg->get_scene_id(0);
                         tlFixedString v17 {v13.c_str()};
-                        this->field_4[v14].field_20 = bit_cast<nglTexture *>(dir->get_tlresource(v17,
+                        this->field_4[v14].m_texture = bit_cast<nglTexture *>(dir->get_tlresource(v17,
                                                   TLRESOURCE_TYPE_TEXTURE));
                         reg->get_region_extents(&this->field_244[v14], &this->field_2D4[v14]);
                         ++v14;
@@ -140,7 +140,7 @@ void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
         uint32_t v5 = 0;
         for ( int i = 0; i < 12; ++i )
         {
-            if ( this->field_4[i].field_20 != nullptr ) {
+            if ( this->field_4[i].m_texture != nullptr ) {
                 ++v5;
             }
         }
@@ -152,7 +152,7 @@ void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
             auto *v8 = this->field_4;
             for (int i = 0; i < 12; ++i)
             {
-                if ( this->field_4[i].field_20 != nullptr )
+                if ( this->field_4[i].m_texture != nullptr )
                 {
                     nglMaterialBase *v10 = ( v8 != nullptr
                                                 ? bit_cast<nglMaterialBase *>(&v8->field_4)
@@ -324,7 +324,7 @@ void fe_mini_map_widget::Draw()
             else
             {
                 this->PrepareRegions();
-                nglListBeginScene(nglSceneParamType{0});
+                nglListBeginScene(static_cast<nglSceneParamType>(0));
                 nglSetClearFlags(1u);
                 nglCurScene()->field_3BA = true;
                 nglCurScene()->m_farz = 10000.0;

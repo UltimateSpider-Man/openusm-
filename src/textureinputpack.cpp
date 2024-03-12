@@ -30,10 +30,10 @@ void TextureInputPack::sub_5871D0() {
             g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_FOGENABLE, false);
         }
 
-        SetTextureStageState(0, D3DTSS_COLOROP, 2u);
-        SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
-        SetTextureStageState(0, D3DTSS_ALPHAOP, 2u);
-        SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+        nglSetTextureStageState(0, D3DTSS_COLOROP, 2u);
+        nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+        nglSetTextureStageState(0, D3DTSS_ALPHAOP, 2u);
+        nglSetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
 
         auto v2 = this->field_4;
         auto v3 = this->field_8;

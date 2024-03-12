@@ -1,22 +1,24 @@
 #pragma once
 
 #include "generic_interface.h"
+#include "mashable_vector.h"
 #include "string_hash.h"
 
 struct conglomerate;
 struct variant_info;
 struct nglMeshFile;
+struct nglMesh;
+struct nglMorphSet;
+struct variant_speaker_id_set;
 
 struct variant_interface : generic_interface {
     conglomerate *field_4;
     bool field_8;
-    variant_info *field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
+    mashable_vector<variant_info> variants;
+    mashable_vector<variant_speaker_id_set> field_14;
+    variant_info *field_1C;
+    nglMesh *field_20;
+    nglMorphSet *field_24;
     nglMeshFile *field_28;
     int field_2C;
     int field_30;
@@ -30,9 +32,9 @@ struct variant_interface : generic_interface {
     int field_50;
     int field_54;
 
-    variant_interface();
+    variant_interface(conglomerate *);
 
-    variant_info *sub_4CAD00();
+    variant_info *get_random_variant();
 
     void apply_variant(string_hash a2);
 

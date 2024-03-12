@@ -13,7 +13,7 @@
 #include "ngl_mesh.h"
 #include "ngl_dx_vertexdef.h"
 #include "oldmath_po.h"
-#include "pcuv_shadermaterial.h"
+#include "us_pcuv_shader.h"
 #include "trace.h"
 
 #include <cmath>
@@ -94,7 +94,7 @@ void beam::_render(Float a1)
                 assert(this->my_material != nullptr);
 
                 auto v24 = (this->field_E2 != 0);
-                this->my_material->field_24 = static_cast<nglBlendModeType>(v24 + 2);
+                this->my_material->m_blend_mode = static_cast<nglBlendModeType>(v24 + 2);
 
                 uint32_t color0 = color32::to_int(this->field_7C);
                 uint32_t color1 = color32::to_int(this->field_80);

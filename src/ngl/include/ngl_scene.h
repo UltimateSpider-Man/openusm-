@@ -9,6 +9,7 @@
 
 struct nglTexture;
 struct nglLightContext;
+struct nglRenderNode;
 
 enum nglSceneCallbackType {};
 
@@ -63,8 +64,8 @@ struct nglScene {
     nglTexture *field_334;
     nglTexture *field_338;
     int field_33C;
-    int field_340;
-    int field_344;
+    nglRenderNode *field_340;
+    nglRenderNode *field_344;
     int OpaqueListCount;
     int TransListCount;
     nglLightContext *field_350;

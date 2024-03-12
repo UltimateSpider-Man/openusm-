@@ -4,6 +4,7 @@
 
 #include <d3d9.h>
 
+#include <list.hpp>
 #include <vector>
 
 struct nglMeshNode;
@@ -16,12 +17,26 @@ struct VShader {
 
 inline Var<VShader> stru_975780 {0x00975780};
 
+inline Var<VShader> stru_975798 {0x00975798};
+
+inline Var<VShader> stru_975788 {0x00975788};
+
+inline Var<VShader> stru_9757A4 {0x009757A4};
+
 extern Var<IDirect3DVertexDeclaration9 *[1]> dword_9738E0;
+
+inline Var<IDirect3DPixelShader9 *> dword_9757DC {0x009757DC};
+
+inline Var<IDirect3DPixelShader9 *> dword_975790 {0x00975790};
+
+extern Var<_std::list<void *>> g_pixelShaderList;
+
+inline Var<_std::list<void *>> g_vertexShaderList {0x00972AC0};
 
 extern void log_codes(const DWORD *code);
 
 //0x00772270
-extern void SetVertexDeclarationAndShader(VShader *a1);
+extern void nglSetVertexDeclarationAndShader(VShader *a1);
 
 //0x00772250
 extern void SetPixelShader(IDirect3DPixelShader9 **a1);
@@ -36,7 +51,7 @@ extern void nglCreatePShader(IDirect3DPixelShader9 **a3, const char *SrcCode, ..
 extern int CreatePixelShader(IDirect3DPixelShader9 **a1, const DWORD *a2);
 
 //0x007724A0
-extern void CreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, const DWORD *a3);
+extern void nglCreateVertexDeclarationAndShader(void *a1, const D3DVERTEXELEMENT9 *a2, const DWORD *a3);
 
 extern int size_codes(const DWORD *code);
 

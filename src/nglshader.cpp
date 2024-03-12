@@ -4,6 +4,7 @@
 #include "fixedstring.h"
 #include "log.h"
 #include "ngl_params.h"
+#include "trace.h"
 #include "vector4d.h"
 #include "vtbl.h"
 
@@ -21,21 +22,17 @@ nglShader::nglShader()
 
 }
 
-void nglShader::Register() {
+void nglShader::Register()
+{
     this->field_8 = nglShader::NextID()++;
     auto v4 = this->field_8;
 
-    void (__fastcall *GetName)(void *, void *, tlFixedString *) = CAST(GetName, get_vfunc(this->m_vtbl, 0x4));
-
-    tlFixedString v1;
-    GetName(this, nullptr, &v1);
+    tlFixedString v1 = this->GetName();
 
     auto *v2 = v1.to_string();
     sp_log("Registering shader %s, ID: %d\n", v2, v4);
 
-    tlFixedString v3;
-    GetName(this, nullptr, &v3);
-    nglShaderBank().Insert(v3, this);
+    nglShaderBank().Insert(v1, this);
 }
 
 tlFixedString nglShader::GetName() {
@@ -55,6 +52,7 @@ void nglShader::AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3
 }
 
 void nglShader::BindMaterial(nglMaterialBase *mat) {
+    sp_log("m_vtbl = 0x%08X", m_vtbl);
     void (__fastcall *func)(void *, void *, nglMaterialBase *) = CAST(func, get_vfunc(m_vtbl, 0xC));
 
     func(this, nullptr, mat);

@@ -15,18 +15,20 @@ namespace USTranslucentShaderSpace
     {
         TRACE("USTranslucentShader<USExteriorMaterial>::BindMaterial");
 
+        auto *v1 = bit_cast<USExteriorMaterial *>(a1);
+
 #ifdef TARGET_XBOX
-        a1->field_64 = nglLoadTexture(*bit_cast<tlHashString *>(&a1->field_60));
-        if ( a1->field_84 > 0.0 )
+        v1->field_64 = nglLoadTexture(*bit_cast<tlHashString *>(&v1->field_60));
+        if ( v1->field_84 > 0.0 )
         {
-            a1->field_84 = 0.0;
+            v1->field_84 = 0.0;
         }
 #else
-        a1->field_64 = nglLoadTexture(*bit_cast<tlFixedString *>(a1->field_60));
-        auto v2 = a1->field_84;
+        v1->field_64 = nglLoadTexture(*bit_cast<tlFixedString *>(v1->field_60));
+        auto v2 = v1->field_84;
         if ( v2 > 0.0 )
         {
-            a1->field_84 = 0.0;
+            v1->field_84 = 0.0;
         }
 #endif
     }
@@ -57,13 +59,15 @@ namespace USTranslucentShaderSpace
     {
         TRACE("USTranslucentShader<USExteriorMaterial>::RebaseMaterial");
 
+        auto *v1 = bit_cast<USExteriorMaterial *>(a1);
+
 #ifndef TARGET_XBOX
         if constexpr (0)
         {
-            int v2 = a1->field_60;
-            if ( v2 != 0)
+            auto *v2 = v1->field_60;
+            if ( v2 != nullptr)
             {
-                a1->field_60 = v2 + a2;
+                v1->field_60 = CAST(v1->field_60, int(v2) + a2);
             }
         }
         else

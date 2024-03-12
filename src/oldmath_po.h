@@ -17,6 +17,19 @@ struct po {
 
     po();
 
+    po(float a2,
+        float a3,
+        float a4,
+        float a5,
+        float a6,
+        float a7,
+        float a8,
+        float a9,
+        float a10,
+        float a11,
+        float a12,
+        float a13);
+
     po(const matrix4x4 &a1);
 
     po(vector3d const &, quaternion const &, Float);
@@ -122,6 +135,8 @@ struct po {
 
     mString to_string() const;
 };
+
+inline const po po_identity_matrix {1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0, 0, 0, 0};
 
 struct ptr_to_po {
     const po *m_rel_po;

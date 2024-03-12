@@ -18,6 +18,15 @@ trigger_manager::trigger_manager() : m_triggers(nullptr) {
     this->m_vtbl = 0x00891274;
 }
 
+void trigger_manager::create_inst()
+{
+    TRACE("trigger_manager::create_inst");
+
+    assert(instance() == nullptr);
+
+    instance() = new trigger_manager {};
+}
+
 void trigger_manager::deinit() {
     purge();
 }
@@ -191,7 +200,10 @@ point_trigger *trigger_manager::new_point_trigger(
     return t;
 }
 
-void trigger_manager_patch() {
+void trigger_manager_patch()
+{
+    REDIRECT(0x005E1118, trigger_manager::create_inst);
+
     {
         FUNC_ADDRESS(address, &trigger_manager::delete_trigger);
         SET_JUMP(0x0051E560, address);

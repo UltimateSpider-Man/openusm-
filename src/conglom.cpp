@@ -46,13 +46,14 @@ VALIDATE_SIZE(conglomerate, 0x130);
 
 conglomerate::conglomerate(const string_hash &a2, unsigned int a3) : actor(a2, a3) {}
 
-void conglomerate::init_member_data() {
+void conglomerate::init_member_data()
+{
     this->skeleton_ifc = nullptr;
     this->field_11C = nullptr;
     this->script_data_ifc = nullptr;
     this->field_124 = nullptr;
     this->my_decal_data_interface = nullptr;
-    this->field_12C = nullptr;
+    this->m_variant_interface = nullptr;
     this->field_FC = nullptr;
     this->field_100 = nullptr;
     this->field_104 = 0;
@@ -67,6 +68,12 @@ void conglomerate::create_parentage_tree()
     TRACE("conglomerate::create_parentage_tree");
 
     THISCALL(0x004E55E0, this);
+}
+
+void conglomerate::create_variant_ifc()
+{
+    auto *mem = mem_alloc(sizeof(variant_interface));
+    this->m_variant_interface = new (mem) variant_interface {this};
 }
 
 void conglomerate::remove_member_lights_from_region(region *a2)
@@ -233,19 +240,19 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
         {
             rebase(a4->field_0, 4);
 
-            this->field_12C = a4->get<variant_interface>();
+            this->m_variant_interface = a4->get<variant_interface>();
 
-            fix_ifc_v_table((char *) this->field_12C, (eEntityMashIFCTypeEnum) 10);
+            fix_ifc_v_table((char *) this->m_variant_interface, static_cast<eEntityMashIFCTypeEnum>(10));
 
-            this->field_12C->un_mash(
+            this->m_variant_interface->un_mash(
                 a2,
                 this,
-                this->field_12C,
+                this->m_variant_interface,
                 a4);
         }
         else
         {
-            this->field_12C = nullptr;
+            this->m_variant_interface = nullptr;
         }
 #endif
 
@@ -508,7 +515,7 @@ void conglomerate::_un_mash(generic_mash_header *a2, void *a3, generic_mash_data
         {
             auto *v82 = this->variant_ifc();
             v82->field_28 = v82->field_4->get_mesh()->File;
-            auto *v83 = v82->sub_4CAD00();
+            auto *v83 = v82->get_random_variant();
             v82->apply_variant(v83);
         }
     }
@@ -968,6 +975,11 @@ entity_base *conglomerate::get_bone(const string_hash &a2, bool a3) {
     } else {
         return (entity_base *) THISCALL(0x004CCC90, this, &a2, a3);
     }
+}
+
+light_manager *conglomerate::get_light_set() const
+{
+    return this->field_F8;
 }
 
 void conglomerate_patch()

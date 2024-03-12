@@ -16,13 +16,13 @@ struct USVariantShaderNode : nglShaderNode {
 
     /* virtual */ ~USVariantShaderNode() = default;
 
-    nglTexture *sub_41BE30(nglTexture *a2);
+    nglTexture *ResolveIFL(nglTexture *a2);
 
     double sub_415D10();
 
-    double sub_41DEA0();
+    double sub_41DEA0() const;
 
-    float sub_41DE40();
+    float GetDistanceScale() const;
 };
 
 extern void USVariantShaderNode_patch();

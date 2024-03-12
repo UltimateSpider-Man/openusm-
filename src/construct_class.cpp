@@ -17,6 +17,21 @@
 #include "func_wrapper.h"
 
 template<>
+void mash_info_struct::construct_class<mAvlTree<string_hash_entry>>(mAvlTree<string_hash_entry> *&a1)
+{
+    auto *v1 = a1;
+    if ( a1 != nullptr )
+    {
+        THISCALL(0x00420EF0, v1, nullptr);
+        a1 = v1;
+    }
+    else
+    {
+        a1 = nullptr;
+    }
+}
+
+template<>
 void mash_info_struct::construct_class(PanelFile *&a1)
 {
     TRACE("mash_info_struct::construct_class<PanelFile>");

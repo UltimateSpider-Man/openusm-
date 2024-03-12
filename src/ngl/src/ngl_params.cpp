@@ -40,8 +40,10 @@ nglMaterialBase *sub_8EA2E0(nglParamSet<nglShaderParamSet_Pool> *a1,
     if (v5 < 4u &&
         (v4 = a1->Get<USMMaterialListParam>()->field_0,
          (v3 = v4[a1->Get<USMMaterialIndicesParam>()->field_0[v5]]) != nullptr) &&
-        v3->field_4 == DefaultMaterial->field_4) {
+        v3->m_shader == DefaultMaterial->m_shader)
+    {
         return v3;
     }
+
     return DefaultMaterial;
 }

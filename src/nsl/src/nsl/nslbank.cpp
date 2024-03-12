@@ -210,7 +210,10 @@ void nslUpdate()
 
 void nsl_patch()
 {
-    REDIRECT(0x0054D4F2, nslUpdate);
+    {
+        REDIRECT(0x0054D4F2, nslUpdate);
+        REDIRECT(0x0055234C, nslUpdate);
+    }
 
     REDIRECT(0x0079A7EC, nslUpdateBanks);
 

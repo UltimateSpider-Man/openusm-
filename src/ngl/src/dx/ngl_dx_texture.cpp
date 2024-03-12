@@ -25,7 +25,8 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
 
         auto *v4 = Tex;
         auto *v5 = Tex;
-        if (static_cast<uint8_t>(Tex->m_format) == 16) {
+        if (static_cast<uint8_t>(Tex->m_format) == 16)
+        {
             auto v6 = Tex->m_num_palettes;
 
             unsigned int v7;
@@ -42,7 +43,8 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
 
         auto *palette = v5->field_48;
         auto *v16 = palette;
-        if (static_cast<uint8_t>(v5->m_format) == 17) {
+        if (static_cast<uint8_t>(v5->m_format) == 17)
+        {
             v5 = (nglTexture *) v5->m_num_palettes;
         }
 
@@ -57,21 +59,23 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
             g_renderTextureState().field_0[a1] = v5->DXTexture;
         }
 
-        if (palette != nullptr) {
+        if (palette != nullptr)
+        {
             if (g_valid_texture_format() && (Tex->field_34 & 8) != 0 &&
-                static_cast<uint8_t>(v5->m_format) == 7) {
-                if (v5->m_num_palettes != 0) {
-                    for (auto v11 = 0u; v11 < v5->m_num_palettes; ++v11) {
-                        v5->Frames[v11]->field_34 |= 8u;
-                    }
+                NGLTEX_GET_FORMAT(v5->m_format) == 7)
+            {
+                for (auto v11 = 0u; v11 < v5->m_num_palettes; ++v11) {
+                    v5->Frames[v11]->field_34 |= 8u;
                 }
 
                 v5->DXTexture->lpVtbl->LockRect(v5->DXTexture, 0, &v5->field_24, 0, 0);
                 auto *v17 = (char *) v5->field_24.pBits;
-                for (int i = 0; i < v5->m_height; ++i) {
+                for (int i = 0; i < v5->m_height; ++i)
+                {
                     auto *v14 = (uint32_t *) &v17[i * v5->field_24.Pitch];
                     uint32_t v15 = 0;
-                    if (v5->m_width) {
+                    if (v5->m_width)
+                    {
                         auto BYTE2 = [](uint32_t &v) -> uint8_t {
                             auto result = bit_cast<uint8_t *>(&v)[2];
                             return result;
@@ -104,18 +108,23 @@ void nglDxSetTexture(uint32_t a1, nglTexture *Tex, uint8_t a3, int a4)
         }
 
         g_renderTextureState().setSamplerState(v9, a3, a4);
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x007754B0, a1, Tex, a3, a4);
     }
 }
 
-void SetSamplerState(DWORD sampler, D3DSAMPLERSTATETYPE type, DWORD value) {
-    if constexpr (1) {
+void nglSetSamplerState(DWORD sampler, D3DSAMPLERSTATETYPE type, DWORD value)
+{
+    if constexpr (1)
+    {
         auto result = type + 14 * sampler;
         auto *v4 = (DWORD *) (4 * result + 0x971FF0);
 
         static Var<uint32_t[1]> dword_971FF0{0x00971FF0};
-        if (dword_971FF0()[result] != value) {
+        if (dword_971FF0()[result] != value)
+        {
             result = g_Direct3DDevice()->lpVtbl->SetSamplerState(g_Direct3DDevice(),
                                                                  sampler,
                                                                  type,
@@ -128,7 +137,8 @@ void SetSamplerState(DWORD sampler, D3DSAMPLERSTATETYPE type, DWORD value) {
     }
 }
 
-void SetTextureStageState(DWORD a1, D3DTEXTURESTAGESTATETYPE a2, DWORD a3) {
+void nglSetTextureStageState(DWORD a1, D3DTEXTURESTAGESTATETYPE a2, DWORD a3)
+{
     uint32_t v3 = a2 + 33 * a1;
     auto *v4 = (DWORD *) (4 * v3 + 0x972240);
 
@@ -140,7 +150,52 @@ void SetTextureStageState(DWORD a1, D3DTEXTURESTAGESTATETYPE a2, DWORD a3) {
     }
 }
 
+void nglDxSetTexel8(nglTexture *Tex, int a2, int a3, int a4)
+{
+    assert(Tex != nullptr && "Texture is NULL!");
+
+#if 0
+    assert(NGLTEX_GET_FORMAT(Tex->m_format) == NGLTEX_L8)
+            || (NGLTEX_GET_FORMAT(Tex->m_format) == NGLTEX_I8)
+            || (NGLTEX_GET_FORMAT(Tex->m_format) == NGLTEX_A8)
+            || (NGLTEX_GET_FORMAT(Tex->m_format) == NGLTEX_AL8);
+#endif
+
+    auto *pBits = (char *)Tex->field_24.pBits;
+    if ( (Tex->m_format & 0x200) != 0 ) {
+        *(DWORD *)&pBits[4 * a2 + a3 * Tex->field_24.Pitch] = a4;
+    } else {
+        *(DWORD *)pBits = a4;
+    }
+}
+
+static int nglTexLocked{0};
+
+
+bool nglDxLockTexture(nglTexture *Tex, int flags)
+{
+    assert(nglTexLocked == 0 && "Texture still locked ! (only one texture at a time can be locked)");
+    assert(Tex != nullptr && "nglDxLockTexture: Cannot lock a NULL texture !");
+
+    auto result =
+        (Tex->DXTexture->lpVtbl->LockRect(Tex->DXTexture, 0, &Tex->field_24, nullptr, flags) == 0);
+    nglTexLocked = result;
+
+    return result;
+}
+
+HRESULT nglDxUnlockTexture(nglTexture *Tex)
+{
+    assert(nglTexLocked && "Must call nglDxLockTexture before calling nglDxUnlockTexture !");
+    assert(Tex != nullptr && "nglDxLockTexture: Cannot lock a NULL texture !");
+
+    auto result = Tex->DXTexture->lpVtbl->UnlockRect(Tex->DXTexture, 0);
+
+    nglTexLocked = 0;
+
+    return result;
+}
+
 void ngl_dx_texture_patch()
 {
-    
 }

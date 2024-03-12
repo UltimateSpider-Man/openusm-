@@ -29,33 +29,33 @@ ConsoleVariable::ConsoleVariable() {
 
 static constexpr auto MAX_VARIABLE_NAME_LEN = 32;
 
-void ConsoleVariable::setValue(const mString &, const mString &) {
+void ConsoleVariable::setValue(const std::string &, const std::string &) {
     ;
 }
 
-void ConsoleVariable::setValue(const mString &) {
+void ConsoleVariable::setValue(const std::string &) {
     ;
 }
 
-mString ConsoleVariable::getValue() {
+std::string ConsoleVariable::getValue() {
     return {};
 }
 
-void ConsoleVariable::setName(const mString &pName) {
+void ConsoleVariable::setName(const std::string &pName) {
     assert(pName.size() < MAX_VARIABLE_NAME_LEN);
     auto *v2 = pName.c_str();
     strcpy(this->field_4, v2);
     strlwr(this->field_4);
 }
 
-bool ConsoleVariable::match(mString a2) {
-    mString v4{this->field_4};
+bool ConsoleVariable::match(std::string a2) {
+    std::string v4{this->field_4};
 
     return (v4 == a2);
 }
 
-mString ConsoleVariable::getName() {
-    mString a2{this->field_4};
+std::string ConsoleVariable::getName() {
+    std::string a2{this->field_4};
     return a2;
 }
 
@@ -65,7 +65,7 @@ ConsoleHeightVariable::ConsoleHeightVariable() {
     setName("console_height");
 }
 
-void ConsoleHeightVariable::setValue(const mString &a2) {
+void ConsoleHeightVariable::setValue(const std::string &a2) {
     auto *v7 = this;
     float v6 = 0.0;
 
@@ -81,30 +81,30 @@ void ConsoleHeightVariable::setValue(const mString &a2) {
     }
 }
 
-mString ConsoleHeightVariable::getValue() {
+std::string ConsoleHeightVariable::getValue() {
     auto v2 = g_console->getHeight();
 
     char a1[32];
     sprintf(a1, "%.2f", v2);
 
-    mString out{a1};
+    std::string out{a1};
     return out;
 }
 
 //static HealthVariable g_HealthVariable{};
 
 HealthVariable::HealthVariable() {
-    this->setName(mString{"health"});
+    this->setName("health");
 }
 
-void HealthVariable::setValue(const mString &arg0, const mString &a1) {
+void HealthVariable::setValue(const std::string &arg0, const std::string &a1) {
     auto v41 = 0;
     if (arg0.length() > 0 && a1.length() > 0) {
         auto *v3 = arg0.c_str();
         v41 = atoi(v3);
-        if (v41 >= 0) {
-            auto v40 = a1;
-
+        if (v41 >= 0)
+        {
+            mString v40 {a1.c_str()};
             v40.to_upper();
 
             auto *v39 = ai::ai_core::the_ai_core_list_high();
@@ -174,7 +174,7 @@ void HealthVariable::setValue(const mString &arg0, const mString &a1) {
     }
 }
 
-void HealthVariable::setValue(const mString &arg0) {
+void HealthVariable::setValue(const std::string &arg0) {
     auto v20 = 0;
     if (arg0.length() > 0) {
         auto *v2 = arg0.c_str();
@@ -219,15 +219,15 @@ RenderFramerateVariable::RenderFramerateVariable() {
     setName("render_fps");
 }
 
-void RenderFramerateVariable::setValue(const mString &a1) {
+void RenderFramerateVariable::setValue(const std::string &a1) {
     auto *v1 = a1.c_str();
     os_developer_options::instance()->set_flag(mString{"SHOW_FPS"}, get_boolean_value(v1));
 }
 
-mString RenderFramerateVariable::getValue() {
+std::string RenderFramerateVariable::getValue() {
     auto show_fps = os_developer_options::instance()->get_flag(mString{"SHOW_FPS"});
 
-    return (show_fps ? mString{"on"} : mString{"off"});
+    return (show_fps ? "on" : "off");
 }
 
 //static ProjZoomVariable g_ProjZoomVariable{};
@@ -236,7 +236,7 @@ ProjZoomVariable::ProjZoomVariable() {
     setName("proj_zoom");
 }
 
-void ProjZoomVariable::setValue(const mString &a2) {
+void ProjZoomVariable::setValue(const std::string &a2) {
     auto *v2 = a2.c_str();
     auto v6 = atof(v2);
     if (v6 < LARGE_EPSILON || v6 >= 2.0) {
@@ -250,9 +250,9 @@ void ProjZoomVariable::setValue(const mString &a2) {
     }
 }
 
-mString ProjZoomVariable::getValue() {
+std::string ProjZoomVariable::getValue() {
     auto a2 = geometry_manager::get_zoom();
-    mString a1{a2};
+    std::string a1{a2};
     return a1;
 }
 
@@ -262,7 +262,7 @@ DifficultyVariable::DifficultyVariable() {
     setName("difficulty");
 }
 
-void DifficultyVariable::setValue(const mString &a2) {
+void DifficultyVariable::setValue(const std::string &a2) {
     auto *v2 = a2.c_str();
     auto v3 = atof(v2);
     int v7 = v3;
@@ -278,9 +278,9 @@ void DifficultyVariable::setValue(const mString &a2) {
     }
 }
 
-mString DifficultyVariable::getValue() {
+std::string DifficultyVariable::getValue() {
     auto *v1 = g_game_ptr()->get_game_settings();
     float v2 = v1->field_340.m_difficulty;
-    mString a1{v2};
+    std::string a1{v2};
     return a1;
 }

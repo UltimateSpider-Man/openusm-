@@ -87,8 +87,7 @@ public:
         return (m_slot_state == 3);
     }
 
-    auto get_slot_size() const
-    {
+    auto get_slot_size() const {
         return slot_size;
     }
 

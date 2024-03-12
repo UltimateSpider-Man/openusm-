@@ -129,6 +129,9 @@ struct resource_key {
     static void calc_resource_string_and_type_from_path(const char *in_string,
                                                         mString *out_string,
                                                         resource_key_type *type_override);
+
+
+    static resource_key_type resolve_extension(const char *target_string, bool a2);
 };
 
 extern Var<const char *[4][70]> resource_key_type_ext;
@@ -137,8 +140,6 @@ inline Var<const char *[70]> resource_key_type_str {0x0091F088};
 
 
 extern const char *to_string(resource_key_type type);
-
-extern resource_key_type sub_420030(const char *target_string, bool a2);
 
 //0x004217B0
 extern resource_key create_resource_key_from_path(const char *in_string, resource_key_type a3);

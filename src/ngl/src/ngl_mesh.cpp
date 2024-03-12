@@ -8,8 +8,8 @@
 #include "ngl_scene.h"
 #include "nglshader.h"
 #include "oldmath_po.h"
-#include "pcuv_shadermaterial.h"
 #include "trace.h"
+#include "us_pcuv_shader.h"
 #include "utility.h"
 #include "vector3d.h"
 #include "vtbl.h"
@@ -22,7 +22,8 @@ VALIDATE_SIZE(nglMeshParams, 0x20);
 
 VALIDATE_SIZE(nglMesh, 0x40);
 
-void nglMeshInit() {
+void nglMeshInit()
+{
     TRACE("nglMeshInit");
 
     CDECL_CALL(0x0076F420);
@@ -271,7 +272,9 @@ void nglListAddMesh(nglMesh *Mesh,
                     meshNode->field_90 = a3;
                 }
 
-            } else {
+            }
+            else
+            {
                 static Var<nglMeshParams> nglEmptyMeshParams{0x00972820};
                 meshNode->field_90 = &nglEmptyMeshParams();
             }
@@ -279,7 +282,7 @@ void nglListAddMesh(nglMesh *Mesh,
             if (a4 != nullptr) {
                 meshNode->field_8C = *a4;
             } else {
-                meshNode->field_8C = {0};
+                meshNode->field_8C = {static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(0)};
             }
 
             if (nglListAddMesh_GetClipResult(v18, Radius, v20) == -1)
@@ -293,7 +296,7 @@ void nglListAddMesh(nglMesh *Mesh,
                     auto *MeshSection = Mesh->Sections[i].Section;
                     nglPerfInfo().m_num_verts += MeshSection->NVertices;
 
-                    MeshSection->Material->field_4->AddNode(
+                    MeshSection->Material->m_shader->AddNode(
                             meshNode,
                             MeshSection,
                             MeshSection->Material);
@@ -344,7 +347,7 @@ void PolytubeListAddNode(nglMesh *Mesh,
         auto v2 = sub_4150E0(a5);
         auto v1 = sub_414360(a3, v2);
         nglMeshSetSphere(v1, a4);
-        a6->field_24 = a2;
+        a6->m_blend_mode = a2;
         nglListAddMesh(Mesh, a5, nullptr, a7);
     }
     else
@@ -376,7 +379,7 @@ void render_debug_hemisphere(const vector3d &a2, float scale, color32 a4)
     }
 
     nglMeshParams meshParams;
-    nglParamSet<nglShaderParamSet_Pool> paramSet{1};
+    nglParamSet<nglShaderParamSet_Pool> paramSet{static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
 
     paramSet.set_color(a4);
     meshParams.Flags |= 2u;
@@ -392,8 +395,8 @@ void render_debug_hemisphere(const vector3d &a2, float scale, color32 a4)
     nglListAddMesh(s_debug_hemisphere, v13, &meshParams, &paramSet);
 }
 
-tlHashString *nglMesh::get_string(nglMesh *Mesh) {
-    return &Mesh->Name;
+tlFixedString *nglMesh::get_string(nglMesh *Mesh) {
+    return Mesh->Name;
 }
 
 void nglMesh_patch()

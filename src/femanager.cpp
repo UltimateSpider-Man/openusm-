@@ -77,8 +77,9 @@ void FEManager::LoadFonts() {
 void FEManager::Draw() {
     if constexpr (1) {
         fe_controller_disconnect::draw();
-        if (os_developer_options::instance()->get_flag(144)) {
-            nglListBeginScene(nglSceneParamType{1});
+        if (os_developer_options::instance()->get_flag(144))
+        {
+            nglListBeginScene(static_cast<nglSceneParamType>(1));
             nglSetClearFlags(0);
             nglSetOrthoMatrix(0.0, 1000.0);
 

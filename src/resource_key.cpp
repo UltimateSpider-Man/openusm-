@@ -23,7 +23,8 @@ Var<const char *[4][70]> resource_key_type_ext{0x0091E7C8};
 
 Var<char *[1]> resource_key_type_dir { 0x0091EC28 };
 
-resource_key_type sub_420030(const char *target_string, bool a2) {
+resource_key_type resource_key::resolve_extension(const char *target_string, bool a2)
+{
     assert(target_string != nullptr);
     assert(target_string[0] != '\0');
     assert(strlen(target_string) < EXTENSION_LENGTH);
@@ -152,7 +153,7 @@ void resource_key::calc_resource_string_and_type_from_path(const char *in_string
     if (idx <= 0) {
         idx = str_len;
     } else if (*type_override == RESOURCE_KEY_TYPE_NONE) {
-        *type_override = sub_420030(&v3[idx], true);
+        *type_override = resolve_extension(&v3[idx], true);
     }
 
     if (idx > 30) {
@@ -181,7 +182,7 @@ bool resource_key::is_set() const
     resource_key temp_key{};
     temp_key.m_hash.initialize(0, nullptr, 0);
 
-    return (this->m_hash.source_hash_code != temp_key.m_hash.source_hash_code);
+    return (this->m_hash != temp_key.m_hash);
 }
 
 void resource_key::set(const resource_key &a2) {
@@ -208,5 +209,5 @@ void resource_key_patch()
     }
 
     return;
-    REDIRECT(0x004201B0, sub_420030);
+    REDIRECT(0x004201B0, resource_key::resolve_extension);
 }

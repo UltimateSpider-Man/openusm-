@@ -4,7 +4,7 @@
 #include "func_wrapper.h"
 #include "memory.h"
 #include "oldmath_po.h"
-#include "pcuv_shadermaterial.h"
+#include "us_pcuv_shader.h"
 #include "slab_allocator.h"
 #include "string_hash.h"
 #include "trace.h"
@@ -105,7 +105,12 @@ void polytube::_render(Float a2)
 {
     TRACE("polytube::render");
     
-    THISCALL(0x005A5B10, this, a2);
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x005A5B10, this, a2);
+    }
 }
 
 void polytube::set_control_pt(int index, const vector3d &a2) {

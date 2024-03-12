@@ -1,5 +1,6 @@
 #include "shadow.h"
 
+#include "common.h"
 #include "debug_user_render.h"
 #include "func_wrapper.h"
 #include "geometry_manager.h"
@@ -9,6 +10,8 @@
 #include "trace.h"
 #include "variables.h"
 #include "wds.h"
+
+VALIDATE_SIZE(shadow_t, 0x4C);
 
 void send_shadow_projectors()
 {

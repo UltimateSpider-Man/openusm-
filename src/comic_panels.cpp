@@ -3,9 +3,10 @@
 #include "common.h"
 #include "entity_base.h"
 #include "func_wrapper.h"
+#include "ngl_scene.h"
 #include "utility.h"
-#include "vector3d.h"
 #include "trace.h"
+#include "vector3d.h"
 #include "wds.h"
 
 VALIDATE_SIZE(comic_panels::panel_component_camera, 0x4C);
@@ -19,6 +20,11 @@ Var<camera *> current_view_camera{0x0096F7B4};
 Var<panel *> game_play_panel{0x0096F7D4};
 
 Var<fixed_vector<panel *, 48>> panels{0x0096F9F8};
+
+void set_default_bgcolor(const color &a1)
+{
+    default_bgcol() = a1;
+}
 
 void sub_7315A0()
 {
@@ -51,8 +57,25 @@ panel *acquire_panel(const char *a1) {
     return (comic_panels::panel *) CDECL_CALL(0x00733AD0, a1);
 }
 
-panel_params_t *get_panel_params() {
-    return (panel_params_t *) CDECL_CALL(0x00738CB0);
+panel_params_t *get_panel_params()
+{
+    if constexpr (0)
+    {
+        if ( nglCurScene() == nullptr ) {
+            return nullptr;
+        }
+
+        if ( !nglCurScene()->field_404.IsSetParam<SMPanelParams>() ) {
+            return nullptr;
+        }
+
+        SMPanelParams v1 {};
+        return nglCurScene()->field_404.GetOrDefault<SMPanelParams>(v1)->field_0;
+    }
+    else
+    {
+        return (panel_params_t *) CDECL_CALL(0x00738CB0);
+    }
 }
 
 camera *get_current_view_camera(int) {

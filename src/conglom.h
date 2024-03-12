@@ -28,9 +28,7 @@ struct conglomerate : actor {
     mashable_vector<int8_t> field_F0;
     light_manager *field_F8;
     _std::list<actor *> *field_FC;
-
     _std::list<light_source *> *field_100;
-
     int field_104;
     float field_108;
     float field_10C;
@@ -41,7 +39,7 @@ struct conglomerate : actor {
     script_data_interface *script_data_ifc;
     tentacle_interface *field_124;
     decal_data_interface *my_decal_data_interface;
-    variant_interface *field_12C;
+    variant_interface *m_variant_interface;
 
     conglomerate(const string_hash &a2, unsigned int a3);
 
@@ -51,6 +49,9 @@ struct conglomerate : actor {
     void debug_render();
 
     void create_parentage_tree();
+
+    //0x004D2610
+    void create_variant_ifc();
 
 	void remove_member_lights_from_region(region *a2);
 
@@ -87,6 +88,9 @@ struct conglomerate : actor {
     //0x004C1970
     //virtual
     void radius_changed(bool a2);
+
+    //virtual
+    light_manager *get_light_set() const;
 
     bool has_tentacle_ifc();
 

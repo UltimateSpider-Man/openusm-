@@ -1,11 +1,21 @@
 #pragma once
 
-inline constexpr auto NGLSORT_OPAQUE = 0;
-inline constexpr auto NGLSORT_TRANS = 1;
+#include <cstdint>
+
+struct nglTexture;
+
+enum nglSortType {
+     NGLSORT_OPAQUE = 0,
+     NGLSORT_TRANSLUCENT = 1,
+};
 
 struct nglSortInfo {
-    int Type;
-    float field_4;
+    nglSortType Type;
+    union {
+        float Dist;
+        uint32_t u;
+        nglTexture *Tex;
+    };
 
-    nglSortInfo();
+    nglSortInfo() = default;
 };

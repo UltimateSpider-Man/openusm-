@@ -25,9 +25,10 @@ inline constexpr auto NGLMESH_SCRATCH_MESH = 0x20000;
 inline constexpr auto NGLMESH_TEMP = 0x40000;
 inline constexpr auto NGLMESH_STATIC = 0x80000;
 
+struct tlFixedString;
 
 struct nglMesh {
-    tlHashString Name;
+    tlFixedString *Name;
     uint32_t Flags;
     uint32_t NSections;
 
@@ -50,7 +51,7 @@ struct nglMesh {
     nglMesh *NextMesh;
     int field_3C;
 
-    static tlHashString *get_string(nglMesh *Mesh);
+    static tlFixedString *get_string(nglMesh *Mesh);
 };
 
 //0x0076F420

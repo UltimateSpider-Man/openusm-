@@ -76,7 +76,7 @@ void FastListAddMesh(nglMesh *Mesh,
                 Mesh = v10[v9].field_0;
             }
 #else
-            Mesh = [](nglMesh *a1, float a2) -> nglMesh *
+            auto GetLOD = [](nglMesh *a1, float a2) -> nglMesh *
             {
                 for ( int i = a1->NLODs - 1; i >= 0; --i )
                 {
@@ -86,7 +86,8 @@ void FastListAddMesh(nglMesh *Mesh,
                 }
 
                 return a1;
-            }(Mesh, v18.field_0[2]);
+            };
+            Mesh = GetLOD(Mesh, v18.field_0[2]);
 #endif
         }
 
@@ -104,7 +105,7 @@ void FastListAddMesh(nglMesh *Mesh,
         v12->field_40 = sub_507130(&a2a);
 
         v12->field_84 = 0;
-        v12->field_80 = 0;
+        v12->field_80 = nullptr;
         v12->field_94 = 1.0;
 
         assert(!(MeshParams->Flags & NGLP_SCALE) && "No scale allowed in FastListAddMesh.\n");
@@ -123,14 +124,15 @@ void FastListAddMesh(nglMesh *Mesh,
 
         v12->field_8C = *ShaderParams;
 
-        for (auto i = 0u; i < Mesh->NSections; ++i) {
+        for (auto i = 0u; i < Mesh->NSections; ++i)
+        {
             auto *MeshSection = Mesh->Sections[i].Section;
 
             nglPerfInfo().m_num_verts += MeshSection->NVertices;
 
             nglMaterialBase *v15 = sub_8EA2E0(&v12->field_8C, MeshSection->Material);
 
-            MeshSection->Material->field_4->AddNode(v12, MeshSection, v15);
+            MeshSection->Material->m_shader->AddNode(v12, MeshSection, v15);
         }
 
         nglPerfInfo().m_num_polys += Mesh->field_3C;

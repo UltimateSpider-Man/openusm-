@@ -7,11 +7,17 @@
 void US_Decal3DShader::_BindMaterial(nglMaterialBase *a1)
 {
     TRACE("US_Decal3DShader::BindMaterial");
+
+    struct {
+        char field_0[0x60];
+        tlFixedString *field_60;
+        nglTexture *field_64;
+    } *v1 = CAST(v1, a1);
     
 #ifdef TARGET_XBOX
-    a1->field_64 = nglLoadTexture(*bit_cast<tlHashString *>(&a1->field_60));
+    v1->field_64 = nglLoadTexture(*bit_cast<tlHashString *>(&v1->field_60));
 #else
-    a1->field_64 = nglLoadTexture(*bit_cast<tlFixedString *>(a1->field_60));
+    v1->field_64 = nglLoadTexture(*bit_cast<tlFixedString *>(v1->field_60));
 #endif
 }
 
@@ -19,11 +25,17 @@ void US_Decal3DShader::_RebaseMaterial(nglMaterialBase *a1, unsigned int a2)
 {
     TRACE("US_Decal3DShader::RebaseMaterial");
 
+    struct {
+        char field_0[0x60];
+        tlFixedString *field_60;
+        nglTexture *field_64;
+    } *v1 = CAST(v1, a1);
+
 #ifndef TARGET_XBOX
-    auto v2 = a1->field_60;
+    auto v2 = v1->field_60;
     if ( v2 != 0 )
     {
-        a1->field_60 = a2 + v2;
+        v1->field_60 = int(a2) + v2;
     }
 #endif
 }

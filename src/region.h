@@ -43,7 +43,7 @@ struct region
     void *meshes;
     region_mash_info *mash_info;
     void *region_entities;
-    int *field_34;
+    void *vobbs_for_region_meshes;
     int field_38;
     int field_3C;
     int m_fade_groups_count;
@@ -111,6 +111,10 @@ struct region
     } 
 
     void constructor_common();
+
+    void load_textures();
+
+    void unload_textures();
 
     int get_district_id();
 

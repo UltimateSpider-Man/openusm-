@@ -4,6 +4,9 @@
 #include <ngl_dx_state.h>
 #include <ngl_dx_texture.h>
 
+#include "us_exterior.h"
+#include "us_interior.h"
+
 #include "func_wrapper.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
@@ -56,7 +59,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
 
     static Var<int> dword_956FFC {0x00956FFC};
     if ( dword_956FFC() == 0 ) {
-        auto *v2 = this->field_14;
+        USExteriorMaterial *v2 = CAST(v2, this->field_14);
         auto v14 = v2->field_6C[0];
         auto v15 = v2->field_6C[1];
         auto v16 = v2->field_6C[2];
@@ -64,9 +67,10 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
         auto v3 = this->field_C->sub_4199D0();
         auto v17 = sub_414360(*(math::VecClass<3, 1> *)&nglCurScene()->field_28C, v3);
         v17 = sub_414360(this->field_C->field_88->field_20, this->field_C->field_0);
+
         auto v4 = g_renderState().field_74;
         auto v5 = g_renderState().field_7C;
-        g_renderState().setBlending(0, 0, 0);
+        g_renderState().setBlending(NGLBM_OPAQUE, 0, 0);
         if ( g_renderState().field_A8 != 7 )
         {
             g_Direct3DDevice()->lpVtbl->SetRenderState(
@@ -103,11 +107,11 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
 
         g_renderTextureState().setSamplerState(0, 8u, 3u);
         nglDxSetTexture(0, this->field_18, 8u, 3);
-        SetSamplerState(0, D3DSAMP_ADDRESSU, 1u);
-        SetSamplerState(0, D3DSAMP_ADDRESSV, 1u);
+        nglSetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+        nglSetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
         if ( EnableShader() )
         {
-            SetVertexDeclarationAndShader(&stru_970760());
+            nglSetVertexDeclarationAndShader(&stru_970760());
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
@@ -142,18 +146,19 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
         else
         {
             sub_413F80(&v18, this->field_14, &this->field_C->field_8C, 9u);
-            SetTextureStageState(0, D3DTSS_COLOROP, 4u);
-            SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
-            SetTextureStageState(0, D3DTSS_COLORARG2, 3u);
-            SetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
-            SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
-            SetTextureStageState(0, D3DTSS_ALPHAARG2, 3u);
-            SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
-            SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+            nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
+            nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+            nglSetTextureStageState(0, D3DTSS_COLORARG2, 3u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAARG2, 3u);
+            nglSetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+            nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
         }
 
-        SetStreamSourceAndDrawPrimitive(this->field_10);
-        if ( g_renderState().field_7C != v5 ) {
+        nglSetStreamSourceAndDrawPrimitive(this->field_10);
+        if ( g_renderState().field_7C != v5 )
+        {
             g_Direct3DDevice()->lpVtbl->SetRenderState(
                     g_Direct3DDevice(),
                     D3DRS_ZFUNC,
@@ -171,8 +176,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             g_renderState().field_74 = v4;
         }
 
-        auto *v8 = this->field_14;
-        if ( LOBYTE(v8->field_68) && EnableShader() )
+        if ( v2->field_68 && EnableShader() )
         {
             auto v10 = this->field_C->field_0[3][1];
 
@@ -184,8 +188,8 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             v17.field_0[2] = v11;
             v17.field_0[3] = v12;
             auto v13 = calc_outline_thickness(v17);
-            if ( v8->field_7C > 1.f ) {
-                v13 *= v8->field_7C;
+            if ( v2->field_7C > 1.f ) {
+                v13 *= v2->field_7C;
             }
 
             if ( g_renderState().field_A8 != 7 )
@@ -206,7 +210,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
                 g_renderState().m_cullingMode = D3DCULL_CCW;
             }
 
-            SetVertexDeclarationAndShader(&stru_970768());
+            nglSetVertexDeclarationAndShader(&stru_970768());
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
@@ -225,7 +229,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             v17.field_0[3]= 1.0;
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
                     g_Direct3DDevice(), 0, v17.field_0, 1);
-            SetStreamSourceAndDrawPrimitive(this->field_10);
+            nglSetStreamSourceAndDrawPrimitive(this->field_10);
         }
     }
 }
@@ -241,7 +245,8 @@ template<>
 void Outline_ShaderNode<USInteriorMaterial>::Render()
 {
     static Var<int> dword_957000 {0x00957000};
-    if ( !dword_957000() ) {
+    if ( !dword_957000() )
+    {
         auto *v2 = this->field_14;
         auto v14 = v2->field_28[0];
         auto v15 = v2->field_28[1];
@@ -252,7 +257,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
         v17 = sub_414360(this->field_C->field_88->field_20, this->field_C->field_0);
         auto v4 = g_renderState().field_74;
         auto v5 = g_renderState().field_7C;
-        g_renderState().setBlending(0, 0, 0);
+        g_renderState().setBlending(NGLBM_OPAQUE, 0, 0);
         if ( g_renderState().field_A8 != 7 )
         {
             g_Direct3DDevice()->lpVtbl->SetRenderState(
@@ -285,17 +290,20 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
 
         g_renderTextureState().setSamplerState(0, 8u, 3u);
         nglDxSetTexture(0, this->field_18, 8u, 3);
-        SetSamplerState(0, D3DSAMP_ADDRESSU, 1u);
-        SetSamplerState(0, D3DSAMP_ADDRESSV, 1u);
+        nglSetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+        nglSetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
-        if ( EnableShader() ) {
-            SetVertexDeclarationAndShader(&stru_970760());
+        if ( EnableShader() )
+        {
+            nglSetVertexDeclarationAndShader(&stru_970760());
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
                     &this->field_C->field_40[0][0],
                     4);
-        } else {
+        }
+        else
+        {
             g_Direct3DDevice()->lpVtbl->SetTransform(
                 g_Direct3DDevice(),
                 (D3DTRANSFORMSTATETYPE)256,
@@ -304,7 +312,8 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
                     g_Direct3DDevice(), dword_9738E0()[9]);
         }
 
-        if ( EnableShader() ) {
+        if ( EnableShader() )
+        {
             SetPixelShader(&dword_970770());
             auto v6 = sub_41BA70(this->field_14, (int *)&this->field_C->field_8C, 9u);
             v17.field_0[0] = v6[0];
@@ -313,20 +322,21 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             v17.field_0[3] = v6[3];
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
                     g_Direct3DDevice(), 0, (const float *)&v17, 1);
-        } else
+        }
+        else
         {
             [[maybe_unused]] auto v18 = sub_41BA70(this->field_14, (int *)&this->field_C->field_8C, 9u);
-            SetTextureStageState(0, D3DTSS_COLOROP, 4u);
-            SetTextureStageState(0, D3DTSS_COLORARG1, 2u);
-            SetTextureStageState(0, D3DTSS_COLORARG2, 3u);
-            SetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
-            SetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
-            SetTextureStageState(0, D3DTSS_ALPHAARG2, 3u);
-            SetTextureStageState(1u, D3DTSS_COLOROP, 1u);
-            SetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
+            nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
+            nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
+            nglSetTextureStageState(0, D3DTSS_COLORARG2, 3u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAOP, 4u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAARG1, 2u);
+            nglSetTextureStageState(0, D3DTSS_ALPHAARG2, 3u);
+            nglSetTextureStageState(1u, D3DTSS_COLOROP, 1u);
+            nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
         }
 
-        SetStreamSourceAndDrawPrimitive(this->field_10);
+        nglSetStreamSourceAndDrawPrimitive(this->field_10);
         if ( g_renderState().field_7C != v5 )
         {
             g_Direct3DDevice()->lpVtbl->SetRenderState(
@@ -342,7 +352,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
         }
 
         auto *v8 = this->field_14;
-        if ( LOBYTE(v8->field_24) && EnableShader() )
+        if ( v2->field_24 && EnableShader() )
         {
             auto v10 = this->field_C->field_0[3][1];
             v17.field_0[0] = this->field_C->field_0[3][0];
@@ -368,12 +378,13 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
                 g_renderState().m_cullingMode = D3DCULL_CCW;
             }
 
-            SetVertexDeclarationAndShader(&stru_970768());
+            nglSetVertexDeclarationAndShader(&stru_970768());
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
                     &this->field_C->field_40[0][0],
                     4);
+
             v17.field_0[3] = v13;
             memset(&v17, 0, 12);
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
@@ -385,7 +396,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             v17.field_0[3] = 1.0;
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
                     g_Direct3DDevice(), 0, v17.field_0, 1);
-            SetStreamSourceAndDrawPrimitive(this->field_10);
+            nglSetStreamSourceAndDrawPrimitive(this->field_10);
         }
     }
 }

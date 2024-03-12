@@ -12,7 +12,8 @@ struct nglRenderNode {
 
     /* virtual */ void Render() /* = 0 */;
 
-    /* virtual */ void GetSortInfo(nglSortInfo &) {}
+    /* virtual */
+    void GetSortInfo(nglSortInfo &);
 
     /* virtual */ ~nglRenderNode() = default;
 };

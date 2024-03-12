@@ -38,8 +38,7 @@ Var<_std::vector<resource_pack_slot *>> resource_context_stack{0x0096015C};
 
 Var<mString> amalgapak_name{0x0095CAD4};
 
-#define RESOURCE_MANAGER_STANDALONE 1
-#if !RESOURCE_MANAGER_STANDALONE 
+#if !STANDALONE_SYSTEM 
 
 Var<int> amalgapak_base_offset{0x00921CB4};
 

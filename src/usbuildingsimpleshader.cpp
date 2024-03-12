@@ -39,7 +39,7 @@ int USBuildingSimpleShader::Register() {
             if constexpr (0) {
                 static Var<DWORD *> off_939AA0{0x00939AA0};
 
-                CreateVertexDeclarationAndShader(&stru_970510(), &stru_939480(), off_939AA0());
+                nglCreateVertexDeclarationAndShader(&stru_970510(), &stru_939480(), off_939AA0());
             } else {
                 const char *text =
                     "dcl_position v0\n"

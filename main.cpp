@@ -210,6 +210,7 @@
 #include "sound_alias_database_resource_handler.h"
 #include "sound_bank_slot.h"
 #include "sound_interface.h"
+#include "sound_manager.h"
 #include "spawnable.h"
 #include "spiderman_camera.h"
 #include "spider_monkey.h"
@@ -1590,14 +1591,14 @@ int __stdcall myWinMain(HINSTANCE hInstance,
     static Var<nglFrameLockType> g_frame_lock{0x00922920};
     nglSetFrameLock(g_frame_lock());
 
-    auto v152 = os_developer_options::instance()->get_int(mString{"PCLISTBUFFER"});
-    nglSetBufferSize(nglBufferType{0}, v152 << 10, true);
-    auto v153 = os_developer_options::instance()->get_int(mString{"PCSCRATCHBUFFER"});
-    nglSetBufferSize(nglBufferType{1}, v153 << 10, true);
+    auto list_buffer = os_developer_options::instance()->get_int(mString{"PCLISTBUFFER"});
+    nglSetBufferSize(static_cast<nglBufferType>(0), list_buffer << 10, true);
+    auto scratch_buffer = os_developer_options::instance()->get_int(mString{"PCSCRATCHBUFFER"});
+    nglSetBufferSize(static_cast<nglBufferType>(1), scratch_buffer << 10, true);
     auto v154 = os_developer_options::instance()->get_int(mString{"PCSCRATCHINDEXBUFFER"});
-    nglSetBufferSize(nglBufferType{2}, 2 * v154, true);
+    nglSetBufferSize(static_cast<nglBufferType>(2), 2 * v154, true);
     auto v155 = os_developer_options::instance()->get_int(mString{"PCSCRATCHVERTEXBUFFER"});
-    nglSetBufferSize(nglBufferType{3}, v155 << 10, true);
+    nglSetBufferSize(static_cast<nglBufferType>(3), v155 << 10, true);
 
     aeps::Init();
 
@@ -2405,17 +2406,41 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC52F, parse_cmd);
 
-    fx_cache_patch();
+    us_person_patch();
 
-    cached_special_effect_patch();
+    ngl_patch();
 
-    damage_interface_patch();
+    //standalone patches
+    if constexpr (1)
+    {
+        slc_manager_patch();
+    
+        tl_patch();
 
-    mashable_vector_patch();
+        resource_manager_patch();
+
+        script_manager_patch();
+
+        slab_allocator_patch();
+
+        nfl_system_patch();
+    }
 
     if constexpr (1)
     {
+        sound_manager_patch();
+
         resource_directory_patch();
+
+        string_hash_dictionary_patch();
+
+        fx_cache_patch();
+
+        cached_special_effect_patch();
+
+        damage_interface_patch();
+
+        mashable_vector_patch();
 
         core_ai_resource_patch();
 
@@ -2463,13 +2488,13 @@ BOOL install_redirects()
 
         beam_patch();
 
-        app_patch();
-        
         motion_effect_struct_patch();
 
         ngl_vertexdef_patch();
 
         actor_patch();
+
+        app_patch();
 
         camera_target_info_patch();
 
@@ -2486,8 +2511,6 @@ BOOL install_redirects()
         entity_mash_patch();
 
         anim_record_patch();
-
-        us_person_patch();
 
         sound_interface_patch();
 
@@ -2511,7 +2534,7 @@ BOOL install_redirects()
 
         vm_executable_patch();
 
-        us_decal_patch();
+        //us_decal_patch();
 
         resource_key_patch();
 
@@ -2548,8 +2571,6 @@ BOOL install_redirects()
         spider_monkey_patch();
 
         FEManager_patch();
-
-        ngl_patch();
 
         MultiLineString_patch();
 
@@ -2597,8 +2618,6 @@ BOOL install_redirects()
 
         mash_info_struct_patch();
 
-        string_hash_dictionary_patch();
-
         worldly_pack_slot_patch();
 
         nsl_patch();
@@ -2625,8 +2644,6 @@ BOOL install_redirects()
 
         script_access_patch();
 
-        trigger_manager_patch();
-
         spawnable_patch();
 
         ai_path_patch();
@@ -2638,6 +2655,8 @@ BOOL install_redirects()
         animation_logic_system_patch();
 
         event_manager_patch();
+
+        trigger_manager_patch();
 
         variant_interface_patch();
 
@@ -2684,24 +2703,8 @@ BOOL install_redirects()
         ped_spawner_patch();
     }
 
-    //standalone patches
-    if constexpr (1)
-    {
-        resource_manager_patch();
-
-        slc_manager_patch();
-
-        script_manager_patch();
-
-        slab_allocator_patch();
-
-        tl_patch();
-
-        nfl_system_patch();
-    }
-
     //resource handler patches
-    if constexpr (1)
+    if constexpr (0)
     {
         ai_interact_resource_handler_patch();
 
@@ -2745,7 +2748,7 @@ BOOL install_redirects()
     }
 
     //als
-    if constexpr (1)
+    if constexpr (0)
     {
         als_meta_anim_base_patch();
 
@@ -2839,8 +2842,6 @@ BOOL install_redirects()
         swing_anchor_finder_patch();
 
         USVariantShaderNode_patch();
-
-        app_patch();
 
         script_library_class_patch();
 

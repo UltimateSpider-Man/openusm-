@@ -9,9 +9,12 @@
 #include "lego_map.h"
 #include "light_source.h"
 #include "memory.h"
+#include "ngl.h"
 #include "region_mash_info.h"
 #include "subdivision_node_obb_base.h"
 #include "terrain.h"
+#include "texture_array.h"
+#include "texture_to_frame_map.h"
 #include "trace.h"
 #include "wds.h"
 
@@ -47,7 +50,7 @@ void region::constructor_common()
     this->bitvector_of_legos_rendered_last_frame = nullptr;
     this->field_98 = nullptr;
     this->obb = nullptr;
-    this->field_34 = nullptr;
+    this->vobbs_for_region_meshes = nullptr;
     this->field_38 = 0;
     this->field_3C = 0;
     this->m_fade_groups_count= 0;
@@ -73,6 +76,54 @@ void region::constructor_common()
     this->field_24 = 0;
     this->region_entities = nullptr;
     this->lights = nullptr;
+}
+
+static constexpr auto TEXTURES_LOADED = 0x40u;
+
+void region::load_textures()
+{
+    assert((flags & TEXTURES_LOADED) == 0);
+
+    for ( auto i = 0; i < this->m_total_frame_maps; ++i )
+    {
+        auto &v3 = this->texture_to_frame_maps[i];
+        auto *v8 = v3->get_ifl_name().c_str();
+        tlFixedString v11 {v8};
+        auto Texture = nglGetTexture(v11);
+        if ( Texture != nullptr
+                && Texture != nglDefaultTex()
+                && Texture != nglWhiteTex()
+                )
+        {
+            auto v5 = this->get_scene_id(true);
+
+            auto v6 = v5.c_str();
+            texture_array::load_map(v3, Texture, v6);
+        }
+    }
+
+    this->flags |= TEXTURES_LOADED;
+}
+
+void region::unload_textures()
+{
+    if ( (this->flags & TEXTURES_LOADED) != 0 )
+    {
+        for ( int i = 0; i < this->m_total_frame_maps; ++i )
+        {
+            auto &v3 = this->texture_to_frame_maps[i];
+            auto *v5 = v3->get_ifl_name().c_str();
+            tlFixedString a1 {v5};
+            auto *Texture = nglGetTexture(a1);
+            if ( Texture != nullptr
+                    && Texture != nglDefaultTex()
+                    && Texture != nglWhiteTex() )
+            {
+                texture_array::unload_map(v3, Texture);
+            }
+        }
+        this->flags &= ~TEXTURES_LOADED;
+    }
 }
 
 region::region_astar_search_record::region_astar_search_record() {

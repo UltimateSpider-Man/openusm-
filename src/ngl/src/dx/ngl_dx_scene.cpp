@@ -1,5 +1,6 @@
 #include "ngl_dx_scene.h"
 
+#include "common.h"
 #include "ngl.h"
 #include "nglrendernode.h"
 #include "nglshader.h"
@@ -11,7 +12,15 @@
 
 namespace nglRenderList {
 
-void sub_77DFB0(void *begin, void *end, int a3, int a4) {
+struct nglRenderTextureNode {
+    nglRenderNode *m_node;
+    nglTexture *m_tex;
+};
+
+VALIDATE_SIZE(nglRenderTextureNode, 0x8u);
+
+void sub_77DFB0(nglRenderTextureNode *begin, nglRenderTextureNode *end, int a3, int a4)
+{
     CDECL_CALL(0x0077DFB0, begin, end, a3, a4);
 }
 
@@ -20,20 +29,18 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3)
 {
     TRACE("nglRenderList::nglOpaqueCompare<nglRenderNode>");
 
-    if constexpr (1) {
-        struct {
-            nglRenderNode *m_node;
-            nglTexture *m_tex;
-        } *v1 = static_cast<decltype(v1)>(nglListAlloc(8 * count, 16));
+    if constexpr (1)
+    {
+        nglRenderTextureNode *v1 = static_cast<decltype(v1)>(nglListAlloc(sizeof(nglRenderTextureNode) * count, 16));
 
-        [](auto *a1, nglRenderNode *a2) -> void {
+        [](nglRenderTextureNode *a1, nglRenderNode *a2) -> void {
             for (; a2 != nullptr; ++a1, a2 = a2->m_next_node ) {
                 a1->m_node = a2;
                 a1->m_tex = a2->m_tex;
             }
         }(v1, node);
 
-        sub_77DFB0(v1, v1 + 8 * count, (8 * count) >> 3, a3);
+        sub_77DFB0(v1, v1 + count, (8 * count) >> 3, a3);
 
         [](auto *begin, nglRenderNode *&a2, int count) -> void {
             auto end = begin + count;
@@ -57,7 +64,9 @@ void nglOpaqueCompare<nglRenderNode>(nglRenderNode *node, int count, int a3)
 
             nglPrevNode() = v9;
         }
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x0077E190, node, count, a3);
     }
 }

@@ -2,34 +2,74 @@
 
 #include "fixedstring.h"
 #include "nglshader.h"
+#include "ngl.h"
 #include "vector4d.h"
 
 #include <us_variant.h>
 
 struct nglMaterialBase;
 struct nglTexture;
+struct nglMeshFile;
 
 namespace USPersonShaderSpace {
 
-struct ParamStruct {
-    vector4d field_0;
+struct USPersonMaterial {
+    tlFixedString *Name;
+    nglShader *m_shader;
+    nglMeshFile *File;
+    nglMaterialBase *NextMaterial;
     int field_10;
     int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
+    tlFixedString *field_18;
+    nglTexture *field_1C;
+    tlFixedString *field_20;
+    nglTexture *field_24;
+    float field_28[4];
+    int field_38;
+    int field_3C;
+    int field_40;
+    int field_44;
+    int m_outlineFeature;
+    nglBlendModeType m_blend_mode;
+    int field_50;
+};
+
+struct USPersonMaterialSolid {
+    tlFixedString *Name;
+    nglShader *m_shader;
+    nglMeshFile *File;
+    nglMaterialBase *NextMaterial;
+    int field_10;
+    int field_14;
+    tlFixedString *field_18;
+    nglTexture *field_1C;
+    tlFixedString *field_20;
+    nglTexture *field_24;
+    float field_28[4];
+    int field_38;
+    int field_3C;
+    int field_40;
+    int field_44;
+    int m_outlineFeature;
+    nglBlendModeType m_blend_mode;
+    int field_50;
+};
+
+struct ParamStruct {
+    float field_0[4];
+    float field_10[4];
+    float field_20[4];
     float field_30;
-    int field_34;
+    float field_34;
     bool field_38;
     int field_3C;
     bool field_40;
     bool field_41;
     int field_44;
     bool field_48;
-    bool field_49;
+    bool disableZDepth;
+
+    void * operator new(size_t size);
 
     static inline constexpr auto OutlineThickness = 0.003f;
 };
@@ -45,7 +85,7 @@ struct USPersonSolidShader : nglShader {
 
     //0x0041DBE0
     //virtual
-    void AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
+    void _AddNode(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
 
     //virtual
     void _BindMaterial(nglMaterialBase *a1);
@@ -61,15 +101,18 @@ struct USPersonShader : nglShader {
 
     USPersonShader();
 
-    void sub_41BEF0(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
+    //0x0041BEF0
+    void AddNodeOverrideMask(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
 
-    void sub_41C0B0(nglMeshNode *a2, nglMeshSection *a3, nglMaterialBase *a4);
+    //0x0041C0B0
+    void AddNodeClearZ(nglMeshNode *a2, nglMeshSection *a3, nglMaterialBase *a4);
 
-    void sub_41C2A0(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
+    //0x0041C2A0
+    void AddNodeExtraOutline(nglMeshNode *a1, nglMeshSection *a2, nglMaterialBase *a3);
 
     //0x0041BBC0
     //virtual
-    void AddNode(nglMeshNode *a2, nglMeshSection *a3, nglMaterialBase *a4);
+    void _AddNode(nglMeshNode *a2, nglMeshSection *a3, nglMaterialBase *a4);
 
     //virtual
     void _BindMaterial(nglMaterialBase *);
@@ -79,15 +122,15 @@ struct USPersonShader : nglShader {
 
     //0x00411580
     //virtual
-    void Register();
+    void _Register();
 
     //0x00410CC0
     //virtual
-    tlFixedString GetName();
+    tlFixedString _GetName();
 };
 
 struct USPersonSolidNode : USVariantShaderNode {
-    nglMaterialBase *field_18;
+    USPersonMaterialSolid *field_18;
     nglTexture *field_1C;
     nglTexture *field_20;
     int field_24;
@@ -95,10 +138,12 @@ struct USPersonSolidNode : USVariantShaderNode {
     //0x0041DCF0
     USPersonSolidNode(nglMeshNode *a2, nglMeshSection *a3, nglMaterialBase *a4);
 
-    //0x0041E4B0
-    /* virtual */ void Render() /* override */;
+    void *operator new(size_t size);
 
-    /* virtual */ void GetSortInfo(nglSortInfo &sortInfo) /* override */;
+    //0x0041E4B0
+    /* virtual */ void _Render() /* override */;
+
+    /* virtual */ void _GetSortInfo(nglSortInfo &sortInfo) /* override */;
 
     /* virtual */ ~USPersonSolidNode() = default;
 };
@@ -114,7 +159,7 @@ struct USPersonNode : USVariantShaderNode {
 
     static Var<LightInfoStruct> DefaultLightInfo;
 
-    nglMaterialBase *field_18;
+    USPersonMaterial *field_18;
     nglTexture *field_1C;
     nglTexture *field_20;
     int field_24;
@@ -122,16 +167,19 @@ struct USPersonNode : USVariantShaderNode {
     //0x0041BCD0
     USPersonNode(nglMeshNode *a2, nglMeshSection *a3, nglMaterialBase *a4);
 
+    void * operator new(size_t size);
+
     //0x0041CF70
     bool GetLightInfo(USPersonNode::LightInfoStruct &lightInfo);
 
-    void sub_41D180();
+    //0x0041D180
+    void RenderWithDisableShader();
 
     //0x0041C4C0
-    /* virtual */ void Render() /* override */;
+    /* virtual */ void _Render() /* override */;
 
     //0x0041DD90
-    /* virtual */ void GetSortInfo(nglSortInfo &sortInfo) /* override */;
+    /* virtual */ void _GetSortInfo(nglSortInfo &sortInfo) /* override */;
 
     /* virtual */ ~USPersonNode() = default;
 };
