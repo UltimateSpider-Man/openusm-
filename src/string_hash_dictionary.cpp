@@ -305,15 +305,21 @@ void string_hash_dictionary::load_dictionary(const char *a1)
     }
 }
 
-void string_hash_dictionary::create_new_dictionary() {
+void string_hash_dictionary::create_new_dictionary()
+{
     TRACE("string_hash_dictionary::create_new_dictionary");
     if constexpr (1)
     {
-        ghetto_mash_file_header *v0 =
-            new ghetto_mash_file_header{mash::ALLOCATED,
+        assert(header() == nullptr && "dictionary already loaded");
+
+        assert(entries() == nullptr && "dictionary already loaded");
+
+        assert(mash_image_buffer() == nullptr && "dictionary already loaded");
+
+        string_hash_dictionary::header() =
+            new ghetto_mash_file_header {mash::ALLOCATED,
                                         string_hash_dictionary::file_header_identifier_string(),
                                         RESOURCE_VERSION_MASH_DEP()};
-        string_hash_dictionary::header() = v0;
 
         string_hash_dictionary::entries() = new mAvlTree<string_hash_entry>{};
     } else {

@@ -75,13 +75,13 @@ struct mAvlTree : mContainer {
     using node_type = mAvlNode<T>;
 
     node_type *m_head;
-    char field_C;
+    bool field_C;
 
     mAvlTree() {
         sub_420EE0();
         this->m_head = nullptr;
         this->m_size = 0;
-        this->field_C = 1;
+        this->field_C = true;
     }
 
     mAvlTree(int a1) : mContainer(a1) {}
