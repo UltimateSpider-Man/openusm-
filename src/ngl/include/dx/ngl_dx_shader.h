@@ -69,6 +69,6 @@ extern const char *disassemble_shader(const DWORD *pShader);
 extern const DWORD *AssemblePShader(const char *text);
 
 //0x00772810
-extern HRESULT nglSetupVShaderBonesDX(int a5, nglMeshNode *a6, nglMeshSection *Section);
+extern void nglSetupVShaderBonesDX(int a5, nglMeshNode *a6, nglMeshSection *Section);
 
 extern const DWORD *g_codes;

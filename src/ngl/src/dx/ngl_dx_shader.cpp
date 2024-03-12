@@ -6,6 +6,7 @@
 #include <matrix4x3.h>
 #include <mstring.h>
 #include <ngl.h>
+#include <ngl_mesh.h>
 #include <trace.h>
 #include <variables.h>
 #include <vtbl.h>
@@ -216,8 +217,98 @@ std::vector<DWORD> CompilePShader(const char *file_name) {
     return result;
 }
 
-HRESULT nglSetupVShaderBonesDX(int a5, nglMeshNode *a6, nglMeshSection *Section) {
-    auto result = (HRESULT) CDECL_CALL(0x00772810, a5, a6, Section);
+static constexpr auto MAX_BONES = 64u;
+
+void nglSetupVShaderBonesDX(int a5, nglMeshNode *MeshNode, nglMeshSection *Section)
+{
+    TRACE("nglSetupVShaderBonesDX");
+
+    if constexpr (0)
+    {
+        float a2[4] {3.0, a5, 1.0, 1.0};
+
+        g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 90u, a2, 1u);
+
+        static Var<matrix4x3[MAX_BONES]> g_boneMatrices {0x00972B20};
+
+        auto *meshParams = MeshNode->field_90;
+        if ( (meshParams->Flags & 4) != 0 )
+        {
+            for ( int i = 0; i < Section->NBones; ++i )
+            {
+                assert(i < MAX_BONES && "nglSetupVShaderBonesDX: too many bones ! Increase the MAX_BONES value.");
+
+                auto boneIdx = Section->BonesIdx[i];
+                auto v9 = MeshNode->sub_4199D0();
+                matrix4x4 arg4;
+
+                /*
+                struct {
+                    matrix4x3 *field_0;
+                    matrix4x3 *field_4;
+                } v29 {&meshParams->field_8[boneIdx], v9};
+                auto *v27 = (const math::VecClass__3_1 *)(v8 + LODWORD(a2[1]));
+                sub_770F30(&arg4, (matrix4x4 **)&v25);
+                sub_414360(&out, v27 + 3, a3);
+                sub_414360((math::VecClass__3_1 *)&arg4.m.arr[3], &out, v9);
+                */
+
+                matrix4x3 v10 = sub_413770(&arg4);
+                std::memcpy(&g_boneMatrices()[i], &v10, sizeof(v10));
+            }
+        }
+        else if ( (meshParams->Flags & 8) != 0 )
+        {
+            for ( int i = 0; i < Section->NBones; ++i )
+            {
+                assert(i < MAX_BONES && "nglSetupVShaderBonesDX: too many bones ! Increase the MAX_BONES value.");
+
+                auto boneIdx = Section->BonesIdx[i];
+                matrix4x4 arg4;
+                /*
+                v14 = (const math::VecClass__3_1 *)(v13 + LODWORD(a2[1]));
+                v15 = (const math::MatClass__4_3 *)(v13 + LODWORD(a2[2]));
+                v25 = (const math::VecClass__3_1 **)(v13 + LODWORD(a2[1]));
+                v26 = (const math::MatClass__4_3 *)(v13 + LODWORD(a2[2]));
+                sub_770EB0(&arg4, (float **)&v25);
+                sub_414360((math::VecClass__3_1 *)&arg4.m.arr[3], v14 + 3, v15);
+                */
+                matrix4x3 v16 = sub_413770(&arg4);
+                std::memcpy(&g_boneMatrices()[i], &v16, sizeof(v16));
+            }
+        }
+        else if ( (meshParams->Flags & 0x10) == 0 )
+        {
+            for ( int i = 0; i < Section->NBones; ++i )
+            {
+                assert(i < MAX_BONES && "nglSetupVShaderBonesDX: too many bones ! Increase the MAX_BONES value.");
+
+                auto boneIdx = Section->BonesIdx[i];
+                matrix4x4 arg4 {};
+                memcpy(&arg4, &meshParams->field_8[boneIdx], sizeof(arg4));
+
+                
+                matrix4x3 v20 = sub_413770(&arg4);
+                std::memcpy(&g_boneMatrices()[i], &v20, sizeof(v20));
+            }
+        }
+        else
+        {
+            for ( int i = 0; i < Section->NBones; ++i )
+            {
+                assert(i < MAX_BONES && "nglSetupVShaderBonesDX: too many bones ! Increase the MAX_BONES value.");
+
+                bit_cast<matrix4x4 *>(&g_boneMatrices()[i])->sub_415740(nullptr);
+            }
+        }
+
+
+        g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 0, &g_boneMatrices()[0][0].x, 3 * Section->NBones);
+    }
+    else
+    {
+        CDECL_CALL(0x00772810, a5, MeshNode, Section);
+    }
 
     if constexpr (0) {
         matrix4x3 tmp;
@@ -229,8 +320,6 @@ HRESULT nglSetupVShaderBonesDX(int a5, nglMeshNode *a6, nglMeshSection *Section)
 
         sp_log("%s", tmp.to_string());
     }
-
-    return result;
 }
 
 void nglSetVertexDeclarationAndShader(VShader *a1) {

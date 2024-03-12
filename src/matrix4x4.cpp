@@ -222,8 +222,14 @@ float matrix4x4::det() {
 #endif
 }
 
-void matrix4x4::sub_415740(void *a2) {
-    THISCALL(0x00415740, this, a2);
+void matrix4x4::sub_415740(void *a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x00415740, this, a2);
+    }
 }
 
 void matrix4x4::make_rotate(const vector3d &axis, Float angle)
@@ -420,6 +426,14 @@ vector3d sub_501B20(const matrix4x4 &a2, const vector3d &a3)
     CDECL_CALL(0x00501B20, &result, &a2, &a3);
     return result;
 }
+
+matrix4x3 sub_413770(const matrix4x4 *arg4) {
+    matrix4x3 result;
+    CDECL_CALL(0x00413770, &result, arg4);
+
+    return result;
+}
+
 
 void matrix4x4_patch()
 {

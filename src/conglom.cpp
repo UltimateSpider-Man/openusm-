@@ -44,6 +44,10 @@
 
 VALIDATE_SIZE(conglomerate, 0x130);
 
+static constexpr auto MAX_BONES = 64u;
+static constexpr auto MAX_MEMBERS = 16u;
+static constexpr auto MAX_BONES_AND_MEMBERS = MAX_MEMBERS + MAX_BONES;
+
 conglomerate::conglomerate(const string_hash &a2, unsigned int a3) : actor(a2, a3) {}
 
 void conglomerate::init_member_data()

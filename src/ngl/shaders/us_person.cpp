@@ -1043,13 +1043,6 @@ void USPersonSolidNode::_GetSortInfo(nglSortInfo &sortInfo)
     }
 }
 
-matrix4x3 sub_413770(const matrix4x4 *arg4) {
-    matrix4x3 result;
-    CDECL_CALL(0x00413770, &result, arg4);
-
-    return result;
-}
-
 vector4d sub_4139A0(const vector4d *a2, const matrix4x4 *a3) {
     vector4d result;
     CDECL_CALL(0x004139A0, &result, a2, a3);

@@ -3,8 +3,9 @@
 #include "float.hpp"
 #include "vector4d.h"
 
+#include "matrix4x3.h"
+
 struct vector3d;
-struct matrix4x3;
 
 struct matrix4x4 {
     vector4d arr[3];
@@ -116,5 +117,7 @@ extern vector3d sub_55DCB0(const matrix4x4 &a2, const vector3d &a3);
 extern vector3d sub_5B1370(const matrix4x4 &a2, vector3d a3);
 
 extern vector3d sub_501B20(const matrix4x4 &a2, const vector3d &a3);
+
+extern matrix4x3 sub_413770(const matrix4x4 *arg4);
 
 extern void matrix4x4_patch();
