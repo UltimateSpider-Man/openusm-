@@ -2,6 +2,7 @@
 
 #include "func_wrapper.h"
 #include "log.h"
+#include "memory.h"
 #include "string_hash_entry.h"
 
 #include <type_traits>
@@ -27,6 +28,14 @@ struct mAvlNode {
         this->m_key = a2;
     }
 
+    void *operator new(size_t size) {
+        return mem_alloc(size);
+    }
+
+    void operator delete(void *ptr, size_t size) {
+        mem_dealloc(ptr, size);
+    }
+
     void unmash(mash_info_struct *a3,
                 void *a4);
 };
@@ -34,7 +43,17 @@ struct mAvlNode {
 template<typename T>
 struct mAvlTree : mContainer {
     struct iterator {
-        mAvlNode<string_hash_entry> *field_0;
+        mAvlNode<T> *field_0;
+
+        bool operator !=(const iterator &iter) const
+        {
+            return this->field_0 != iter.field_0;
+        }
+
+        mAvlNode<T> & operator*()
+        {
+            return (*this->field_0);
+        }
 
         //0x00743470
         void iterate()
@@ -87,6 +106,14 @@ struct mAvlTree : mContainer {
     mAvlTree(int a1) : mContainer(a1) {}
 
     mAvlTree(from_mash_in_place_constructor *a2) : mContainer(a2) {}
+
+    void *operator new(size_t size) {
+        return mem_alloc(size);
+    }
+
+    void operator delete(void *ptr, size_t size) {
+        mem_dealloc(ptr, size);
+    }
 
     bool get_destruct_contents() const
     {
@@ -152,14 +179,16 @@ struct mAvlTree : mContainer {
     void sub_64A2B0();
 
     //0x0056DF00 -> T = T = string_hash_entry
-    bool insert(T *new_element) {
+    bool insert(T *new_element)
+    {
         assert(new_element != nullptr);
+
         node_type *v4 = new node_type {new_element};
 
         int v5 = this->addHelper(v4, this->m_head, nullptr);
         bool v6 = (v5 != 0);
         if (v5 == 0 && v4 != nullptr) {
-            operator delete(v4);
+            delete v4;
         }
 
         return v6;
@@ -169,9 +198,52 @@ struct mAvlTree : mContainer {
 
     void unmash(mash_info_struct *a2, void *a3);
 
+    mAvlTree<T>::iterator begin()
+    {
+        auto *node = this->m_head;
+        if ( node != nullptr )
+        {
+            while ( node->m_left != nullptr ) {
+                node = node->m_left;
+            }
+        }
+        
+        return {node};
+    }
+
+    mAvlTree<T>::iterator end()
+    {
+        return {nullptr};
+    }
+
     //0x005707B0
-    void insert_tree(mAvlTree<string_hash_entry> *a2) {
-        THISCALL(0x005707B0, this, a2);
+    void insert_tree(mAvlTree<T> *a2)
+    {
+        if constexpr (1)
+        {
+            auto destruct_contents = a2->get_destruct_contents();
+            mAvlTree<T> v6 {};
+
+            auto v5 = a2->begin();
+            auto end = a2->end();
+            while ( v5 != end )
+            {
+                auto &v2 = (*v5);
+                if ( !this->insert(v2.m_key) && destruct_contents )
+                {
+                    auto double_check = v6.insert(v2.m_key);
+                    assert(double_check);
+                }
+            }
+
+            if ( destruct_contents ) {
+                v6.dump(v6.m_head);
+            }
+        }
+        else
+        {
+            THISCALL(0x005707B0, this, a2);
+        }
     }
 
     void sub_5702D0() {
@@ -185,8 +257,10 @@ struct mAvlTree : mContainer {
         }
     }
 
-    void dump(mAvlNode<string_hash_entry> *&node) {
-        if (node != nullptr) {
+    void dump(mAvlNode<string_hash_entry> *&node)
+    {
+        if (node != nullptr)
+        {
             dump(node->m_left);
             dump(node->m_right);
             destroy_element(&node);

@@ -216,7 +216,7 @@ void CreateOutlineVShader(const D3DVERTEXELEMENT9 *elements)
 
         if constexpr (1)
         {
-#include "../../shaders/us_person/outline_VS_1.h"
+#include "../../shaders/us_person/outline_VS.h"
 
             nglCreateVShader(elements, &v2[0], 0, text);
             nglCreateVShader(elements, &v2[1], 0, text);
