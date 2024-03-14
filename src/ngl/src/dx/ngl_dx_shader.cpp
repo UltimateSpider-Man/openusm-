@@ -225,7 +225,9 @@ void nglSetupVShaderBonesDX(int a5, nglMeshNode *MeshNode, nglMeshSection *Secti
 
     if constexpr (0)
     {
-        float a2[4] {3.0, a5, 1.0, 1.0};
+        static constexpr auto BONES_SCALE = 3.0f;
+        static const float BONES_OFFSET = a5;
+        float a2[4] {BONES_SCALE, BONES_OFFSET, 1.0, 1.0};
 
         g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 90u, a2, 1u);
 
