@@ -398,7 +398,7 @@ bool nglVertexBuffer::createIndexBufferAndWriteData(const void *a2, int size)
     if constexpr (1)
     {
         if (createIndexOrVertexBuffer(this, ResourceType::IndexBuffer, size, 0, 0, D3DPOOL_DEFAULT)) {
-            result = false;
+            return false;
         }
 
         void *data;
@@ -406,7 +406,7 @@ bool nglVertexBuffer::createIndexBufferAndWriteData(const void *a2, int size)
         memcpy(data, a2, size);
         this->m_indexBuffer->lpVtbl->Unlock(this->m_indexBuffer);
 
-        result = true;
+        return true;
     }
     else
     {
@@ -1557,24 +1557,23 @@ void nglTextureInit()
 static Var<D3DCAPS9> g_deviceCaps {0x00972108};
 
 
-void sub_7726B0(bool a1) {
+void sub_7726B0(bool a1)
+{
     Var<bool> byte_971F90{0x00971F90};
 
     static_assert(offsetof(D3DCAPS9, VertexShaderVersion) == 0xC4, "");
     static_assert(offsetof(D3DCAPS9, PixelShaderVersion) == 0xCC, "");
 
     if ((0x100 < (g_deviceCaps().VertexShaderVersion & 0xFFFF)) &&
-        (0x100 < (g_deviceCaps().PixelShaderVersion & 0xFFFF)) && !byte_971F90()) {
+        (0x100 < (g_deviceCaps().PixelShaderVersion & 0xFFFF)) && !byte_971F90())
+    {
         HANDLE v2 = CreateFileA("data\\ForceNoShader", GENERIC_READ, 0, nullptr, 3u, 0, nullptr);
 
-        if (v2 == INVALID_HANDLE_VALUE) {
+        if (v2 == INVALID_HANDLE_VALUE)
+        {
             EnableShader() = true;
 
-            float v3[4];
-            v3[0] = 0.0;
-            v3[1] = 0.5;
-            v3[2] = 1.0;
-            v3[3] = 2.0;
+            float v3[4] {0.0, 0.5, 1.0, 2.0};
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 91u, v3, 1u);
 
             v3[0] = 3.1415927;
@@ -2313,13 +2312,9 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
 
             } break;
             case TypeDirectoryEntry::MESH: {
-                struct {
-                    void *m_extension;
-                } *tmp = CAST(tmp, dir_entry.field_4);
 
-                PTR_OFFSET(Base, tmp->m_extension);
-
-                nglMesh *Mesh= CAST(Mesh, tmp);
+                nglMesh *Mesh = dir_entry.field_4.Mesh;
+                PTR_OFFSET(Base, Mesh->Name);
 
                 void (__fastcall *Add)(void *, void *edx, nglMesh *) = CAST(Add, get_vfunc(nglMeshDirectory()->m_vtbl, 0x10));
                 Add(nglMeshDirectory(), nullptr, Mesh);
@@ -5350,6 +5345,12 @@ void nglRenderTextureState::setSamplerState(
 
 void ngl_patch()
 {
+    {
+        HRESULT (*func)(nglMeshSection *) = &nglSetStreamSourceAndDrawPrimitive;
+        SET_JUMP(0x00771AF0, func);
+
+    }
+
     REDIRECT(0x0076D44F, sub_77EBD0);
 
     //FIXME

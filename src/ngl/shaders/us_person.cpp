@@ -344,7 +344,7 @@ void USPersonSolidShader::Register()
     {
         nglShader::Register();
 
-        D3DVERTEXELEMENT9 elements[] = {
+        D3DVERTEXELEMENT9 nglVS_Skin_Decl[] {
             {0, 0,  D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
             {0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
             {0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
@@ -356,9 +356,9 @@ void USPersonSolidShader::Register()
 
         if (EnableShader())
         {
-            CreateVertexDeclAndShaders(elements);
+            CreateVertexDeclAndShaders(nglVS_Skin_Decl);
             CreatePixelShaders();
-            CreateOutlineVShader(elements);
+            CreateOutlineVShader(nglVS_Skin_Decl);
 
             {
                 auto pShader = CompilePShader("shaders/us_person/outline_PS.hlsl");
@@ -369,36 +369,20 @@ void USPersonSolidShader::Register()
         }
         else
         {
-            D3DVERTEXELEMENT9 a3[4];
-            a3[0].Type = D3DDECLTYPE_FLOAT3;
-            a3[0].Stream = 0;
-            a3[0].Offset = 0;
-            a3[0].Method = 0;
-            a3[0].Usage = D3DDECLUSAGE_POSITION;
-            a3[0].UsageIndex = 0;
-
-            a3[1].Stream = 0;
-            a3[1].Offset = 12;
-            a3[1].Type = D3DDECLTYPE_FLOAT2;
-            a3[1].Method = 0;
-            a3[1].Usage = D3DDECLUSAGE_TEXCOORD;
-            a3[1].UsageIndex = 0;
-
-            a3[2].Stream = 0;
-            a3[2].Offset = 20;
-            a3[2].Type = D3DDECLTYPE_FLOAT1;
-            a3[2].Method = 0;
-            a3[2].Usage = D3DDECLUSAGE_TEXCOORD;
-            a3[2].UsageIndex = 1;
-
-            a3[3] = D3DDECL_END();
+            D3DVERTEXELEMENT9 nglVS_NonSkin_Decl4[] {
+                {0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+                {0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+                {0, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+                D3DDECL_END()
+            };
 
             static Var<IDirect3DVertexDeclaration9 *> dword_973910{0x00973910};
 
-            if (dword_973910() == nullptr)
+            if (dword_973910() == nullptr) {
                 g_Direct3DDevice()->lpVtbl->CreateVertexDeclaration(g_Direct3DDevice(),
-                                                                    a3,
+                                                                    nglVS_NonSkin_Decl4,
                                                                     &dword_973910());
+            }
         }
     } else {
         THISCALL(0x00411580, this);
@@ -415,19 +399,19 @@ void USPersonShader::_Register()
 
         if (EnableShader())
         {
-            static const D3DVERTEXELEMENT9 elements[] = {
-                    {0, 0, D3DDECLTYPE_FLOAT3,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-                    {0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
-                    {0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
-                    {0, 32, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_BLENDINDICES, 0},
-                    {0, 48, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_BLENDWEIGHT, 0},
-                    D3DDECL_END()
+            static const D3DVERTEXELEMENT9 nglVS_Skin_Decl[] = {
+                {0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+                {0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
+                {0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+                {0, 32, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_BLENDINDICES, 0},
+                {0, 48, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_BLENDWEIGHT, 0},
+                D3DDECL_END()
             };
 
-            CreateVertexDeclAndShaders(elements);
+            CreateVertexDeclAndShaders(nglVS_Skin_Decl);
             CreatePixelShaders();
 
-            CreateOutlineVShader(elements);
+            CreateOutlineVShader(nglVS_Skin_Decl);
 
             {
                 auto pShader = CompilePShader("shaders/us_person/outline_PS.hlsl");
@@ -436,34 +420,17 @@ void USPersonShader::_Register()
         }
         else
         {
-            D3DVERTEXELEMENT9 a3[4];
-            a3[0].Type = D3DDECLTYPE_FLOAT3;
-            a3[0].Stream = 0;
-            a3[0].Offset = 0;
-            a3[0].Method = 0;
-            a3[0].Usage = D3DDECLUSAGE_POSITION;
-            a3[0].UsageIndex = 0;
-
-            a3[1].Stream = 0;
-            a3[1].Offset = 12;
-            a3[1].Type = D3DDECLTYPE_FLOAT2;
-            a3[1].Method = 0;
-            a3[1].Usage = D3DDECLUSAGE_TEXCOORD;
-            a3[1].UsageIndex = 0;
-
-            a3[2].Stream = 0;
-            a3[2].Offset = 20;
-            a3[2].Type = D3DDECLTYPE_FLOAT1;
-            a3[2].Method = 0;
-            a3[2].Usage = D3DDECLUSAGE_TEXCOORD;
-            a3[2].UsageIndex = 1;
-
-            a3[3] = D3DDECL_END();
+            D3DVERTEXELEMENT9 nglVS_NonSkin_Decl[] {
+                {0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+                {0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+                {0, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+                D3DDECL_END()
+            };
 
             if (dword_9738E0()[12] == nullptr)
             {
                 g_Direct3DDevice()->lpVtbl->CreateVertexDeclaration(g_Direct3DDevice(),
-                                                                    a3,
+                                                                    nglVS_NonSkin_Decl,
                                                                     &dword_9738E0()[12]);
             }
 
