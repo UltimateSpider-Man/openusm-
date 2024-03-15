@@ -123,13 +123,25 @@ Console::Console()
     KB_register_char_callback(console_char_callback, nullptr);
 }
 
-Console::~Console() {
+Console::~Console()
+{
     sp_log("Console::~Console()");
 
     if (field_248 != nullptr) {
         void (__fastcall *finalize)(void *, void *, bool) = CAST(finalize, get_vfunc(field_248->m_vtbl, 0x8));
         finalize(field_248, nullptr, true);
     }
+}
+
+void * Console::operator new(size_t size)
+{
+    auto *mem = mem_alloc(size);
+    return mem;
+}
+
+void Console::operator delete(void *ptr, size_t size)
+{
+    mem_dealloc(ptr, size);
 }
 
 void Console::addToCommandLog(const char *a1) {

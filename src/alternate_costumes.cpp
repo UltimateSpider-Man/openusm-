@@ -54,7 +54,7 @@ void alternate_costumes::sub_640740(int idx) {
             auto *v3 = g_cut_scene_player();
             auto *v4 = v3->field_7C;
             if (v4 != nullptr) {
-                operator delete(v4);
+                ::operator delete(v4);
             }
 
             v3->field_7C = nullptr;

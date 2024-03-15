@@ -66,6 +66,10 @@ struct script_object {
     //0x005AF6C0
     ~script_object();
 
+    void * operator new(size_t );
+
+    void operator delete(void *, size_t );
+
     bool is_external_object() const {
         return (this->flags & SCRIPT_OBJECT_FLAG_EXTERNAL) != 0;
     }

@@ -13,7 +13,8 @@
 
 VALIDATE_SIZE(FEMenu, 44u);
 
-FEMenu::FEMenu(FEMenuSystem *a2, uint32_t a3, int a4, int a5, int16_t a6, int16_t a7) {
+FEMenu::FEMenu(FEMenuSystem *a2, uint32_t a3, int a4, int a5, int16_t a6, int16_t a7)
+{
     this->m_vtbl = 0x00893C88;
 
     this->field_4 = CAST(this->field_4, operator new(4 * a3));
@@ -36,6 +37,17 @@ FEMenu::FEMenu(FEMenuSystem *a2, uint32_t a3, int a4, int a5, int16_t a6, int16_
     } else {
         this->field_2B = 0;
     }
+}
+
+void *FEMenu::operator new(size_t size)
+{
+    auto *mem = mem_alloc(size);
+    return mem;
+}
+
+void FEMenu::operator delete(void *ptr, size_t size)
+{
+    mem_dealloc(ptr, size);
 }
 
 void FEMenu::Load()

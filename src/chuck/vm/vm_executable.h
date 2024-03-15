@@ -52,6 +52,10 @@ struct vm_executable
     //0x005AF310
     ~vm_executable();
 
+    void *operator new(size_t );
+
+    void operator delete(void *, size_t );
+
     void destroy();
 
     int get_size() const {

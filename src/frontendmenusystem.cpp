@@ -32,27 +32,21 @@ FrontEndMenuSystem::FrontEndMenuSystem() : FEMenuSystem(7, 1) {
 
         static Var<bool> first_time_through{0x00937B78};
 
-        if (first_time_through()) {
-            auto *mem = mem_alloc(sizeof(main_menu_legal));
-            this->field_4[this->m_count++] = new (mem) main_menu_legal{this, 320, 240};
+        if (first_time_through())
+        {
+            this->field_4[this->m_count++] = new main_menu_legal {this, 320, 240};
 
-            mem = mem_alloc(sizeof(main_menu_start));
-            this->field_4[this->m_count++] = new (mem) main_menu_start{this, 320, 240};
+            this->field_4[this->m_count++] = new main_menu_start {this, 320, 240};
 
-            mem = mem_alloc(sizeof(main_menu_memcard_check));
-            this->field_4[this->m_count++] = new (mem) main_menu_memcard_check{this, 320, 240};
+            this->field_4[this->m_count++] = new main_menu_memcard_check {this, 320, 240};
 
-            mem = mem_alloc(sizeof(main_menu_options));
-            this->field_4[this->m_count++] = new (mem) main_menu_options{this, 320, 240};
+            this->field_4[this->m_count++] = new main_menu_options {this, 320, 240};
 
-            mem = mem_alloc(sizeof(main_menu_load));
-            this->field_4[this->m_count++] = new (mem) main_menu_load{this, 320, 240};
+            this->field_4[this->m_count++] = new main_menu_load {this, 320, 240};
 
-            mem = mem_alloc(sizeof(main_menu_keyboard));
-            this->field_4[this->m_count++] = new (mem) main_menu_keyboard{this, 320, 240};
+            this->field_4[this->m_count++] = new main_menu_keyboard {this, 320, 240};
 
-            mem = mem_alloc(sizeof(main_menu_credits));
-            this->field_4[this->m_count++] = new (mem) main_menu_credits{this, 320, 240};
+            this->field_4[this->m_count++] = new main_menu_credits {this, 320, 240};
 
             first_time_through() = false;
             this->field_50 = false;

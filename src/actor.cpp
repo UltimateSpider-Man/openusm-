@@ -974,11 +974,8 @@ void actor::_render(Float a2)
                     || (this->adv_ptrs != nullptr && this->adv_ptrs->field_8 != nullptr)
                     )
             {
-                auto *mem = nglListAlloc(16, 16);
-
                 auto v17 = this->get_render_color();
-
-                color *v18 = new (mem) color{v17.to_color()};
+                color *v18 = new color {v17.to_color()};
 
                 v18->a *= this->get_render_alpha_mod() * a2;
 

@@ -26,6 +26,16 @@ vm_executable::~vm_executable()
     }
 }
 
+void * vm_executable::operator new(size_t size)
+{
+    return mem_alloc(size);
+}
+
+void vm_executable::operator delete(void *ptr, size_t size)
+{
+    mem_dealloc(ptr, size);
+}
+
 void vm_executable::destroy()
 {
 	if constexpr (0)
@@ -38,7 +48,7 @@ void vm_executable::destroy()
 
 			if ( this->debug_info ) {
 				THISCALL(0x005B7C90, debug_info);
-				operator delete(this->debug_info);
+				::operator delete(this->debug_info);
 			}
 
 			this->debug_info = nullptr;

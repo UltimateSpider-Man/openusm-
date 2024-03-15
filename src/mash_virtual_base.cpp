@@ -8,16 +8,17 @@
 #include "als_transition_group_base.h"
 #include "layer_state_machine_shared.h"
 #include "log.h"
-#include "trace.h"
+#include "memory.h"
 #include "meta_anim_interact.h"
-#include "utility.h"
-#include "vtbl.h"
 #include "panelquad.h"
 #include "fefloatingtext.h"
 #include "femultilinetext.h"
 #include "spidey_base_state.h"
 #include "std_puppet_trans_state.h"
 #include "string_hash.h"
+#include "trace.h"
+#include "utility.h"
+#include "vtbl.h"
 
 mash_virtual_base::mash_virtual_base()
 {

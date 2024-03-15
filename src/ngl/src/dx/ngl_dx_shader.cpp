@@ -305,7 +305,7 @@ void nglSetupVShaderBonesDX(int a5, nglMeshNode *MeshNode, nglMeshSection *Secti
         }
 
 
-        g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 0, &g_boneMatrices()[0][0].x, 3 * Section->NBones);
+        g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), a5, &g_boneMatrices()[0][0].x, 3 * Section->NBones);
     }
     else
     {

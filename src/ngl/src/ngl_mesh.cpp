@@ -246,9 +246,7 @@ void nglListAddMesh(nglMesh *Mesh,
             auto *v6 = v5;
             auto v17 = nglListWorkPos();
 
-            nglMeshNode *meshNode = static_cast<nglMeshNode *>(
-                nglListAlloc(sizeof(nglMeshNode), 64));
-
+            nglMeshNode *meshNode = new nglMeshNode{};
             meshNode->field_88 = Mesh;
             meshNode->field_0 = {};
 
@@ -263,10 +261,9 @@ void nglListAddMesh(nglMesh *Mesh,
             meshNode->field_94 = v9;
             if (a3 != nullptr)
             {
-                if (v20 >= 0) {
-                    meshNode->field_90 = static_cast<nglMeshParams *>(
-                        nglListAlloc(sizeof(nglMeshParams), 16));
-
+                if (v20 >= 0)
+                {
+                    meshNode->field_90 = new nglMeshParams {};
                     std::memcpy(meshNode->field_90, a3, sizeof(nglMeshParams));
                 } else {
                     meshNode->field_90 = a3;

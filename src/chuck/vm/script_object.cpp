@@ -52,6 +52,16 @@ script_object::~script_object()
     }
 }
 
+void * script_object::operator new(size_t size)
+{
+    return mem_alloc(size);
+}
+
+void script_object::operator delete(void *ptr, size_t size)
+{
+    mem_dealloc(ptr, size);
+}
+
 void script_object::release_mem()
 {
     TRACE("script_object::release_mem");
@@ -88,7 +98,7 @@ void script_object::destroy()
 {
     if ( debug_info != nullptr ) {
         this->debug_info->~debug_info_t();
-        operator delete(debug_info);
+        ::operator delete(debug_info);
         this->debug_info = nullptr;
     }
 
@@ -97,7 +107,7 @@ void script_object::destroy()
             auto &v5 = this->funcs[i];
             if ( v5 != nullptr ) {
                 v5->~vm_executable();
-                operator delete(v5);
+                ::operator delete(v5);
             }
         }
 
@@ -124,7 +134,7 @@ void script_object::create_destructor_instances()
 					if ( !v2.field_28->is_from_mash() )
 					{
 						v2.field_28->~vm_executable();
-						operator delete(v2.field_28);
+						::operator delete(v2.field_28);
 					}
 
 					v2.field_28 = nullptr;
@@ -752,8 +762,7 @@ void script_object::read(chunk_file *file, script_object *so)
 
         for ( auto i = 0; i < so->total_funcs; ++i )
         {
-            auto *mem = mem_alloc(sizeof(vm_executable));
-            auto *x = new (mem) vm_executable {so};
+            auto *x = new vm_executable {so};
             assert(x != nullptr);
 
             vm_executable::read(file, x);

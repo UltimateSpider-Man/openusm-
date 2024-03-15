@@ -102,6 +102,8 @@ struct nglScene {
     bool field_408;
     int empty2[12];
     int field_43C;
+
+    void * operator new(size_t);
 };
 
 //0x0076C700

@@ -3805,13 +3805,12 @@ void nglDebugAddSphere(const math::MatClass<4, 3> &a1, math::VecClass<3, 1> a2, 
     {
         nglParamSet<nglShaderParamSet_Pool> a4{static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
 
-        auto *mem = nglListAlloc(16, 16);
+        auto *mem = nglListAlloc(sizeof(vector4d), 16);
+        auto *tmp = new (mem) vector4d {sub_411C10(*bit_cast<color32 *>(&a3))};
 
-        vector4d tmp = sub_411C10(*bit_cast<color32 *>(&a3));
+        nglTintParam v5 {tmp};
 
-        nglTintParam *v5 = new (mem) nglTintParam{&tmp};
-
-        a4.SetParam(*v5);
+        a4.SetParam(v5);
 
         nglMeshParams v8{2};
         v8.Scale = a2;
@@ -4032,6 +4031,12 @@ nglStringNode::nglStringNode() {
     m_vtbl = 0x0088EBB4;
 }
 
+void * nglStringNode::operator new(size_t size)
+{
+    auto *mem = nglListAlloc(size, 16);
+    return mem;
+}
+
 void sub_754640(void *a1) {
     CDECL_CALL(0x00754640, a1);
 }
@@ -4099,25 +4104,22 @@ void nglListAddString(nglFont *font,
             nglCalculateMatrices(false);
         }
 
-        if (a2 != nullptr && a2[0] != '\0' && font != nullptr && font->field_24 != nullptr) {
-            auto *v8 = static_cast<nglStringNode *>(
-                nglListAlloc(sizeof(nglStringNode), 16));
-            if (v8 != nullptr) {
-                new (v8) nglStringNode{};
+        if (a2 != nullptr && a2[0] != '\0' && font != nullptr && font->field_24 != nullptr)
+        {
+            auto *v8 = new nglStringNode{};
 
-                auto v9 = strlen(a2) + 1;
-                v8->field_C = static_cast<unsigned char *>(nglListAlloc(v9, 16));
-                memcpy(v8->field_C, a2, v9);
-                v8->m_color = color;
-                v8->field_14 = a3;
-                v8->field_18 = a4;
-                v8->field_10 = font;
-                v8->field_1C = z_value;
-                v8->field_20 = a7;
-                v8->field_24 = a8;
-                v8->field_8 = z_value;
-                sub_754640(v8);
-            }
+            auto v9 = strlen(a2) + 1;
+            v8->field_C = static_cast<unsigned char *>(nglListAlloc(v9, 16));
+            memcpy(v8->field_C, a2, v9);
+            v8->m_color = color;
+            v8->field_14 = a3;
+            v8->field_18 = a4;
+            v8->field_10 = font;
+            v8->field_1C = z_value;
+            v8->field_20 = a7;
+            v8->field_24 = a8;
+            v8->field_8 = z_value;
+            sub_754640(v8);
         }
     } else {
         CDECL_CALL(0x00779C40, font, a2, a3, a4, z_value, color, a7, a8);
@@ -4766,24 +4768,22 @@ void nglListBeginScene(nglSceneParamType a2) {
     TRACE("nglListBeginScene");
 
     if constexpr (1) {
-        nglScene *v2 = static_cast<nglScene *>(nglListAlloc(sizeof(nglScene), 64));
+        auto *v2 = new nglScene {};
 
-        if (v2 != nullptr) {
-            if (nglCurScene() != nullptr) {
-                auto *v3 = nglCurScene()->field_318;
-                if (v3 != nullptr) {
-                    v3->field_310 = v2;
-                } else {
-                    nglCurScene()->field_314 = v2;
-                }
-
-                nglCurScene()->field_318 = v2;
+        if (nglCurScene() != nullptr) {
+            auto *v3 = nglCurScene()->field_318;
+            if (v3 != nullptr) {
+                v3->field_310 = v2;
             } else {
-                nglRootScene() = v2;
+                nglCurScene()->field_314 = v2;
             }
 
-            nglSetupScene(v2, a2);
+            nglCurScene()->field_318 = v2;
+        } else {
+            nglRootScene() = v2;
         }
+
+        nglSetupScene(v2, a2);
     } else {
         CDECL_CALL(0x0076C970, a2);
     }

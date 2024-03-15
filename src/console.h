@@ -59,6 +59,10 @@ struct Console {
 
     Console();
 
+    void * operator new(size_t size);
+
+    void operator delete(void *ptr, size_t size);
+
     bool StrnCopy(const char *src, char *dest, int *a3);
 
     void exec_frame_advance(Float a2);

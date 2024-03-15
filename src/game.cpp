@@ -751,14 +751,13 @@ void game::one_time_init_stuff()
         }
 
         if (g_console == nullptr) {
-            auto *mem = mem_alloc(sizeof(Console));
-            g_console = new (mem) Console{};
+            g_console = new Console {};
         }
 
-        tlFixedString a1{"dropshadow"};
+        tlFixedString a1 {"dropshadow"};
         this->field_B4 = nglGetFirstMeshInFile(a1);
 
-        a1 = tlFixedString{"vcl_car_shadow"};
+        a1 = tlFixedString {"vcl_car_shadow"};
         this->field_B8 = nglGetFirstMeshInFile(a1);
 
     } else {

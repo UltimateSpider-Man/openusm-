@@ -93,8 +93,7 @@ void FastListAddMesh(nglMesh *Mesh,
 
     LABEL_11:
 
-        auto *v12 = static_cast<nglMeshNode *>(nglListAlloc(sizeof(nglMeshNode), 64));
-
+        auto *v12 = new nglMeshNode {};
         v12->field_88 = Mesh;
         std::memcpy(&v12->field_0, &LocalToWorld, sizeof(LocalToWorld));
 

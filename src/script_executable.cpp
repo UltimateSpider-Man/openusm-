@@ -602,8 +602,7 @@ void script_executable::load(const resource_key &resource_id) {
         cf = io.read<chunk_flavor>();
         if ( cf == CHUNK_SCRIPT_OBJECT )
         {
-            auto *v76 = mem_alloc(sizeof(script_object));
-            auto *so = new (v76) script_object{};
+            auto *so = new script_object{};
             assert(so != nullptr && "Couldn't create a script object");
 
             auto v81 = io.read<int>();

@@ -1,9 +1,9 @@
 #include "ngl_scene.h"
 
-#include "ngl.h"
 #include "common.h"
 #include "error.h"
 #include "func_wrapper.h"
+#include "ngl.h"
 #include "ngl_dx_scene.h"
 #include "ngl_dx_core.h"
 #include "ngl_params.h"
@@ -26,6 +26,12 @@ Var<nglScene *> g_shadow_scene{0x00965960};
 
 static Var<float> flt_93BC78 = (0x0093BC78);
 
+
+void * nglScene::operator new(size_t size)
+{
+    auto *mem = nglListAlloc(size, 64);
+    return mem;
+}
 
 bool nglIsFBPAL() {
     return false;
@@ -132,7 +138,7 @@ void nglSetupScene(nglScene *a1, nglSceneParamType a2)
 
         switch (a2) {
         case 0: {
-            new (a1) nglScene {};
+            a1 = new nglScene {};
 
             nglSetDefaultSceneParams();
         } break;

@@ -44,55 +44,38 @@ PauseMenuSystem::PauseMenuSystem(font_index a2) : FEMenuSystem(17, a2.value) {
         this->field_2C = nullptr;
         this->field_30 = new menu_nav_bar{};
 
-        auto *mem = mem_alloc(sizeof(fe_dialog_text));
-        this->field_4[this->m_count++] = new (mem) fe_dialog_text(this, 320, 240);
+        this->field_4[this->m_count++] = new fe_dialog_text {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_transition));
-        this->field_4[this->m_count++] = new (mem) pause_menu_transition{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_transition {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_root));
-        this->field_4[this->m_count++] = new (mem) pause_menu_root{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_root {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_status));
-        this->field_4[this->m_count++] = new (mem) pause_menu_status{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_status {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_options_display));
-        this->field_4[this->m_count++] = new (mem) pause_menu_options_display(this, 320, 240);
+        this->field_4[this->m_count++] = new pause_menu_options_display {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_controller));
-        this->field_4[this->m_count++] = new (mem) pause_menu_controller{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_controller {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_save_load_display));
-        this->field_4[this->m_count++] = new (mem) pause_menu_save_load_display{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_save_load_display {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_message_log));
-        this->field_4[this->m_count++] = new (mem) pause_menu_message_log{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_message_log {this, 320, 240};
 
-        mem = mem_alloc(sizeof(unlockables_menu));
-        this->field_4[this->m_count++] = new (mem) unlockables_menu{this, 320, 240};
+        this->field_4[this->m_count++] = new unlockables_menu {this, 320, 240};
 
-        mem = mem_alloc(sizeof(pause_menu_credits));
-        this->field_4[this->m_count++] = new (mem) pause_menu_credits{this, 320, 240};
+        this->field_4[this->m_count++] = new pause_menu_credits {this, 320, 240};
 
-        mem = mem_alloc(sizeof(character_viewer));
-        this->field_4[this->m_count++] = new (mem) character_viewer{this, 320, 240};
+        this->field_4[this->m_count++] = new character_viewer {this, 320, 240};
 
-        mem = mem_alloc(sizeof(alternate_costumes));
-        this->field_4[this->m_count++] = new (mem) alternate_costumes{this, 320, 240};
+        this->field_4[this->m_count++] = new alternate_costumes {this, 320, 240};
 
-        mem = mem_alloc(sizeof(concept_art));
-        this->field_4[this->m_count++] = new (mem) concept_art{this, 320, 240};
+        this->field_4[this->m_count++] = new concept_art {this, 320, 240};
 
-        mem = mem_alloc(sizeof(concept_art2));
-        this->field_4[this->m_count++] = new (mem) concept_art2{this, 320, 240};
-        mem = mem_alloc(sizeof(covers));
-        this->field_4[this->m_count++] = new (mem) covers{this, 320, 240};
+        this->field_4[this->m_count++] = new concept_art2 {this, 320, 240};
+        this->field_4[this->m_count++] = new covers {this, 320, 240};
 
-        mem = mem_alloc(sizeof(landmarks));
-        this->field_4[this->m_count++] = new (mem) landmarks{this, 320, 240};
+        this->field_4[this->m_count++] = new landmarks {this, 320, 240};
 
-        mem = mem_alloc(sizeof(ltd_edition));
-        this->field_4[this->m_count++] = new (mem) ltd_edition{this, 320, 240};
+        this->field_4[this->m_count++] = new ltd_edition {this, 320, 240};
 
         this->LoadAll();
         this->field_34 = CAST(this->field_34, *(this->field_4 + 6));

@@ -178,6 +178,8 @@ struct nglStringNode
 
     nglStringNode();
 
+    void * operator new(size_t size);
+
     void Render();
 };
 

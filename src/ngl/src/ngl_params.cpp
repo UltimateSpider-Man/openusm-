@@ -1,7 +1,10 @@
 #include "ngl_params.h"
 
 #include "color.h"
+#include "common.h"
 #include "ngl.h"
+
+VALIDATE_SIZE(nglTintParam, 0x4);
 
 Var<nglParam> EmptyParam{0x00971E80};
 
