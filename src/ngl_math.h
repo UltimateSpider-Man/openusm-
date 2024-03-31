@@ -2,6 +2,8 @@
 
 #include "matrix4x4.h"
 
+#include <cmath>
+
 namespace math {
 
 template<uint32_t>
@@ -11,27 +13,42 @@ template<bool>
 struct Rep_Std {};
 
 template<int Int0, int Int1, typename T0 = void, typename T1 = void, typename T2 = Rep_Std<false>>
-struct VecClass {
-    float field_0[4];
+struct VecClass : vector4d {
+    VecClass() = default;
+
+    VecClass(const vector4d &v) : vector4d{v}
+    {}
+
+    VecClass(float x, float y, float z)
+    {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
+    VecClass(float x, float y, float z, float w) : vector4d{x, y, z, w}
+    {
+    }
 
     friend VecClass operator+(const VecClass<Int0, Int1, T0, T1, T2> &a2,
                               const VecClass<Int0, Int1, T0, T1, T2> &a3) {
         VecClass<Int0, Int1, T0, T1, T2> v4;
 
-        v4[0] = a2.field_0[0] + a3.field_0[0];
-        v4[1] = a2.field_0[1] + a3.field_0[1];
-        v4[2] = a2.field_0[2] + a3.field_0[2];
+        v4[0] = a2[0] + a3[0];
+        v4[1] = a2[1] + a3[1];
+        v4[2] = a2[2] + a3[2];
         v4[3] = a3[3] + a2[3];
 
         return v4;
     }
 
-    friend VecClass operator*(float a2, const VecClass<Int0, Int1, T0, T1, T2> &a3) {
+    friend VecClass operator*(float a2, const VecClass<Int0, Int1, T0, T1, T2> &a3)
+    {
         VecClass<Int0, Int1, T0, T1, T2> v4;
 
-        v4[0] = a2 * a3.field_0[0];
-        v4[1] = a2 * a3.field_0[1];
-        v4[2] = a2 * a3.field_0[2];
+        v4[0] = a2 * a3[0];
+        v4[1] = a2 * a3[1];
+        v4[2] = a2 * a3[2];
         v4[3] = a2 * a3[3];
 
         return v4;
@@ -52,14 +69,6 @@ struct VecClass {
         this->field_0[1] += a2[1] * a3[1];
         this->field_0[2] += a2[2] * a3[1];
         this->field_0[3] += a2[3] * a3[1];
-    }
-
-    auto &operator[](int idx) {
-        return field_0[idx];
-    }
-
-    auto &operator[](int idx) const {
-        return field_0[idx];
     }
 };
 
@@ -107,12 +116,31 @@ struct MatClass : matrix4x4 {
             VecClass<3, 0> &a4,
             VecClass<3, 0> &a5) const
     {
-        a2 = CAST(a2, this->arr[0]);
-        a3 = CAST(a3, this->arr[1]);
-        a4 = CAST(a4, this->arr[2]);
-        a5 = CAST(a5, this->arr[3]);
+        a2 = {this->arr[0]};
+        a3 = {this->arr[1]};
+        a4 = {this->arr[2]};
+        a5 = {this->arr[3]};
     }
 
 };
 
+template<uint32_t I>
+struct _Float4BaseMasked {
+    float field_0;
+
+    _Float4BaseMasked(float f) : field_0(f) {}
+
+
+    operator float() const {
+        return field_0;
+    }
+};
+
 } // namespace math
+
+template<int Int0, int Int1, typename T0, typename T1, typename T2>
+inline math::_Float4BaseMasked<1> Abs(math::VecClass<Int0, Int1, T0, T1, T2> &a1)
+{
+    return std::sqrt( (a1[0] * a1[0]) + (a1[1] * a1[1])
+            + (a1[2] * a1[2]));
+}

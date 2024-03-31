@@ -8,6 +8,7 @@
 #include "common.h"
 #include "conglom.h"
 #include "func_wrapper.h"
+#include "memory.h"
 #include "nal_instance.h"
 #include "nal_skeleton.h"
 #include "nal_system.h"
@@ -35,6 +36,11 @@ nal_anim_controller::nal_anim_controller(actor *a2,
                                          unsigned int a4,
                                          const als::als_meta_anim_table_shared *a5) {
     THISCALL(0x0049BCF0, this, a2, a3, a4, a5);
+}
+
+void * nal_anim_controller::operator new(size_t size)
+{
+    return mem_alloc(size);
 }
 
 double nal_anim_controller::_get_base_anim_speed()

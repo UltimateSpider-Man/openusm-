@@ -96,6 +96,11 @@ struct matrix4x4 {
     //0x00588BA0
     [[nodiscard]] matrix4x4 transpose() const;
 
+    void sub_41D8A0(void *a2);
+
+    //0x004134B0
+    void decompose(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
+
     //0x005817B0
     matrix4x4 *operator*=(Float a2);
 
@@ -104,10 +109,12 @@ struct matrix4x4 {
     //0x0048A8A0
     friend vector3d operator*(const matrix4x4 &a2, const vector3d &a3);
 
-    void sub_415650(const matrix4x3 *a2);
+    void sub_415650(const matrix4x3 &a2);
 
     //0x00588390
     void scale(Float a2);
+
+    const char *to_string() const;
 };
 
 extern const matrix4x4 identity_matrix;
@@ -118,6 +125,6 @@ extern vector3d sub_5B1370(const matrix4x4 &a2, vector3d a3);
 
 extern vector3d sub_501B20(const matrix4x4 &a2, const vector3d &a3);
 
-extern matrix4x3 sub_413770(const matrix4x4 *arg4);
+extern matrix4x3 sub_413770(const matrix4x4 &arg4);
 
 extern void matrix4x4_patch();

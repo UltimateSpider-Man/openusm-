@@ -34,7 +34,7 @@ state_trans_messages nugget_wait_state::frame_advance(Float )
 
             static string_hash s_goto_speed {to_hash("goto_speed")};
 
-            auto v15 = data->field_8;
+            auto v15 = data->get_name();
             if ( v15 != wait_anim_hash.source_hash_code
                 && v15 != looping_wait_anim_hash
                 && v15 != s_goto_radius

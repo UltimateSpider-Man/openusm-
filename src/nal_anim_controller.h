@@ -26,7 +26,7 @@ struct nal_anim_controller : animation_controller {
             nalAnimClass<nalAnyPose>::nalInstanceClass *a2, float a3, float a4, float a5, float a6);
     };
 
-    struct std_play_method {
+    struct std_play_method : usm_anim_player<nalAnimClass<nalAnyPose>, 3>::nalPlayMethod {
         void *CreateInstance(
             nalAnimClass<nalAnyPose> *a1,
             nalBaseSkeleton *a2,
@@ -47,6 +47,7 @@ struct nal_anim_controller : animation_controller {
                         unsigned int a4,
                         const als::als_meta_anim_table_shared *a5);
 
+    void * operator new(size_t size);
 
     //virtual
     void *get_base_layer_anim_ptr();

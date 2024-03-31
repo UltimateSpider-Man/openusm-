@@ -72,3 +72,5 @@ extern const DWORD *AssemblePShader(const char *text);
 extern void nglSetupVShaderBonesDX(int a5, nglMeshNode *a6, nglMeshSection *Section);
 
 extern const DWORD *g_codes;
+
+extern void ngl_dx_shader_patch();

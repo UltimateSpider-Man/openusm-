@@ -89,6 +89,7 @@
 #include "trigger.h"
 #include "trigger_manager.h"
 #include "usocean2shader.h"
+#include "us_lighting.h"
 #include "utility.h"
 #include "variables.h"
 #include "vector2di.h"
@@ -1771,12 +1772,17 @@ void game::render_motion_blur() {
     THISCALL(0x00521610, this);
 }
 
-void sub_5BC870() {
+void sub_5BC870()
+{
     CDECL_CALL(0x005BC870);
+
+    g_game_ptr()->mb->render();
 }
 
 void game::render_interface()
 {
+    TRACE("game::render_interface");
+
     if constexpr (1)
     {
         if (this->flag.level_is_loaded)
@@ -1795,7 +1801,9 @@ void game::render_interface()
                 this->show_max_velocity();
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x00524290, this);
     }
 }
@@ -1982,8 +1990,8 @@ float game::get_script_game_clock_timer() {
         return *static_cast<float *>(
             script_manager::get_game_var_address(s_game_clock_timer_str, nullptr, nullptr));
     }
-
-    else {
+    else
+    {
         return (double) THISCALL(0x005244E0, this);
     }
 }
@@ -2177,6 +2185,7 @@ void game::advance_state_running(Float a2)
                 if (!this->flag.physics_enabled || this->flag.single_step)
                 {
                     this->the_world->frame_advance(a2);
+                    this->mb->frame_advance(a2);
                     this->frame_advance_game_overlays(a2);
                     this->flag.single_step = false;
                 } else {
@@ -2516,6 +2525,8 @@ void game__setup_input_registrations(game *a1) {
 
 void game_patch()
 {
+    REDIRECT(0x0052B4BA, sub_5BC870);
+
     {
         REDIRECT(0x0052B5D7, hook_nglListEndScene);
     }

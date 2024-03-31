@@ -11,7 +11,8 @@ void base_ai_data::post_entity_mash() {
     this->field_14->post_entity_mash();
 }
 
-void base_ai_data::destruct_mashed_class() {
+void base_ai_data::destruct_mashed_class()
+{
     auto *v2 = this->field_14;
     if (v2 != nullptr) {
         (*this->field_14).~ai_core();
@@ -20,5 +21,5 @@ void base_ai_data::destruct_mashed_class() {
     }
 
     this->field_0.destruct_mashed_class();
-    this->field_8.sub_6D6EB0();
+    this->field_8.destruct_mashed_class();
 }

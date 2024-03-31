@@ -154,14 +154,14 @@ void FrontEnd_ShaderNode::Render()
             if (EnableShader()) {
                 g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(),
                                                                      0,
-                                                                     &this->field_C->field_40[0][0],
+                                                                     &this->m_meshNode->field_40[0][0],
                                                                      4);
 
                 nglSetVertexDeclarationAndShader(&stru_970610());
             } else {
                 g_Direct3DDevice()->lpVtbl->SetTransform(g_Direct3DDevice(),
                                                          (D3DTRANSFORMSTATETYPE) 256,
-                                                         (const D3DMATRIX *) &this->field_C->field_0);
+                                                         bit_cast<D3DMATRIX *>(&this->m_meshNode->field_0));
                 g_Direct3DDevice()->lpVtbl->SetVertexDeclaration(g_Direct3DDevice(),
                                                                  dword_9738E0()[22]);
             }
@@ -183,7 +183,7 @@ void FrontEnd_ShaderNode::Render()
                 nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
             }
 
-            nglSetStreamSourceAndDrawPrimitive(this->field_10);
+            nglSetStreamSourceAndDrawPrimitive(this->m_meshSection);
         }
     }
     else

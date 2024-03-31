@@ -49,8 +49,8 @@ struct nglShader {
 };
 
 struct nglShaderNode : nglRenderNode {
-    nglMeshNode *field_C;
-    nglMeshSection *field_10;
+    nglMeshNode *m_meshNode;
+    nglMeshSection *m_meshSection;
 
     void sub_413AF0();
 

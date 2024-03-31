@@ -73,13 +73,13 @@ void rb_ragdoll_model::get_ballistic_info(phys_vector3d *a2, phys_vector3d *a3, 
                                  &v9,
                                  &v11,
                                  a4);
-        a2->field_0[0] = v9.field_0[0];
-        a2->field_0[1] = v9.field_0[1];
-        a2->field_0[2] = v9.field_0[2];
+        a2->field_0[0] = v9[0];
+        a2->field_0[1] = v9[1];
+        a2->field_0[2] = v9[2];
 
-        a3->field_0[0] = v11.field_0[0];
-        a3->field_0[1] = v11.field_0[1];
-        a3->field_0[2] = v11.field_0[2];
+        a3->field_0[0] = v11[0];
+        a3->field_0[1] = v11[1];
+        a3->field_0[2] = v11[2];
 
     } else {
         THISCALL(0x007A0300, this, a2, a3, a4);

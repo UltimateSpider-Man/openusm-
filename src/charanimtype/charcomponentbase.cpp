@@ -3,6 +3,7 @@
 #include "string_hash.h"
 #include "trace.h"
 #include "utility.h"
+#include "vtbl.h"
 
 #include <cassert>
 

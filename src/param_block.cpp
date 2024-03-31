@@ -5,6 +5,7 @@
 #include "log.h"
 #include "mash_info_struct.h"
 #include "memory.h"
+#include "osassert.h"
 #include "trace.h"
 #include "utility.h"
 
@@ -52,77 +53,83 @@ void param_block::add_param(
         const void *a4,
         string_hash a5)
 {
-    if constexpr (0) {
-    } else {
+    if constexpr (0)
+    {
+    }
+    else
+    {
         THISCALL(0x006D6710, this, a2, a3, a4, a5);
     }
 }
 
 int param_block::get_parameter_data_type(string_hash a2) const
 {
-    return this->param_array->common_find_data(a2)->my_type;
+    assert(param_array != nullptr);
+
+    auto *the_param = this->param_array->common_find_data(a2);
+    assert(the_param != nullptr);
+
+    return the_param->get_data_type();
 }
 
 const char *param_block::get_pb_fixedstring(string_hash a2) const {
-    auto *v2 = bit_cast<param_data_array *>(this->param_array);
+    auto *v2 = this->param_array;
     if (v2 == nullptr) {
         return nullptr;
     }
 
-    auto *v4 = v2->common_find_data(a2);
-    if (v4 == nullptr) {
-        a2.to_string();
+    auto *curr_data = v2->common_find_data(a2);
+    if (curr_data == nullptr) {
+        auto *v3 = a2.to_string();
+        error("Could not find the parameter %s.", v3);
     }
 
-    return v4->m_union.str;
+    assert((curr_data->get_data_type() == PT_FIXED_STRING) && "Parameter is of the wrong type.");
+
+    return curr_data->get_data_fixedstring();
 }
 
 void param_block::set_pb_float(string_hash a2, Float a3, bool a4)
 {
     if ( a4 )
     {
-        this->add_param(a2, static_cast<param_types>(0), &a3, string_hash {0});
+        this->add_param(a2, PT_FLOAT, &a3, string_hash {0});
     }
     else
     {
         auto *data = this->param_array->common_find_data(a2);
         if ( data != nullptr ) {
-            this->add_param(a2, static_cast<param_types>(0), &a3, string_hash {0});
+            this->add_param(a2, PT_FLOAT, &a3, string_hash {0});
         }
     }
 }
 
-float param_block::get_pb_float(string_hash a2) {
-    [[maybe_unused]] ai::param_block *v6 = this;
-    auto *v2 = bit_cast<param_data_array*>(this->param_array);
+float param_block::get_pb_float(string_hash a2)
+{
+    auto *v2 = this->param_array;
 
     if (v2 == nullptr) {
         return 0.0f;
     }
 
-    ai::param_block v5;
-    v6 = &v5;
-    param_data *v4 = v2->common_find_data(a2);
-
-    if (v4 == nullptr) {
+    param_data *curr_data = v2->common_find_data(a2);
+    if (curr_data == nullptr) {
         const char *str = a2.to_string();
-        sp_log("Could not find the parameter %s.", str);
-        assert(0);
+        error("Could not find the parameter %s.", str);
     }
 
-    return v4->get_data_float();
+    assert((curr_data->get_data_type() == PT_FLOAT) && "Parameter is of the wrong type.");
+
+    return curr_data->get_data_float();
 }
 
-string_hash param_block::param_data::get_data_hash() const {
-    return this->m_union.hash;
-}
-
-void param_block::param_data::sub_6C8700(int a2) {
+void param_block::param_data::finalize(mash::allocation_scope a2)
+{
     if (a2 == 0 && this->m_union.i) {
         if (this->my_type == PT_FIXED_STRING) {
-            operator delete[](this->m_union.str);
+            ::operator delete[](this->m_union.str);
         } else if (this->my_type == PT_VECTOR_3D || this->my_type == PT_FLOAT_VARIANCE) {
-            operator delete(this->m_union.vec3);
+            ::operator delete(this->m_union.vec3);
             this->m_union.vec3 = nullptr;
             return;
         }
@@ -131,40 +138,96 @@ void param_block::param_data::sub_6C8700(int a2) {
     }
 }
 
-void param_block::param_data::sub_436A70() {
-    this->sub_6C8700(0);
+param_block::param_data::param_data() {
+    this->m_name.initialize(mash::FROM_MASH, nullptr, 0);
+    this->initialize(mash::FROM_MASH);
 }
 
-void param_block::param_data::sub_6C8750() {
-    this->field_8.destruct_mashed_class();
+param_block::param_data::~param_data() {
+    this->finalize(mash::ALLOCATED);
 }
 
-auto *param_block::param_data::set_data_float_variance(const variance_variable<float> &a2) {
-    if (!this->get_data_float_variance()) {
-        auto *v3 = new variance_variable<float>{};
-
-        this->m_union.float_variance = v3;
+void param_block::param_data::initialize(mash::allocation_scope a2)
+{
+    if ( a2 == mash::ALLOCATED )
+    {
+        this->my_type = static_cast<param_types>(9);
+        this->m_union.i = 0;
     }
+}
 
-    auto &result = this->m_union.float_variance;
+void param_block::param_data::operator delete(void *ptr, size_t size) {
+    mem_dealloc(ptr, size);
+}
+
+void param_block::param_data::destruct_mashed_class() {
+    this->m_name.destruct_mashed_class();
+}
+
+void param_block::param_data::set_data_float(float a2)
+{
+    assert(my_type == PT_FLOAT);
+    this->m_union.f = a2;
+}
+
+void param_block::param_data::set_data_float_variance(const variance_variable<float> &a2)
+{
+    assert(my_type == PT_FLOAT_VARIANCE);
+
+    if (this->get_data_float_variance() == nullptr) {
+        this->m_union.float_variance = new variance_variable<float>{};
+    }
 
     *this->m_union.float_variance = a2;
-
-    return result;
 }
 
-void param_block::param_data::set_data_vector3d(const vector3d &a2) {
-    if (!this->get_data_vector3d()) {
-        this->get_data_vector3d() = new vector3d{};
+void param_block::param_data::set_data_vector3d(const vector3d &a2)
+{
+    assert(my_type == PT_VECTOR_3D);
+
+    if (this->get_data_vector3d() == nullptr) {
+        this->m_union.vec3 = new vector3d{};
     }
 
-    *this->get_data_vector3d() = a2;
+    *this->m_union.vec3 = a2;
+}
+
+void param_block::param_data::set_data_entity(entity_base_vhandle &a2)
+{
+    assert(my_type == PT_ENTITY);
+    this->m_union.ent = &a2;
+}
+
+void param_block::param_data::set_data_pointer(void *a2)
+{
+    assert(my_type == PT_POINTER);
+    this->m_union.ptr = a2;
+}
+
+void param_block::param_data::set_data_fixedstring(char *a2)
+{
+    assert(my_type == PT_FIXED_STRING);
+
+    if ( this->m_union.str == nullptr ) {
+        this->m_union.str = new char[32] {};
+    }
+
+    for ( int i = 0; i < 32; ++i )
+    {
+        if ( a2[i] != '\0' ) {
+            this->m_union.str[i] = a2[i];
+        } else {
+            this->m_union.str[i] = '\0';
+        }
+    }
+
+    this->m_union.str[31] = '\0';
 }
 
 string_hash param_block::get_pb_hash(string_hash a3) const
 {
     ai::param_block v7{};
-    auto *v3 = bit_cast<param_data_array *>(this->param_array);
+    auto *v3 = this->param_array;
     if (v3 != nullptr) {
         ai::param_block::param_data *v5 = v3->common_find_data(a3);
         if (v5 == nullptr) {
@@ -189,7 +252,7 @@ vector3d *param_block::get_pb_vector3d(string_hash a2) {
 }
 
 int param_block::get_pb_int(string_hash a2) {
-    auto *v2 = bit_cast<param_data_array *>(this->param_array);
+    auto *v2 = this->param_array;
     if (v2 == nullptr) {
         return 0;
     }
@@ -204,10 +267,32 @@ int param_block::get_pb_int(string_hash a2) {
     return v4->get_data_int();
 }
 
-float param_block::param_data::get_data_float() {
+float param_block::param_data::get_data_float() const
+{
     assert(my_type == PT_FLOAT);
-
     return m_union.f;
+}
+
+string_hash param_block::param_data::get_data_hash() const
+{
+    assert(my_type == PT_STRING_HASH);
+    return this->m_union.hash;
+}
+
+const char * param_block::param_data::get_data_fixedstring() const
+{
+    assert(my_type == PT_FIXED_STRING);
+    return this->m_union.str;
+}
+
+vector3d * param_block::param_data::get_data_vector3d() const {
+    return m_union.vec3;
+}
+
+variance_variable<float> * param_block::param_data::get_data_float_variance() const
+{
+    assert(my_type == PT_FLOAT_VARIANCE);
+    return this->m_union.float_variance;
 }
 
 int param_block::param_data::get_data_int() {
@@ -215,12 +300,18 @@ int param_block::param_data::get_data_int() {
     return m_union.i;
 }
 
+void * param_block::param_data::get_data_pointer() const
+{
+    assert(my_type == PT_POINTER);
+    return this->m_union.ptr;
+}
+
 int param_block::get_optional_pb_int(string_hash a2, const int &a3, bool *a4) const {
     if (a4 != nullptr) {
         *a4 = false;
     }
 
-    auto *v4 = bit_cast<param_data_array*>(this->param_array);
+    auto *v4 = this->param_array;
     if (v4 == nullptr) {
         return a3;
     }
@@ -248,7 +339,7 @@ float param_block::get_optional_pb_float(string_hash a2, const Float &a3, bool *
         *a4 = false;
     }
 
-    auto *v4 = bit_cast<param_data_array *>(this->param_array);
+    auto *v4 = this->param_array;
 
     if (v4 == nullptr) {
         return a3;
@@ -272,54 +363,47 @@ float param_block::get_optional_pb_float(string_hash a2, const Float &a3, bool *
     return result;
 }
 
+param_block::param_data_array::~param_data_array()
+{
+    this->field_14 = 0;
+    this->field_0.clear();
+}
+
 void param_block::param_data_array::unmash(mash_info_struct *a1, void *)
 {
     a1->unmash_class_in_place(this->field_0, this); 
+}
+
+void param_block::param_data_array::destruct_mashed_class()
+{
+    this->finalize(mash::FROM_MASH);
+    this->field_0.destruct_mashed_class();
+}
+
+param_block::~param_block()
+{
+    this->finalize(mash::ALLOCATED);
+}
+
+void param_block::finalize(mash::allocation_scope )
+{
+    if ( this->param_array != nullptr && this->field_8 )
+    {
+        if ( this->param_array != nullptr ) {
+            this->param_array->~param_data_array();
+            mem_dealloc(this->param_array, sizeof(param_data_array));
+        }
+
+        this->param_array = nullptr;
+    }
 }
 
 param_block::param_data *param_block::param_data_array::common_find_data(string_hash a2) {
     return (param_block::param_data *) THISCALL(0x006CD450, this, a2);
 }
 
-void param_block::param_data_array::sub_43F630() {
-    this->field_14 = 0;
-    this->sub_43E400();
-}
-
-void param_block::param_data_array::sub_43E400() {
-    if (this->field_0.field_10) {
-        for (auto i = 0; i < this->field_0.size(); ++i) {
-            auto **v3 = this->field_0.m_data;
-            auto *v4 = v3[i];
-            auto **v5 = &v3[i];
-            if ((int) v4 < (int) this || (int) v4 > (int) this + this->field_0.field_0) {
-                if (v4) {
-                    v3[i]->sub_436A70();
-                    slab_allocator::deallocate(v4, nullptr);
-                }
-            } else {
-                v3[i]->sub_6C8750();
-            }
-
-            *v5 = nullptr;
-        }
-    }
-
-    auto v6 = this->field_0.m_data;
-    if ((int) v6 < (int) this || (int) v6 > (int) this + this->field_0.field_0) {
-        if ((unsigned int) (4 * this->field_0.field_C) > 0xB0) {
-            operator delete(this->field_0.m_data);
-            this->field_0 = {};
-        }
-
-        slab_allocator::deallocate(v6, nullptr);
-    }
-
-    this->field_0 = {};
-}
-
 bool param_block::does_parameter_exist(string_hash a2) const {
-    auto *v2 = bit_cast<param_data_array *>(this->param_array);
+    auto *v2 = this->param_array;
     bool result = false;
     if (v2 != nullptr) {
         if (v2->common_find_data(a2) != nullptr) {
@@ -336,35 +420,50 @@ bool param_block::does_parameter_match(const param_block::param_data *a2) const
         return false;
     }
 
-    auto v5 = a2->field_8;
+    auto v5 = a2->get_name();
     auto *other = this->param_array->common_find_data(v5);
     assert(other != nullptr && "attempting to match a parameter that doesn't exist");
     return a2->deep_compare(other);
 }
 
-void param_block::sub_6D6EB0() {
-    auto *v2 = bit_cast<param_data_array *>(this->param_array);
-    if (v2 != nullptr && this->field_8) {
-        v2->sub_43F630();
-
-        mem_dealloc(v2, sizeof(*v2));
-
-        this->param_array = nullptr;
-    }
+void param_block::destruct_mashed_class()
+{
+    this->finalize(mash::FROM_MASH);
 
     auto *v3 = this->param_array;
     if (v3 != nullptr) {
-        auto *v4 = bit_cast<param_data_array *>(this->param_array);
-        v4->field_14 = 0;
-        v4->sub_43E400();
-        //v3->destruct_mashed_class();
+        v3->destruct_mashed_class();
         this->param_array = nullptr;
     }
 }
 
 void param_block::param_data::custom_unmash(mash_info_struct *a2, void *a3)
 {
-    THISCALL(0x006CC070, this, a2, a3);
+    if constexpr (0)
+    {
+        switch ( this->get_data_type() )
+        {
+        case PT_FIXED_STRING:
+            this->m_union.str = (char *) a2->read_from_buffer(0x20u, 4);
+            break;
+        case PT_VECTOR_3D:
+            this->m_union.vec3 = (vector3d *) a2->read_from_buffer(sizeof(vector3d), 4);
+            break;
+        case PT_FLOAT_VARIANCE:
+            this->m_union.float_variance = (variance_variable<float> *) a2->read_from_buffer(8, 4);
+            break;
+        case PT_ENTITY:
+        case PT_POINTER:
+            this->m_union.ptr = nullptr;
+            break;
+        default:
+            return;
+        }
+    }
+    else
+    {
+        THISCALL(0x006CC070, this, a2, a3);
+    }
 }
 
 bool param_block::param_data::deep_compare(const param_block::param_data *a2) const
@@ -374,7 +473,7 @@ bool param_block::param_data::deep_compare(const param_block::param_data *a2) co
 
 void param_block::param_data::unmash(mash_info_struct *a1, void *a3)
 {
-    a1->unmash_class_in_place(this->field_8, this);
+    a1->unmash_class_in_place(this->m_name, this);
     this->custom_unmash(a1, a3);
 }
 

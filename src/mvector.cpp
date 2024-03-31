@@ -29,6 +29,7 @@
 #include "func_wrapper.h"
 #include "interact_sound_entry.h"
 #include "mash_virtual_base.h"
+#include "memory.h"
 #include "panelanim.h"
 #include "panelanimkeyframe.h"
 #include "panelanimfile.h"
@@ -968,6 +969,80 @@ void mVector<als::transition_group_base>::custom_unmash(mash_info_struct *a2, vo
     }
 
     this->field_0 = (int)&a2->mash_image_ptr[0][a2->buffer_size_used[0] - (DWORD)this];
+}
+
+template<>
+void mVector<ai::param_block::param_data>::initialize(mash::allocation_scope scope)
+{
+    if ( scope )
+    {
+        assert(scope == mash::FROM_MASH);
+
+        if ( this->m_data != nullptr )
+        {
+            assert(m_size > 0);
+            for ( int i = 0; i < this->m_size; ++i ) {
+                new (this->m_data[i]) ai::param_block::param_data {};
+            }
+        }
+    }
+    else
+    {
+        this->m_data = nullptr;
+        this->field_C = 0;
+        this->field_10 = true;
+    }
+}
+
+template<>
+void mVector<ai::param_block::param_data>::destroy_element(ai::param_block::param_data **a2)
+{
+    if ( bit_cast<mContainer_base *>(this)->is_pointer_in_mash_image(*a2) )
+    {
+        (*a2)->destruct_mashed_class();
+    }
+    else if ( (*a2) != nullptr )
+    {
+        delete (*a2);
+    }
+
+    *a2 = nullptr;
+}
+
+template<>
+void mVector<ai::param_block::param_data>::clear()
+{
+    if constexpr (0)
+    {
+        if ( this->field_10 )
+        {
+            for ( int i = 0; i < this->m_size; ++i )
+            {
+                this->destroy_element(&this->m_data[i]);
+            }
+        }
+
+        if ( !this->is_pointer_in_mash_image(this->m_data) )
+        {
+            mem_dealloc(this->m_data, 4 * this->field_C);
+        }
+
+        this->m_data = nullptr;
+        this->field_C = 0;
+
+        mContainer_base::clear();
+    }
+    else
+    {
+        THISCALL(0x0043E400, this);
+    }
+}
+
+template<>
+void mVector<ai::param_block::param_data>::destruct_mashed_class()
+{
+    this->finalize(mash::FROM_MASH);
+    //mContainer_base::destruct_mashed_class();
 }
 
 template<>

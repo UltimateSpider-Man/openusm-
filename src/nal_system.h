@@ -18,6 +18,15 @@ struct BaseComponent {
 
     //virtual
     int GetType() { return 0; }
+
+    //virtual
+    void * ApplyPublicPerSkelDataOffset(uint32_t a1, void *a2) const;
+
+    //virtual
+    void SkelPoseProcess(uint32_t a1, void *a2, void *a3) const;
+
+    //virtual
+    void PoseDataFree(uint32_t , void *) const;
 };
 
 extern Var<tlInstanceBank> nalTypeInstanceBank;

@@ -16,8 +16,8 @@ USVariantShaderNode::USVariantShaderNode(nglMeshNode *a2, nglMeshSection *a3)
 {
     if constexpr (1)
     {
-        this->field_10 = a3;
-        this->field_C = a2;
+        this->m_meshSection = a3;
+        this->m_meshNode = a2;
         this->m_vtbl = 0x00871D28;
 
         auto *param_set = &a2->field_8C;
@@ -52,7 +52,7 @@ nglTexture *USVariantShaderNode::ResolveIFL(nglTexture *a2)
             return a2;
         }
 
-        auto &param_set = this->field_C->field_8C;
+        auto &param_set = this->m_meshNode->field_8C;
 
         uint32_t idx = -1;
 
@@ -98,16 +98,16 @@ nglTexture *USVariantShaderNode::ResolveIFL(nglTexture *a2)
 double USVariantShaderNode::sub_415D10() {
     vector4d v3, v4;
 
-    CDECL_CALL(0x00414360, &v3, &this->field_10->SphereCenter, this->field_C);
+    CDECL_CALL(0x00414360, &v3, &this->m_meshSection->SphereCenter, this->m_meshNode);
     CDECL_CALL(0x00414360, &v4, &v3, &nglCurScene()->field_14C);
-    return v4[2] + this->field_10->SphereRadius;
+    return v4[2] + this->m_meshSection->SphereRadius;
 }
 
 double USVariantShaderNode::sub_41DEA0() const {
     vector4d v2;
     vector4d v3;
 
-    CDECL_CALL(0x00414360, &v2, &this->field_C->field_88->field_20, this->field_C);
+    CDECL_CALL(0x00414360, &v2, &this->m_meshNode->field_88->field_20, this->m_meshNode);
     CDECL_CALL(0x00414360, &v3, &v2, &nglCurScene()->field_14C);
     return v3[2];
 }

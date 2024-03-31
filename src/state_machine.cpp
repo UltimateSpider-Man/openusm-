@@ -166,176 +166,194 @@ float state_machine::get_param(
     TRACE("als::state_machine::get_param");
 
     if constexpr (0) {
-        auto func = [](const param_cache &self, int a2) -> int
+    auto func = [](const param_cache &self, int a2) -> int
+    {
+        int i;
+        auto num_params_in_cache = self.get_num_params_in_cache();
+        for ( i = 0; i < num_params_in_cache; ++i )
         {
-            int i;
-            auto num_params_in_cache = self.get_num_params_in_cache();
-            for ( i = 0; i < num_params_in_cache; ++i )
-            {
-                if ( self.field_0[i].field_0 == a2 ) {
-                    return i;
-                }
+            if ( self.field_0[i].field_0 == a2 ) {
+                return i;
             }
-
-            return -1;
-        };
-
-        auto v5 = func(this->field_40, a3);
-        if ( v5 != -1 ) {
-            return this->field_40.get_from_cache(v5);
         }
 
-            if ( a3 < 91 )
-            {
-                auto *external_param = this->find_external_param((external_parameter_types)a3);
-                if ( external_param != nullptr ) {
-                    return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, external_param->field_0.field_4);
-                } else {
-                    return 0.0;
-                }
-            }
-            else
-            {
-                auto internal_param = this->get_internal_param(a2, static_cast<internal_parameter_types>(a3));
-                return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, internal_param);
-            }
+        return -1;
+    };
 
-        } else {
-            float (__fastcall *func)(const void *, void *, animation_logic_system *, uint32_t) = CAST(func, 0x0049FB00);
-            return func(this, nullptr, a2, a3);
-        }
+    auto v5 = func(this->field_40, a3);
+    if ( v5 != -1 ) {
+        return this->field_40.get_from_cache(v5);
     }
 
-    vector3d state_machine::get_vector_param(
-            animation_logic_system *a2,
-            uint32_t a3) const
-    {
-        if ( a3 >= 91 )
+        if ( a3 < 91 )
         {
-            vector3d result;
-            switch ( a3 )
-            {
-            case 108u:
-            case 109u:
-            case 110u: {
-                auto *v9 = a2->field_6C;
-                result = v9->get_abs_po().get_y_facing();
-                break;
+            auto *external_param = this->find_external_param((external_parameter_types)a3);
+            if ( external_param != nullptr ) {
+                return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, external_param->field_0.field_4);
+            } else {
+                return 0.0;
             }
-            case 111u:
-            case 112u:
-            case 113u: {
-                auto *v11 = a2->field_6C;
-                result = v11->get_abs_po().get_x_facing();
-                break;
-            }
-            case 115u:
-            case 116u:
-            case 117u: {
-                auto *v10 = a2->field_6C;
-                result = v10->get_abs_po().get_z_facing();
-                break;
-            }
-            default:
-                assert("Internal Vector parameter has not been added to get_vector_param");
-                result = vector3d {0.0, 0.0, 0.0};
-                break;
-            }
-
-            return result;
+        }
+        else
+        {
+            auto internal_param = this->get_internal_param(a2, static_cast<internal_parameter_types>(a3));
+            return bit_cast<param_cache *>(&this->field_40)->cache_param(a3, internal_param);
         }
 
-        auto a3a = this->get_param(a2, a3 + 2);
-        auto a2a = this->get_param(a2, a3 + 1);
-        auto a1a = this->get_param(a2, a3);
-        vector3d result {a1a, a2a, a3a};
+    } else {
+        float (__fastcall *func)(const void *, void *, animation_logic_system *, uint32_t) = CAST(func, 0x0049FB00);
+        return func(this, nullptr, a2, a3);
+    }
+}
+
+vector3d state_machine::get_vector_param(
+        animation_logic_system *a2,
+        uint32_t a3) const
+{
+    if ( a3 >= 91 )
+    {
+        vector3d result;
+        switch ( a3 )
+        {
+        case 108u:
+        case 109u:
+        case 110u: {
+            auto *v9 = a2->field_6C;
+            result = v9->get_abs_po().get_y_facing();
+            break;
+        }
+        case 111u:
+        case 112u:
+        case 113u: {
+            auto *v11 = a2->field_6C;
+            result = v11->get_abs_po().get_x_facing();
+            break;
+        }
+        case 115u:
+        case 116u:
+        case 117u: {
+            auto *v10 = a2->field_6C;
+            result = v10->get_abs_po().get_z_facing();
+            break;
+        }
+        default:
+            assert("Internal Vector parameter has not been added to get_vector_param");
+            result = vector3d {0.0, 0.0, 0.0};
+            break;
+        }
+
         return result;
     }
 
-    bool state_machine::did_do_transition() const
-    {
-        return this->field_14.m_trans_succeed;
-    }
+    auto a3a = this->get_param(a2, a3 + 2);
+    auto a2a = this->get_param(a2, a3 + 1);
+    auto a1a = this->get_param(a2, a3);
+    vector3d result {a1a, a2a, a3a};
+    return result;
+}
 
-    void state_machine::request_category_transition(string_hash a2)
-    {
-        if constexpr (0) {
-            if ( !this->field_8.field_2 )
-            {
-                this->field_8.field_1 = true;
-                this->field_8.m_cat_id = a2;
-            }
-        } else {
-            void (__fastcall *func)(void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x10));
-            func(this, nullptr, a2);
+bool state_machine::did_do_transition() const
+{
+    return this->field_14.m_trans_succeed;
+}
+
+void state_machine::request_category_transition(string_hash a2)
+{
+    if constexpr (0) {
+        if ( !this->field_8.field_2 )
+        {
+            this->field_8.field_1 = true;
+            this->field_8.m_cat_id = a2;
         }
+    } else {
+        void (__fastcall *func)(void *, void *, string_hash) = CAST(func, get_vfunc(m_vtbl, 0x10));
+        func(this, nullptr, a2);
     }
+}
 
-    bool state_machine::is_interruptable() const {
-        bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
+bool state_machine::is_interruptable() const {
+    bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x14));
 
+    return func(this);
+}
+
+bool state_machine::did_transition_succeed() const
+{
+    TRACE("als::state_machine::did_transition_succeed");
+
+    return this->field_14.m_trans_succeed;
+}
+
+bool state_machine::is_request_satisfied() const
+{
+    TRACE("als::state_machine::is_request_satisfied");
+
+    if constexpr (1) {
+        return !this->field_14.m_request_not_satisfied;
+    } else {
+        bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
         return func(this);
     }
+}
 
-    bool state_machine::did_transition_succeed() const
-    {
-        TRACE("als::state_machine::did_transition_succeed");
-
-        return this->field_14.m_trans_succeed;
-    }
-
-    bool state_machine::is_request_satisfied() const
-    {
-        TRACE("als::state_machine::is_request_satisfied");
-
-        if constexpr (1) {
-            return !this->field_14.m_request_not_satisfied;
-        } else {
-            bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
-            return func(this);
-        }
-    }
-
-    bool state_machine::is_active() const
-    {
-        if constexpr (0) {
-            return this->field_14.m_active;
-        } else {
-            bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x20));
-            return func(this);
-        }
-    }
-
-    void state_machine::force_als_state(string_hash a2, int )
-    {
-        TRACE("als::state_machine::force_als_state");
-
-        this->field_8.field_1 = true;
-        this->field_8.field_2 = true;
-        this->field_8.m_cat_id = a2;
-    }
-
-    bool state_machine::does_category_exist(string_hash a2) const
-    {
-        TRACE("als::state_machine::does_category_exist");
-
-        assert(this->shared_portion != nullptr);
-
-        auto &cat_list = this->shared_portion->category_list;
-        auto begin = cat_list.m_data;
-        auto end = begin + cat_list.size();
-        auto it = std::find_if(begin, end, [a2](auto &cat)
-        {
-            return cat->field_4 == a2;
-        });
-
-        return it != end;
-    }
-
-    float state_machine::get_pb_float(string_hash a1) const
+bool state_machine::is_active() const
 {
-    auto *the_param_block = this->find_param_block_with_param(a1, static_cast<ai::param_types>(0));
-    return the_param_block->get_pb_float(a1);
+    if constexpr (0) {
+        return this->field_14.m_active;
+    } else {
+        bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x20));
+        return func(this);
+    }
+}
+
+void state_machine::force_als_state(string_hash a2, int )
+{
+    TRACE("als::state_machine::force_als_state");
+
+    this->field_8.field_1 = true;
+    this->field_8.field_2 = true;
+    this->field_8.m_cat_id = a2;
+}
+
+bool state_machine::does_category_exist(string_hash a2) const
+{
+    TRACE("als::state_machine::does_category_exist");
+
+    assert(this->shared_portion != nullptr);
+
+    auto &cat_list = this->shared_portion->category_list;
+    auto begin = cat_list.m_data;
+    auto end = begin + cat_list.size();
+    auto it = std::find_if(begin, end, [a2](auto &cat)
+    {
+        return cat->field_4 == a2;
+    });
+
+    return it != end;
+}
+
+float state_machine::get_pb_float(string_hash a1) const
+{
+    auto *the_pblock = this->find_param_block_with_param(a1, static_cast<ai::param_types>(0));
+    assert(the_pblock != nullptr && "Asking for a parameter that doesn't exist.");
+
+    return the_pblock->get_pb_float(a1);
+}
+
+vector3d * state_machine::get_pb_vector3d(string_hash a2) const
+{
+    auto *the_pblock = this->find_param_block_with_param(a2, static_cast<ai::param_types>(4));
+    assert(the_pblock != nullptr && "Asking for a parameter that doesn't exist.");
+
+    return the_pblock->get_pb_vector3d(a2);
+}
+
+variance_variable<float> * state_machine::get_pb_float_variance(string_hash a2) const
+{
+    auto *the_pblock = this->find_param_block_with_param(a2, static_cast<ai::param_types>(5));
+    assert(the_pblock != nullptr && "Asking for a parameter that doesn't exist.");
+
+    return the_pblock->get_pb_float_variance(a2);
 }
 
 bool state_machine::does_parameter_exist(string_hash a1) const

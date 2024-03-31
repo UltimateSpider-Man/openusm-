@@ -22,8 +22,9 @@ struct vector3d
     float y;
     float z;
 
-    vector3d() : x(0), y(0), z(0) {
-    }
+    vector3d() : x(0), y(0), z(0) {}
+
+    explicit vector3d(float f) : x(f), y(f), z(f) {}
 
     constexpr vector3d(float a1, float a2, float a3) : x(a1), y(a2), z(a3) {}
 

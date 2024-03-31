@@ -2,6 +2,7 @@
 
 #include "float.hpp"
 #include "matrix4x4.h"
+#include "ngl_math.h"
 #include "variable.h"
 #include "vector3d.h"
 
@@ -42,8 +43,7 @@ struct nglScene {
     float field_244;
     float field_248;
     float field_24C[16];
-    vector3d field_28C;
-    int field_298;
+    math::VecClass<3, 1> field_28C;
     int field_29C;
     int field_2A0;
     int field_2A4;

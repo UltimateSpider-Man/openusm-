@@ -193,6 +193,11 @@ int triangular_number(int a1) {
     return (a1 + a1 * a1) / 2;
 }
 
+bool approx_equals(const vector4d &a1, const vector4d &a2, Float epsilon) {
+    auto v3 = a1 - a2;
+    return epsilon * epsilon >= v3.length2();
+}
+
 bool approx_equals(const vector3d &a1, const vector3d &a2, Float epsilon) {
     auto v3 = a1 - a2;
     return epsilon * epsilon >= v3.length2();

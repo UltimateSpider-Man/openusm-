@@ -4,15 +4,15 @@
 #include <cstdint>
 
 #include "mcontainer.h"
+#include "mcontainer_base.h"
+#include "mash.h"
 #include "mash_info_struct.h"
 
 struct from_mash_in_place_constructor;
 struct mash_info_struct;
 
 template<typename T>
-struct mVector {
-    int field_0;
-    int m_size;
+struct mVector : mContainer_base {
     T **m_data;
     int field_C;
     bool field_10;
@@ -131,6 +131,16 @@ struct mVector {
 
         return iterator {nullptr};
     }
+
+    void initialize(mash::allocation_scope );
+
+    void finalize(mash::allocation_scope ) {
+        this->clear();
+    }
+
+    void destroy_element(T **a2);
+
+    void clear();
 
     void destruct_mashed_class();
 

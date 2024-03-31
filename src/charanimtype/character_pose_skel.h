@@ -1,6 +1,11 @@
 #pragma once
 
+#include "charcomponentbase.h"
+
+#include <float.hpp>
 #include <nal_pose_comp.h>
+
+struct nalBasePose;
 
 namespace nalChar {
 
@@ -10,6 +15,20 @@ struct nalCharPose : nalComp::nalCompPose {
 
     nalCharPose(const nalCharSkeleton *a2);
 
+    nalCharPose(const nalChar::nalCharPose &a2, bool a3);
+
+    ~nalCharPose();
+
+    void * operator new(size_t size);
+
+    void operator delete(void *ptr);
+
+    void Blend(
+        Float a2,
+        nalCharPose *a3,
+        nalCharPose *a4);
+
+    //virtual
     void InitializePoseDataFromSkel();
 };
 
@@ -30,14 +49,35 @@ struct nalCharSkeleton : nalComp::nalCompSkeleton {
         CheckVersion_t CheckVersion;
     };
 
-    nalCharPose *GetDefaultPose();
+    int GetCompIxByName(CharComponentBase::Names a2) const;
+
+    char * GetNamedPerSkelData(CharComponentBase::Names a2) const;
+
+    nalCharPose *GetDefaultPose() const;
+
+    nalCharPose * CreatePose() const;
 
     //virtual
     void Process();
 
+    //virtual
+    void Release();
+
     bool CheckVersion() {
         return this->Version == 0x10003;
     }
+
+    //virtual
+    const nalComp::nalCompSkeleton ** VirtualGetDefaultPose() const;
+
+    //virtual
+    const nalComp::nalCompSkeleton ** VirtualCreatePose() const;
+
+    void VirtualBlend(
+        nalBasePose *a2,
+        Float arg0a,
+        nalBasePose *a4,
+        nalBasePose *a5);
 
     static int vtbl_ptr;
 };

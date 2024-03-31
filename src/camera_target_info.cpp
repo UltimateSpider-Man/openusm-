@@ -43,7 +43,7 @@ camera_target_info::camera_target_info(entity *target,
     assert(target != nullptr);
     assert(target->is_a_conglomerate());
 
-    if constexpr (1)
+    if constexpr (0)
     {
         this->field_54 = (actor *)target;
         auto v69 = this->field_54->get_abs_po();

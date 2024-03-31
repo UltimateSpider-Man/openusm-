@@ -122,11 +122,16 @@ struct debug_menu_entry {
     int field_18;
     unsigned short m_id;
     ValueType value_type;
-    float field_20[4];
+    struct {
+        float m_min_value;
+        float m_max_value;
+        float m_step_size;
+        float m_step_scale;
+    } field_20;
     debug_menu_entry *prev;
     debug_menu_entry *next;
     void *m_data;
-    mString field_3C;
+    mString m_name;
     bool m_value_initialized;
 
     debug_menu_entry(const mString &a1);
@@ -212,7 +217,7 @@ struct debug_menu_entry {
 
     int get_ival();
 
-    mString &get_script_handler();
+    const mString & get_name() const;
 
     void on_select(float a2);
 

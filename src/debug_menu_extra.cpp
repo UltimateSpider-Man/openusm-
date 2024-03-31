@@ -25,7 +25,7 @@
 
 mString ngl_render_callback(debug_menu_entry *a2)
 {
-    auto &v2 = a2->get_script_handler();
+    auto &v2 = a2->get_name();
     auto *v3 = v2.c_str();
     auto v4 = nglGetDebugFlag(v3);
     a2->set_ival(v4, true);
@@ -36,7 +36,7 @@ mString ngl_render_callback(debug_menu_entry *a2)
 void ngl_handler(debug_menu_entry *a1)
 {
     auto v3 = a1->get_ival();
-    auto &v1 = a1->get_script_handler();
+    auto &v1 = a1->get_name();
     auto *v2 = v1.c_str();
     nglSetDebugFlag(v2, v3);
 }
@@ -394,7 +394,7 @@ void warp_handler(debug_menu_entry *arg0)
     debug_menu::hide();
 }
 
-void warp_poi_handler(debug_menu_entry *menu_entry)
+void warp_poi_handler([[maybe_unused]] debug_menu_entry *menu_entry)
 {
     auto *v2 = g_femanager().IGO->field_54;
     if ( v2 != nullptr )
@@ -418,7 +418,7 @@ void sub_6A9FED(debug_menu_entry *entry)
         auto *context = v6->field_BC;
         assert(context != nullptr);
 
-        string_hash v4 {entry->get_script_handler().c_str()};
+        string_hash v4 {entry->get_name().c_str()};
         resource_manager::push_resource_context(context);
 
         auto v3 = v6->play_anim(v4);
@@ -433,7 +433,7 @@ void sub_6918AD(debug_menu_entry *entry)
     auto *e = (entity *) entry->m_data;
     if (e->is_an_actor())
     {
-        auto *a1 = create_menu(entry->get_script_handler(), (debug_menu::sort_mode_t)1);
+        auto *a1 = create_menu(entry->get_name(), (debug_menu::sort_mode_t)1);
         entry->set_submenu(a1);
         auto *v18 = (actor *) e;
 
@@ -455,7 +455,7 @@ void sub_6918AD(debug_menu_entry *entry)
 
 void populate_entity_animation_menu(debug_menu_entry *entry)
 {
-    auto *v26 = create_menu(entry->get_script_handler(), (debug_menu::sort_mode_t)1);
+    auto *v26 = create_menu(entry->get_name(), (debug_menu::sort_mode_t)1);
     entry->set_submenu(v26);
     entity::find_entities(1);
     auto &found_entities = (*entity::found_entities());
@@ -482,7 +482,7 @@ void populate_entity_animation_menu(debug_menu_entry *entry)
 
 void populate_warp_menu(debug_menu_entry *entry)
 {
-    auto &v1 = entry->get_script_handler();
+    auto &v1 = entry->get_name();
     auto *v5 = create_menu(v1, debug_menu::sort_mode_t::ascending);
 
     auto *v20 = v5;
@@ -601,7 +601,7 @@ void create_devopt_menu(debug_menu *parent)
 
 void populate_gamefile_menu([[maybe_unused]] debug_menu_entry *entry)
 {
-    auto &v1 = entry->get_script_handler();
+    auto &v1 = entry->get_name();
     auto *v2 = create_menu(v1, (debug_menu::sort_mode_t)1);
 
     auto *v494 = v2;
@@ -610,15 +610,12 @@ void populate_gamefile_menu([[maybe_unused]] debug_menu_entry *entry)
     {
         auto *v493 = g_game_ptr()->get_game_settings();
 
-        auto *v3 = create_menu_entry(mString {"HERO_POINTS"});
-
-        auto *v492 = v3;
+        auto *v492 = create_menu_entry(mString {"HERO_POINTS"});
         v492->set_p_ival(&v493->field_340.m_hero_points);
         v492->set_max_value(1000.0);
         v494->add_entry(v492);
 
-        auto *v4 = create_menu_entry(mString {"UPG_MINIMAP_PTS"});
-        auto *v491 = v4;
+        auto *v491 = create_menu_entry(mString {"UPG_MINIMAP_PTS"});
         v491->set_p_ival(&v493->field_340.field_4);
         v491->set_max_value(1000.0);
         v494->add_entry(v491);
@@ -674,7 +671,6 @@ void populate_gamefile_menu([[maybe_unused]] debug_menu_entry *entry)
         v2->add_entry(v14);
 
         auto *v15 = create_menu_entry(mString {"OPT_SCORE_DISPLAY"});
-        auto *v480 = v15;
         v15->set_pt_bval(&v493->field_340.m_opt_score_display);
         v15->set_max_value(1000.0);
         v2->add_entry(v15);

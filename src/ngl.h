@@ -501,6 +501,8 @@ struct nglMeshNode {
     matrix4x4 sub_41D840();
 
     matrix4x4 sub_4199D0();
+
+    matrix4x4 sub_419930();
 };
 
 struct nglDebugStruct {
@@ -911,13 +913,12 @@ extern void nglSetOrthoMatrix(Float nearz, Float farz);
 //0x0076F050
 extern nglMesh *nglGetFirstMeshInFile(const tlFixedString &a1);
 
-extern math::VecClass<3, 1> sub_414360(const math::VecClass<3, 1> &a2,
-                                       const math::MatClass<4, 3> &a3);
-
 //0x0076ABA0
 extern void nglCalculateMatrices(bool a1);
 
 extern const char *GETFOURCC(uint32_t format);
+
+extern math::VecClass<3, 1> sub_414360(const math::VecClass<3, 1> &a2, const math::MatClass<4, 3> &a3);
 
 extern Var<bool> nglLoadingIFL;
 
@@ -991,7 +992,23 @@ extern double sub_77EA00(Float a1);
 
 extern bool sub_581C30();
 
+extern matrix4x3 sub_771210(void *a2);
+
 extern matrix4x4 sub_4150E0(const matrix4x4 &a2);
+
+extern void sub_4013C0(
+        vector4d &a1,
+        vector4d &a2,
+        vector4d &a3,
+        vector4d &a4,
+        const vector4d &x,
+        const vector4d &y,
+        const vector4d &z,
+        const vector4d &w);
+
+extern matrix4x3 transposed(const matrix4x3 &a2);
+
+extern vector4d xform_inv(const vector4d &a2, const matrix4x3 &a3);
 
 extern bool nglIsSphereVisible(math::VecClass<3, 1> a1, Float radius);
 

@@ -361,7 +361,6 @@ void debug_menu::render(int x, int y)
     }
 
     int v12 = 0;
-    int v11 = 0;
     int v10 = 0;
     for ( auto *entry = this->first; entry != nullptr; entry = entry->next)
     {
@@ -454,8 +453,9 @@ void entry_frame_advance_callback_default(debug_menu_entry *) {
     ;
 }
 
-debug_menu_entry::debug_menu_entry(const mString &a1) : field_20{0, 1.0, 0.1, 10.0} {
-    this->field_3C = a1;
+debug_menu_entry::debug_menu_entry(const mString &a1) : field_20{0, 1.0, 0.1, 10.0}
+{
+    this->m_name = a1;
     this->value_type = ValueType::UNDEFINED;
     this->m_value.ival = 0;
     this->m_game_flags_handler = nullptr;
@@ -473,7 +473,7 @@ debug_menu_entry::debug_menu_entry(debug_menu *submenu) :
 {
     assert(submenu != nullptr);
     auto &v2 = submenu->sub_B7E660();
-    this->field_3C = v2;
+    this->m_name = v2;
     this->value_type = ValueType::POINTER_MENU;
     this->m_value.p_menu = submenu;
     this->m_game_flags_handler = nullptr; 
@@ -508,12 +508,12 @@ int debug_menu_entry::render(int a1, int a2, bool a3)
     if ( v14.length() )
     {
         auto *v7 = v14.c_str();
-        auto *v4 = this->field_3C.c_str();
+        auto *v4 = this->m_name.c_str();
         snprintf(a2a, 255u, "%s: %s", v4, v7);
     }
     else
     {
-        auto *v5 = this->field_3C.c_str();
+        auto *v5 = this->m_name.c_str();
         snprintf(a2a, 255u, "%s", v5);
     }
 
@@ -552,7 +552,7 @@ struct mission_t {
 
 std::vector<mission_t> menu_missions;
 
-void mission_unload_handler(debug_menu_entry *a1)
+void mission_unload_handler(debug_menu_entry *)
 {
     auto *v1 = mission_manager::s_inst();
     v1->prepare_unload_script();
@@ -607,7 +607,7 @@ void populate_missions_menu(debug_menu_entry *entry)
         resource_manager::reload_amalgapak();
     }
 
-    auto *head_menu = create_menu(entry->get_script_handler(), debug_menu::sort_mode_t::ascending);
+    auto *head_menu = create_menu(entry->get_name(), debug_menu::sort_mode_t::ascending);
     entry->set_submenu(head_menu);
 
     auto *mission_unload_entry = create_menu_entry(mString{"UNLOAD CURRENT MISSION"});
@@ -675,22 +675,17 @@ void populate_missions_menu(debug_menu_entry *entry)
                 {
                     auto *v17 = mission.field_C;
                     auto *v14 = mission.field_0.c_str();
-                    auto a2a = mString{0, "%s (%s)", v14, v17};
-                    v47 = a2a;
+                    v47 = mString {0, "%s (%s)", v14, v17};
                 }
                 else
                 {
                     auto v18 = mission.field_14;
                     auto *v15 = mission.field_0.c_str();
-                    auto a2b = mString{0, "%s (%d)", v15, v18};
-                    v47 = a2b;
+                    v47 = mString {0, "%s (%d)", v15, v18};
                 }
 
-                auto *v27 = create_menu_entry(v47);
-
-                auto *v43 = v27;
-                auto *v46 = v27;
-                v27->set_id(v50);
+                auto *v46 = create_menu_entry(v47);
+                v46->set_id(v50);
                 v46->set_game_flags_handler(mission_select_handler);
                 head_menu->add_entry(v46);
             }
@@ -779,7 +774,7 @@ void debug_menu_entry::set_submenu(debug_menu *submenu)
 {
     if ( submenu != nullptr )
     {
-        this->field_3C = submenu->field_C;
+        this->m_name = submenu->field_C;
     }
 
     if ( this->value_type == ValueType::POINTER_MENU && this->m_value.p_menu != nullptr )
@@ -843,11 +838,13 @@ int debug_menu_entry::set_ival(int a2, bool a3)
 {
     if ( !this->is_value_initialized() )
     {
-        if ( (float)a2 > this->field_20[1] )
-            a2 = (int)this->field_20[1];
+        if ( a2 > this->field_20.m_max_value ) {
+            a2 = this->field_20.m_max_value;
+        }
 
-        if ( this->field_20[0] > (float)a2 )
-            a2 = (int)this->field_20[0];
+        if ( this->field_20.m_min_value > a2 ) {
+            a2 = this->field_20.m_min_value;
+        }
 
         auto v4 = this->value_type;
         if ( v4 == ValueType::INT )
@@ -886,11 +883,11 @@ void debug_menu_entry::set_p_ival(int *a2)
 
 void debug_menu_entry::set_fl_values(const float *a2)
 {
-    auto *v2 = this->field_20;
-    v2[0] = a2[0];
-    v2[1] = a2[1];
-    v2[2] = a2[2];
-    v2[3] = a2[3];
+    auto &v2 = this->field_20;
+    v2.m_min_value = a2[0];
+    v2.m_max_value = a2[1];
+    v2.m_step_size = a2[2];
+    v2.m_step_scale = a2[3];
 }
 
 void debug_menu_entry::set_pt_bval(bool *a2)
@@ -907,12 +904,12 @@ void debug_menu_entry::set_pt_fval(float *a2)
 
 void debug_menu_entry::set_min_value(float a2)
 {
-    this->field_20[0] = a2;
+    this->field_20.m_min_value = a2;
 }
 
 void debug_menu_entry::set_max_value(float a2)
 {
-    this->field_20[1] = a2;
+    this->field_20.m_max_value = a2;
 }
 
 
@@ -955,11 +952,13 @@ void debug_menu_entry::set_val(Float a1, bool a2)
     {
         if ( this->value_type != ValueType::BOOL && this->value_type != ValueType::POINTER_BOOL )
         {
-            if ( a1 > this->field_20[1] )
-                a1 = this->field_20[1];
+            if ( a1 > this->field_20.m_max_value ) {
+                a1 = this->field_20.m_max_value;
+            }
 
-            if ( this->field_20[0] > a1 )
-                a1 = this->field_20[0];
+            if ( this->field_20.m_min_value > a1 ) {
+                a1 = this->field_20.m_min_value;
+            }
         }
 
         switch ( this->value_type )
@@ -1000,11 +999,13 @@ void debug_menu_entry::set_fval(float a2, bool a3)
 {
     if ( !this->is_value_initialized() )
     {
-        if ( a2 > this->field_20[1] )
-            a2 = this->field_20[1];
+        if ( a2 > this->field_20.m_max_value ) {
+            a2 = this->field_20.m_max_value;
+        }
 
-        if ( this->field_20[0] > a2 )
-            a2 = this->field_20[0];
+        if ( this->field_20.m_min_value > a2 ) {
+            a2 = this->field_20.m_min_value;
+        }
 
         auto v3 = this->value_type;
         if ( v3 == ValueType::FLOAT )
@@ -1104,8 +1105,8 @@ int debug_menu_entry::get_ival() {
     return 0;
 }
 
-mString &debug_menu_entry::get_script_handler() {
-    return this->field_3C;
+const mString &debug_menu_entry::get_name() const {
+    return this->m_name;
 }
 
 void debug_menu_entry::on_select(float a2)
@@ -1159,7 +1160,10 @@ void debug_menu_entry::on_change(float a3, bool a4)
     case ValueType::FLOAT:
     case ValueType::POINTER_FLOAT:
     {
-        float v6 = (a4 ? (this->field_20[2] * this->field_20[3]) : this->field_20[2]);
+        float v6 = (a4
+                    ? (this->field_20.m_step_size * this->field_20.m_step_scale)
+                    : this->field_20.m_step_size
+                    );
 
         auto v5 = this->get_fval() + a3 * v6;
         this->set_fval(v5, true);
@@ -1175,7 +1179,10 @@ void debug_menu_entry::on_change(float a3, bool a4)
     case ValueType::INT:
     case ValueType::POINTER_INT:
     {
-        float v7 = (a4 ? (this->field_20[2] * this->field_20[3]) : this->field_20[2]);
+        float v7 = (a4
+                    ? (this->field_20.m_step_size * this->field_20.m_step_scale)
+                    : this->field_20.m_step_size
+                    );
 
         auto v8 = std::abs(v7);
         if ( v8 < 1.0 )
@@ -1220,10 +1227,10 @@ void debug_menu::add_entry(debug_menu_entry *e) {
         debug_menu_entry *v11 = nullptr;
         for (; v12 != nullptr && v12->value_type == ValueType::POINTER_MENU;
             v11 = v12, v12 = v12->next) {
-            if (this->m_sort_mode != sort_mode_t::undefined) {
-
-                auto v7 = e->get_script_handler();
-                auto v2 = v12->get_script_handler();
+            if (this->m_sort_mode != sort_mode_t::undefined)
+            {
+                auto v7 = e->get_name();
+                auto v2 = v12->get_name();
                 if ((this->m_sort_mode == sort_mode_t::ascending && v2 > v7) ||
                         (this->m_sort_mode == sort_mode_t::descending && v2 < v7) )
                 {
@@ -1245,15 +1252,16 @@ void debug_menu::add_entry(debug_menu_entry *e) {
                     mString v4;
 
                     if (this->m_sort_mode != sort_mode_t::ascending ||
-                        (v9 = e->get_script_handler(),
-                         v4 = v12->get_script_handler(),
-                         !(v4 > v9) )) {
+                        (v9 = e->get_name(),
+                         v4 = v12->get_name(),
+                         !(v4 > v9) ))
+                    {
                         if (this->m_sort_mode != sort_mode_t::descending) {
                             break;
                         }
 
-                        auto v10 = e->get_script_handler();
-                        auto v5 = v12->get_script_handler();
+                        auto v10 = e->get_name();
+                        auto v5 = v12->get_name();
                         if ( v5 < v10 ) {
                         }
                         else

@@ -2,6 +2,7 @@
 
 #include "color32.h"
 #include "common.h"
+#include "custom_math.h"
 #include "damage_morphs.h"
 #include "femanager.h"
 #include "filespec.h"
@@ -292,54 +293,35 @@ nglMesh *nglGetFirstMeshInFile(const tlFixedString &a1) {
 }
 
 math::VecClass<3, 1> sub_413E90(
-        const math::VecClass<3, 0> &arg4,
-        const float &arg8,
-        const math::VecClass<3, 0> &a2,
-        const math::VecClass<3, 0> &a3,
-        const math::VecClass<3, 0> &a6,
-        const float *a7,
-        const math::VecClass<3, 0> &a8)
+        const vector4d &x_axis,
+        const vector4d &arg8,
+        const vector4d &y_axis,
+        const vector4d &a3,
+        const vector4d &z_axis,
+        const vector4d &a7,
+        const vector4d &a8)
 {
-    math::VecClass<3, 0> v14;
-    v14[0] = a8[0];
-    v14[1] = a8[1];
-    v14[2] = a8[2];
-    v14[3] = a8[3];
-    v14.sub_413530(arg4, arg8);
-    v14.sub_411A50(a2, a3);
-    auto v11 = a6[0] * a7[2];
-    auto v12 = a6[1] * a7[2];
-    auto v15 = a6[2] * a7[2];
-    auto v16 = a6[3] * a7[2];
+    vector4d v14 = a8;
+    v14.sub_413530(x_axis, arg8);
+    v14.sub_411A50(y_axis, a3);
     
-    math::VecClass<3, 1> result;
-    result[0] = v14[0] + v11;
-    result[1] = v14[1] + v12;
-    result[2] = v14[2] + v15;
-    result[3] = v14[3] + v16;
+    math::VecClass<3, 1> result = v14 + z_axis * a7.z;
     return result;
 }
 
-math::VecClass<3, 1> sub_414360(const math::VecClass<3, 1> &a2, const math::MatClass<4, 3> &a3) {
+math::VecClass<3, 1> sub_414360(const math::VecClass<3, 1> &a2, const math::MatClass<4, 3> &a3)
+{
+    vector4d a5;
+    vector4d a4;
+    vector4d a3a;
+    vector4d a2a;
 
-    math::VecClass<3, 1> result;
-    if constexpr (1) {
-        math::VecClass<3, 0> a2a, a3a, a4, a5;
-        a3.sub_4134B0(a2a, a3a, a4, a5);
-        result = sub_413E90(
-                a2a,
-                a2.field_0[0],
-                a3a,
-                *(const math::VecClass<3, 0> *)&a2,
-                a4,
-                a2.field_0,
-                a5);
-    } else {
-        CDECL_CALL(0x00414360, &result, &a2, a3);
-    }
+    a3.decompose(a2a, a3a, a4, a5);
 
-    return result;
+    vector4d a1a = sub_413E90(a2a, a2, a3a, a2, a4, a2, a5);
+    return math::VecClass<3, 1>{a1a};
 }
+
 
 void * nglMeshNode::operator new(size_t size)
 {
@@ -348,16 +330,124 @@ void * nglMeshNode::operator new(size_t size)
 }
 
 
-matrix4x4 nglMeshNode::sub_41D840() {
+matrix4x4 nglMeshNode::sub_41D840()
+{
     matrix4x4 result;
-    THISCALL(0x0041D840, this, &result);
+
+    if constexpr (0)
+    {
+        matrix4x4 v2 {};
+        if ( (this->field_90->Flags & 1) != 0 )
+        {
+            v2 = nglCurScene()->field_14C;
+        }
+        else
+        {
+            struct {
+                matrix4x4 *field_0;
+                matrix4x4 *field_4;
+            } v4 {&this->field_0, &nglCurScene()->field_14C};
+            matrix4x4 v5;
+            v5.sub_41D8A0(&v4);
+            v2 = v5;
+        }
+
+        return v2;
+    }
+    else
+    {
+        THISCALL(0x0041D840, this, &result);
+    }
 
     return result;
 }
 
-matrix4x4 nglMeshNode::sub_4199D0() {
+vector4d sub_7A5990(const vector4d &a2)
+{
+    vector4d v3 {};
+    v3[0] = 1.0 / a2[0];
+    v3[1] = 1.0 / a2[1];
+    v3[2] = 1.0 / a2[2];
+    v3[3] = 1.0 / a2[3];
+    return v3;
+}
+
+void __fastcall sub_770FB0(void *self, vector4d &a2, vector4d &a3, vector4d &a4)
+{
+    THISCALL(0x00770FB0, self, &a2, &a3, &a4);
+}
+
+matrix4x3 sub_771210(void *a2)
+{
+    matrix4x3 result;
+    vector4d a2a, a3, a4;
+    sub_770FB0(a2, a2a, a3, a4);
+    result[0] = a2a;
+    result[1] = a3;
+    result[2] = a4;
+    return result;
+}
+
+matrix4x4 nglMeshNode::sub_419930()
+{
     matrix4x4 result;
-    THISCALL(0x004199D0, this, &result);
+
+    if constexpr (0)
+    {
+        auto *v3 = this->field_90;
+        if ( (v3->Flags & 2) != 0 )
+        {
+            auto v12 = sub_7A5990(v3->Scale);
+            auto v2 = this->field_0;
+
+            struct {
+                void *field_0;
+                void *field_4;
+            } a2 {&v12, &v2};
+
+            matrix4x4 v13 {};
+            matrix4x3 v14 = sub_771210(&a2);
+            std::memcpy(&v13, &v14, sizeof(v14));
+
+            v13[3] = v2[3];
+
+            result = v13;
+        }
+        else
+        {
+            result = this->field_0;
+        }
+
+        return result;
+    }
+    else
+    {
+        THISCALL(0x00419930, this, &result);
+    }
+
+    return result;
+}
+
+matrix4x4 nglMeshNode::sub_4199D0()
+{
+    matrix4x4 result;
+
+    if constexpr (0)
+    {
+        if ( this->field_80 == nullptr )
+        {
+            auto *mem = nglListAlloc(64, 64);
+            this->field_80 = new (mem) matrix4x4 {};
+            auto v4 = this->sub_419930();
+            *this->field_80 = sub_4150E0(v4);
+        }
+
+        result = *this->field_80;
+    }
+    else
+    {
+        THISCALL(0x004199D0, this, &result);
+    }
 
     return result;
 }
@@ -1986,49 +2076,88 @@ void nglProcessMorph(nglMeshFile *MeshFile, nglDirectoryEntry *a2, int base) {
     }
 }
 
-matrix4x3 sub_4135B0(const matrix4x3 &a2) {
-    matrix4x3 result;
-    CDECL_CALL(0x004135B0, &result, &a2);
+matrix4x3 transposed(const matrix4x3 &a2)
+{
+    TRACE("matrix4x3::transpose");
+    matrix4x3 result{};
+
+    if constexpr (0)
+    {
+        result = a2.transposed();
+    }
+    else
+    {
+        CDECL_CALL(0x004135B0, &result, &a2);
+    }
+
+    sp_log("%s", a2.to_string());
+    sp_log("%s", result.to_string());
+    sp_log("%s", a2.transposed().to_string());
+
+    //assert(approx_equals(result[0][3], 0.0, LARGE_EPSILON));
+    //assert(result == a2.transposed());
 
     return result;
 }
 
-vector4d sub_4139A0(const vector4d *a2, const matrix4x3 &a3) {
+vector4d xform_inv(const vector4d &a2, const matrix4x3 &a3)
+{
     vector4d result;
-    CDECL_CALL(0x004139A0, &result, a2, &a3);
+
+    if constexpr (0)
+    {
+        vector4d x = a3[0];
+        vector4d y = a3[1];
+        vector4d z = a3[2];
+
+        result = sub_4126E0(x, a2, y, a2, z, a2);
+        return result;
+    }
+    else
+    {
+        CDECL_CALL(0x004139A0, &result, &a2, &a3);
+    }
+
+    assert(result == a2 * a3);
 
     return result;
 }
 
-matrix4x4 sub_4150E0(const matrix4x4 &a2) {
-    if constexpr (0) {
-        matrix4x3 a3;
-        memcpy(&a3, &a2, sizeof(a3));
+matrix4x4 sub_4150E0(const matrix4x4 &a2)
+{
+    TRACE("sub_4150E0");
 
-        auto v2 = sub_4135B0(a3);
+    sp_log("%s", a2.to_string());
 
-        matrix4x4 v7;
-        memcpy(&v7, &v2, sizeof(v2));
+    if constexpr (0)
+    {
+        struct transform3d {
+            matrix4x3 basis;
+            vector4d origin;
+        } v1 = *bit_cast<transform3d *>(&a2);
 
-        vector4d v5 = -a2[3];
+        matrix4x3 a3 = v1.basis;
 
-        a3 = v2;
-        auto v6 = v5;
-        v5 = sub_4139A0(&v6, a3);
-        v7[3] = v5;
+        v1.basis = transposed(a3);
+        v1.origin = xform_inv(-v1.origin, v1.basis);
 
-        return v7;
-
-    } else {
+        matrix4x4 result = *bit_cast<matrix4x4 *>(&v1);
+        return result;
+    }
+    else
+    {
         matrix4x4 result;
 
         CDECL_CALL(0x004150E0, &result, &a2);
+
+        sp_log("%s", result.to_string());
 
         return result;
     }
 }
 
-vector4d sub_401270(const vector4d &a2, const vector4d &a3) {
+vector4d sub_401270(const vector4d &a2, const vector4d &a3)
+{
     if constexpr (1) {
         float v3;
         if (a2[3] >= a3[3]) {
@@ -2070,6 +2199,34 @@ vector4d sub_401270(const vector4d &a2, const vector4d &a3) {
 
         return result;
     }
+}
+
+void sub_4013C0(
+        vector4d &a1,
+        vector4d &a2,
+        vector4d &a3,
+        vector4d &a4,
+        const vector4d &x,
+        const vector4d &y,
+        const vector4d &z,
+        const vector4d &w)
+{
+    a1 = x;
+
+    a2[0] = x[1];
+    a2[1] = y[1];
+    a2[2] = z[1];
+    a2[3] = w[1];
+
+    a3[0] = x[2];
+    a3[1] = y[2];
+    a3[2] = z[2];
+    a3[3] = w[2];
+
+    a4[0] = x[3];
+    a4[1] = y[3];
+    a4[2] = z[3];
+    a4[3] = w[3];
 }
 
 vector4d sub_4012F0(const vector4d &a2, const vector4d &a3) {
@@ -2117,14 +2274,10 @@ vector4d sub_4012F0(const vector4d &a2, const vector4d &a3) {
     }
 }
 
-vector4d sub_411750(const vector4d &a2, const vector4d &a3) {
+vector4d sub_411750(const vector4d &a2, const vector4d &a3)
+{
     if constexpr (1) {
-        vector4d v4;
-        v4[0] = a3[0] + a2[0];
-        v4[1] = a3[1] + a2[1];
-        v4[2] = a2[2] + a3[2];
-        v4[3] = a3[3] + a2[3];
-
+        vector4d v4 = a3 + a2;
         return v4;
 
     } else {
@@ -2307,6 +2460,16 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                 }
 
                 Material->m_shader->RebaseMaterial(Material, Base);
+
+                if (0 ) //v17->m_hash == 0xFC097C8A)
+                {
+                    struct {
+                        char field_0[0x60];
+                        tlFixedString *field_60;
+                    } *mat = CAST(mat, Material);
+                    sp_log("%s", mat->field_60->to_string());
+                }
+
 
                 Material->m_shader->BindMaterial(Material);
 
@@ -2547,15 +2710,14 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             {
                 if (Mesh->NBones != 0)
                 {
-                    for (int i = 0; i < Mesh->NBones; ++i)
-                    {
+                    for (int i = 0; i < Mesh->NBones; ++i) {
                         Mesh->Bones[i] = sub_4150E0(Mesh->Bones[i]);
                     }
 
-                    auto v89 = Mesh->field_20.field_0[0];
-                    auto v90 = Mesh->field_20.field_0[1];
-                    auto v91 = Mesh->field_20.field_0[2];
-                    auto v93 = Mesh->field_20.field_0[3];
+                    auto v89 = Mesh->field_20[0];
+                    auto v90 = Mesh->field_20[1];
+                    auto v91 = Mesh->field_20[2];
+                    auto v93 = Mesh->field_20[3];
                     auto v73 = Mesh->SphereRadius;
 
                     vector4d v96;
@@ -2613,10 +2775,10 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
             {
                 if ((v67->Flags & NGLMESH_PROCESSED) == 0)
                 {
-                    a3a[0] = v96[0] - v67->field_20.field_0[0];
-                    a3a[1] = v96[1] - v67->field_20.field_0[1];
-                    a3a[2] = v96[2] - v67->field_20.field_0[2];
-                    a3a[3] = v96[3] - v67->field_20.field_0[3];
+                    a3a[0] = v96[0] - v67->field_20[0];
+                    a3a[1] = v96[1] - v67->field_20[1];
+                    a3a[2] = v96[2] - v67->field_20[2];
+                    a3a[3] = v96[3] - v67->field_20[3];
                     auto v76 = vector3d {a3a[0], a3a[1], a3a[2]}.length() + v67->SphereRadius;
                     if (v69 <= v76) {
                         v69 = v76;
@@ -2629,10 +2791,10 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                 if ((Mesh->Flags & NGLMESH_PROCESSED) == 0)
                 {
                     Mesh->SphereRadius = v69;
-                    Mesh->field_20.field_0[0] = v96[0];
-                    Mesh->field_20.field_0[1] = v96[1];
-                    Mesh->field_20.field_0[2] = v96[2];
-                    Mesh->field_20.field_0[3] = v96[3];
+                    Mesh->field_20[0] = v96[0];
+                    Mesh->field_20[1] = v96[1];
+                    Mesh->field_20[2] = v96[2];
+                    Mesh->field_20[3] = v96[3];
                     Mesh->Flags |= NGLMESH_PROCESSED;
                 }
             }
@@ -3085,7 +3247,7 @@ int nglGetLOD(nglMesh *a1, const math::MatClass<4, 3> &a2)
 
     auto v5 = sub_414360(a1->field_20, a2);
     auto v6 = sub_414360(v5, nglCurScene()->field_14C);
-    auto v7 = v6.field_0[2];
+    auto v7 = v6[2];
 
     for ( auto i = a1->NLODs - 1; i >= 0; --i )
     {
@@ -3197,8 +3359,11 @@ void nglReleaseTexture(nglTexture *Tex) {
     CDECL_CALL(0x00773380, Tex);
 }
 
-nglTexture *nglLoadTexture(const tlFixedString &a1) {
+nglTexture *nglLoadTexture(const tlFixedString &a1)
+{
     TRACE("nglLoadTexture", tlHashString {a1.GetHash()}.c_str(), a1.to_string());
+
+    assert(a1.GetHash() != 0);
 
     if constexpr (1)
     {
@@ -3787,8 +3952,9 @@ nglTexture *nglLoadTextureInPlace(const tlFixedString &a1,
     return result;
 }
 
-vector4d sub_411C10(color32 a2) {
-    vector3d result;
+vector4d sub_411C10(color32 a2)
+{
+    vector4d result;
     result[0] = a2.field_0[2] * 0.0039215689f;
 
     result[1] = a2.field_0[1] * 0.0039215689f;
@@ -3803,7 +3969,7 @@ void nglDebugAddSphere(const math::MatClass<4, 3> &a1, math::VecClass<3, 1> a2, 
 {
     if constexpr (1)
     {
-        nglParamSet<nglShaderParamSet_Pool> a4{static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
+        nglParamSet<nglShaderParamSet_Pool> a4 {static_cast<nglParamSet<nglShaderParamSet_Pool>::nglParamSetType>(1)};
 
         auto *mem = nglListAlloc(sizeof(vector4d), 16);
         auto *tmp = new (mem) vector4d {sub_411C10(*bit_cast<color32 *>(&a3))};
@@ -4879,9 +5045,9 @@ void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *M
             {
                 nglHostPrintf(h_sceneDump(),
                               "  SCALE %f %f %f\n",
-                              MeshParams->Scale.field_0[0],
-                              MeshParams->Scale.field_0[1],
-                              MeshParams->Scale.field_0[2]);
+                              MeshParams->Scale[0],
+                              MeshParams->Scale[1],
+                              MeshParams->Scale[2]);
             }
 
             nglHostPrintf(h_sceneDump(), "  ROW1 %f %f %f %f\n", a2[0][0], a2[0][1], a2[0][2], 0.0f);
@@ -5345,6 +5511,10 @@ void nglRenderTextureState::setSamplerState(
 
 void ngl_patch()
 {
+    ngl_dx_shader_patch();
+
+    REDIRECT(0x0041517C, xform_inv);
+
     {
         HRESULT (*func)(nglMeshSection *) = &nglSetStreamSourceAndDrawPrimitive;
         SET_JUMP(0x00771AF0, func);

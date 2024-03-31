@@ -6,6 +6,8 @@
 #include "als_res_data.h"
 #include "base_ai_core.h"
 #include "base_ai_data.h"
+#include "camera_anim_controller.h"
+#include "character_anim_controller.h"
 #include "colgeom_alter_sys.h"
 #include "collision_capsule.h"
 #include "colmesh.h"
@@ -23,11 +25,13 @@
 #include "intraframe_trajectory.h"
 #include "lego_map.h"
 #include "memory.h"
+#include "nal_skeleton.h"
 #include "nal_system.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
 #include "ngl_support.h"
 #include "oldmath_po.h"
+#include "ped_anim_controller.h"
 #include "physical_interface.h"
 #include "resource_manager.h"
 #include "string_hash.h"
@@ -198,14 +202,61 @@ void actor::ifl_lock(int a2)
     func(this, nullptr, a2);
 }
 
-generic_anim_controller *actor::select_and_new_anim_controller(
+nal_anim_controller *actor::select_and_new_anim_controller(
         nalBaseSkeleton *the_skeleton,
         unsigned int a3)
 {
+    TRACE("actor::select_and_new_anim_controller");
+
     assert(the_skeleton != nullptr && "Skeleton passed to select_and_new_anim_controller should never be NULL.");
 
-    if constexpr (0) {
-    } else {
+    if constexpr (0)
+    {
+        als::als_meta_anim_table_shared *a5 = nullptr;
+        if ( this->is_a_conglomerate() )
+        {
+            auto *v5 = bit_cast<conglomerate *>(this)->get_my_als();
+            if ( v5 != nullptr ) {
+                a5 = v5->get_meta_anim_table();
+            }
+        }
+
+        nal_anim_controller *result = nullptr;
+
+        if ( the_skeleton->GetAnimTypeName() == tlFixedString {"Character"})
+        {
+            result = new character_anim_controller { 
+                                  this,
+                                  the_skeleton,
+                                  a3,
+                                  a5};
+            this->anim_ctrl = result;
+        }
+        else if ( the_skeleton->GetAnimTypeName() == tlFixedString {"Ped"} )
+        {
+            result = new ped_anim_controller {this, the_skeleton, a3, a5};
+            this->anim_ctrl = result;
+        }
+        else if ( the_skeleton->GetAnimTypeName() == tlFixedString {"Camera"} )
+        {
+            result = new camera_anim_controller {this, the_skeleton, a3, a5};
+            this->anim_ctrl = result;
+        }
+        else
+        {
+            result = new generic_anim_controller {
+                                this,
+                                the_skeleton,
+                                a3,
+                                a5};
+
+            this->anim_ctrl = result;
+        }
+
+        return result;
+    }
+    else
+    {
         return (generic_anim_controller *) THISCALL(0x004CC470, this, the_skeleton, a3);
     }
 }
@@ -426,11 +477,14 @@ bool actor::has_entity_collision() {
     return v1 && this->are_collisions_active() && (v1->field_C & 2) != 0;
 }
 
-void actor::kill_interact_anim() {
-    if constexpr (1) {
+void actor::kill_interact_anim()
+{
+    if constexpr (1)
+    {
         auto *v2 = this->anim_ctrl;
-        if (v2 != nullptr && (v2->field_10 & 1) != 0) {
-            void (__fastcall *finalize)(generic_anim_controller *, void *, bool) = CAST(finalize, get_vfunc(v2->m_vtbl, 0x0));
+        if (v2 != nullptr && (v2->field_10 & 1) != 0)
+        {
+            void (__fastcall *finalize)(nal_anim_controller *, void *, bool) = CAST(finalize, get_vfunc(v2->m_vtbl, 0x0));
             finalize(v2, nullptr, true);
             this->anim_ctrl = nullptr;
         }
@@ -440,7 +494,8 @@ void actor::kill_interact_anim() {
             conglomerate *self = CAST(self, this);
 
             auto *v3 = self->field_114;
-            if (v3 != nullptr) {
+            if (v3 != nullptr)
+            {
                 auto *v4 = v3->field_8;
                 if (v4 != nullptr) {
                     void (__fastcall *suspend_logic_system)(void *, void *, int) = CAST(suspend_logic_system, get_vfunc(v4->m_vtbl, 0x8));
@@ -1150,9 +1205,9 @@ vector3d actor::_get_visual_center()
 
                     auto *Mesh = this->get_mesh();
 
-                    this->field_AC[0] = Mesh->field_20.field_0[0];
-                    this->field_AC[1] = Mesh->field_20.field_0[1];
-                    this->field_AC[2] = Mesh->field_20.field_0[2];
+                    this->field_AC[0] = Mesh->field_20[0];
+                    this->field_AC[1] = Mesh->field_20[1];
+                    this->field_AC[2] = Mesh->field_20[2];
 
                     assert(get_cached_visual_bounding_sphere_center()->is_valid());
 
@@ -1303,6 +1358,11 @@ void setup_hero_capsule(actor *act) {
 
 void actor_patch()
 {
+    {
+        FUNC_ADDRESS(address, &actor::select_and_new_anim_controller);
+        REDIRECT(0x004CC64D, address);
+        REDIRECT(0x004CC689, address);
+    }
     {
         FUNC_ADDRESS(address, &actor::create_damage_ifc);
         SET_JUMP(0x004E2670, address);

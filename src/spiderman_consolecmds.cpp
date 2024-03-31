@@ -59,6 +59,8 @@ bool SetTimeOfDayCommand::process_cmd(const std::vector<std::string> &a2)
 
 #if 1
 
+#include "game.h"
+#include "message_board.h"
 #include "ngl_mesh.h"
 #include "ngl_scene.h"
 #include "nglrendernode.h"
@@ -87,17 +89,92 @@ bool SetBlendModeCommand::process_cmd(const std::vector<std::string> &a2)
 
         auto *hero = g_world_ptr()->get_hero_ptr(0);
         auto *mesh = hero->get_mesh();
-        sp_log("debug!!");
 
         for ( auto i = 0u; i < mesh->NSections; ++i )
         {
             auto *MeshSection = mesh->Sections[i].Section;
 
-            sp_log("debug!!");
             auto *Material = MeshSection->Material;
-            sp_log("debug!!");
             Material->m_blend_mode = static_cast<nglBlendModeType>(mode);
         }
+    }
+    else
+    {
+        auto *v3 = this->helpText();
+        g_console->addToLog(v3);
+    }
+
+    return true;
+}
+
+static SetMaterialFeaturesCommand g_SetMaterialFeaturesCommand {};
+
+SetMaterialFeaturesCommand::SetMaterialFeaturesCommand()
+{
+    this->setName("mat");
+}
+
+bool SetMaterialFeaturesCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    TRACE("SetMaterialFeaturesCommand::process_cmd");
+    if ( a2.size() == 1 )
+    {
+        auto &v2 = a2.at(0);
+        auto *v6 = v2.c_str();
+        int mode = v6[0] - '0';
+
+        if (mode < 0 || mode > 4) {
+            return true;
+        }
+
+        if (mode == 4)
+        {
+            auto *hero = g_world_ptr()->get_hero_ptr(0);
+            auto *mesh = hero->get_mesh();
+            for ( auto i = 0u; i < mesh->NSections; ++i )
+            {
+                auto *MeshSection = mesh->Sections[i].Section;
+
+                auto *Material = MeshSection->Material;
+
+                Material->field_44 = !Material->field_44;
+            }
+
+            auto *v5 = g_game_ptr()->mb;
+            constexpr float v9 = 2.0;
+            color32 v10 {255, 255, 255, 255};
+            mString v1 {"Changed lightParam"};
+            auto v8 = *bit_cast<message_board::string *>(&v1);
+            v5->post(v8, v9, v10);
+            return true;
+        }
+
+        std::tuple<int, int, const char *> arr[4] =
+        {
+            {0, 0, "Disabled Ink and Highlight features!"},
+            {0, 1, "Enabled Ink and disabled Highlight feature!"},
+            {1, 0, "Disabled Ink and enabled Highlight feature!"},
+            {1, 1, "Enabled Ink and Highlight features!"}
+        };
+
+        auto *hero = g_world_ptr()->get_hero_ptr(0);
+        auto *mesh = hero->get_mesh();
+
+        for ( auto i = 0u; i < mesh->NSections; ++i )
+        {
+            auto *MeshSection = mesh->Sections[i].Section;
+
+            auto *Material = MeshSection->Material;
+            Material->field_3C = std::get<0>(arr[mode]);
+            Material->field_40 = std::get<1>(arr[mode]);
+        }
+
+        auto *v5 = g_game_ptr()->mb;
+        constexpr float v9 = 2.0;
+        color32 v10 {255, 255, 255, 255};
+        mString v1 {std::get<2>(arr[mode])};
+        auto v8 = *bit_cast<message_board::string *>(&v1);
+        v5->post(v8, v9, v10);
     }
     else
     {

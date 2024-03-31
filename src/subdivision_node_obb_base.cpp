@@ -38,8 +38,9 @@ bool subdivision_node_obb_base::point_inside_or_on(const vector3d &a2) {
         a3[2] = v6 - v20[2];
         a3[3] = a3[3] - v20[3];
 
-        if (v3) {
-            auto v7 = vector4d::sub_4126E0(v24, a3, a4, a3, a6, a3);
+        if (v3)
+        {
+            auto v7 = sub_4126E0(v24, a3, a4, a3, a6, a3);
             auto v8 = v7[1];
             a3[0] = v7[0];
             auto v9 = v7[2];
@@ -257,14 +258,14 @@ bool subdivision_node_obb_base::line_segment_intersection(const vector3d &arg0,
         a5[3] = a3[3];
 
         if (v5) {
-            auto v12 = vector4d::sub_4126E0(a2, a3, a4, a3, a6, a3);
+            auto v12 = sub_4126E0(a2, a3, a4, a3, a6, a3);
 
             a3[0] = v12[0];
             a3[1] = v12[1];
             a3[2] = v12[2];
             a3[3] = v12[3];
 
-            auto v16 = vector4d::sub_4126E0(a2, a5, a4, a5, a6, a5);
+            auto v16 = sub_4126E0(a2, a5, a4, a5, a6, a5);
             auto v17 = v16[1];
             a5[0] = v16[0];
             auto v18 = v16[2];
@@ -318,8 +319,9 @@ bool subdivision_node_obb_base::sphere_intersection(const vector3d &center, Floa
         a3[1] = a3[1] - v6;
         a3[2] = v8 - a1[2];
         a3[3] = a3[3] - a1[3];
-        if (v5) {
-            auto v9 = vector4d::sub_4126E0(a2, a3, a4, a3, a6, a3);
+        if (v5)
+        {
+            auto v9 = sub_4126E0(a2, a3, a4, a3, a6, a3);
 
             a3[0] = v9[0];
             a3[1] = v9[1];

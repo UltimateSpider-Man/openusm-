@@ -33,6 +33,9 @@ struct animation_logic_system : animation_logic_system_interface {
     //0x004ABB80
     animation_logic_system(actor *a1);
 
+    //0x004933C0
+    als_meta_anim_table_shared * get_meta_anim_table();
+
     bool sub_49F2A0();
 
     //0x0049F360

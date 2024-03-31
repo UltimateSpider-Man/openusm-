@@ -25,6 +25,11 @@ animation_logic_system::animation_logic_system(actor *a1) {
     THISCALL(0x004ABB80, this, a1);
 }
 
+als_meta_anim_table_shared * animation_logic_system::get_meta_anim_table()
+{
+    return this->als_shared->field_18;
+}
+
 bool animation_logic_system::sub_49F2A0()
 {
     auto func = [](auto *v4) -> bool {

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "custom_math.h"
 #include "func_wrapper.h"
+#include "ngl.h"
 #include "quaternion.h"
 #include "utility.h"
 #include "variable.h"
@@ -149,7 +150,7 @@ bool po::is_valid(bool a2, bool a3) const {
     return result;
 }
 
-void po::un_mash(generic_mash_header *a1, void *a2, generic_mash_data_ptrs *a3)
+void po::un_mash(generic_mash_header *, void *, generic_mash_data_ptrs *)
 {
     ;
 }
@@ -159,13 +160,6 @@ po po::sub_4BAB00(const po &a3) {
     THISCALL(0x004BAB00, this, &result, &a3);
 
     return result;
-}
-
-void po::sub_4134B0(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const {
-    a2 = this->m[0];
-    a3 = this->m[1];
-    a4 = this->m[2];
-    a5 = this->m[3];
 }
 
 //vec4 = mat4 * vec4{vec3, 0};
@@ -202,9 +196,9 @@ vector3d po::non_affine_inverse_xform(const vector3d &a3) const
     assert(m[0][0] >= -1.01f && m[0][0] <= 1.01f);
 
     vector3d transformed;
-    transformed[0] = this->m[0][0] * a3[0] + this->m[0][1] * a3[1] + this->m[0][2] * a3[2];
-    transformed[1] = this->m[1][0] * a3[0] + this->m[1][1] * a3[1] + this->m[1][2] * a3[2];
-    transformed[2] = this->m[2][0] * a3[0] + this->m[2][1] * a3[1] + this->m[2][2] * a3[2];
+    transformed[0] = this->m[0][0] * a3.x + this->m[0][1] * a3.y + this->m[0][2] * a3.z;
+    transformed[1] = this->m[1][0] * a3.x + this->m[1][1] * a3.y + this->m[1][2] * a3.z;
+    transformed[2] = this->m[2][0] * a3.x + this->m[2][1] * a3.y + this->m[2][2] * a3.z;
 
     if constexpr (0) {
         sp_log("\nmatrix: \n%s", this->to_string().c_str());
@@ -440,12 +434,12 @@ vector3d po::inverse_xform(const vector3d &a3) const
 {
     assert(m[0][0] >= -1.01f && m[0][0] <= 1.01f);
 
-    auto v = a3 - *bit_cast<vector3d *>(&this->m[3]);
+    vector3d v = a3 - *bit_cast<vector3d *>(&this->m[3]);
 
     vector3d result;
-    result[0] = v.z * this->m[0][2] + v.y * this->m[0][1] + v.x * this->m[0][0];
-    result[1] = v.z * this->m[1][2] + v.y * this->m[1][1] + v.x * this->m[1][0];
-    result[2] = v.z * this->m[2][2] + v.y * this->m[2][1] + v.x * this->m[2][0];
+    result[0] = v.x * this->m[0][0] + v.y * this->m[0][1] + v.z * this->m[0][2];
+    result[1] = v.x * this->m[1][0] + v.y * this->m[1][1] + v.z * this->m[1][2];
+    result[2] = v.x * this->m[2][0] + v.y * this->m[2][1] + v.z * this->m[2][2];
 
     if constexpr (0) {
         sp_log("\nmatrix: \n%s", this->to_string().c_str());
@@ -503,7 +497,7 @@ vector3d po::slow_xform(const vector3d &a3) const {
 
     vector3d result = {x1, y1, z1};
 
-    auto w = this->m[0][3] * a3[0] + (this->m[1][3] * a3[1]) + (this->m[2][3] * a3[2]) +
+    [[maybe_unused]] auto w = this->m[0][3] * a3[0] + (this->m[1][3] * a3[1]) + (this->m[2][3] * a3[2]) +
         this->m[3][3];
 
     if constexpr (0) {
@@ -649,18 +643,27 @@ void po::set_facing(const vector3d &a2) {
     }
 }
 
-void ptr_to_po::sub_48E900(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const {
-    if constexpr (1) {
+void po::set_translate(const vector3d &a2)
+{
+    this->m = identity_matrix;
+    this->m[3] = a2;
+}
+
+void ptr_to_po::sub_48E900(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const
+{
+    if constexpr (1)
+    {
         vector4d a2a, v13, v14, v15;
+        this->m_rel_po->m.decompose(a2a, v13, v14, v15);
 
-        this->m_rel_po->sub_4134B0(a2a, v13, v14, v15);
-        a2 = vector4d::sub_4139A0(a2a, *this->m_abs_po);
+        a2 = xform_inv(a2a, *bit_cast<matrix4x3 *>(this->m_abs_po));
 
-        a3 = vector4d::sub_4139A0(v13, *this->m_abs_po);
+        a3 = xform_inv(v13, *bit_cast<matrix4x3 *>(this->m_abs_po));
 
-        a4 = vector4d::sub_4139A0(v14, *this->m_abs_po);
+        a4 = xform_inv(v14, *bit_cast<matrix4x3 *>(this->m_abs_po));
 
-        a5 = vector4d::sub_414360(v15, *this->m_abs_po);
+        auto v5 = sub_414360(*bit_cast<math::VecClass<3, 1> *>(&v15), *bit_cast<const math::MatClass<4, 3> *>(this->m_abs_po));
+        a5 = *bit_cast<vector4d *>(&v5);
 
     } else {
         THISCALL(0x0048E900, this, &a2, &a3, &a4, &a5);
@@ -711,7 +714,31 @@ po sub_48F770(const po &arg4, const po &a3)
     return res;
 }
 
-void po_patch() {
+matrix4x4 sub_507130(const ptr_to_po &arg4)
+{
+    matrix4x4 result;
+
+    if constexpr (0)
+    {
+        vector4d a2, a3, a4, a5;
+        arg4.sub_48E900(a2, a3, a4, a5);
+
+        vector4d a1a, v5, v4, v3;
+        sub_4013C0(a1a, v5, v4, v3, a2, a3, a4, a5);
+
+        result = matrix4x4 {v3, v5, v4, a1a};
+    }
+    else
+    {
+        CDECL_CALL(0x00507130, &result, &arg4);
+    }
+
+    return result;
+}
+
+
+void po_patch()
+{
     if constexpr (0) {
         {
             FUNC_ADDRESS(address, &po::slow_xform);

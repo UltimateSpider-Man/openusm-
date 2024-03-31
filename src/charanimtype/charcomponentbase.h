@@ -3,6 +3,8 @@
 #include "nal_system.h"
 
 struct CharComponentBase : BaseComponent {
+    enum Names {};
+
     int field_4;
     uint32_t field_8;
     const char *field_C;

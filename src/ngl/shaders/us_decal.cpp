@@ -3,6 +3,7 @@
 #include "trace.h"
 #include "utility.h"
 #include "ngl.h"
+#include "us_exterior.h"
 
 void US_Decal3DShader::_BindMaterial(nglMaterialBase *a1)
 {
@@ -25,17 +26,13 @@ void US_Decal3DShader::_RebaseMaterial(nglMaterialBase *a1, unsigned int a2)
 {
     TRACE("US_Decal3DShader::RebaseMaterial");
 
-    struct {
-        char field_0[0x60];
-        tlFixedString *field_60;
-        nglTexture *field_64;
-    } *v1 = CAST(v1, a1);
+    USExteriorMaterial *v1 = CAST(v1, a1);
 
 #ifndef TARGET_XBOX
     auto v2 = v1->field_60;
-    if ( v2 != 0 )
+    if ( v2 != nullptr )
     {
-        v1->field_60 = int(a2) + v2;
+        v1->field_60 = CAST(v1->field_60, int(v2) + a2);
     }
 #endif
 }

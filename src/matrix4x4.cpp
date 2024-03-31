@@ -36,7 +36,8 @@ matrix4x4::matrix4x4(float a2,
                      float a14,
                      float a15,
                      float a16,
-                     float a17) {
+                     float a17)
+{
     arr[0] = {a2, a3, a4, a5};
     arr[1] = {a6, a7, a8, a9};
     arr[2] = {a10, a11, a12, a13};
@@ -46,7 +47,8 @@ matrix4x4::matrix4x4(float a2,
 matrix4x4::matrix4x4(const vector3d &a2,
         const vector3d &a3,
         const vector3d &a4,
-        const vector3d &a5) {
+        const vector3d &a5)
+{
     this->arr[0][0] = a2[0];
     this->arr[0][1] = a2[1];
     this->arr[0][2] = a2[2];
@@ -68,15 +70,18 @@ matrix4x4::matrix4x4(const vector3d &a2,
     this->arr[3][3] = 1.0;
 }
 
-matrix4x4::matrix4x4(const matrix4x4 &a1) {
+matrix4x4::matrix4x4(const matrix4x4 &a1)
+{
     this->arr[0] = a1[0];
     this->arr[1] = a1[1];
     this->arr[2] = a1[2];
     this->arr[3] = a1[3];
 }
 
-matrix4x4 matrix4x4::Cof() {
-    if constexpr (0) {
+matrix4x4 matrix4x4::Cof()
+{
+    if constexpr (0)
+    {
         matrix4x4 result{};
 
         for (auto i = 0u; i < 4u; ++i) {
@@ -93,6 +98,20 @@ matrix4x4 matrix4x4::Cof() {
         return result;
     }
 }
+
+void matrix4x4::sub_41D8A0(void *a2)
+{
+    THISCALL(0x0041D8A0, this, a2);
+}
+
+void matrix4x4::decompose(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const
+{
+    a2 = this->arr[0];
+    a3 = this->arr[1];
+    a4 = this->arr[2];
+    a5 = this->arr[3];
+}
+
 
 matrix4x4 matrix4x4::transpose() const {
 #ifndef USE_GLM
@@ -387,8 +406,19 @@ void matrix4x4::make_scale(const vector3d &v) {
 #endif
 }
 
-void matrix4x4::sub_415650(const matrix4x3 *a2) {
-    THISCALL(0x00415650, this, a2);
+void matrix4x4::sub_415650(const matrix4x3 &a2)
+{
+    if constexpr (0)
+    {
+        this->arr[0] = a2[0];
+        this->arr[1] = a2[1];
+        this->arr[2] = a2[2];
+        this->arr[3] = {0.0, 0.0, 0.0, 1.0};
+    }
+    else
+    {
+        THISCALL(0x00415650, this, &a2);
+    }
 }
 
 vector3d operator*(const matrix4x4 &a2, const vector3d &a3) {
@@ -427,11 +457,51 @@ vector3d sub_501B20(const matrix4x4 &a2, const vector3d &a3)
     return result;
 }
 
-matrix4x3 sub_413770(const matrix4x4 *arg4) {
+matrix4x3 sub_413770(const matrix4x4 &a2)
+{
     matrix4x3 result;
-    CDECL_CALL(0x00413770, &result, arg4);
+    
+    if constexpr(0)
+    {
+        vector4d x_axis, y_axis, z_axis, w_axis;
+        a2.decompose(x_axis, y_axis, z_axis, w_axis);
+
+        result[0][0] = x_axis[0];
+        result[0][1] = y_axis[0];
+        result[0][2] = z_axis[0];
+        result[0][3] = w_axis[0];
+
+        result[1][0] = x_axis[1];
+        result[1][1] = y_axis[1];
+        result[1][2] = z_axis[1];
+        result[1][3] = w_axis[1];
+
+        result[2][0] = x_axis[2];
+        result[2][1] = y_axis[2];
+        result[2][2] = z_axis[2];
+        result[2][3] = w_axis[2];
+        return result;
+    }
+    else
+    {
+        CDECL_CALL(0x00413770, &result, &a2);
+    }
 
     return result;
+}
+
+const char *matrix4x4::to_string() const
+{
+    static mString str {};
+
+    str = {0, "\n{\n %f, %f, %f, %f,\n %f, %f, %f, %f,\n %f, %f, %f, %f,\n %f, %f, %f, %f\n}",
+                arr[0][0], arr[0][1], arr[0][2], arr[0][3],
+                arr[1][0], arr[1][1], arr[1][2], arr[1][3],
+                arr[2][0], arr[2][1], arr[2][2], arr[2][3],
+                arr[3][0], arr[3][1], arr[3][2], arr[3][3],
+                };
+
+    return str.c_str();
 }
 
 

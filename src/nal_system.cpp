@@ -57,6 +57,24 @@ Var<tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *> nalSceneAnim
 
 Var<int *> PanelComponentMgr::comp_list{0x0096F7DC};
 
+void * BaseComponent::ApplyPublicPerSkelDataOffset(uint32_t a1, void *a2) const
+{
+    void * (__fastcall *func)(const void *, void *, uint32_t, void *) = CAST(func, get_vfunc(this->m_vtbl, 0x8));
+    return func(this, nullptr, a1, a2);
+}
+
+void BaseComponent::SkelPoseProcess(uint32_t a1, void *a2, void *a3) const
+{
+    void (__fastcall *func)(const void *, void *, uint32_t, void *, void *) = CAST(func, get_vfunc(this->m_vtbl, 0x3C));
+    func(this, nullptr, a1, a2, a3);
+}
+
+void BaseComponent::PoseDataFree(uint32_t a2, void *a3) const
+{
+    void (__fastcall *func)(const void *, void *, uint32_t, void *) = CAST(func, get_vfunc(this->m_vtbl, 0x50));
+    func(this, nullptr, a2, a3);
+}
+
 int *nalComponentU8Base::GetType() {
     return &TypeID;
 }

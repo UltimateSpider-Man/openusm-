@@ -33,6 +33,14 @@ void wds_token_manager_region_change_callback(bool a1, region *a2)
     }
 }
 
+wds_token_manager::wds_token_manager()
+{
+    tokens = nullptr;
+    editing = false;
+    field_4 = false;
+    field_14 = false;
+}
+
 void wds_token_manager::initialize(const resource_key &a2)
 {
     TRACE("wds_token_manager::initialize", a2.get_platform_string(3).c_str());

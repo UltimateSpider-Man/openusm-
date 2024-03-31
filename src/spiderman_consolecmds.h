@@ -32,3 +32,13 @@ struct SetBlendModeCommand : ConsoleCommand {
         return "blend [0-8]";
     }
 };
+
+struct SetMaterialFeaturesCommand : ConsoleCommand {
+    SetMaterialFeaturesCommand();
+
+    virtual bool process_cmd(const std::vector<std::string> &a2) override;
+
+    virtual const char *helpText() const override {
+        return "mat [0-3]";
+    }
+};

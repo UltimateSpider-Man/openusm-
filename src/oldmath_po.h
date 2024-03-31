@@ -57,8 +57,6 @@ struct po {
 
     void sub_48D840();
 
-    void sub_4134B0(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
-
     //0x005BD2B0
     [[nodiscard]] vector3d non_affine_slow_xform(const vector3d &a3);
 
@@ -106,6 +104,9 @@ struct po {
     //0x005BDFE0
     void set_facing(const vector3d &a2);
 
+    //0x005BD320
+    void set_translate(const vector3d &a2);
+
     void sub_415A30(const ptr_to_po &a2);
 
     [[nodiscard]] vector3d sub_5BD2B0(const vector3d &a3);
@@ -144,6 +145,8 @@ struct ptr_to_po {
 
     void sub_48E900(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
 };
+
+extern matrix4x4 sub_507130(const ptr_to_po &arg4);
 
 extern po sub_48F770(const po &arg4, const po &a3);
 

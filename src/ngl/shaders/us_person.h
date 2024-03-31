@@ -24,7 +24,7 @@ struct USPersonMaterial {
     nglTexture *field_1C;
     tlFixedString *field_20;
     nglTexture *field_24;
-    float field_28[4];
+    vector4d field_28;
     int field_38;
     int field_3C;
     int field_40;
@@ -150,16 +150,16 @@ struct USPersonSolidNode : USVariantShaderNode {
 
 struct USPersonNode : USVariantShaderNode {
     struct LightInfoStruct {
-        vector4d field_0;
-        vector4d field_10;
-        vector4d field_20;
-        float field_30;
-        uint32_t field_34;
+        vector4d m_dir;
+        color field_10;
+        color field_20;
+        float m_contrast;
+        uint32_t m_flags;
     };
 
     static Var<LightInfoStruct> DefaultLightInfo;
 
-    USPersonMaterial *field_18;
+    USPersonMaterial *m_material;
     nglTexture *field_1C;
     nglTexture *field_20;
     int field_24;

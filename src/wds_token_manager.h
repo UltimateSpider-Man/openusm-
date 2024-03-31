@@ -22,12 +22,14 @@ struct wds_token_manager {
 
     token_def_list *tokens;
     bool field_4;
-    char field_5;
+    bool editing;
     float field_8;
     int field_C;
     int token_collected_array;
-    char field_14;
+    bool field_14;
     _std::list<active_token> field_18;
+
+    wds_token_manager();
 
     //0x005586A0
     void initialize(const resource_key &a2);

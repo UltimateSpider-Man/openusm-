@@ -7,6 +7,7 @@
 #include "param_cache.h"
 #include "param_list.h"
 #include "string_hash.h"
+#include "variance_variable.h"
 
 namespace ai {
 struct param_block;
@@ -159,6 +160,12 @@ struct state_machine {
 
     //virtual
     float get_pb_float(string_hash a1) const;
+
+    //virtual
+    vector3d * get_pb_vector3d(string_hash a2) const;
+
+    //virtual
+    variance_variable<float> * get_pb_float_variance(string_hash a2) const;
 
     //virtual
     bool does_parameter_exist(string_hash a1) const;

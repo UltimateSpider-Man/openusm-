@@ -17,15 +17,12 @@ struct matrix4x3 {
         return arr[idx];
     }
 
-    const char *to_string() {
-        static char str[150];
+    bool operator==(const matrix4x3 &);
 
-        sprintf(str,
-                "mat4x3{%s, %s, %s}",
-                arr[0].to_string().c_str(),
-                arr[1].to_string().c_str(),
-                arr[2].to_string().c_str());
+    //0x004139A0
+    friend vector4d operator*(const vector4d &a2, const matrix4x3 &a3);
 
-        return str;
-    }
+    matrix4x3 transposed() const;
+
+    const char *to_string() const;
 };

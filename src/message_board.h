@@ -19,7 +19,7 @@ struct message_board {
 
     _std::vector<internal> field_0;
 
-    message_board();
+    message_board() = default;
 
     struct string {
         int field_0;

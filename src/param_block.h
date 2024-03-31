@@ -2,29 +2,22 @@
 
 #include "ai_param_types.h"
 #include "float.hpp"
+#include "mash.h"
+#include "mvector.h"
 #include "string_hash.h"
 #include "variance_variable.h"
 #include "vector3d.h"
-#include "mvector.h"
 
 #include <variant>
+
+struct entity_base_vhandle;
 
 namespace ai {
 
 struct param_block {
 
-    enum param_data_type {
-        PT_FLOAT = 0,
-        PT_INTEGER = 1,
-        PT_STRING_HASH = 2,
-        PT_FIXED_STRING = 3,
-        PT_VECTOR_3D = 4,
-        PT_FLOAT_VARIANCE = 5,
-        PT_ENTITY = 6,
-        PT_POINTER = 7,
-    };
-
     struct param_data {
+    private:
         union U {
             int i;
             float f;
@@ -32,9 +25,29 @@ struct param_block {
             char *str;
             vector3d *vec3;
             variance_variable<float> *float_variance;
-        } m_union;
-        param_data_type my_type;
-        string_hash field_8;
+            entity_base_vhandle *ent;
+            void *ptr;
+        } m_union = {};
+        param_types my_type;
+        string_hash m_name;
+
+    public:
+
+        param_data();
+
+        ~param_data();
+
+        void operator delete(void *ptr, size_t size);
+
+        void initialize(mash::allocation_scope a2);
+
+        void finalize(mash::allocation_scope );
+
+        void destruct_mashed_class();
+
+        string_hash get_name() const {
+            return m_name;
+        }
 
         void custom_unmash(mash_info_struct *a2, void *a3);
 
@@ -42,33 +55,35 @@ struct param_block {
 
         int get_data_int();
 
-        auto &get_data_vector3d() {
-            return m_union.vec3;
-        }
-
-        auto &get_data_float_variance() {
-            return m_union.float_variance;
-        }
-
-        float get_data_float();
-
-        inline int get_data_type() {
-            return this->my_type;
-        }
-
-        //0x006C86C0
-        auto *set_data_float_variance(const variance_variable<float> &a2);
-
-        void set_data_vector3d(const vector3d &a2);
+        float get_data_float() const;
 
         //0x006BD200
         string_hash get_data_hash() const;
 
-        void sub_436A70();
+        const char * get_data_fixedstring() const;
 
-        void sub_6C8750();
+        vector3d * get_data_vector3d() const;
 
-        void sub_6C8700(int a2);
+        variance_variable<float> * get_data_float_variance() const;
+
+        void * get_data_pointer() const;
+
+        int get_data_type() const {
+            return this->my_type;
+        }
+
+        void set_data_float(float a2);
+
+        //0x006C86C0
+        void set_data_float_variance(const variance_variable<float> &a2);
+
+        void set_data_vector3d(const vector3d &a2);
+
+        void set_data_entity(entity_base_vhandle &a2);
+
+        void set_data_fixedstring(char *);
+
+        void set_data_pointer(void *a2);
 
         bool deep_compare(const param_block::param_data *a2) const;
     };
@@ -77,14 +92,19 @@ struct param_block {
         mVector<param_block::param_data> field_0;
         int field_14;
 
+        ~param_data_array();
+
+        void destruct_mashed_class();
+
+        void finalize(mash::allocation_scope )
+        {
+            this->field_14 = 0;
+        }
+
         //0x006CD450
         param_data *common_find_data(string_hash a2);
 
         void unmash(mash_info_struct *, void *);
-
-        void sub_43F630();
-
-        void sub_43E400();
     };
 
     int field_0;
@@ -93,6 +113,10 @@ struct param_block {
     char pad[3];
 
     param_block();
+
+    ~param_block();
+
+    void finalize(mash::allocation_scope a3);
 
     //0x006D56B0
     void unmash(mash_info_struct *a1, void *a3);
@@ -109,7 +133,7 @@ struct param_block {
 
     bool does_parameter_match(const param_block::param_data *a2) const;
 
-    void sub_6D6EB0();
+    void destruct_mashed_class();
 
     int get_parameter_data_type(string_hash a2) const;
 

@@ -87,7 +87,7 @@ void FastListAddMesh(nglMesh *Mesh,
 
                 return a1;
             };
-            Mesh = GetLOD(Mesh, v18.field_0[2]);
+            Mesh = GetLOD(Mesh, v18[2]);
 #endif
         }
 
@@ -101,7 +101,7 @@ void FastListAddMesh(nglMesh *Mesh,
         a2a.m_rel_po = CAST(a2a.m_rel_po, &LocalToWorld);
         a2a.m_abs_po = CAST(a2a.m_abs_po, nglCurScene()->field_18C);
 
-        v12->field_40 = sub_507130(&a2a);
+        v12->field_40 = sub_507130(a2a);
 
         v12->field_84 = 0;
         v12->field_80 = nullptr;

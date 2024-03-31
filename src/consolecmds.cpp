@@ -1,6 +1,7 @@
 #include "consolecmds.h"
 
 #include "actor.h"
+#include "base_ai_core.h"
 #include "console.h"
 #include "consolevars.h"
 #include "debug_render.h"
@@ -770,5 +771,92 @@ bool DumpThreadsCommand::process_cmd(const std::vector<std::string> &a2) {
     }
     
     return true; 
+}
+
+static SetPBFloatCommand g_SetPBFloatCommand {};
+
+SetPBFloatCommand::SetPBFloatCommand() {
+    this->setName("set_ai");
+}
+
+bool SetPBFloatCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    auto v46 = a2.size();
+    if ( v46 == 2 || v46 == 3 )
+    {
+        auto &v2 = a2.at(0);
+        auto *v3 = v2.c_str();
+        string_hash a2a {v3};
+        auto *ent = entity_handle_manager::find_entity(a2a, IGNORE_FLAVOR, true);
+        if ( ent != nullptr )
+        {
+            if ( ent->is_an_actor() )
+            {
+                auto *the_actor = bit_cast<actor *>(ent);
+                auto *v42 = the_actor->get_ai_core();
+                if ( v42 != nullptr )
+                {
+                    auto &v8 = a2.at(1);
+                    auto *v9 = v8.c_str();
+                    string_hash v39 {v9};
+
+                    auto *the_pblock = v42->get_param_block();
+                    if ( the_pblock->does_parameter_exist(v39) )
+                    {
+                        auto pb_float = the_pblock->get_pb_float(v39);
+                        if ( v46 == 2 )
+                        {
+                            auto &v14 = a2.at(1);
+                            auto *v15 = v14.c_str();
+                            g_console->addToLog("%s = %.2f", v15, pb_float);
+                            return true;
+                        }
+                        else
+                        {
+                            auto &v16 = a2.at(2);
+                            auto *v17 = v16.c_str();
+                            auto v38 = atof(v17);
+                            the_pblock->set_pb_float(v39, v38, false);
+
+                            auto &v19 = a2.at(1);
+                            auto *v20 = v19.c_str();
+                            g_console->addToLog("%s was %.2f, now set to %.2f", v20, pb_float);
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        auto &v12 = a2.at(1);
+                        auto *v13 = v12.c_str();
+                        g_console->addToLog("Parameter %s does not exist in the param block", v13);
+                        return true;
+                    }
+                }
+                else
+                {
+                    g_console->addToLog("This actor doesn't have an AI core!");
+                    return true;
+                }
+            }
+            else
+            {
+                g_console->addToLog("This entity is not an actor!");
+                return true;
+            }
+        }
+        else
+        {
+            auto &v5 = a2.at(0);
+            auto *v6 = v5.c_str();
+            g_console->addToLog("Entity %s not found!", v6);
+            return true;
+        }
+    }
+    else
+    {
+        auto *v21 = this->helpText();
+        g_console->addToLog(v21);
+        return true;
+    }
 }
 

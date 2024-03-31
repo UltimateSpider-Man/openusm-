@@ -42,13 +42,6 @@ vector4d sub_76EE90(const vector4d &a2, const vector4d &a3)
     return result;
 }
 
-matrix4x3 sub_771210(void *a2) {
-    matrix4x3 result;
-    CDECL_CALL(0x00771210, &result, a2);
-
-    return result;
-}
-
 math::MatClass<4, 3> *nglListAddMesh_GetScaledMatrix(const math::MatClass<4, 3> &a1,
                                                      nglMeshParams *a2,
                                                      float *a3)
@@ -57,10 +50,10 @@ math::MatClass<4, 3> *nglListAddMesh_GetScaledMatrix(const math::MatClass<4, 3> 
 
     if constexpr (1)
     {
-        auto v3 = a2->Scale.field_0[0];
-        auto v4 = a2->Scale.field_0[1];
-        auto v5 = a2->Scale.field_0[2];
-        auto v6 = a2->Scale.field_0[3];
+        auto v3 = a2->Scale[0];
+        auto v4 = a2->Scale[1];
+        auto v5 = a2->Scale[2];
+        auto v6 = a2->Scale[3];
 
         vector4d v11;
         v11[0] = std::abs(v3);
@@ -117,7 +110,8 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
     if constexpr (1)
     {
         nglMesh *result;
-        if ((a2 & 0x80u) == 0) {
+        if ((a2 & 0x80u) == 0)
+        {
             math::VecClass<3, 1> v10 = sub_414360(a4, {nglCurScene()->field_14C});
             auto v7 = Mesh->NLODs - 1;
             if (v7 < 0) {
@@ -126,7 +120,8 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
             } else {
                 auto *v8 = Mesh->LODs;
                 auto *v9 = (float *) &v8[8 * v7 + 4];
-                while (v10.field_0[2] <= (double) *v9) {
+                while (v10[2] <= (double) *v9)
+                {
                     --v7;
                     v9 -= 2;
                     if (v7 < 0) {
@@ -153,12 +148,6 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
     } else {
         return (nglMesh *) CDECL_CALL(0x0, Mesh, a2, a3, a4);
     }
-}
-
-matrix4x4 sub_507130(void *arg4) {
-    matrix4x4 result;
-    CDECL_CALL(0x00507130, &result, arg4);
-    return result;
 }
 
 bool nglIsSphereVisible(math::VecClass<3, 1> a1, Float radius)
@@ -252,13 +241,10 @@ void nglListAddMesh(nglMesh *Mesh,
 
             ptr_to_po v14 = {(const po *) v6, (po *) &nglCurScene()->field_18C};
 
-            auto v8 = sub_507130(&v14);
-            auto v9 = v15;
-
-            meshNode->field_40 = v8;
+            meshNode->field_40 = sub_507130(v14);
             meshNode->field_84 = 0;
-            meshNode->field_80 = 0;
-            meshNode->field_94 = v9;
+            meshNode->field_80 = nullptr;
+            meshNode->field_94 = v15;
             if (a3 != nullptr)
             {
                 if (v20 >= 0)

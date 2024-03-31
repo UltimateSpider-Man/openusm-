@@ -3,6 +3,8 @@
 #include "vector3d.h"
 #include "vector4d.h"
 
+struct po;
+
 struct bounding_box {
     vector3d field_0[2];
 

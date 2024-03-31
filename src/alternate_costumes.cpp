@@ -17,6 +17,7 @@
 #include "panelfile.h"
 #include "resource_manager.h"
 #include "script_manager.h"
+#include "us_lighting.h"
 #include "utility.h"
 #include "variables.h"
 #include "wds.h"

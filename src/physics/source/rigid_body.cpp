@@ -16,16 +16,16 @@ rigid_body::rigid_body() {}
 void rigid_body::sub_5B2D50(const phys_vector3d &a2) {
     if constexpr (0) {
         math::VecClass<3, 0> v5;
-        v5.field_0[0] = a2[0];
-        v5.field_0[1] = a2[1];
-        v5.field_0[2] = a2[2];
+        v5[0] = a2[0];
+        v5[1] = a2[1];
+        v5[2] = a2[2];
 
         auto *v3 = (math::VecClass<3, 0> *) this->field_110;
 
         math::VecClass<3, 0> v6;
-        v6.field_0[0] = v5.field_0[0];
-        v6.field_0[1] = v5.field_0[1];
-        v6.field_0[2] = v5.field_0[2];
+        v6[0] = v5[0];
+        v6[1] = v5[1];
+        v6[2] = v5[2];
         v6[3] = v5[3];
         auto result = *bit_cast<math::VecClass<3, 0> *>(&this->field_110) + v6;
         *v3 = result;

@@ -48,8 +48,8 @@ entity_class_t *find_entity_class(entity_base_vhandle a1)
 
 void populate_entity_class_menu(debug_menu_entry *arg0)
 {
-    auto &script_handler = arg0->get_script_handler();
-    auto *a1 = create_menu(script_handler, debug_menu::sort_mode_t::undefined);
+    auto &name = arg0->get_name();
+    auto *a1 = create_menu(name, debug_menu::sort_mode_t::undefined);
     arg0->set_submenu(a1);
 
     auto *entity_class = static_cast<entity_class_t *>(arg0->get_data());

@@ -64,9 +64,9 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
         auto v15 = v2->field_6C[1];
         auto v16 = v2->field_6C[2];
         this->sub_413AF0();
-        auto v3 = this->field_C->sub_4199D0();
-        auto v17 = sub_414360(*(math::VecClass<3, 1> *)&nglCurScene()->field_28C, v3);
-        v17 = sub_414360(this->field_C->field_88->field_20, this->field_C->field_0);
+        auto v3 = this->m_meshNode->sub_4199D0();
+        auto v17 = sub_414360(nglCurScene()->field_28C, v3);
+        v17 = sub_414360(this->m_meshNode->field_88->field_20, this->m_meshNode->field_0);
 
         auto v4 = g_renderState().field_74;
         auto v5 = g_renderState().field_7C;
@@ -115,7 +115,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    &this->field_C->field_40[0][0],
+                    &this->m_meshNode->field_40[0][0],
                     4);
         }
         else
@@ -123,7 +123,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetTransform(
                 g_Direct3DDevice(),
                 (D3DTRANSFORMSTATETYPE)256,
-                (const D3DMATRIX *)this->field_C);
+                bit_cast<D3DMATRIX *>(&this->m_meshNode->field_0));
             g_Direct3DDevice()->lpVtbl->SetVertexDeclaration(
                     g_Direct3DDevice(), dword_9738E0()[9]);
         }
@@ -132,20 +132,20 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
         if ( EnableShader() )
         {
             SetPixelShader(&dword_970770());
-            sub_413F80(&v18, this->field_14, &this->field_C->field_8C, 9u);
-            v17.field_0[0] = v18.r;
-            v17.field_0[1] = v18.g;
-            v17.field_0[2] = v18.b;
-            v17.field_0[3] = v18.a;
+            sub_413F80(&v18, this->field_14, &this->m_meshNode->field_8C, 9u);
+            v17[0] = v18.r;
+            v17[1] = v18.g;
+            v17[2] = v18.b;
+            v17[3] = v18.a;
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    v17.field_0,
+                    &v17[0],
                     1);
         }
         else
         {
-            sub_413F80(&v18, this->field_14, &this->field_C->field_8C, 9u);
+            sub_413F80(&v18, this->field_14, &this->m_meshNode->field_8C, 9u);
             nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
             nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
             nglSetTextureStageState(0, D3DTSS_COLORARG2, 3u);
@@ -156,7 +156,7 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
         }
 
-        nglSetStreamSourceAndDrawPrimitive(this->field_10);
+        nglSetStreamSourceAndDrawPrimitive(this->m_meshSection);
         if ( g_renderState().field_7C != v5 )
         {
             g_Direct3DDevice()->lpVtbl->SetRenderState(
@@ -178,15 +178,11 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
 
         if ( v2->field_68 && EnableShader() )
         {
-            auto v10 = this->field_C->field_0[3][1];
-
             math::VecClass<3, 1> v17 {};
-            v17.field_0[0] = this->field_C->field_0[3][0];
-            auto v11 = this->field_C->field_0[3][2];
-            v17.field_0[1] = v10;
-            auto v12 = this->field_C->field_0[3][3];
-            v17.field_0[2] = v11;
-            v17.field_0[3] = v12;
+            v17[0] = this->m_meshNode->field_0[3][0];
+            v17[1] = this->m_meshNode->field_0[3][1];
+            v17[2] = this->m_meshNode->field_0[3][2];
+            v17[3] = this->m_meshNode->field_0[3][3];
             auto v13 = calc_outline_thickness(v17);
             if ( v2->field_7C > 1.f ) {
                 v13 *= v2->field_7C;
@@ -214,22 +210,28 @@ void Outline_ShaderNode<USExteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    &this->field_C->field_40[0][0],
+                    &this->m_meshNode->field_40[0][0],
                     4);
 
-            v17.field_0[3] = v13;
-            memset(&v17, 0, 12);
-            g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
-                    g_Direct3DDevice(), 8, (const float *)&v17, 1);
+            {
+                float v17[4] {};
+                v17[3] = v13;
+                g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
+                        g_Direct3DDevice(), 8, v17, 1);
+            }
 
             SetPixelShader(&dword_970774());
-            v17.field_0[0] = v14;
-            v17.field_0[1] = v15;
-            v17.field_0[2] = v16;
-            v17.field_0[3]= 1.0;
-            g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
-                    g_Direct3DDevice(), 0, v17.field_0, 1);
-            nglSetStreamSourceAndDrawPrimitive(this->field_10);
+
+            {
+                float v17[4] {};
+                v17[0] = v14;
+                v17[1] = v15;
+                v17[2] = v16;
+                v17[3]= 1.0;
+                g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
+                        g_Direct3DDevice(), 0, v17, 1);
+            }
+            nglSetStreamSourceAndDrawPrimitive(this->m_meshSection);
         }
     }
 }
@@ -252,9 +254,9 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
         auto v15 = v2->field_28[1];
         auto v16 = v2->field_28[2];
         this->sub_413AF0();
-        auto v3 = this->field_C->sub_4199D0();
-        auto v17 = sub_414360(*(math::VecClass<3,1> *)&nglCurScene()->field_28C, v3);
-        v17 = sub_414360(this->field_C->field_88->field_20, this->field_C->field_0);
+        auto v3 = this->m_meshNode->sub_4199D0();
+        auto v17 = sub_414360(nglCurScene()->field_28C, v3);
+        v17 = sub_414360(this->m_meshNode->field_88->field_20, this->m_meshNode->field_0);
         auto v4 = g_renderState().field_74;
         auto v5 = g_renderState().field_7C;
         g_renderState().setBlending(NGLBM_OPAQUE, 0, 0);
@@ -299,7 +301,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    &this->field_C->field_40[0][0],
+                    &this->m_meshNode->field_40[0][0],
                     4);
         }
         else
@@ -307,7 +309,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetTransform(
                 g_Direct3DDevice(),
                 (D3DTRANSFORMSTATETYPE)256,
-                (const D3DMATRIX *)this->field_C);
+                bit_cast<D3DMATRIX *>(&this->m_meshNode->field_0));
             g_Direct3DDevice()->lpVtbl->SetVertexDeclaration(
                     g_Direct3DDevice(), dword_9738E0()[9]);
         }
@@ -315,17 +317,17 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
         if ( EnableShader() )
         {
             SetPixelShader(&dword_970770());
-            auto v6 = sub_41BA70(this->field_14, (int *)&this->field_C->field_8C, 9u);
-            v17.field_0[0] = v6[0];
-            v17.field_0[1] = v6[1];
-            v17.field_0[2] = v6[2];
-            v17.field_0[3] = v6[3];
+            auto v6 = sub_41BA70(this->field_14, (int *)&this->m_meshNode->field_8C, 9u);
+            v17[0] = v6[0];
+            v17[1] = v6[1];
+            v17[2] = v6[2];
+            v17[3] = v6[3];
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
-                    g_Direct3DDevice(), 0, (const float *)&v17, 1);
+                    g_Direct3DDevice(), 0, &v17[0], 1);
         }
         else
         {
-            [[maybe_unused]] auto v18 = sub_41BA70(this->field_14, (int *)&this->field_C->field_8C, 9u);
+            [[maybe_unused]] auto v18 = sub_41BA70(this->field_14, (int *)&this->m_meshNode->field_8C, 9u);
             nglSetTextureStageState(0, D3DTSS_COLOROP, 4u);
             nglSetTextureStageState(0, D3DTSS_COLORARG1, 2u);
             nglSetTextureStageState(0, D3DTSS_COLORARG2, 3u);
@@ -336,7 +338,7 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             nglSetTextureStageState(1u, D3DTSS_ALPHAOP, 1u);
         }
 
-        nglSetStreamSourceAndDrawPrimitive(this->field_10);
+        nglSetStreamSourceAndDrawPrimitive(this->m_meshSection);
         if ( g_renderState().field_7C != v5 )
         {
             g_Direct3DDevice()->lpVtbl->SetRenderState(
@@ -354,14 +356,11 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
         auto *v8 = this->field_14;
         if ( v2->field_24 && EnableShader() )
         {
-            auto v10 = this->field_C->field_0[3][1];
-            v17.field_0[0] = this->field_C->field_0[3][0];
-            auto v11 = this->field_C->field_0[3][2];
-            v17.field_0[1] = v10;
-            auto v12 = this->field_C->field_0[3][3];
-            v17.field_0[2] = v11;
-            v17.field_0[3] = v12;
-            auto v13 = calc_outline_thickness(v17);
+            v17[0] = this->m_meshNode->field_0[3][0];
+            v17[1] = this->m_meshNode->field_0[3][1];
+            v17[2] = this->m_meshNode->field_0[3][2];
+            v17[3] = this->m_meshNode->field_0[3][3];
+            auto v13 = calc_outline_thickness(*bit_cast<math::VecClass<3, 1> *>(&v17));
             if ( v8->field_38 > 1.f ) {
                 v13 *= v8->field_38;
             }
@@ -382,21 +381,22 @@ void Outline_ShaderNode<USInteriorMaterial>::Render()
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
                     g_Direct3DDevice(),
                     0,
-                    &this->field_C->field_40[0][0],
+                    &this->m_meshNode->field_40[0][0],
                     4);
 
-            v17.field_0[3] = v13;
+            v17[3] = v13;
             memset(&v17, 0, 12);
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(
-                    g_Direct3DDevice(), 8, v17.field_0, 1);
+                    g_Direct3DDevice(), 8, &v17[0], 1);
             SetPixelShader(&dword_970774());
-            v17.field_0[0] = v14;
-            v17.field_0[1] = v15;
-            v17.field_0[2] = v16;
-            v17.field_0[3] = 1.0;
+
+            v17[0] = v14;
+            v17[1] = v15;
+            v17[2] = v16;
+            v17[3] = 1.0;
             g_Direct3DDevice()->lpVtbl->SetPixelShaderConstantF(
-                    g_Direct3DDevice(), 0, v17.field_0, 1);
-            nglSetStreamSourceAndDrawPrimitive(this->field_10);
+                    g_Direct3DDevice(), 0, &v17[0], 1);
+            nglSetStreamSourceAndDrawPrimitive(this->m_meshSection);
         }
     }
 }

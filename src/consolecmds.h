@@ -203,3 +203,13 @@ struct DumpThreadsCommand : ConsoleCommand {
         return "Dumps script threads to the console (pass a '1' to dump to a file)";
     }
 };
+
+struct SetPBFloatCommand : ConsoleCommand {
+    SetPBFloatCommand();
+
+    virtual bool process_cmd(const std::vector<std::string> &) override;
+
+    virtual const char *helpText() const override {
+        return "set_ai <EntityName> <ParamName> [<ParamValue>]";
+    }
+};

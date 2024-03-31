@@ -39,6 +39,7 @@ struct base_ai_data;
 struct nalBaseSkeleton;
 struct lego_map_root_node;
 struct movement_info;
+struct nal_anim_controller;
 struct nalBaseSkeleton;
 
 struct actor : entity {
@@ -58,7 +59,7 @@ struct actor : entity {
     damage_interface *m_damage_interface;
     physical_interface *m_physical_interface;
     nalBaseSkeleton *m_skeleton;
-    generic_anim_controller *anim_ctrl;
+    nal_anim_controller *anim_ctrl;
     advanced_entity_ptrs *adv_ptrs;
     base_ai_data *field_7C;
     interactable_interface *m_interactable_ifc;
@@ -122,7 +123,8 @@ struct actor : entity {
 
     void allocate_anim_controller(unsigned int a2, nalBaseSkeleton *a3);
 
-    generic_anim_controller *select_and_new_anim_controller(
+    //0x004CC470
+    nal_anim_controller *select_and_new_anim_controller(
         nalBaseSkeleton *a2,
         unsigned int a3);
 

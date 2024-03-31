@@ -6,7 +6,7 @@
 #include <cstdio>
 
 struct vector3d;
-struct po;
+struct matrix4x4;
 
 struct vector4d {
     float x;
@@ -16,7 +16,7 @@ struct vector4d {
 
     constexpr vector4d() : x(0), y(0), z(0), w(0) {}
 
-    constexpr vector4d(float a1) : x(a1), y(a1), z(a1), w(a1) {}
+    constexpr explicit vector4d(float a1) : x(a1), y(a1), z(a1), w(a1)  {}
 
     constexpr vector4d(float a1, float a2, float a3, float a4) : x(a1), y(a2), z(a3), w(a4) {}
 
@@ -84,6 +84,8 @@ struct vector4d {
         return out;
     }
 
+    void operator+=(const vector4d &a3);
+
     [[nodiscard]] vector4d operator+(const float a3) const {
         vector4d out;
         out[0] = (*this)[0] + a3;
@@ -95,17 +97,6 @@ struct vector4d {
 
     void operator*=(const vector4d &a3);
 
-    [[nodiscard]] static vector4d sub_414360(const vector4d &a2, const po &a3);
-
-    [[nodiscard]] static vector4d sub_4139A0(const vector4d &a2, const po &a3);
-
-    [[nodiscard]] static vector4d sub_4126E0(const vector4d &a2,
-                                             const vector4d &a3,
-                                             const vector4d &a4,
-                                             const vector4d &a5,
-                                             const vector4d &a6,
-                                             const vector4d &a7);
-
     //0x00776EC0
     friend vector4d operator-(const vector4d &a2, const vector4d &a3);
 
@@ -115,9 +106,21 @@ struct vector4d {
     //0x00410DF0
     friend vector4d operator*(const vector4d &a2, float a3);
 
+    void operator*=(float a3);
+
     //0x004010A0
     friend vector4d operator-(const vector4d &a2);
+
+    bool operator==(const vector4d &a2) const;
 };
+
+
+[[nodiscard]] extern vector4d sub_4126E0(const vector4d &a2,
+                                             const vector4d &a3,
+                                             const vector4d &a4,
+                                             const vector4d &a5,
+                                             const vector4d &a6,
+                                             const vector4d &a7);
 
 extern bool sub_55F1D0(const vector4d &a1, const vector4d &a2);
 

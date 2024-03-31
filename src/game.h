@@ -330,9 +330,6 @@ extern void game__setup_input_registrations(game *a1);
 //0x00605950
 extern void game__setup_inputs(game *a1);
 
-//0x00408790
-extern void us_lighting_switch_time_of_day(int a1);
-
 extern Var<game *> g_game_ptr;
 
 //0x00581B40

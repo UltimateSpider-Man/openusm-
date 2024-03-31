@@ -21,6 +21,7 @@
 #include "return_address.h"
 #include "sound_instance_id.h"
 #include "string_hash.h"
+#include "us_lighting.h"
 #include "utility.h"
 #include "variables.h"
 #include "wds.h"
@@ -128,10 +129,13 @@ void character_viewer::update_selected(int a2) {
     }
 }
 
-void character_viewer::sub_63FEC0(int idx) {
-    if constexpr (1) {
-        if (this->field_B0[idx].field_8) {
-            mString a3{character_files()[idx]};
+void character_viewer::sub_63FEC0(int idx)
+{
+    if constexpr (1)
+    {
+        if (this->field_B0[idx].field_8)
+        {
+            mString a3 {character_files()[idx]};
 
             auto *v3 = g_cut_scene_player();
             auto *v4 = v3->field_7C;
