@@ -21,7 +21,7 @@ void state_graph::destruct_mashed_class()
     THISCALL(0x006DA0D0, this);
 }
 
-void state_graph::unmash(mash_info_struct *a1, void *a3)
+void state_graph::unmash(mash_info_struct *a1, void *)
 {
     TRACE("ai::state_graph::unmash");
 

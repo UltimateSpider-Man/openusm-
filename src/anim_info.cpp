@@ -5,7 +5,7 @@
 
 VALIDATE_SIZE(anim_info, 0x24);
 
-void anim_info::un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4)
+void anim_info::un_mash(generic_mash_header *, void *, generic_mash_data_ptrs *a4)
 {
     if ( (this->field_1C & 0x2000000) != 0 )
     {

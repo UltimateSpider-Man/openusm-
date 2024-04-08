@@ -1,13 +1,15 @@
 #pragma once
 
+#include <cstdint>
+
 struct traffic_path_intersection;
 
 struct traffic_path_road {
 
     int field_0;
-    int total_in_lanes;
+    uint32_t total_in_lanes;
     int field_8;
-    int total_out_lanes;
+    uint32_t total_out_lanes;
     int field_10;
     int field_14;
     traffic_path_intersection *field_18;

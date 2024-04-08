@@ -227,7 +227,7 @@ void character_viewer::OnUp([[maybe_unused]] int a2) {
 
         static string_hash sfx_id_hash{"FE_PS_UDScroll"};
 
-        sound_instance_id v4 = sub_60B960(sfx_id_hash, {1.0}, {1.0});
+        [[maybe_unused]] sound_instance_id v4 = sub_60B960(sfx_id_hash, {1.0}, {1.0});
 
     } else {
         THISCALL(0x00640180, this, a2);

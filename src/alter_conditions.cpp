@@ -7,7 +7,7 @@ namespace als
 {
     VALIDATE_SIZE(alter_conditions, 0xC);
 
-    void alter_conditions::unmash(mash_info_struct *a1, void *a3)
+    void alter_conditions::unmash(mash_info_struct *a1, void *)
     {
         a1->unmash_class_in_place(this->field_8, this);
     }

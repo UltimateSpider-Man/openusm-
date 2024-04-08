@@ -1013,9 +1013,8 @@ void swing_inode::update_pendulums(Float a2)
         auto *physics_inode_ptr = the_hero_inode->field_28;
         auto *als_inode_ptr = the_hero_inode->field_20;
         auto *v124 = physics_inode_ptr;
-        vector3d v6 = physics_inode_ptr->get_abs_po().get_z_facing();
 
-        vector3d v121 = v6;
+        vector3d v121 = physics_inode_ptr->get_abs_po().get_z_facing();
 
         vector3d v117 = controller_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(2));
 
@@ -1276,11 +1275,10 @@ void swing_inode::update_pendulums(Float a2)
             this->field_88 = this->field_8C;
         }
 
-        auto v61 = v126.length();
-        auto v123 = v61;
+        auto v123 = v126.length();
 
         float v62;
-        if (v61 < 15.0)
+        if (v123 < 15.0)
         {
             auto v171 = std::abs(270.0f - (this->field_8C * (180.0 / 3.1415927)));
             if ( v171 >= 5.0 ) {
@@ -1303,7 +1301,8 @@ void swing_inode::update_pendulums(Float a2)
         auto v114 = v62 * swing_horiz_thrust;
         if (v117.length2() <= LARGE_EPSILON)
         {
-            if (this->field_3C != 1) {
+            if (this->field_3C != 1)
+            {
                 float v110 = 0.0;
                 float v111 = 0.0;
 
@@ -1411,19 +1410,19 @@ void swing_inode::update_pendulums(Float a2)
         auto v89 = v88 - v87;
         v89.normalize();
 
-        auto *v93 = &this->field_8->field_50;
+        auto &v93 = this->field_8->field_50;
 
         static string_hash boost_force_id {int(to_hash("boost_force"))};
-        auto boost_force = v93->get_pb_float(boost_force_id);
+        auto boost_force = v93.get_pb_float(boost_force_id);
 
         static string_hash boost_cooldown_id {int(to_hash("boost_cooldown"))};
-        v110 = v93->get_pb_float(boost_cooldown_id);
+        auto boost_cooldown = v93.get_pb_float(boost_cooldown_id);
 
         static string_hash boost_min_angle_id {int(to_hash("boost_min_angle"))};
-        auto boost_min_angle = v93->get_pb_float(boost_min_angle_id);
+        auto boost_min_angle = v93.get_pb_float(boost_min_angle_id);
 
         static string_hash boost_max_angle_id {int(to_hash("boost_max_angle"))};
-        auto boost_max_angle = v93->get_pb_float(boost_max_angle_id);
+        auto boost_max_angle = v93.get_pb_float(boost_max_angle_id);
         boost_min_angle = boost_min_angle * (3.1415927 / 180.0);
         v114 = boost_max_angle * (3.1415927 / 180.0);
 
@@ -1475,7 +1474,7 @@ void swing_inode::update_pendulums(Float a2)
                                              static_cast<physical_interface::force_type>(1),
                                              IGNORE_LOC,
                                              0);
-                boost_cooldown_timer() = v110;
+                boost_cooldown_timer() = boost_cooldown;
             }
         }
 
@@ -2029,11 +2028,11 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
             auto &v37 = v35->get_abs_po();
 
-            sweet_cone_t sweet_cone{anchor_finder,
-                                    v35->get_abs_po().get_position(),
-                                    v37.get_z_facing(),
-                                    v60,
-                                    vector3d{0}};
+            sweet_cone_t sweet_cone {anchor_finder,
+                                        v35->get_abs_po().get_position(),
+                                        v37.get_z_facing(),
+                                        v60,
+                                        vector3d{0}};
 
             a1[0] = sweet_cone.sweet_spot[0];
             a1[1] = sweet_cone.sweet_spot[1];

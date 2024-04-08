@@ -12,7 +12,7 @@ mashed_state::mashed_state() {
     THISCALL(0x006DD080, this);
 }
 
-void mashed_state::unmash(mash_info_struct *a1, void *a3)
+void mashed_state::unmash(mash_info_struct *a1, void *)
 {
     TRACE("mashed_state::unmash");
 

@@ -46,7 +46,7 @@ visitor_t::visitor_t()
     func = bit_cast<void *>(address);
 }
 
-void oriented_bounding_box_root_node::set_color(color32 a2)
+void oriented_bounding_box_root_node::set_color([[maybe_unused]] color32 a2)
 {
 #if 0
     auto *v65 = this;
@@ -179,7 +179,7 @@ void oriented_bounding_box_root_node::traverse_sphere(const vector3d &a2, Float 
 void oriented_bounding_box_root_node::un_mash(
         char *a2,
         int *image_size_used,
-        region *reg)
+        region *)
 {
     TRACE("oriented_bounding_box_root_node::un_mash");
 

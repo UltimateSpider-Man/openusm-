@@ -54,7 +54,7 @@ void sub_56FF50(_std::vector<box_trigger *> *a1) {
     }
 }
 
-void box_trigger_resource_handler::post_handle_resources(worldly_resource_handler::eBehavior a2) {
+void box_trigger_resource_handler::post_handle_resources(worldly_resource_handler::eBehavior ) {
     if (this->my_slot->box_trigger_instances != nullptr) {
         sub_56FF50(this->my_slot->box_trigger_instances);
         this->my_slot->box_trigger_instances = nullptr;

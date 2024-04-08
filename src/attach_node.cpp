@@ -6,7 +6,7 @@
 
 VALIDATE_SIZE(attach_node, 0x28);
 
-void attach_node::unmash(mash_info_struct *a1, void *a3)
+void attach_node::unmash(mash_info_struct *a1, void *)
 {
     TRACE("attach_node::unmash");
 

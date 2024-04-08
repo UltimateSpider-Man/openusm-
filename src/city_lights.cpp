@@ -15,7 +15,7 @@ void city_lights::update(Float a1, nglMatrix &a2, nglMatrix &a3) {
     THISCALL(0x00527EB0, this, a1, &a2, &a3);
 }
 
-void city_lights::un_mash_start(generic_mash_header *a1, void *a2, generic_mash_data_ptrs *a3, void *a4)
+void city_lights::un_mash_start(generic_mash_header *a1, void *a2, generic_mash_data_ptrs *a3, void *)
 {
     this->un_mash(a1, a2, a3);
 }

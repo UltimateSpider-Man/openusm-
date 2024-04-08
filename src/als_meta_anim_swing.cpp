@@ -14,7 +14,7 @@ als_meta_anim_swing::als_meta_anim_swing()
     THISCALL(0x004AB870, this);
 }
 
-void als_meta_anim_swing::_unmash(mash_info_struct *a1, void *a3)
+void als_meta_anim_swing::_unmash(mash_info_struct *a1, void *)
 {
     TRACE("als::als_meta_anim_swing::unmash");
 

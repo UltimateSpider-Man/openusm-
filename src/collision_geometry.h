@@ -33,10 +33,12 @@ struct collision_geometry {
 
     /* virtual */ void split_xform(const po &a1, const po &a2, int a3);
 
-    /* virtual */ void get_colgeom_radius();
+    /* virtual */
+    [[nodiscard]] float get_colgeom_radius();
 
     //0x00560370
-    [[nodiscard]] /* virtual */ vector3d get_local_space_bounding_sphere_center();
+    //virtual 
+    [[nodiscard]] vector3d get_local_space_bounding_sphere_center();
 
     /* virtual */ float get_bounding_sphere_radius();
 

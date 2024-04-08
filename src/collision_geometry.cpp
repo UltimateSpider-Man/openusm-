@@ -14,19 +14,19 @@ collision_geometry::collision_geometry() {
     this->field_C = 2;
 }
 
-void collision_geometry::xform(const po &a2) {
-    this->field_8 = 1;
+void collision_geometry::xform(const po &) {
+    this->field_8 = true;
 }
 
-void collision_geometry::split_xform(const po &a1, const po &a2, const po &a3, int a4, int a5) {
+void collision_geometry::split_xform(const po &, const po &, const po &, int , int ) {
     ;
 }
 
-void collision_geometry::split_xform(const po &a1, const po &a2, int a3) {
+void collision_geometry::split_xform(const po &, const po &, int ) {
     ;
 }
 
-void collision_geometry::get_colgeom_radius() {
+float collision_geometry::get_colgeom_radius() {
     this->owner->get_colgeom_radius();
 }
 

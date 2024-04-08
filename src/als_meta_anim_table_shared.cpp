@@ -38,7 +38,7 @@ namespace als {
         }
     }
 
-    void als_meta_anim_table_shared::unmash(mash_info_struct *a1, void *a3)
+    void als_meta_anim_table_shared::unmash(mash_info_struct *a1, void *)
     {
         a1->unmash_class_in_place(this->field_0, this);
     }

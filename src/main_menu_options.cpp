@@ -91,7 +91,7 @@ void main_menu_options::OnDown(int) {
     if (!this->field_E4->field_2D) {
         static string_hash fx_scroll_hash{"FE_MO_UDScroll"};
 
-        sound_instance_id v5 = sub_60B960(fx_scroll_hash, 1.0, 1.0);
+        [[maybe_unused]] sound_instance_id v5 = sub_60B960(fx_scroll_hash, 1.0, 1.0);
         auto v3 = this->field_104;
         this->field_106 = v3++;
         this->field_104 = v3;
@@ -120,7 +120,7 @@ void main_menu_options::OnCross(int a2) {
             } else if (!this->field_E4->field_2D) {
                 static string_hash fx_accept_hash{"FE_MO_Accept"};
 
-                sound_instance_id v15 = sub_60B960(fx_accept_hash, 1.0, 1.0);
+                [[maybe_unused]] sound_instance_id v15 = sub_60B960(fx_accept_hash, 1.0, 1.0);
 
                 auto *v5 = this->field_E4;
                 for (uint16_t i = 0; i < v5->field_0.size(); ++i) {

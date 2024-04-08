@@ -9,7 +9,7 @@ VALIDATE_SIZE(combo_system_chain::telegraph_info, 0xC);
 VALIDATE_SIZE(combo_system, 0x50);
 
 
-void combo_system_chain::telegraph_info::_unmash(mash_info_struct *a1, void *a2)
+void combo_system_chain::telegraph_info::_unmash(mash_info_struct *, void *)
 {
     TRACE("combo_system_chain::telegraph_info::unmash");
 
@@ -22,7 +22,7 @@ int combo_system_chain::telegraph_info::get_mash_sizeof()
     return func(this);
 }
 
-void combo_system_chain::unmash(mash_info_struct *a1, void *a3)
+void combo_system_chain::unmash(mash_info_struct *a1, void *)
 {
     TRACE("combo_system_chain::unmash");
 

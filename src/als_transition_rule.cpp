@@ -48,7 +48,7 @@ namespace als
 
     bool implicit_transition_rule::can_transition(als_data &a1) const
     {
-        this->field_0.can_transition(a1);
+        return this->field_0.can_transition(a1);
     }
 
     void implicit_transition_rule::unmash(mash_info_struct *a1, void *a3)

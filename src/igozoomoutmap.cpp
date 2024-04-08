@@ -68,7 +68,7 @@ void IGOZoomOutMap::SetZoomLevel(int a2) {
     if (this->field_5B0 != v2) {
         static string_hash sfx_id_hash{"FE_GENERIC_LRSCROLL"};
 
-        sound_instance_id id = sub_60B960(sfx_id_hash, 1.0, 1.0);
+        [[maybe_unused]] sound_instance_id id = sub_60B960(sfx_id_hash, 1.0, 1.0);
     }
 
     this->field_5B0 = v2;

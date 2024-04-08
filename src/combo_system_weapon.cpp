@@ -11,5 +11,5 @@ combo_system_weapon::combo_system_weapon()
 
 }
 
-void combo_system_weapon::unmash(mash_info_struct *a1, void *a3)
+void combo_system_weapon::unmash(mash_info_struct *, void *)
 {}
