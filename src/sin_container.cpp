@@ -7,7 +7,8 @@
 VALIDATE_SIZE(sin_container, 0x30);
 VALIDATE_OFFSET(sin_container, field_24, 0x24);
 
-void sin_container::setup_world() {
+void sin_container::setup_world()
+{
     TRACE("sin_container::setup_world");
     sp_log("%s", this->master_script_name);
     sp_log("%s", this->field_4);

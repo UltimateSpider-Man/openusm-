@@ -3,6 +3,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "mash_info_struct.h"
+#include "nal_anim.h"
 #include "nal_system.h"
 #include "utility.h"
 #include "trace.h"

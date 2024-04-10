@@ -77,7 +77,7 @@ void nglStringNode::Render()
                     g_Direct3DDevice()->lpVtbl->SetTransform(
                         g_Direct3DDevice(),
                         (D3DTRANSFORMSTATETYPE)256,
-                        (const D3DMATRIX *)nglCurScene()->field_24C);
+                        bit_cast<D3DMATRIX *>(&nglCurScene()->field_24C));
                 }
 
                 if ( EnableShader() ) {

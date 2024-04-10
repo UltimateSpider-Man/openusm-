@@ -112,6 +112,71 @@ void matrix4x4::decompose(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5
     a5 = this->arr[3];
 }
 
+#include "oldmath_po.h"
+
+void matrix4x4::sub_415A30(const void *a2)
+{
+    if constexpr (1)
+    {
+        vector4d a2a;
+        vector4d a3;
+        vector4d a4;
+        vector4d a5;
+
+        ptr_to_po tmp = *bit_cast<const ptr_to_po *>(a2);
+        tmp.sub_48E900(a2a, a3, a4, a5);
+
+        this->arr[0] = a2a;
+
+        this->arr[1] = a3;
+
+        this->arr[2] = a4;
+
+        this->arr[3] = a5;
+
+    } else {
+        THISCALL(0x00415A30, this, &a2);
+    }
+}
+
+void matrix4x4::sub_76CF20(void *a2)
+{
+    THISCALL(0x0076CF20, this, a2);
+}
+
+
+matrix4x4 matrix4x4::sub_76CA50(const matrix4x4 &arg0)
+{
+    vector4d a2, a3, a4, a5;
+    arg0.decompose(a2, a3, a4, a5);
+    this->arr[0][0] = a2[0];
+    this->arr[0][1] = a2[1];
+    this->arr[0][2] = a2[2];
+    this->arr[0][3] = 0.0;
+
+    this->arr[1][0] = a3[0];
+    this->arr[1][1] = a3[1];
+    this->arr[1][2] = a3[2];
+    this->arr[1][3] = 0.0;
+
+    this->arr[2][0] = a4[0];
+    this->arr[2][1] = a4[1];
+    this->arr[2][2] = a4[2];
+    this->arr[2][3] = 0.0;
+
+    this->arr[3][0] = a5[0];
+    this->arr[3][1] = a5[1];
+    this->arr[3][2] = a5[2];
+    this->arr[3][3] = 1.0;
+
+    return (*this);
+}
+
+void matrix4x4::sub_76CE70(void *a2)
+{
+    THISCALL(0x0076CE70, this, a2);
+}
+
 
 matrix4x4 matrix4x4::transpose() const {
 #ifndef USE_GLM

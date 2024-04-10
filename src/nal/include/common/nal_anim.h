@@ -1,3 +1,61 @@
 #pragma once
 
+#include "fixedstring.h"
+
+#include <cstdint>
+
+struct nalBaseSkeleton;
+struct nalBasePose;
+
+struct nalAnyPose {
+    nalBasePose *field_0;
+};
+
+template<typename T>
+struct nalAnimClass {
+
+    struct nalInstanceClass {
+        std::intptr_t m_vtbl;
+        float field_4;
+        float field_8;
+        nalBaseSkeleton *field_C;
+        nalAnimClass<nalAnyPose> *field_10;
+    };
+
+    std::intptr_t m_vtbl;
+    nalAnimClass<nalAnyPose> *field_4;
+    tlFixedString field_8;
+    int field_28;
+    int Version;
+    nalBaseSkeleton *Skeleton;
+    int field_34;
+    int field_38;
+    int InstanceCount;
+
+    auto *GetSkeleton() {
+        return this->Skeleton;
+    }
+
+    void * CreateInstance(nalBaseSkeleton *skeleton);
+
+    //virtual
+    void *VirtualCreateInstance(nalBaseSkeleton *Skel);
+};
+
+extern bool Compatible(nalBaseSkeleton *a1, nalBaseSkeleton *a2);
+
+template<typename T>
+inline T *nalAnimPtrCast(nalAnimClass<nalAnyPose> *a1)
+{
+    if ( a1 != nullptr
+        && a1->m_vtbl == T::vtbl_ptr() )
+    {
+        return bit_cast<T *>(a1);
+    }
+
+    return nullptr;
+}
+
+
+
 

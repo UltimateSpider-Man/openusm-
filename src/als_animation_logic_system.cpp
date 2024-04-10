@@ -233,8 +233,10 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
         sp_log("is_active = %d, did_do_transition = %d", the_state_machine->is_active(), the_state_machine->did_do_transition());
     }
 
-    if constexpr (0) {
-        if ( !this->field_7C ) {
+    if constexpr (1)
+    {
+        if ( !this->field_7C )
+        {
             if ( this->field_6C->has_time_ifc() ) {
                 this->field_6C->time_ifc();
             }
@@ -293,7 +295,7 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
             auto *old_context = resource_manager::push_resource_context(this->field_6C->field_BC);
 
             func(&this->field_18, -1);
-            for ( auto i = 0; i < this->field_8.size(); ++i ) {
+            for ( auto i = 0u; i < this->field_8.size(); ++i ) {
                 state_machine *the_state_machine = this->field_8[i];
                 func(the_state_machine, i);
             }
@@ -301,14 +303,19 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
             resource_manager::pop_resource_context();
             assert(resource_manager::get_resource_context() == old_context);
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x004A6400, this, a2);
     }
 }
 
 void animation_logic_system::frame_advance_update_pending_params(Float a2)
 {
-    if constexpr (0) {
+    TRACE("animation_logic_system::frame_advance_update_pending_params");
+
+    if constexpr (1)
+    {
         if ( !this->field_7C )
         {
             if ( this->field_6C->has_time_ifc() ) {
@@ -322,7 +329,9 @@ void animation_logic_system::frame_advance_update_pending_params(Float a2)
                 the_machine->update_pending_params(this);
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x004A65C0, this, a2);
     }
 }
@@ -512,6 +521,11 @@ void animation_logic_system_patch()
     {
         FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_play_new_animations);
         set_vfunc(0x0088148C, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_update_pending_params);
+        set_vfunc(0x00881490, address);
     }
     return;
 

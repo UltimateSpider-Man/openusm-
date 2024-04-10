@@ -41,17 +41,26 @@ struct nalComponentInfo {
     int field_2C;
 };
 
-template<typename T>
-struct nalGenericComponentHandle {
-    int field_0;
+template<uint32_t I>
+struct MorphSliderPoseTemplate {
+    int field_0 {0xFF};
     int field_4;
     int field_8;
     int field_C;
 };
 
 template<typename T>
+struct nalGenericComponentHandle {
+    nalGeneric::nalGenericSkeleton *Skeleton {nullptr};
+    int field_4;
+    int field_8;
+    int field_C;
+
+};
+
+template<typename T>
 struct nalGenericConstComponentHandle {
-    int field_0;
+    nalGeneric::nalGenericSkeleton *field_0 {nullptr};
     int field_4;
     int field_8;
     int field_C;
@@ -133,6 +142,32 @@ struct nalGenericSkeleton {
 
     static inline Var<std::intptr_t> vtbl_ptr {0x009770E0};
 
+};
+
+struct nalGenericPose {
+    nalGenericSkeleton *field_0;
+    int field_4;
+    bool field_8;
+
+    auto * GetSkeleton() const {
+        return this->field_0;
+    }
+
+    template<typename T>
+    T * operator[](nalGeneric::nalGenericComponentHandle<T> &handle)
+    {
+        static T g_invalidObject {};
+
+        assert(handle.Skeleton != nullptr && "attempting to de-reference an invalid handle");
+
+        if ( handle->Skeleton == nullptr ) {
+            return &g_invalidObject;
+        }
+
+        assert(handle.Skeleton == GetSkeleton() && "handle and pose skeletons don't match");
+
+        return bit_cast<T *>(handle->field_4->field_2C + 12 * handle->field_8 + this->field_4);
+    }
 };
 
 } // nalGeneric

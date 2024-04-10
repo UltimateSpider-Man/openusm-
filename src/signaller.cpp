@@ -17,8 +17,10 @@ signaller::~signaller() {
     THISCALL(0x004F9120, this);
 }
 
-bool signaller::sub_48AE20() {
-    THISCALL(0x0048AE20, this);
+bool signaller::sub_48AE20()
+{
+    bool result = THISCALL(0x0048AE20, this);
+    return result;
 }
 
 int signaller::get_entity_size() {

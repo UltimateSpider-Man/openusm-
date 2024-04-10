@@ -168,9 +168,9 @@ bool texture_resource_handler::_handle_resource(worldly_resource_handler::eBehav
                 this->handle_resource_internal(tlres_loc, static_cast<nglTextureFileFormat>(1));
             }
 
-            auto *dir = this->my_slot->pack_directory.field_0;
             ++this->field_C;
-            if (this->field_C >= dir->texture_locations.size())
+            auto *dir = &this->my_slot->get_resource_directory();
+            if (this->field_C >= dir->get_tlresource_count(static_cast<tlresource_type>(1)))
             {
                 if (auto v7 = this->field_14; v7 < 2) {
                     this->field_C = 0;

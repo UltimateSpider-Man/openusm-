@@ -409,7 +409,7 @@ bool resource_directory::find_resource(const resource_key &a2,
 
                     assert(the_parent->pack_slot != nullptr);
 
-                    if (the_parent->pack_slot->field_88->field_4 == RESOURCE_PARTITION_STRIP) {
+                    if (the_parent->pack_slot->get_partition()->get_type() == RESOURCE_PARTITION_STRIP) {
                         assert(the_parent->parents.size() == 1);
                         the_parent = the_parent->parents.at(0);
                     }
@@ -692,7 +692,18 @@ char *resource_directory::get_tlresource(uint32_t a2, tlresource_type tlres_type
     return result;
 }
 
-static Var<const char *[1]> tlresource_type_str { 0x00921CE0 };
+static const char *tlresource_type_str[10] {
+    "(none)",
+    "texture",
+    "mesh file",
+    "mesh",
+    "morph file",
+    "morph",
+    "anim file",
+    "anim",
+    "scene anim",
+    "skeleton"
+};
 
 bool resource_directory::find_tlresource(uint32_t a1,
                                          tlresource_type tlres_type,
@@ -700,8 +711,6 @@ bool resource_directory::find_tlresource(uint32_t a1,
                                          tlresource_location **out_loc)
 {
     TRACE("resource_directory::find_tlresource");
-
-    //sp_log("%d", this->resource_locations.size());
 
     if constexpr (1)
     {
@@ -734,31 +743,31 @@ bool resource_directory::find_tlresource(uint32_t a1,
             array = this->mesh_locations.m_data;
             array_size = this->mesh_locations.m_size;
             break;
-        case 4:
+        case TLRESOURCE_TYPE_MORPH_FILE:
             array = this->morph_file_locations.m_data;
             array_size = this->morph_file_locations.m_size;
             break;
-        case 5:
+        case TLRESOURCE_TYPE_MORPH:
             array = this->morph_locations.m_data;
             array_size = this->morph_locations.m_size;
             break;
-        case 6:
+        case TLRESOURCE_TYPE_MATERIAL_FILE:
             array = this->material_file_locations.m_data;
             array_size = this->material_file_locations.m_size;
             break;
-        case 7:
+        case TLRESOURCE_TYPE_MATERIAL:
             array = this->material_locations.m_data;
             array_size = this->material_locations.m_size;
             break;
-        case 8:
+        case TLRESOURCE_TYPE_ANIM_FILE:
             array = this->anim_file_locations.m_data;
             array_size = this->anim_file_locations.m_size;
             break;
-        case 9:
+        case TLRESOURCE_TYPE_ANIM:
             array = this->anim_locations.m_data;
             array_size = this->anim_locations.m_size;
             break;
-        case 10:
+        case TLRESOURCE_TYPE_SCENE_ANIM:
             array = this->scene_anim_locations.m_data;
             array_size = this->scene_anim_locations.m_size;
             break;
@@ -767,7 +776,8 @@ bool resource_directory::find_tlresource(uint32_t a1,
             array_size = this->skeleton_locations.m_size;
             break;
         default:
-            break;
+            assert(0 && "Unknown tlresource type");
+            return false;
         }
 
         assert(array != nullptr);
@@ -784,46 +794,49 @@ bool resource_directory::find_tlresource(uint32_t a1,
                                     &idx,
                                     compare_tlFixedString_tlresource_location))
         {
-            if (out_loc != nullptr)
-            {
+            if (out_loc != nullptr) {
                 *out_loc = &array[idx];
             }
 
-            if (out_dir != nullptr)
-            {
-                *out_dir = this;
-            }
-
             result = true;
+        }
 
+        if (result)
+        {
             if (SHOW_RESOURCE_SPAM)
             {
                 //sp_log("idx = %d", idx);
                 auto &v5 = this->pack_slot->get_name_key();
                 auto v6 = v5.m_hash.to_string();
                 debug_print_va("found tlresource %s 0x%08x in %s",
-                       tlresource_type_str()[tlres_type], a1, v6);
+                       tlresource_type_str[tlres_type], a1, v6);
             }
+
+            if (out_dir != nullptr) {
+                *out_dir = this;
+            }
+
+            return result;
         }
         else
         {
-            for (auto i = 0; i < this->parents.size(); ++i)
+            for (auto &the_parent : this->parents)
             {
-                resource_directory *the_parent = this->parents.at(i);
                 if (the_parent == nullptr) {
                     break;
                 }
 
-                assert(parents.at(i)->pack_slot != nullptr);
+                assert(the_parent->pack_slot != nullptr);
 
-                if (the_parent->pack_slot->field_88->field_4 == RESOURCE_PARTITION_STRIP)
+                if (the_parent->pack_slot->get_partition()->get_type() == RESOURCE_PARTITION_STRIP)
                 {
                     assert(the_parent->parents.size() == 1);
 
                     the_parent = the_parent->parents.at(0);
                 }
 
-                if (SHOW_RESOURCE_SPAM) {
+                if (SHOW_RESOURCE_SPAM)
+                {
                     auto v18 = the_parent->pack_slot->get_name_key().m_hash;
 
                     auto v16 = this->pack_slot->get_name_key().m_hash;
@@ -831,15 +844,14 @@ bool resource_directory::find_tlresource(uint32_t a1,
                     auto *v15 = v18.to_string();
                     auto *v12 = v16.to_string();
                     debug_print_va("didn't find tlresource %s 0x%08x in %s, checking parent %s",
-                           tlresource_type_str()[tlres_type],
+                           tlresource_type_str[tlres_type],
                            a1,
                            v12,
                            v15);
                 }
 
                 result = the_parent->find_tlresource(a1, tlres_type, out_dir, out_loc);
-                if (result)
-                {
+                if (result) {
                     return result;
                 }
             }
@@ -850,18 +862,9 @@ bool resource_directory::find_tlresource(uint32_t a1,
 
                 auto *v14 = v19.to_string();
                 debug_print_va("didn't find tlresource %s 0x%08x in %s",
-                       tlresource_type_str()[tlres_type],
+                       tlresource_type_str[tlres_type],
                        a1,
                        v14);
-            }
-
-            result = false;
-        }
-
-        {
-            if (out_loc != nullptr)
-            {
-                sp_log("%d 0x%X", (*out_loc)->get_size(), (*out_loc)->m_type);
             }
         }
 
@@ -869,7 +872,12 @@ bool resource_directory::find_tlresource(uint32_t a1,
     }
     else
     {
-        return (bool) THISCALL(0x0051F350, this, a1, tlres_type, out_dir, out_loc);
+        bool (__fastcall *func)(resource_directory *, void *,
+                                uint32_t,
+                                tlresource_type,
+                                resource_directory **,
+                                tlresource_location **) = CAST(func, 0x0051F350);
+        return func(this, nullptr, a1, tlres_type, out_dir, out_loc);
     }
 }
 
@@ -923,7 +931,8 @@ char *resource_directory::add_tlresource(tlFixedString *arg0,
 
             auto *v12 = v14.to_string();
             auto *v7 = arg0->to_string();
-            debug_print_va("added tlresource %s %s to %s", tlresource_type_str()[tlres_type], v7, v12);
+            debug_print_va("added tlresource %s %s to %s",
+                    tlresource_type_str[tlres_type], v7, v12);
         }
 
         result = data;
@@ -935,7 +944,7 @@ char *resource_directory::add_tlresource(tlFixedString *arg0,
             auto *v13 = v15.to_string();
             auto *v10 = arg0->to_string();
             debug_print_va("couldn't add tlresource %s %s to %s",
-                   tlresource_type_str()[tlres_type],
+                   tlresource_type_str[tlres_type],
                    v10,
                    v13);
         }
@@ -988,10 +997,9 @@ void resource_directory_patch()
     {
         FUNC_ADDRESS(address, &resource_directory::find_tlresource);
         REDIRECT(0x00566128, address);
-        //REDIRECT(0x00565F48, address);
+        REDIRECT(0x00565F48, address);
         REDIRECT(0x00569250, address);
     }
-
 
     return;
 

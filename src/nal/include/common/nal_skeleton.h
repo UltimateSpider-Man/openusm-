@@ -10,7 +10,12 @@ struct nalBaseSkeleton {
     tlFixedString field_8;
     tlFixedString field_28;
 
-    const tlFixedString &GetAnimTypeName() const
+    const tlFixedString & GetName() const
+    {
+        return this->field_8;
+    }
+
+    const tlFixedString & GetAnimTypeName() const
     {
         return this->field_28;
     }

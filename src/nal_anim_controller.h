@@ -3,7 +3,7 @@
 #include "animation_controller.h"
 
 #include "als_meta_anim_table_shared.h"
-#include "nal_system.h"
+#include "nal_anim.h"
 #include "usm_anim_player.h"
 
 struct actor;
@@ -15,7 +15,12 @@ struct als_meta_anim_table_shared;
 }
 
 struct nal_anim_controller : animation_controller {
+
     struct scene_anim_client {
+        int m_vtbl;
+        nal_anim_controller *field_4;
+        int field_8;
+
         //0x00492890
         //virtual
         nalAnimClass<nalAnyPose>::nalInstanceClass *CreateInstance(nalAnimClass<nalAnyPose> *a2);
@@ -23,7 +28,12 @@ struct nal_anim_controller : animation_controller {
         //0x0049C090
         //virtual
         int Advance(
-            nalAnimClass<nalAnyPose>::nalInstanceClass *a2, float a3, float a4, float a5, float a6);
+            nalAnimClass<nalAnyPose>::nalInstanceClass *a2, Float a3, Float a4, Float a5, Float a6);
+
+        //virtual
+        void Render(
+            nalAnimClass<nalAnyPose>::nalInstanceClass *a2,
+            Float a3);
     };
 
     struct std_play_method : usm_anim_player<nalAnimClass<nalAnyPose>, 3>::nalPlayMethod {

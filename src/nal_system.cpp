@@ -3,6 +3,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "log.h"
+#include "nal_anim.h"
 #include "nal_component.h"
 #include "nfl_system.h"
 #include "osassert.h"
@@ -17,12 +18,7 @@
 
 #include <cassert>
 
-VALIDATE_SIZE(nalStreamInstance, 0x7C);
-VALIDATE_OFFSET(nalStreamInstance, m_callback, 0x20);
-
 VALIDATE_OFFSET(nalGeneric::nalGenericSkeleton, field_50, 0x50);
-
-VALIDATE_SIZE(nalAnimClass<nalAnyPose>::nalInstanceClass, 0x14);
 
 Var<tlInstanceBank> nalTypeInstanceBank{0x009770E8};
 
@@ -168,72 +164,6 @@ void nalExit() {
     CDECL_CALL(0x00783C60);
 }
 
-bool nalStreamInstance::IsReady() {
-    //sp_log("nalStreamInstance::IsReady(): %d", this->field_1C);
-
-    return this->field_1C == 5;
-}
-
-nalStreamInstance::~nalStreamInstance() {
-    THISCALL(0x004AD4C0, this);
-}
-
-void nalStreamInstance::AdvanceStream() {
-    THISCALL(0x00492EF0, this);
-
-    //sp_log("nalStreamInstance::AdvanceStream(): %d", v2);
-}
-
-bool nalStreamInstance::Advance(Float dt) {
-#if 1
-    sp_log("%d", this->field_1C);
-#endif
-
-    bool result = (bool) THISCALL(0x00498580, this, dt);
-
-    //sp_log("nalStreamInstance::Advance(): post %d", this->field_1C);
-
-    return result;
-}
-
-nalStreamInstance *create_stream_instance(uint32_t a1,
-                                          uint32_t a2,
-                                          uint32_t a3,
-                                          [[maybe_unused]] int a4,
-                                          nalClientSceneAnim *(*p_cb)(const tlFixedString &, void *),
-                                          void *a6) {
-    //sp_log("create_stream_instance(): a1 = %d", a1);
-
-    if constexpr (1) {
-        nalStreamInstance *result = static_cast<nalStreamInstance *>(
-            tlMemAlloc(sizeof(nalStreamInstance), 8u, 0));
-        if (result == nullptr) {
-            return nullptr;
-        }
-
-        result->m_callback = p_cb;
-        result->field_24 = a6;
-        result->field_28.field_0 = a1;
-        result->field_4 = nullptr;
-        result->field_8 = nullptr;
-        result->field_C = 0;
-        result->field_10 = 0.0;
-        result->field_14 = 0.0;
-        result->field_18 = nullptr;
-        result->field_1C = 0;
-        result->field_44 = 0;
-        result->field_78 = 0;
-        result->field_79 = 0;
-        result->m_vtbl = 0x00880A88;
-        result->field_5C = a2;
-        result->field_70 = a3;
-
-        return result;
-    } else {
-        return (nalStreamInstance *) CDECL_CALL(0x00492E70, a1, a2, a3, a4, p_cb, a6);
-    }
-}
-
 void nalReleaseSceneAnimInternal(nalSceneAnim *a1) {
     CDECL_CALL(0x0078D9B0, a1);
 }
@@ -352,14 +282,8 @@ void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *
     nalSceneAnimDirectory() = CAST(nalSceneAnimDirectory(), a1);
 }
 
-template<>
-void *nalAnimClass<nalAnyPose>::VirtualCreateInstance(nalBaseSkeleton *Skel)
+void nalStreamInstance_patch()
 {
-    void * (__fastcall *func)(void *, void *, nalBaseSkeleton *) = CAST(func, get_vfunc(m_vtbl, 0x10));
-    return func(this, nullptr, Skel);
-}
-
-void nalStreamInstance_patch() {
 
     REDIRECT(0x005AD21F, nalInit);
 

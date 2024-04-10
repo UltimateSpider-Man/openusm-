@@ -29,7 +29,7 @@
 #include <iostream>
 #include <string>
 
-using list_t = decltype(resource_pack_streamer::field_6C);
+using list_t = _std::list<resource_pack_queue_entry>;
 
 #ifndef TEST_CASE
 VALIDATE_SIZE(list_t, 12u);
@@ -50,7 +50,6 @@ using List_ptr_t = _std::_List_ptr<list_t::value_type, std::allocator<list_t::va
 
 VALIDATE_SIZE(List_ptr_t, 2u);
 
-VALIDATE_OFFSET(resource_pack_streamer, field_6C, 0x6C);
 VALIDATE_SIZE(resource_pack_streamer, 0x90);
 
 VALIDATE_SIZE(resource_pack_queue_entry, 0x30u);
@@ -208,7 +207,24 @@ void resource_pack_streamer::load_internal(const char *a2,
     }
 }
 
-void resource_pack_streamer::unload(int which_slot_idx) {
+void resource_pack_streamer::unload(resource_pack_slot *s)
+{
+    assert(pack_slots != nullptr);
+
+    for ( uint32_t i {0}; i < this->pack_slots->size(); ++i )
+    {
+        if ( this->pack_slots->at(i) == s )
+        {
+            this->unload(i);
+            return;
+        }
+    }
+
+    assert(0);
+}
+
+void resource_pack_streamer::unload(int which_slot_idx)
+{
     assert(pack_slots != nullptr);
     assert(which_slot_idx >= 0 && ((uint32_t) which_slot_idx) < pack_slots->size());
 
@@ -250,16 +266,7 @@ void resource_pack_streamer::cancel_load(int which_slot_idx)
 
     assert(curr_slot != nullptr);
 
-    auto *v3 = this->curr_slot;
-
-    assert(v3->m_slot_state == SLOT_STATE_STREAMING);
-    v3->m_slot_state = SLOT_STATE_EMPTY;
-    v3->m_vtbl->clear_pack(v3);
-    auto *v5 = v3->m_callback;
-    if ( v5 != nullptr )
-    {
-        v5(static_cast<resource_pack_slot::callback_enum>(2), &v3->field_88->streamer, v3, nullptr);
-    }
+    this->curr_slot->notify_load_cancelled();
 
     this->currently_streaming = false;
     this->field_8 = {};
@@ -327,7 +334,7 @@ bool resource_pack_streamer::all_slots_idle() {
     }
 
     for (auto &slot : (*this->pack_slots)) {
-        if (!(slot->m_slot_state == SLOT_STATE_EMPTY || slot->m_slot_state == SLOT_STATE_READY)) {
+        if ( !(slot->is_empty() || slot->is_pack_ready()) ) {
             return false;
         }
     }
@@ -538,11 +545,10 @@ void resource_pack_streamer::frame_advance(Float a2, limited_timer *a3)
                 {
                     v15.reserve(pack_slots.size());
 
-                    for (auto &slot : pack_slots) {
-                        auto v11 = slot->m_slot_state;
-
+                    for (auto &slot : pack_slots)
+                    {
                         slot->frame_advance(a2, a3);
-                        if (v11 == 3 && v11 == SLOT_STATE_EMPTY) {
+                        if (slot->is_pack_unloading() && slot->is_empty()) {
                             v15.push_back(slot);
                         }
                     }

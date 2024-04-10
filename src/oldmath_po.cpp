@@ -566,28 +566,6 @@ po *po::inverse() const {
     return (&po_result());
 }
 
-void po::sub_415A30(const ptr_to_po &a2) {
-    if constexpr (1) {
-        vector4d a2a;
-        vector4d a3;
-        vector4d a4;
-        vector4d a5;
-
-        a2.sub_48E900(a2a, a3, a4, a5);
-
-        this->m[0] = a2a;
-
-        this->m[1] = a3;
-
-        this->m[2] = a4;
-
-        this->m[3] = a5;
-
-    } else {
-        THISCALL(0x00415A30, this, &a2);
-    }
-}
-
 void po::set_facing(const vector3d &a2) {
     vector3d z_facing = a2 - this->get_position();
 
@@ -705,12 +683,13 @@ void po::sub_48D840()
 
 po sub_48F770(const po &arg4, const po &a3)
 {
-    ptr_to_po a2;
-    a2.m_abs_po = &a3;
-    a2.m_rel_po = &arg4;
+    const void * a2[2] {
+        &a3,
+        &arg4
+    };
 
     po res;
-    res.sub_415A30(a2);
+    res.m.sub_415A30(a2);
     return res;
 }
 

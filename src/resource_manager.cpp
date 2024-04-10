@@ -302,7 +302,7 @@ bool is_idle()
         for ( auto &partition : (*partitions()) )
         {
             assert(partition != nullptr);
-            if ( !partition->streamer.is_idle() )
+            if ( !partition->get_streamer()->is_idle() )
             {
                 return false;
             }
@@ -429,9 +429,10 @@ resource_pack_slot *get_best_context(resource_pack_slot *slot)
         {
             assert(my_partition != nullptr);
 
-            for (uint32_t i = 0; i < my_partition->m_pack_slots.size(); ++i)
+            auto &pack_slots = my_partition->get_pack_slots();
+            for (uint32_t i = 0; i < pack_slots.size(); ++i)
             {
-                if (my_partition->m_pack_slots[i] == slot) {
+                if (pack_slots[i] == slot) {
                     the_partition = my_partition;
                     sp_log("%d", i);
                     break;
@@ -614,6 +615,8 @@ resource_pack_slot *push_resource_context(resource_pack_slot *pack_slot)
 {
     TRACE("resource_manager::push_resource_context");
 
+    sp_log("%s", pack_slot->get_name_key().get_platform_string(3).c_str());
+
     if constexpr (1)
     {
         assert(pack_slot != nullptr);
@@ -657,16 +660,16 @@ resource_directory *get_resource_directory(const resource_key &a1) {
             auto *streamer = partition->get_streamer();
             assert(streamer != nullptr);
 
-            auto *pack_slots = streamer->pack_slots;
+            auto *pack_slots = streamer->get_pack_slots();
             assert(pack_slots != nullptr);
 
             for (auto &pack_slot : (*pack_slots)) {
                 assert(pack_slot != nullptr);
 
-                auto v7 = pack_slot->m_slot_state;
-                if (v7 == 2 || v7 == 3 || v7 == SLOT_STATE_READY) {
+                if (pack_slot->is_data_ready())
+                {
                     if (pack_slot->get_name_key() == a1) {
-                        return pack_slot->pack_directory.field_0;
+                        return &pack_slot->get_resource_directory();
                     }
                 }
             }
@@ -686,16 +689,17 @@ void set_active_resource_context(resource_pack_slot *a1)
     {
         if (a1 != nullptr && a1->is_data_ready())
         {
-            nglSetTextureDirectory(&a1->pack_directory.field_4);
-            nglSetMeshFileDirectory(&a1->pack_directory.field_C);
-            nglSetMeshDirectory(&a1->pack_directory.field_14);
-            nglSetMorphDirectory(&a1->pack_directory.field_1C);
-            nglSetMaterialFileDirectory(&a1->pack_directory.field_34);
-            nglSetMaterialDirectory(&a1->pack_directory.field_2C);
-            nalSetSkeletonDirectory(&a1->pack_directory.field_54);
-            nalSetAnimFileDirectory(&a1->pack_directory.field_3C);
-            nalSetAnimDirectory(&a1->pack_directory.field_44);
-            nalSetSceneAnimDirectory(&a1->pack_directory.field_4C);
+            auto &pack_dir = a1->get_resource_pack_directory();
+            nglSetTextureDirectory(&pack_dir.field_4);
+            nglSetMeshFileDirectory(&pack_dir.field_C);
+            nglSetMeshDirectory(&pack_dir.field_14);
+            nglSetMorphDirectory(&pack_dir.field_1C);
+            nglSetMaterialFileDirectory(&pack_dir.field_34);
+            nglSetMaterialDirectory(&pack_dir.field_2C);
+            nalSetSkeletonDirectory(&pack_dir.field_54);
+            nalSetAnimFileDirectory(&pack_dir.field_3C);
+            nalSetAnimDirectory(&pack_dir.field_44);
+            nalSetSceneAnimDirectory(&pack_dir.field_4C);
         }
         else
         {
@@ -741,11 +745,13 @@ resource_pack_slot *pop_resource_context()
         }
     
 #else
+        sp_log("%d", resource_context_stack().size());
         resource_context_stack().pop_back();
+        sp_log("%d", resource_context_stack().size());
 #endif
 
         auto *v0 = get_resource_context();
-        resource_manager::set_active_resource_context(v0);
+        set_active_resource_context(v0);
 
         return old_context;
     } else {
@@ -969,7 +975,7 @@ void configure_packs_by_memory_map(int idx)
 
 void set_active_district(bool a1)
 {
-    auto *district_partition = get_partition_pointer(6);
+    auto *district_partition = get_partition_pointer(RESOURCE_PARTITION_DISTRICT);
     assert(district_partition != nullptr);
 
     auto *district_streamer = district_partition->get_streamer();
@@ -978,7 +984,7 @@ void set_active_district(bool a1)
     district_streamer->set_active(a1);
 }
 
-resource_partition *get_partition_pointer(int which_type) {
+resource_partition *get_partition_pointer(resource_partition_enum which_type) {
     assert(partitions() != nullptr);
     assert(which_type >= 0 && which_type < static_cast<int>(partitions()->size()));
 

@@ -35,6 +35,10 @@ struct resource_partition {
     //0x0053DFD0
     ~resource_partition();
 
+    auto get_type() const {
+        return field_4;
+    }
+
     //0x00556090
     void frame_advance(Float a1, limited_timer *a2);
 

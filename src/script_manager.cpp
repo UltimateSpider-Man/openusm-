@@ -873,10 +873,13 @@ script_executable_entry *find_entry(const script_executable *a1) {
     }
 }
 
-int save_game_var_buffer(char *a1) {
+int save_game_var_buffer(char *a1)
+{
     TRACE("script_manager::save_game_var_buffer");
+    sp_log("0x%08X", int(a1));
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ( a1 == nullptr && script_manager_game_var_container() == nullptr ) {
             return 0;
         }

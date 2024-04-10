@@ -30,7 +30,8 @@ struct resource_pack_queue_entry {
     resource_pack_queue_entry();
 };
 
-struct resource_pack_streamer {
+class resource_pack_streamer {
+
     bool active;
     bool currently_streaming;
 
@@ -43,12 +44,15 @@ struct resource_pack_streamer {
 
     _std::list<resource_pack_queue_entry> field_6C;
 
+private:
     uint8_t *field_78;
     float field_7C;
     int m_data_size;
     nflRequestID curr_stream_request_id;
     nflRequestID field_88;
     nflFileID curr_file_id;
+
+public:
 
     //0x0053E040
     resource_pack_streamer();
@@ -60,15 +64,16 @@ struct resource_pack_streamer {
         resource_partition *a2,
         _std::vector<resource_pack_slot *> *slots);
 
-    inline auto *get_pack_slots() {
+    auto *get_pack_slots() {
         return this->pack_slots;
     }
 
-    inline bool is_active() {
+    bool is_active() const {
         return active;
     }
 
-    inline bool is_idle() {
+    bool is_idle() const
+    {
         auto v1 = (!this->currently_streaming && this->field_6C.empty());
 
         auto func = [this]() -> bool {
@@ -79,7 +84,7 @@ struct resource_pack_streamer {
             auto &pack_slots = (*this->pack_slots);
 
             for (auto &slot : pack_slots) {
-                if (!(slot->m_slot_state == 0 || slot->m_slot_state == 4)) {
+                if (!(slot->is_empty() || slot->is_pack_ready())) {
                     return false;
                 }
             }
@@ -135,6 +140,8 @@ struct resource_pack_streamer {
 
     //0x0054C820
     void frame_advance_idle(Float a2);
+
+    void unload(resource_pack_slot *s);
 
     //0x0053E0D0
     void unload(int which_slot_idx);

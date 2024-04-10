@@ -9,6 +9,7 @@
 #include "filespec.h"
 #include "game.h"
 #include "mstring.h"
+#include "nal_anim.h"
 #include "nal_system.h"
 #include "script_library_class.h"
 #include "script_manager.h"

@@ -18,7 +18,7 @@ namespace als {
         func(this);
     }
 
-    void state_machine_shared::_unmash(mash_info_struct *a2, void *a3)
+    void state_machine_shared::_unmash(mash_info_struct *a2, void *)
     {
         TRACE("als::state_machine_shared::unmash");
 

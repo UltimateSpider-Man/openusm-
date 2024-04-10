@@ -112,7 +112,7 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
         nglMesh *result;
         if ((a2 & 0x80u) == 0)
         {
-            math::VecClass<3, 1> v10 = sub_414360(a4, {nglCurScene()->field_14C});
+            math::VecClass<3, 1> v10 = sub_414360(a4, {nglCurScene()->WorldToView});
             auto v7 = Mesh->NLODs - 1;
             if (v7 < 0) {
             LABEL_11:
@@ -152,8 +152,8 @@ nglMesh *nglListAddMesh_GetLOD(nglMesh *Mesh,
 
 bool nglIsSphereVisible(math::VecClass<3, 1> a1, Float radius)
 {
-    for (auto i = 0u; i < 6u; ++i) {
-        auto &v = nglCurScene()->field_2AC[i];
+    for (auto i = 0u; i < NGLCLIP_MAX; ++i) {
+        auto &v = nglCurScene()->ClipPlanes[i];
 
         if ( a1[0] * v[0] + a1[1] * v[1] + a1[2] * v[2] - v[3] + radius < 0.0f ) {
             return false;
@@ -239,7 +239,7 @@ void nglListAddMesh(nglMesh *Mesh,
             meshNode->field_88 = Mesh;
             meshNode->field_0 = {};
 
-            ptr_to_po v14 = {(const po *) v6, (po *) &nglCurScene()->field_18C};
+            ptr_to_po v14 = {(const po *) v6, (po *) &nglCurScene()->WorldToScreen};
 
             meshNode->field_40 = sub_507130(v14);
             meshNode->field_84 = 0;

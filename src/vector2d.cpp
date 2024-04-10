@@ -25,3 +25,7 @@ float vector2d::length2() const {
 float vector2d::length() const {
     return std::sqrt(this->length2());
 }
+
+vector2d vector2d::operator*(float a1) const {
+    return vector2d {this->arr[0] * a1, this->arr[1] * a1};
+}

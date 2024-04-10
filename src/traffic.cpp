@@ -105,67 +105,66 @@ void traffic::enable_traffic(bool a1, bool a2)
     }
 }
 
-void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, bool a3) {
-    if constexpr (1) {
-        auto *v3 = g_world_ptr()->the_terrain->sub_6DC8A0(*a1);
-        if (v3 != nullptr) {
-            auto it = v3->begin();
-            auto end = v3->end();
-            if (it != end) {
-                traffic_path_lane *v8 = nullptr;
+void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, bool a3)
+{
+    if constexpr (1)
+    {
+        auto *v3 = g_world_ptr()->the_terrain->get_region_info_for_point(*a1);
+        if (v3 != nullptr)
+        {
+            for ( auto &reg : (*v3) )
+            {
+                auto *v6 = reg->get_traffic_path_graph();
+                if ( reg->is_interior()) {
+                    continue;
+                }
 
-                vector3d a5;
-                while (1) {
-                    auto *v5 = *it;
-                    auto *v6 = v5->get_traffic_path_graph();
-                    auto v7 = v5->flags;
-                    if ((v7 & 0x100) == 0 && (v7 & 0x40000) == 0) {
-                        if (v6 != nullptr) {
-                            v8 = v6->get_closest_or_farthest_lane(true,
-                                                                  *a1,
-                                                                  ZEROVEC,
-                                                                  &a5,
-                                                                  traffic_path_lane::eLaneType{
-                                                                      static_cast<int>(!a3)},
-                                                                  false,
-                                                                  nullptr);
-                            if (v8 != nullptr) {
-                                break;
-                            }
+                if (v6 != nullptr)
+                {
+                    vector3d a5;
+                    auto *lane = v6->get_closest_or_farthest_lane(true,
+                                                          *a1,
+                                                          ZEROVEC,
+                                                          &a5,
+                                                          static_cast<traffic_path_lane::eLaneType>(
+                                                              static_cast<int>(!a3)),
+                                                          false,
+                                                          nullptr);
+                    if (lane != nullptr)
+                    {
+                        int idx = 0;
+                        lane->get_node_before_point(a5, &idx);
+
+                        vector3d node1 = lane->get_node(idx);
+                        vector3d node2 = lane->get_node(idx + 1);
+
+                        if (idx < 1 || idx < lane->get_num_nodes() - 2)
+                        {
+                            node1 = lane->get_node(idx);
+                            node2 = lane->get_node(idx + 1);
                         }
-                    }
+                        else
+                        {
+                            node1 = lane->get_node(idx - 1);
+                            node2 = lane->get_node(idx);
+                        }
 
-                    if (++it == end) {
+                        assert((node2 - node1).xz_length2() > EPSILON);
+
+                        auto v17 = (node2 - node1).normalized();
+
+                        *a2 = v17;
+                        *a1 = a5;
                         return;
                     }
                 }
-
-                int tmp = 0;
-
-                auto v26 = v8->get_node_before_point(a5, &tmp);
-                auto v9 = tmp;
-                vector3d node1;
-                if (tmp < 1 || tmp < v8->total_nodes - 2) {
-                    node1 = v8->sub_5E2000(tmp);
-                    ++v9;
-                } else {
-                    node1 = v8->sub_5E2000(tmp - 1);
-                }
-
-                auto node2 = v8->sub_5E2000(v9);
-
-                assert((node2 - node1).xz_length2() > EPSILON);
-
-                v26 = node2 - node1;
-
-                auto v17 = v26.normalized();
-
-                *a2 = v17;
-
-                *a1 = a5;
             }
         }
-    } else {
+
+        sp_log("Something went wrong with the get_closest_point_on_lane_with_facing() function");
+    }
+    else
+    {
         CDECL_CALL(0x006D0910, a1, a2, a3);
     }
 }

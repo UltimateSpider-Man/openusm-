@@ -2,6 +2,7 @@
 
 #include "float.hpp"
 #include "matrix4x4.h"
+#include "nal_anim.h"
 #include "nal_generic.h"
 #include "nal_system.h"
 #include "variable.h"
@@ -41,6 +42,10 @@ struct page_camera {
     bool field_ED;
     bool field_EE;
     char field_EF;
+
+    auto get_transform() const {
+        return field_4C;
+    }
 
     //virtual
     void * CreateInstance(nalAnimClass<nalAnyPose> *a2);

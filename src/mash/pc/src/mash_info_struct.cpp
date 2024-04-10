@@ -34,7 +34,7 @@ void mash_info_struct::advance_buffer(int how_many_bytes) {
 
 uint8_t *mash_info_struct::read_from_buffer(int size, int align)
 {
-    TRACE("mash_info_struct::read_from_buffer");
+    //TRACE("mash_info_struct::read_from_buffer");
 
     if (align != 0)
     {

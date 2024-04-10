@@ -8,6 +8,7 @@
 #include "geometry_manager.h"
 #include "local_collision.h"
 #include "oldmath_po.h"
+#include "trace.h"
 #include "utility.h"
 #include "vector3d.h"
 #include "vtbl.h"
@@ -49,26 +50,26 @@ float camera::get_far_plane_factor() {
     return func(this);
 }
 
-void camera::adjust_geometry_pipe(bool scene_analyzer) {
-    sp_log("adjust_geometry_pipe: ");
+void camera::adjust_geometry_pipe(bool scene_analyzer)
+{
+    TRACE("camera::adjust_geometry_pipe");
 
     auto &v10 = this->get_abs_position();
+
     auto &v3 = this->get_abs_po();
     auto &v4 = v3.get_matrix();
-    vector3d v5 = v4[2];
 
-    vector3d center = v5 + v10;
-    auto &v6 = this->get_abs_po();
-    auto &v7 = v6.get_matrix();
-    vector3d up = v7[1];
-    if (scene_analyzer) {
+    vector3d center = v4[2] + v10;
+    vector3d up = v4[1];
+    if (scene_analyzer)
+    {
         assert(!is_externally_controlled());
 
-        matrix4x4 v12;
-
         auto &eye = this->get_abs_position();
-        geometry_manager::set_look_at(&v12, eye, center, up);
-        geometry_manager::set_xform((geometry_manager::xform_t) 8, v12);
+
+        matrix4x4 view_mat;
+        geometry_manager::set_look_at(&view_mat, eye, center, up);
+        geometry_manager::set_xform(static_cast<geometry_manager::xform_t>(8), view_mat);
     }
     else
     {
@@ -94,7 +95,7 @@ float camera::compute_xz_projected_fov() {
     return compensated_fov;
 }
 
-bool camera::is_externally_controlled() {
+bool camera::is_externally_controlled() const {
     return this->is_flagged(0x400000);
 }
 
@@ -135,7 +136,6 @@ vector3d collide_with_world(
     vector3d v25{};
     int v24 = 0;
     bool v23 = false;
-    bool v22 = true;
     do
     {
         auto v25 = a3;
@@ -166,8 +166,6 @@ vector3d collide_with_world(
                 a1 = a1 + v9;
                 ++v24;
             }
-
-            v22 = false;
         }
         else
         {
@@ -180,7 +178,24 @@ vector3d collide_with_world(
     return result;
 }
 
-void camera_patch() {
-    FUNC_ADDRESS(address, &camera::adjust_geometry_pipe);
-    SET_JUMP(0x00577AF0, address);
+bool camera::_is_a_camera() const
+{
+    TRACE("camera::is_a_camera");
+
+    return true;
+}
+
+void camera_patch()
+{
+    {
+        FUNC_ADDRESS(address, &camera::_is_a_camera);
+        set_vfunc(0x0088BDF0 + 0x6C, address);
+        set_vfunc(0x008820E0 + 0x6C, address);
+        set_vfunc(0x00881B50 + 0x6C, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &camera::adjust_geometry_pipe);
+        SET_JUMP(0x00577AF0, address);
+    }
 }

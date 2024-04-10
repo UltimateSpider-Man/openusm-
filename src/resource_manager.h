@@ -121,7 +121,7 @@ struct resource_memory_map {
 extern Var<resource_memory_map *> memory_maps;
 
 //0x00537AA0
-resource_partition *get_partition_pointer(int which_type);
+extern resource_partition *get_partition_pointer(resource_partition_enum which_type);
 
 bool get_resource_if_exists(const resource_key &resource_id,
                             void *a2,

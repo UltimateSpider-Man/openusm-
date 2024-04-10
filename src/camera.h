@@ -17,7 +17,7 @@ struct camera : actor {
 
     float compute_xz_projected_fov();
 
-    bool is_externally_controlled();
+    bool is_externally_controlled() const;
 
     //0x00577BE0
     void get_look_and_up(vector3d *a2, vector3d *a3);
@@ -33,6 +33,8 @@ struct camera : actor {
     //0x00577AF0
     /* virtual */ void adjust_geometry_pipe(bool a2);
 
+    //virtual
+    bool _is_a_camera() const;
 
 };
 

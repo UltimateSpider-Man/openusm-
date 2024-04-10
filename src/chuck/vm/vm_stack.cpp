@@ -19,8 +19,9 @@ vm_stack::vm_stack(vm_thread *t) {
     this->SP = this->buffer;
 }
 
-void vm_stack::push(const char *a2, int a3) {
-    TRACE("vm_stack::push(const char *, int)", std::to_string(a3).c_str());
+void vm_stack::push(const char *a2, int a3)
+{
+    //TRACE("vm_stack::push(const char *, int)", std::to_string(a3).c_str());
 
     std::memcpy(this->SP, a2, a3);
     this->SP += a3;
@@ -28,7 +29,7 @@ void vm_stack::push(const char *a2, int a3) {
 
 void vm_stack::push(vm_str_t a2)
 {
-    TRACE("vm_stack::push(vm_str_t)", a2);
+    //TRACE("vm_stack::push(vm_str_t)", a2);
 
     assert(size() + sizeof( vm_str_t ) <= capacity());
     *(vm_str_t *) this->SP = a2;
@@ -37,7 +38,7 @@ void vm_stack::push(vm_str_t a2)
 
 void vm_stack::push(vm_num_t a2)
 {
-    TRACE("vm_stack::push(vm_num_t)", std::to_string(a2).c_str());
+    //TRACE("vm_stack::push(vm_num_t)", std::to_string(a2).c_str());
 
     assert(size() + sizeof( vm_num_t ) <= capacity());
     *(vm_num_t *)this->SP = a2;
@@ -46,7 +47,7 @@ void vm_stack::push(vm_num_t a2)
 
 void vm_stack::push(int a2)
 {
-    TRACE("vm_stack::push(int)");
+    //TRACE("vm_stack::push(int)");
     printf("0x%08X\n", a2);
 
     assert(size() + sizeof( int ) <= capacity());

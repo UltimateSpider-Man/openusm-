@@ -11,11 +11,17 @@ struct eligible_pack;
 struct pack_switch_info_t;
 
 struct eligible_pack_streamer {
-    bool field_0;
+
+    bool field_0 {false};
+
+private:
     _std::vector<eligible_pack *> eligible_packs;
     _std::vector<eligible_pack_category *> field_14;
-    void (*get_ideal_pack_info_callback)(_std::vector<ideal_pack_info> *a1);
+    void (*get_ideal_pack_info_callback)(_std::vector<ideal_pack_info> *a1) {nullptr};
     _std::vector<pack_switch_info_t> field_28;
+
+public:
+    eligible_pack_streamer() = default;
 
     //0x00547C50
     void init(int a2,
@@ -29,6 +35,8 @@ struct eligible_pack_streamer {
 
     //0x00547BA0
     void clear();
+
+    void unlock_pack_slot(resource_pack_slot *slot);
 
     //0x00547D50
     void fixup_eligible_pack_parent_child_relationships();
@@ -48,7 +56,7 @@ struct eligible_pack_streamer {
 
     void frame_advance(Float a2);
 
-    bool sub_537F80();
+    bool is_idle() const;
 
 	eligible_pack *find_eligible_pack_by_token(
         resource_pack_token &a2);

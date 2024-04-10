@@ -20,6 +20,7 @@
 #include "ngl_dx_palette.h"
 #include "ngl_dx_texture.h"
 #include "ngl_font.h"
+#include "ngl_lighting.h"
 #include "ngl_mesh.h"
 #include "ngl_params.h"
 #include "ngl_scene.h"
@@ -339,14 +340,14 @@ matrix4x4 nglMeshNode::sub_41D840()
         matrix4x4 v2 {};
         if ( (this->field_90->Flags & 1) != 0 )
         {
-            v2 = nglCurScene()->field_14C;
+            v2 = nglCurScene()->WorldToView;
         }
         else
         {
             struct {
                 matrix4x4 *field_0;
                 matrix4x4 *field_4;
-            } v4 {&this->field_0, &nglCurScene()->field_14C};
+            } v4 {&this->field_0, &nglCurScene()->WorldToView};
             matrix4x4 v5;
             v5.sub_41D8A0(&v4);
             v2 = v5;
@@ -450,28 +451,6 @@ matrix4x4 nglMeshNode::sub_4199D0()
     }
 
     return result;
-}
-
-void nglCalculateMatrices(bool a1)
-{
-    TRACE("nglCalculateMatrices");
-
-    if constexpr (0)
-    {}
-    else
-    {
-        CDECL_CALL(0x0076ABA0, a1);
-    }
-}
-
-void nglSetOrthoMatrix(Float nearz, Float farz) {
-    assert(farz > nearz && "Invalid projection parameters.");
-
-    nglCurScene()->field_33C = 0;
-    nglCurScene()->field_3EC = 0.0;
-    nglCurScene()->m_nearz = nearz;
-    nglCurScene()->m_farz = farz;
-    nglCurScene()->field_3E4 = true;
 }
 
 void sub_781F80(nglVertexBuffer *a1, int a2, uint32_t a3)
@@ -581,7 +560,7 @@ void nglSetScissor(Float a1, Float a2, Float a3, Float a4)
         nglCurScene()->field_354[2] = ((a3 + 1.0f) * 0.5f * ScreenWidth + 0.5f);
         nglCurScene()->field_354[1] = ((a2 + 1.0f) * 0.5f * ScreenHeight + 0.5f);
         nglCurScene()->field_354[3] = ((a4 + 1.0f) * 0.5f * ScreenHeight + 0.5f);
-        nglCurScene()->field_3E4 = true;
+        nglCalculateMatrices(true);
     } else {
         CDECL_CALL(0x0076B4D0, a1, a2, a3, a4);
     }
@@ -593,7 +572,7 @@ void nglSetView(Float x1, Float y1, Float x2, Float y2)
     nglCurScene()->vy1 = y1;
     nglCurScene()->vx2 = x2;
     nglCurScene()->vy2 = y2;
-    nglCurScene()->field_3E4 = true;
+    nglCalculateMatrices(true);
 }
 
 void nglSetViewport(Float a1, Float a2, Float a3, Float a4)
@@ -639,13 +618,49 @@ void nglSetViewport(Float a1, Float a2, Float a3, Float a4)
     }
 }
 
-void nglSetWorldToViewMatrix(const math::MatClass<4, 3> &a1) {
-    nglCurScene()->field_14C = a1;
-    nglCurScene()->field_3E4 = true;
+void nglDumpCamera(const math::MatClass<4, 3> &a1)
+{
+    CDECL_CALL(0x00782210, &a1);
 }
 
-void nglSetZTestEnable(bool a1) {
-    nglCurScene()->field_3B9 = a1;
+void nglSetWorldToViewMatrix(const math::MatClass<4, 3> &a1)
+{
+    TRACE("nglSetWorldToViewMatrix");
+
+    nglCurScene()->WorldToView = a1;
+    nglCalculateMatrices(true);
+
+    if (nglSyncDebug().DumpSceneFile) {
+        nglDumpCamera(a1);
+    }
+}
+
+void nglSetZTestEnable(bool a1)
+{
+    nglCurScene()->ZTestEnable = a1;
+}
+
+void nglSetZWriteEnable(bool a1)
+{
+    nglCurScene()->ZWriteEnable = a1;
+}
+
+math::VecClass<3, 1> nglProjectPoint(math::VecClass<3, 1> a2)
+{
+    math::VecClass<3, 1> result;
+    CDECL_CALL(0x0076BAA0, &result, a2);
+
+    return result;
+}
+
+void nglProjectPoint(math::VecClass<3, 1> &a1, math::VecClass<3, 1> a2)
+{
+    a1 = nglProjectPoint(a2);
+}
+
+nglParamSet<nglSceneParamSet_Pool> * nglGetSceneParams()
+{
+    return &nglCurScene()->field_404;
 }
 
 void nglListAddNode(nglRenderNode *node)
@@ -657,8 +672,8 @@ void nglListAddNode(nglRenderNode *node)
         node->m_tex = v2.Tex;
         if ( v2.Type == NGLSORT_TRANSLUCENT )
         {
-            node->m_next_node = nglCurScene()->field_344;
-            nglCurScene()->field_344 = node;
+            node->m_next_node = nglCurScene()->TransNodes;
+            nglCurScene()->TransNodes = node;
             ++nglCurScene()->TransListCount;
         }
         else
@@ -897,6 +912,16 @@ HRESULT STDMETHODCALLTYPE HookDrawPrimitiveUP(IDirect3DDevice9 *This,
     return origDrawPrimitiveUP(This, primitive_type, primitive_count, data, stride);
 }
 
+using SetViewport_t = decltype(g_Direct3DDevice()->lpVtbl->SetViewport);
+SetViewport_t origSetViewport;
+
+HRESULT STDMETHODCALLTYPE HookSetViewport(IDirect3DDevice9 *This, const D3DVIEWPORT9 *pViewport)
+{
+    TRACE("HookSetViewport");
+
+    return origSetViewport(This, pViewport);
+}
+
 using DrawIndexedPrimitiveUP_t = decltype(g_Direct3DDevice()->lpVtbl->DrawIndexedPrimitiveUP);
 DrawIndexedPrimitiveUP_t origDrawIndexedPrimitiveUP;
 
@@ -1026,6 +1051,10 @@ void hook_directx()
     auto old_perms = 0ul;
     VirtualProtect((void *) vtbl, 150u, PAGE_READWRITE, &old_perms);
 
+    origSetViewport = vtbl->SetViewport;
+    vtbl->SetViewport = &HookSetViewport;
+
+#if 0
     origSetFVF = vtbl->SetFVF;
     vtbl->SetFVF = &HookSetFVF;
 
@@ -1061,6 +1090,7 @@ void hook_directx()
 
     origCreateVertexDeclaration = vtbl->CreateVertexDeclaration;
     vtbl->CreateVertexDeclaration = &HookCreateVertexDeclaration;
+#endif
 
     VirtualProtect((void *) vtbl, 150u, old_perms, &old_perms);
 }
@@ -1220,8 +1250,8 @@ void nglBeginHiresScreenShot(int width, int height) {
 }
 
 void nglSetAspectRatio(Float a1) {
-    nglCurScene()->field_3E8 = a1;
-    nglCurScene()->field_3E4 = true;
+    nglCurScene()->AspectRatio = a1;
+    nglCalculateMatrices(true);
 }
 
 bool nglSaveHiresScreenshot() {
@@ -1666,6 +1696,7 @@ void sub_7726B0(bool a1)
             float v3[4] {0.0, 0.5, 1.0, 2.0};
             g_Direct3DDevice()->lpVtbl->SetVertexShaderConstantF(g_Direct3DDevice(), 91u, v3, 1u);
 
+
             v3[0] = 3.1415927;
             v3[1] = 0.5;
             v3[2] = 6.2831855;
@@ -1698,9 +1729,10 @@ void sub_7726B0(bool a1)
     return;
 }
 
-void nglGetProjectionParams(float *a1, float *nearz, float *farz) {
+void nglGetProjectionParams(float *a1, float *nearz, float *farz)
+{
     if (a1 != nullptr) {
-        *a1 = nglCurScene()->field_3EC;
+        *a1 = nglCurScene()->HFov;
     }
 
     if (nearz != nullptr) {
@@ -1777,6 +1809,8 @@ void nglMeshFile::un_mash_start(generic_mash_header *header,
 tlFixedString *nglMeshFile::get_string(nglMeshFile *a1) {
     return &a1->FileName;
 }
+
+#include "resource_directory.h"
 
 void nglSetTextureDirectory(tlResourceDirectory<nglTexture, tlFixedString> *a1)
 {
@@ -3246,7 +3280,7 @@ int nglGetLOD(nglMesh *a1, const math::MatClass<4, 3> &a2)
     TRACE("nglGetLOD");
 
     auto v5 = sub_414360(a1->field_20, a2);
-    auto v6 = sub_414360(v5, nglCurScene()->field_14C);
+    auto v6 = sub_414360(v5, nglCurScene()->WorldToView);
     auto v7 = v6[2];
 
     for ( auto i = a1->NLODs - 1; i >= 0; --i )
@@ -4061,7 +4095,7 @@ void nglRenderQuad(nglQuad *a2)
         nglSetSamplerState(0, D3DSAMP_ADDRESSU, ((a2->field_54 & 0x40) | 0x20u) >> 5);
         nglSetSamplerState(0, D3DSAMP_ADDRESSV, ((a2->field_54 & 0x80) | 0x40u) >> 6);
 
-        nglTextureAnimFrame() = nglCurScene()->field_400;
+        nglTextureAnimFrame() = nglCurScene()->IFLFrame;
         nglDxSetTexture(0, m_tex, a2->field_54, 3);
 
         if ( EnableShader() ) {
@@ -4172,8 +4206,8 @@ void nglListAddQuad(nglQuad *Quad)
             else
             {
                 v1->m_tex = Quad->field_50.tex;
-                v1->m_next_node = nglCurScene()->field_344;
-                nglCurScene()->field_344 = v1;
+                v1->m_next_node = nglCurScene()->TransNodes;
+                nglCurScene()->TransNodes = v1;
                 ++nglCurScene()->TransListCount;
             }
 
@@ -4203,26 +4237,37 @@ void * nglStringNode::operator new(size_t size)
     return mem;
 }
 
-void sub_754640(void *a1) {
-    CDECL_CALL(0x00754640, a1);
+void sub_754640(void *a1)
+{
+    if constexpr (0)
+    {
+        auto *node = static_cast<nglRenderNode *>(a1);
+        node->m_next_node = nglCurScene()->TransNodes;
+        nglCurScene()->TransNodes = node;
+        ++nglCurScene()->TransListCount;
+    }
+    else
+    {
+        CDECL_CALL(0x00754640, a1);
+    }
 }
 
 double sub_77E940(Float a1)
 {
-    auto v2 = a1 * nglCurScene()->field_20C;
-    return (float)(v2 + nglCurScene()->field_23C);
+    auto v2 = a1 * nglCurScene()->field_20C[0][0];
+    return v2 + nglCurScene()->field_20C[3][0];
 }
 
 double sub_77EA00(Float a1)
 {
-    auto v2 = a1 * nglCurScene()->field_220;
-    return (float)(v2 + nglCurScene()->field_240);
+    auto v2 = a1 * nglCurScene()->field_20C[1][1];
+    return v2 + nglCurScene()->field_20C[3][1];
 }
 
 double sub_77E820(Float a1)
 {
     auto m_nearz = a1;
-    if ( a1 < (double)nglCurScene()->m_nearz ) {
+    if ( a1 < nglCurScene()->m_nearz ) {
         m_nearz = nglCurScene()->m_nearz;
     }
 
@@ -4230,10 +4275,10 @@ double sub_77E820(Float a1)
         m_nearz = nglCurScene()->m_farz;
     }
 
-    auto v3 = m_nearz * nglCurScene()->field_10C[10];
-    auto v5 = m_nearz * nglCurScene()->field_10C[11];
-    auto v4 = v3 + nglCurScene()->field_10C[14];
-    auto v6 = v5 + nglCurScene()->field_10C[15];
+    auto v3 = m_nearz * nglCurScene()->ViewToScreen[2][2];
+    auto v5 = m_nearz * nglCurScene()->ViewToScreen[2][3];
+    auto v4 = v3 + nglCurScene()->ViewToScreen[3][2];
+    auto v6 = v5 + nglCurScene()->ViewToScreen[3][3];
     auto result = v4 / v6;
     if ( result < 0.0 ) {
         return 0.0;
@@ -4777,7 +4822,8 @@ int __stdcall WndProcEx(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
     }
 }
 
-void create_renderer(HWND hWnd) {
+void create_renderer(HWND hWnd)
+{
     TRACE("create renderer");
 
     WNDCLASSEXA v13;
@@ -4786,7 +4832,8 @@ void create_renderer(HWND hWnd) {
 
     s_d3dpresent_params() = {};
     HWND v1 = hWnd;
-    if (hWnd == nullptr) {
+    if (hWnd == nullptr)
+    {
         sub_77EB40();
         dword_93AE80() = g_Windowed();
         v13 = {};
@@ -4955,12 +5002,14 @@ void nglListBeginScene(nglSceneParamType a2) {
     }
 }
 
-void sub_769DE0(int a1) {
-    nglCurScene()->field_3B4 = a1;
+void nglSetFBWriteMask(unsigned int a1)
+{
+    nglCurScene()->FBWriteMask = a1;
 }
 
-void nglSetClearFlags(unsigned int a1) {
-    nglCurScene()->field_39C = a1;
+void nglSetClearFlags(unsigned int a1)
+{
+    nglCurScene()->ClearFlags = a1;
 }
 
 void nglDebugInit() {
@@ -5098,12 +5147,9 @@ void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *M
     }
 }
 
-void nglSetClearColor(Float a1, Float a2, Float a3, Float a4) {
-    float *v4 = nglCurScene()->field_3A4;
-    v4[0] = a1;
-    v4[1] = a2;
-    v4[2] = a3;
-    v4[3] = a4;
+void nglSetClearColor(Float a1, Float a2, Float a3, Float a4)
+{
+    nglCurScene()->ClearColor = color {a1, a2, a3, a4};
 }
 
 void nglListEndScene() {
@@ -5380,77 +5426,6 @@ void sub_81E910()
     CDECL_CALL(0x0081E910);
 }
 
-void sub_775C80(nglLightType a1, void *a2, int a3)
-{
-    CDECL_CALL(0x00775C80, a1, a2, a3);
-}
-
-void nglDumpDirLight(unsigned int a1, vector4d a2, vector4d a4)
-{
-    nglHostPrintf(h_sceneDump(), "\n");
-    nglHostPrintf(h_sceneDump(), "DIRLIGHT\n");
-    nglHostPrintf(h_sceneDump(), "  LIGHTCAT 0x%8X\n", a1);
-    nglHostPrintf(h_sceneDump(), "  DIR %f %f %f\n", a2[0], a2[1], a2[2]);
-    nglHostPrintf(h_sceneDump(), "  COLOR %f %f %f %f\n", a4[0], a4[1], a4[2], a4[3]);
-    nglHostPrintf(h_sceneDump(), "ENDLIGHT\n");
-}
-
-void nglListAddDirLight(unsigned int a2, math::VecClass<3, 0> a3, math::VecClass<4, -1> a4)
-{
-    TRACE("nglListAddDirLight");
-
-    struct stru {
-        math::VecClass<3, 0> field_0;
-        math::VecClass<4, -1> field_10;
-    };
-    VALIDATE_SIZE(stru, 0x20);
-
-    auto *v3 = static_cast<stru *>(nglListAlloc(sizeof(stru), 16));
-    if ( v3 != nullptr ) {
-        v3->field_0 = a3;
-        v3->field_10[0] = a4[0];
-        v3->field_10[1] = a4[1];
-        v3->field_10[2] = a4[2];
-        v3->field_10[3] = 1.0;
-        sub_775C80((nglLightType) 1, v3, a2);
-    }
-
-    if ( nglSyncDebug().DumpSceneFile )
-    {
-        vector4d v8 = *bit_cast<vector4d *>(&a3);
-        vector4d v9 = *bit_cast<vector4d *>(&a4);
-        nglDumpDirLight(a2, v8, v9);
-    }
-}
-
-void nglListAddPointLight(uint32_t a1, math::VecClass<3, 1> a2, Float a6, Float radius, math::VecClass<4, -1> a8)
-{
-    TRACE("nglListAddPointLight");
-
-    if ( nglIsSphereVisible(a2, radius) )
-    {
-        struct stru {
-            math::VecClass<3, 1> field_0;
-            math::VecClass<3, 1> field_10;
-            float field_20;
-            float field_24;
-        };
-        VALIDATE_SIZE(stru, 0x28);
-
-        auto *v5 = static_cast<stru*>(nglListAlloc(sizeof(stru), 16));
-        if ( v5 != nullptr ) {
-            v5->field_0 = a2;
-            v5->field_10[0] = a8[0];
-            v5->field_10[1] = a8[1];
-            v5->field_10[2] = a8[2];
-            v5->field_10[3] = 1.0;
-            v5->field_20 = a6;
-            v5->field_24 = radius;
-            sub_775C80((nglLightType)0, v5, a1);
-        }
-    }
-}
-
 void nglRenderTextureState::setSamplerState(
         int stage,
         uint8_t a3,
@@ -5513,6 +5488,8 @@ void ngl_patch()
 {
     ngl_dx_shader_patch();
 
+    SET_JUMP(0x0076B8C0, nglSetWorldToViewMatrix);
+
     REDIRECT(0x0041517C, xform_inv);
 
     {
@@ -5546,15 +5523,41 @@ void ngl_patch()
 
     REDIRECT(0x0077D0F2, nglVif1SetupScene);
 
-    REDIRECT(0x0077D0E4, nglCalculateMatrices);
+    {
+        REDIRECT(0x0052B3B3, nglCalculateMatrices);
+        REDIRECT(0x0052B49F, nglCalculateMatrices);
+        REDIRECT(0x0053ACA4, nglCalculateMatrices);
+        REDIRECT(0x0053D79F, nglCalculateMatrices);
+        REDIRECT(0x0053DB64, nglCalculateMatrices);
+        REDIRECT(0x0054E31B, nglCalculateMatrices);
+        REDIRECT(0x0054E4EA, nglCalculateMatrices);
+        REDIRECT(0x005B27D6, nglCalculateMatrices);
+        REDIRECT(0x0060BFE2, nglCalculateMatrices);
+        REDIRECT(0x0060C0BD, nglCalculateMatrices);
+        REDIRECT(0x0060D749, nglCalculateMatrices);
+        REDIRECT(0x006191D2, nglCalculateMatrices);
+        REDIRECT(0x00629D99, nglCalculateMatrices);
+        REDIRECT(0x00635B86, nglCalculateMatrices);
+        REDIRECT(0x00735441, nglCalculateMatrices);
+        REDIRECT(0x007368BF, nglCalculateMatrices);
+        REDIRECT(0x007369CC, nglCalculateMatrices);
+        REDIRECT(0x0073AB00, nglCalculateMatrices);
+        REDIRECT(0x0073D37A, nglCalculateMatrices);
+        REDIRECT(0x0073D4D3, nglCalculateMatrices);
+        REDIRECT(0x0073DD65, nglCalculateMatrices);
+        REDIRECT(0x0076B941, nglCalculateMatrices);
+        REDIRECT(0x0076BAA7, nglCalculateMatrices);
+        REDIRECT(0x0076C3A2, nglCalculateMatrices);
+        REDIRECT(0x0076C66D, nglCalculateMatrices);
+        REDIRECT(0x007703F1, nglCalculateMatrices);
+        REDIRECT(0x00779C51, nglCalculateMatrices);
+        REDIRECT(0x0077B026, nglCalculateMatrices);
+        REDIRECT(0x0077D0E4, nglCalculateMatrices);
+    }
 
     //REDIRECT(0x0041C704, nglDxSetTexture);
 
     SET_JUMP(0x0077A870, nglLoadTextureTM2);
-
-    SET_JUMP(0x00776140, nglListAddPointLight);
-
-    SET_JUMP(0x007760C0, nglListAddDirLight);
 
     SET_JUMP(0x00507690, FastListAddMesh);
 
@@ -5563,6 +5566,8 @@ void ngl_patch()
     SET_JUMP(0x0076C970, nglListBeginScene);
 
     SET_JUMP(0x0076B6D0, nglSetViewport);
+    
+    ngl_lighting_patch();
 
     {
         nglTexture * (* func)(const tlFixedString &) = &nglGetTexture;
@@ -5653,11 +5658,13 @@ void ngl_patch()
 
     return;
 
+    SET_JUMP(0x0076DF00, sub_76DF00);
+
+    SET_JUMP(0x0076D680, create_renderer);
+
     SET_JUMP(0x005A02B0, ngl_memalloc_callback);
 
     SET_JUMP(0x007724A0, nglCreateVertexDeclarationAndShader);
-
-    SET_JUMP(0x0076D680, create_renderer);
 
 #if 0
 

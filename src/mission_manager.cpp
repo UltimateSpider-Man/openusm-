@@ -113,12 +113,13 @@ void mission_manager::lock() {
     this->field_CC = true;
 }
 
-void mission_manager::unload_script_now() {
+void mission_manager::unload_script_now()
+{
     if (this->m_script == nullptr) {
         return;
     }
 
-    auto *mission_partition = resource_manager::get_partition_pointer(3);
+    auto *mission_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_MISSION);
     if (this->m_script == nullptr) {
         goto LABEL_5;
     }
@@ -140,7 +141,7 @@ void mission_manager::unload_script_now() {
         this->unload_script_if_requested();
         this->hero_switch_frame = -1;
         if (mission_partition != nullptr) {
-            mission_partition->streamer.flush(game::render_empty_list);
+            mission_partition->get_streamer()->flush(game::render_empty_list);
         }
 
     } while (this->m_unload_script);

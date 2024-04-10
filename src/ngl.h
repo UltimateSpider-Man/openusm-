@@ -156,6 +156,13 @@ struct nglMaterialBase
 
 extern nglMaterialBase *nglGetMaterialInFile(const tlFixedString &a1, nglMeshFile *MeshFile);
 
+enum nglMatrixType {
+    NGLMTX_VIEW_TO_WORLD = 0,
+    NGLMTX_VIEW_TO_SCREEN = 1,
+    NGLMTX_WORLD_TO_VIEW = 2,
+    NGLMTX_WORLD_TO_SCREEN = 3,
+};
+
 struct nglMatrix {
     float arr[4][4];
 };
@@ -355,6 +362,8 @@ extern void nglDebugMesh_BuildBox(nglVertexDef_MultipassMesh<nglVertexDef_Debug_
 //0x007730E0
 extern void nglInitWhiteTexture();
 
+extern matrix4x4 nglGetMatrix(nglMatrixType a2);
+
 //0x00769F00
 extern void nglGetProjectionParams(float *a1, float *nearz, float *farz);
 
@@ -474,8 +483,6 @@ struct mNglQuad {
     void custom_unmash(mash_info_struct *, void *);
 };
 
-enum nglLightType {};
-
 struct nglQuadNode : nglRenderNode {
     nglQuad field_C;
 
@@ -549,21 +556,6 @@ inline Var<IDirect3DBaseTexture9 *> celshadingTex {0x0095635C};
 inline Var<IDirect3DBaseTexture9 *> celshadingSolidTex {0x00956360};
 
 inline Var<IDirect3DTexture9 *> water_texture {0x009562C0};
-
-struct nglLightContext
-{
-    nglLightContext *field_0[8];
-    int field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
-    int field_30[8];
-    int field_50;
-    int field_54;
-    int field_58;
-    int field_5C;
-    vector4d field_60;
-};
 
 struct nglScratchBuffer_t
 {
@@ -787,6 +779,12 @@ extern int nglGetScreenWidth();
 //0x0076E030
 extern int nglGetScreenHeight();
 
+extern math::VecClass<3, 1> nglProjectPoint(math::VecClass<3, 1> a2);
+
+extern void nglProjectPoint(math::VecClass<3, 1> &a1, math::VecClass<3, 1> a2);
+
+extern nglParamSet<nglSceneParamSet_Pool> * nglGetSceneParams();
+
 extern void nglDumpMesh(nglMesh *Mesh, const math::MatClass<4, 3> &a2, nglMeshParams *MeshParams);
 
 //0x0076A070
@@ -902,6 +900,8 @@ extern void nglSetWorldToViewMatrix(const math::MatClass<4, 3> &a1);
 
 //0x00769E20
 extern void nglSetZTestEnable(bool a1);
+
+extern void nglSetZWriteEnable(bool a1);
 
 struct nglShaderNode;
 
@@ -1020,7 +1020,6 @@ extern nglTexture *nglGetBackBufferTex();
 
 extern void nglSetRenderTarget(nglTexture *a1);
 
-extern Var<nglLightContext *> nglDefaultLightContext;
 
 inline float stru_946840[2] {1.0f, 1.0f};
 

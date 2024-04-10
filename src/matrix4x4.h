@@ -98,6 +98,14 @@ struct matrix4x4 {
 
     void sub_41D8A0(void *a2);
 
+    matrix4x4 sub_76CA50(const matrix4x4 &arg0);
+
+    void sub_76CF20(void *a2);
+
+    void sub_76CE70(void *a2);
+
+    void sub_415A30(const void *a2);
+
     //0x004134B0
     void decompose(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
 

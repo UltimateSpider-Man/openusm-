@@ -191,7 +191,7 @@ nglMesh *tlresource_directory<nglMesh,tlHashString>::Find(const tlHashString &a2
 }
 
 template<>
-void tlresource_directory<nglMesh, tlHashString>::Add(nglMesh *Mesh)
+void tlresource_directory<nglMesh, tlHashString>::Add([[maybe_unused]] nglMesh *Mesh)
 {
     TRACE("tlresource_directory<nglMesh, tlHashString>::Add");
     ;
@@ -204,7 +204,7 @@ nalBaseSkeleton *tlresource_directory<nalBaseSkeleton, tlFixedString>::Find(cons
 {
     TRACE("tlresource_directory<nalBaseSkeleton, tlFixedString>::Find", a1.to_string());
 
-    if constexpr (1)
+    if constexpr (0)
     {
         nalBaseSkeleton *v5 = nullptr;
         if ( this->field_4 != nullptr )
@@ -249,7 +249,7 @@ nalBaseSkeleton *tlresource_directory<nalBaseSkeleton, tlFixedString>::Find(cons
 template<>
 nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedString &a1) 
 {
-    TRACE("tlresource_directory<nglTexture, tlFixedString>::Find", a1.to_string());
+    TRACE("tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedString &)", a1.to_string());
 
     if constexpr (0)
     {
@@ -294,7 +294,7 @@ nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedS
 template<>
 nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2)
 {
-    TRACE("tlresource_directory<nglTexture,tlFixedString>::Find", string_hash {int(a2)}.to_string());
+    TRACE("tlresource_directory<nglTexture,tlFixedString>::Find(uint32_t )", string_hash {int(a2)}.to_string());
 
     nglTexture *v3 = nullptr;
     if ( this->field_4 != nullptr )
@@ -335,35 +335,43 @@ nalAnimClass<nalAnyPose> *tlresource_directory<nalAnimClass<nalAnyPose>, tlFixed
 {
     TRACE("tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::Find");
 
-    nalAnimClass<nalAnyPose> *tlresource = nullptr;
-    if (this->field_4 != nullptr) {
-        tlresource = CAST(tlresource, this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_ANIM));
-    }
-
-    if ( tlresource == nullptr && system_dir() != nullptr )
+    if constexpr (0)
     {
-        nalAnimClass<nalAnyPose> * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
-        tlresource  = find(system_dir(), nullptr, a2);
+        nalAnimClass<nalAnyPose> *tlresource = nullptr;
+        if (this->field_4 != nullptr) {
+            tlresource = CAST(tlresource, this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_ANIM));
+        }
 
-        auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
-
-        if ( tlresource != nullptr )
+        if ( tlresource == nullptr && system_dir() != nullptr )
         {
-            if ( SHOW_RESOURCE_SPAM ) {
-                debug_print_va("found tlresource %08x in system directory", a2);
+            nalAnimClass<nalAnyPose> * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
+            tlresource  = find(system_dir(), nullptr, a2);
+
+            auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
+
+            if ( tlresource != nullptr )
+            {
+                if ( SHOW_RESOURCE_SPAM ) {
+                    debug_print_va("found tlresource %08x in system directory", a2);
+                }
+            }
+            else if ( SHOW_RESOURCE_SPAM )
+            {
+                debug_print_va("didn't find tlresource %08x in system directory", a2);
             }
         }
-        else if ( SHOW_RESOURCE_SPAM )
-        {
-            debug_print_va("didn't find tlresource %08x in system directory", a2);
+
+        if ( tlresource == nullptr ) {
+            return default_tlres();
         }
-    }
 
-    if ( tlresource == nullptr ) {
-        return default_tlres();
+        return tlresource;
     }
-
-    return tlresource;
+    else
+    {
+        nalAnimClass<nalAnyPose> *result = CAST(result, THISCALL(0x00566630, this, a2));
+        return result;
+    }
 }
 
 template<>

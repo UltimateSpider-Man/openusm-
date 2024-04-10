@@ -13,22 +13,75 @@
 #include "nal_skeleton.h"
 #include "nal_system.h"
 #include "oldmath_po.h"
+#include "osassert.h"
 #include "trace.h"
 #include "traffic.h"
 #include "quaternion.h"
 #include "variables.h"
 #include "vtbl.h"
 
+#include <cassert>
+
 VALIDATE_SIZE(nal_anim_controller, 0x54);
 
-nalAnimClass<nalAnyPose>::nalInstanceClass *nal_anim_controller::scene_anim_client::CreateInstance(
-    nalAnimClass<nalAnyPose> *a2) {
-    return (nalAnimClass<nalAnyPose>::nalInstanceClass *) THISCALL(0x00492890, this, a2);
+nalAnimClass<nalAnyPose>::nalInstanceClass *nal_anim_controller::scene_anim_client::CreateInstance(nalAnimClass<nalAnyPose> *a2)
+{
+    TRACE("nal_anim_controller::scene_anim_client::CreateInstance");
+
+    if constexpr (1)
+    {
+        auto *v2 = this->field_4;
+        auto *Skeleton = a2->GetSkeleton();
+        auto v9 = Skeleton->GetAnimTypeName();
+
+        if ( !v2->is_same_animtype(v9) )
+        {
+            auto v4 = this->field_4->field_8->GetAnimTypeName();
+            auto *char_anim_type = v4.to_string();
+            auto Name = this->field_4->field_8->GetName();
+            auto *char_skel_name = Name.to_string();
+            auto *v6 = a2->GetSkeleton();
+            auto v7 = v6->GetAnimTypeName();
+            auto *anim_type = v7.to_string();
+            auto &v8 = a2->field_8;
+            auto *anim_name = v8.to_string();
+            error("Attempted to play an animation from a cutscene (anim name: \"%s\") of animtype \"%s\" on a character skeleton \"%s"
+            "\" of animtype \"%s\". They are not compatible. Please have this scene animation altered to use the correct character's skeleton.",
+            anim_name,
+            anim_type,
+            char_skel_name,
+            char_anim_type);
+        }
+
+        this->field_8 = 0;
+        return static_cast<nalAnimClass<nalAnyPose>::nalInstanceClass *>(a2->CreateInstance(v2->field_8));
+    }
+    else
+    {
+        return (nalAnimClass<nalAnyPose>::nalInstanceClass *) THISCALL(0x00492890, this, a2);
+    }
 }
 
 int nal_anim_controller::scene_anim_client::Advance(
-    nalAnimClass<nalAnyPose>::nalInstanceClass *a2, float a3, float a4, float a5, float a6) {
-    return THISCALL(0x0049C090, this, a2, a3, a4, a5, a6);
+    nalAnimClass<nalAnyPose>::nalInstanceClass *a2, Float a3, Float a4, Float a5, Float a6)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        return THISCALL(0x0049C090, this, a2, a3, a4, a5, a6);
+    }
+}
+
+void nal_anim_controller::scene_anim_client::Render(
+        nalAnimClass<nalAnyPose>::nalInstanceClass *,
+        Float )
+{
+    TRACE("nal_anim_controller::scene_anim_client::Render");
+
+    byte_959561() = true;
+    this->field_4->get_matrix_data_from_pose(this->field_4->field_40);
+    byte_959561() = false;
 }
 
 nal_anim_controller::nal_anim_controller(actor *a2,
@@ -220,11 +273,12 @@ void nal_anim_controller::get_matrix_data_from_pose(nalAnyPose &arg0)
                         po new_po {};
                         auto *v6 = child->get_model_po();
 
-                        ptr_to_po a2;
-                        a2.m_abs_po = v32;
-                        a2.m_rel_po = v6;
+                        const void * a2[2] {
+                            v32,
+                            v6
+                        };
 
-                        new_po.sub_415A30(a2);
+                        new_po.m.sub_415A30(a2);
 
                         child->set_abs_po(new_po);
 
@@ -244,7 +298,7 @@ void nal_anim_controller::get_matrix_data_from_pose(nalAnyPose &arg0)
                 ptr_to_po a2;
                 a2.m_abs_po = &v3->get_rel_po();
                 a2.m_rel_po = &a2_28;
-                a2_28.sub_415A30(a2);
+                a2_28.m.sub_415A30(&a2);
                 a2_28.sub_48D840();
                 this->field_4->set_abs_po(a2_28);
 
@@ -282,7 +336,7 @@ void nal_anim_controller::get_matrix_data_from_pose(nalAnyPose &arg0)
                 ptr_to_po a2;
                 a2.m_rel_po = &a2_28;
                 a2.m_abs_po = my_rel_po;
-                a2_28.sub_415A30(a2);
+                a2_28.m.sub_415A30(&a2);
                 a2_28.sub_48D840();
                 this->field_4->set_abs_po(a2_28);
                 vector3d v17 = this->field_4->get_abs_position() - a2_12;
@@ -386,6 +440,16 @@ void *nal_anim_controller::std_play_method::CreateInstance(
 
 void nal_anim_controller_patch()
 {
+    {
+        FUNC_ADDRESS(address, &nal_anim_controller::scene_anim_client::CreateInstance);
+        set_vfunc(0x00880B04, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &nal_anim_controller::scene_anim_client::Render);
+        set_vfunc(0x00880B0C, address);
+    }
+
     {
         FUNC_ADDRESS(address, &nal_anim_controller::get_base_layer_anim_ptr);
         SET_JUMP(0x00497FB0, address);

@@ -12,8 +12,9 @@ Var<nglFont *> nglSysFont = {0x00975208};
 int nglGetTokenU32(char *&a1, const char *Token, uint32_t Base)
 {
     auto TokenLength = strlen(Token);
-    while ( *a1 != '\0' ) {
-        int i;
+    while ( *a1 != '\0' )
+    {
+        uint32_t i;
         for ( i = 0; i < TokenLength && (a1)[i] && (a1)[i] == Token[i]; ++i )
         {
             ;

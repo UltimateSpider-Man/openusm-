@@ -1077,11 +1077,12 @@ void entity_base::update_abs_po(bool a2) {
                         abs_po = This->my_conglom_root->my_abs_po;
                     }
 
-                    ptr_to_po a2a;
-                    a2a.m_rel_po = rel_po;
-                    a2a.m_abs_po = abs_po;
+                    void * a2a[2] {
+                        rel_po,
+                        abs_po
+                    };
 
-                    This->my_abs_po->sub_415A30(a2a);
+                    This->my_abs_po->m.sub_415A30(a2a);
                 } else {
                     *This->my_abs_po = This->get_rel_po();
                 }
@@ -1127,10 +1128,11 @@ void entity_set_abs_parent(entity_base *me, entity_base *parent) {
 
                 auto v3 = parent->get_abs_po();
 
-                ptr_to_po v4;
-                v4.m_rel_po = &my_po;
-                v4.m_abs_po = v3.inverse();
-                my_po.sub_415A30(v4);
+                void * v4[2] {
+                    &my_po,
+                    v3.inverse()
+                };
+                my_po.m.sub_415A30(v4);
                 me->set_abs_po(my_po);
                 assert(my_po.is_valid());
             }
@@ -1197,11 +1199,12 @@ void entity_set_abs_po(entity_base *ent, const po &the_po) {
 
             po &parent_abs_po = parent->get_abs_po();
 
-            ptr_to_po v4;
-            v4.m_rel_po = &the_po;
-            v4.m_abs_po = parent_abs_po.inverse();
+            const void * v4[2] {
+                &the_po,
+                parent_abs_po.inverse()
+            };
 
-            new_po.sub_415A30(v4);
+            new_po.m.sub_415A30(v4);
             ent->set_abs_po(new_po);
 
             assert(new_po.is_valid());

@@ -12,6 +12,8 @@ VALIDATE_SIZE(nalGenericSkeleton, 0xE4);
 VALIDATE_SIZE(nalComponentInfo, 0x30);
 VALIDATE_OFFSET(nalGenericSkeleton, field_64, 0x64);
 
+VALIDATE_SIZE(nalGenericPose, 0xC);
+
 nalGenericSkeleton::nalGenericSkeleton()
 {
     vtbl_ptr() = (int) std::addressof(bit_cast<int *>(this)[0]);

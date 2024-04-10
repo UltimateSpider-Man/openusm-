@@ -13,8 +13,6 @@
 
 VALIDATE_SIZE(resource_partition, 0xB4u);
 
-VALIDATE_OFFSET(resource_partition, streamer, 0x18);
-
 resource_partition::resource_partition(resource_partition_enum a2)
 {
     if constexpr (1)
@@ -98,8 +96,10 @@ void resource_partition::clear()
     }
 }
 
-void resource_partition::pop_pack_slot() {
-    if constexpr (1) {
+void resource_partition::pop_pack_slot()
+{
+    if constexpr (1)
+    {
         assert(m_pack_slots.size() > 0);
 
         assert(m_pack_slots.back() != nullptr && m_pack_slots.back()->is_empty());
@@ -152,7 +152,7 @@ void resource_partition::push_pack_slot(int memory_amount_to_reserve, void *a3)
         auto *slot = new (mem) worldly_pack_slot{};
 
         slot->set_memory_area(starting_addr, reserve_size, a3 == nullptr);
-        slot->field_88 = this;
+        slot->set_partition(this);
 
         //push_back
         {

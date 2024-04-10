@@ -29,7 +29,7 @@ void daynight::init()
         
         initialized() = true;
 
-        auto *common_partition = resource_manager::get_partition_pointer(4u);
+        auto *common_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_COMMON);
         assert(common_partition != nullptr);
 
         assert(common_partition->get_pack_slots().size() == 1);

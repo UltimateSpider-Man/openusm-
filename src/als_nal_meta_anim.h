@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fixedstring.h"
+#include "nal_anim.h"
 #include "nal_skeleton.h"
 #include "nal_system.h"
 #include "variable.h"

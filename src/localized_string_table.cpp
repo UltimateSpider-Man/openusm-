@@ -38,7 +38,7 @@ void localized_string_table::load_localizer() {
             break;
         }
 
-        auto *my_partition = resource_manager::get_partition_pointer(2);
+        auto *my_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_LANG);
         assert(my_partition != nullptr);
         assert(my_partition->get_pack_slots().size() == 1);
 
@@ -68,8 +68,7 @@ void localized_string_table::load_localizer() {
 
         resource_key res_key = create_resource_key_from_path(v5.c_str(), RESOURCE_KEY_TYPE_LANGUAGE);
         localized_string_table *string_localizer =
-            CAST(string_localizer,
-                 my_slot->pack_directory.field_0->get_resource(res_key, nullptr, nullptr));
+            CAST(string_localizer, my_slot->get_resource(res_key, nullptr, nullptr));
         assert(string_localizer != nullptr);
 
         string_localizer->sub_60BD30();

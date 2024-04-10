@@ -76,12 +76,9 @@ void so_data_block::un_mash(
         void *,
         generic_mash_data_ptrs *a4)
 {
-    auto v4 = 4 - (unsigned int)a4->field_0 % 4;
-    if ( v4 < 4 ) {
-        a4->field_0 += v4;
-    }
+    rebase(a4->field_0, 4u);
 
-    this->buffer = (char *)a4->field_0;
-    a4->field_0 += this->m_size;
+    this->buffer = a4->get<char>(this->m_size);
+
     assert(( this->flags & SO_DATA_BLOCK_FLAG_FROM_MASH ) != 0);
 }

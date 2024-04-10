@@ -256,7 +256,8 @@ void update_camera_teleport(camera &cam)
 {
     TRACE("update_camera_teleport");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         auto *v1 = g_cut_scene_player();
         auto v17 = ( v1->is_playing() ? 1.0 : 25.0 );
 
@@ -472,11 +473,43 @@ void wds_render_manager::clear_colorvol_scene()
     USColorVolShaderSpace::gUSColorVolScene() = nullptr;
 }
 
+void wds_render_manager::render_meshes(camera &a2)
+{
+    TRACE("wds_render_manager::render_meshes");
+
+    THISCALL(0x0053CED0, this, &a2);
+}
+
+void wds_render_manager::render_legos(camera &a2)
+{
+    TRACE("wds_render_manager::render_legos");
+
+    THISCALL(0x0053D270, this, &a2);
+}
+
+static int g_region_meshes_occluded_this_frame;
+static int g_region_meshes_rendered_this_frame;
+
 void wds_render_manager::sub_53D560(camera &a2)
 {
     TRACE("wds_render_manager::sub_53D560");
 
-    THISCALL(0x0053D560, this, &a2);
+    if constexpr (1)
+    {
+        g_region_meshes_occluded_this_frame = 0;
+        g_region_meshes_rendered_this_frame = 0;
+        if ( debug_render_get_bval(REGION_MESHES) ) {
+            this->render_meshes(a2);
+        }
+
+        if ( debug_render_get_bval(LEGOS) ) {
+            this->render_legos(a2);
+        }
+    }
+    else
+    {
+        THISCALL(0x0053D560, this, &a2);
+    }
 }
 
 void wds_render_manager_patch()

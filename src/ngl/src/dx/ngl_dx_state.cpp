@@ -196,7 +196,8 @@ void RenderState_t::setDepthBuffer(D3DZBUFFERTYPE Type)
     }
 }
 
-void RenderState_t::setDepthBufferFunction(D3DCMPFUNC func) {
+void RenderState_t::setDepthBufferFunction(D3DCMPFUNC func)
+{
     if (this->field_7C != func) {
         g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_ZFUNC, func);
         this->field_7C = func;
@@ -324,6 +325,15 @@ void RenderState_t::setLighting(uint8_t a2) {
     if (this->field_A0 != a2) {
         g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_LIGHTING, a2);
         this->field_A0 = a2;
+    }
+}
+
+void RenderState_t::setScissorTestEnabled(bool a2)
+{
+    if ( this->field_A1 != a2)
+    {
+        g_Direct3DDevice()->lpVtbl->SetRenderState(g_Direct3DDevice(), D3DRS_SCISSORTESTENABLE, a2);
+        this->field_A1 = a2;
     }
 }
 

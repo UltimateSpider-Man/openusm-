@@ -5,6 +5,8 @@
 #include "input_mgr.h"
 #include "nal_system.h"
 #include "resource_pack_standalone.h"
+#include "stream_scene_anim.h"
+#include "trace.h"
 #include "utility.h"
 
 #include <cstdlib>
@@ -43,9 +45,6 @@ cut_scene_player::cut_scene_player() {
     vector_constructor(&this->field_68, 16u, 5, sub_682D80, sub_5E46C0);
 
     this->field_B8 = 0;
-    this->field_C0 = 0;
-    this->field_C4 = 0;
-    this->field_C8 = 0;
     this->field_D7 = 0;
     this->field_E1 = 0;
     game_button &v2 = this->field_E4;
@@ -86,8 +85,14 @@ void cut_scene_player::clean_up_finished_segment() {
     THISCALL(0x0073FFB0, this);
 }
 
-void cut_scene_player::finalize() {
-    CDECL_CALL(0x0086DE50);
+void cut_scene_player::finalize()
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x0086DE50);
+    }
 }
 
 void cut_scene_player::play(cut_scene *a2) {
@@ -99,9 +104,15 @@ void cut_scene_player::play_current_segment() {
 }
 
 void cut_scene_player::frame_advance(Float a2) {
-    //sp_log("cut_scene_player::frame_advance");
+    TRACE("cut_scene_player::frame_advance");
 
-    THISCALL(0x00741EC0, this, a2);
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        THISCALL(0x00741EC0, this, a2);
+    }
 }
 
 bool cut_scene_player::sub_741220(Float a2) {

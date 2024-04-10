@@ -36,13 +36,18 @@ Var<bool> view_frame_dirty = (0x0095C1EA);
 
 Var<matrix4x4[NUM_XFORMS]> xforms {0x0095FC60};
 
-void set_xform(xform_t xformtype, const matrix4x4 &a2) {
-    assert(xformtype != XFORM_WORLD_TO_SCREEN && xformtype != XFORM_VIEW_TO_SCREEN &&
-           xformtype != XFORM_EFFECTIVE_WORLD_TO_VIEW && xformtype != XFORM_WORLD_TO_PROJECTION &&
-           xformtype != XFORM_VIEW_TO_WORLD);
+void set_xform(xform_t xformtype, const matrix4x4 &a2)
+{
+    assert(xformtype != XFORM_WORLD_TO_SCREEN
+            && xformtype != XFORM_VIEW_TO_SCREEN
+            && xformtype != XFORM_EFFECTIVE_WORLD_TO_VIEW
+            && xformtype != XFORM_WORLD_TO_PROJECTION
+            && xformtype != XFORM_VIEW_TO_WORLD);
 
-    if constexpr (1) {
-        if (xformtype == XFORM_WORLD_TO_VIEW) {
+    if constexpr (1)
+    {
+        if (xformtype == XFORM_WORLD_TO_VIEW)
+        {
             auto &v9 = (scene_analyzer_enabled() ? xforms()[8] : a2);
 
             xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] = v9;
@@ -54,24 +59,24 @@ void set_xform(xform_t xformtype, const matrix4x4 &a2) {
         }
 
         if (xformtype == 8 && scene_analyzer_enabled()) {
-            xforms()[4] = a2;
+            xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] = a2;
         }
 
         xforms()[xformtype] = a2;
-        if (xformtype == XFORM_WORLD_TO_VIEW || xformtype == XFORM_VIEW_TO_PROJECTION || xformtype == XFORM_PROJECTION_TO_SCREEN)
+        if (xformtype == XFORM_WORLD_TO_VIEW
+            || xformtype == XFORM_VIEW_TO_PROJECTION
+            || xformtype == XFORM_PROJECTION_TO_SCREEN)
         {
             if (xformtype == XFORM_VIEW_TO_PROJECTION || xformtype == XFORM_PROJECTION_TO_SCREEN) {
                 auto v5 = xforms()[XFORM_VIEW_TO_PROJECTION] * xforms()[XFORM_PROJECTION_TO_SCREEN];
                 xforms()[XFORM_VIEW_TO_SCREEN] = v5;
             }
 
-            auto v6 = xforms()[4] * xforms()[5];
-            xforms()[7] = v6;
+            xforms()[XFORM_WORLD_TO_SCREEN] = xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] * xforms()[XFORM_VIEW_TO_SCREEN];
 
-            auto v7 = xforms()[4] * xforms()[2];
-            xforms()[6] = v7;
+            xforms()[XFORM_WORLD_TO_PROJECTION] = xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] * xforms()[XFORM_VIEW_TO_PROJECTION];
             if (nglCurScene() != nullptr) {
-                math::MatClass<4, 3> v8 = xforms()[4];
+                math::MatClass<4, 3> v8 = xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW];
                 nglSetWorldToViewMatrix(v8);
             }
         }
@@ -284,26 +289,26 @@ void geometry_manager::set_look_at(matrix4x4 *a1,
 #endif
 }
 
-void geometry_manager::set_view(const vector3d &a1, const vector3d &a2, const vector3d &a3) {
-#if 0
-    sp_log("geometry_manager::set_view(): a1 = %f %f %f, a2 = %f %f %f, a3 = %f %f %f",
-           a1[0],
-           a1[1],
-           a1[2],
-           a2[0],
-           a2[1],
-           a2[2],
-           a3[0],
-           a3[1],
-           a3[2]);
-#endif
+bool geometry_manager::get_auto_rebuild_view_frame()
+{
+    return auto_rebuild_view_frame();
+}
 
-    if constexpr (1) {
+void geometry_manager::set_auto_rebuild_view_frame(bool a1)
+{
+    auto_rebuild_view_frame() = a1;
+}
+
+void geometry_manager::set_view(const vector3d &a1, const vector3d &a2, const vector3d &a3)
+{
+    if constexpr (1)
+    {
         matrix4x4 v1;
-
         geometry_manager::set_look_at(&v1, a1, a2, a3);
         geometry_manager::set_xform(XFORM_WORLD_TO_VIEW, v1);
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x00524930, &a1, &a2, &a3);
     }
 }

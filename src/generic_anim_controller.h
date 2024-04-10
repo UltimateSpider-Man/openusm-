@@ -3,6 +3,7 @@
 #include "nal_anim_controller.h"
 
 #include <nal_generic.h>
+#include <nal_system.h>
 
 struct actor;
 struct nalBaseSkeleton;

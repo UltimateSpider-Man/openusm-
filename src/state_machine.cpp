@@ -695,11 +695,21 @@ void state_machine::set_active(
 
 void state_machine::set_pending_params(param_list &a2)
 {
-    THISCALL(0x004995B0, this, &a2);
+    TRACE("state_machine::set_pending_params");
+
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        THISCALL(0x004995B0, this, &a2);
+    }
 }
 
 void state_machine::update_pending_params(animation_logic_system *a2)
 {
+    TRACE("state_machine::update_pending_params");
+
     this->field_14.m_request_not_satisfied = !this->determine_if_request_satisfied(a2);
     auto v5 = this->field_14.m_curr_state_interruptable;
     if ( this->field_14.m_active )

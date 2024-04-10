@@ -47,7 +47,7 @@ struct resource_pack_directory {
     //0x0052A9A0
     resource_pack_directory();
 
-    inline resource_directory *get_resource_directory() {
+    resource_directory *get_resource_directory() {
         return this->field_0;
     }
 

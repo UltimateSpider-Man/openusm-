@@ -1,8 +1,10 @@
 #include "debug_menu_extra.h"
 
 #include "actor.h"
+#include "app.h"
 #include "debug_menu.h"
 #include "debug_render.h"
+#include "entity_tracker_manager.h"
 #include "os_developer_options.h"
 #include "spider_monkey.h"
 #include "game.h"
@@ -10,16 +12,15 @@
 #include "devopt.h"
 #include "rumble_manager.h"
 #include "ngl.h"
-#include "app.h"
+#include "nal_anim.h"
 #include "nal_system.h"
-#include "wds.h"
 #include "terrain.h"
 #include "resource_manager.h"
 #include "geometry_manager.h"
 #include "region.h"
 #include "femanager.h"
 #include "igofrontend.h"
-#include "entity_tracker_manager.h"
+#include "wds.h"
 
 #include <list>
 
@@ -1366,18 +1367,15 @@ void create_game_flags_menu(debug_menu *parent)
 {
     assert(parent != nullptr);
     
-    auto *v26 = debug_menu::pool.allocate_new_block();
-    auto *v3 = new (v26) debug_menu{"Game", debug_menu::sort_mode_t::undefined};
+    auto *v3 = new debug_menu{"Game", debug_menu::sort_mode_t::undefined};
     auto *v92 = v3;
 
-    auto *v27 = debug_menu_entry::pool.allocate_new_block();
-    auto *v4 = new (v27) debug_menu_entry{v92};
+    auto *v4 = new debug_menu_entry{v92};
 
     parent->add_entry(v4);
 
     debug_menu_entry *v89 = nullptr;
-    auto *v28 = debug_menu_entry::pool.allocate_new_block();
-    auto *v5 = new (v28) debug_menu_entry{mString{"Report SLF Recall Timeouts"}};
+    auto *v5 = new debug_menu_entry{mString{"Report SLF Recall Timeouts"}};
     v89 = v5;
 
     static bool byte_1597BC0 = false;
@@ -1391,16 +1389,14 @@ void create_game_flags_menu(debug_menu *parent)
     v89->set_id(0);
     v92->add_entry(v89);
 
-    auto *v34 = debug_menu_entry::pool.allocate_new_block();
-    auto *v7 = new (v34) debug_menu_entry{mString{"Single Step"}};
+    auto *v7 = new debug_menu_entry{mString{"Single Step"}};
     v89 = v7;
 
     v89->set_game_flags_handler(game_flags_handler);
     v89->set_id(1);
     v92->add_entry(v89);
 
-    auto *v37 = debug_menu_entry::pool.allocate_new_block();
-    auto *v8 = new (v37) debug_menu_entry(mString{"Slow Motion Enabled"});
+    auto *v8 = new debug_menu_entry(mString{"Slow Motion Enabled"});
     v89 = v8;
 
     v89->set_bval(false);
@@ -1408,8 +1404,7 @@ void create_game_flags_menu(debug_menu *parent)
     v89->set_id(2);
     v92->add_entry(v89);
 
-    auto *v40 = debug_menu_entry::pool.allocate_new_block();
-    auto *v9 = new (v40) debug_menu_entry{mString{"Monkey Enabled"}};
+    auto *v9 = new debug_menu_entry{mString{"Monkey Enabled"}};
     v89 = v9;
 
     auto v1 = spider_monkey::is_running();
@@ -1418,8 +1413,7 @@ void create_game_flags_menu(debug_menu *parent)
     v89->set_id(3);
     v92->add_entry(v89);
 
-    auto *v43 = debug_menu_entry::pool.allocate_new_block();
-    auto *v10 = new (v43) debug_menu_entry{mString{"Rumble Enabled"}};
+    auto *v10 = new debug_menu_entry{mString{"Rumble Enabled"}};
 
     v89 = v10;
 

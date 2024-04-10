@@ -1,11 +1,12 @@
 #include "scene_anim_resource_handler.h"
 
 #include "common.h"
+#include "func_wrapper.h"
 #include "log.h"
 #include "nal_system.h"
-#include "utility.h"
-#include "func_wrapper.h"
+#include "scene_anim.h"
 #include "trace.h"
+#include "utility.h"
 
 #include <cassert>
 

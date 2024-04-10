@@ -18,6 +18,8 @@ struct vector2d {
         return {this->arr[0] - a3[0], this->arr[1] - a3[1]};
     }
 
+    vector2d operator*(float a1) const;
+
     const char *to_string() const;
 
     float length2() const;

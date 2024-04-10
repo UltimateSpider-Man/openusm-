@@ -2,6 +2,7 @@
 
 #include "ngl.h"
 #include "ngl_font.h"
+#include "ngl_lighting.h"
 #include "ngl_scene.h"
 #include "ngl_dx_state.h"
 #include "timer.h"
@@ -30,8 +31,6 @@ Var<int> nglFrameVBlankCount = (0x0097290C);
 
 static Var<int> nglFlipCycle{0x00972674};
 
-Var<nglLightContext *> nglDefaultLightContext {0x00973B70};
-
 static Var<BOOL> nglFlipQueued = {0x00972668};
 
 static Var<char *> nglListWork {0x00971F08};
@@ -50,12 +49,145 @@ void nglVif1RenderScene()
     }
 }
 
+uint32_t sub_413A50(float a1, float a2, float a3, float a4)
+{
+    auto v5 = a1 * 255.0;
+    auto v6 = a2 * 255.0;
+    auto v7 = a3 * 255.0;
+    auto v8 = a4 * 255.0;
+    return (((uint64_t)v6 | (((uint64_t)v5 | ((uint32_t)(uint64_t)v8 << 8)) << 8)) << 8) | (uint64_t)v7;
+}
+
 void nglVif1SetupScene(nglScene *a1)
 {
     TRACE("nglVif1SetupScene");
 
     if constexpr (0)
-    {}
+    {
+        if ( nglCurScene()->AnimTime == 0.0f )
+        {
+            float v1 = ( nglIsFBPAL() ? 20.0 : 16.666666);
+
+            float v2 = nglFrameVBlankCount();
+            if ( nglFrameVBlankCount() < 0 ) {
+                v2 += 4.2949673e9;
+            }
+
+            nglCurScene()->field_3FC = v2 * v1 * 0.001f;
+        }
+        else
+        {
+            nglCurScene()->field_3FC = nglCurScene()->AnimTime;
+        }
+
+        if ( a1->ZWriteEnable || a1->ZTestEnable )
+        {
+            g_renderState().setDepthBuffer(D3DZB_TRUE);
+
+            if ( a1->ZTestEnable )
+            {
+                g_renderState().setDepthBufferFunction(D3DCMP_LESSEQUAL);
+            }
+            else
+            {
+                auto stencilCheckEnabled = g_renderState().m_stencilCheckEnabled;
+
+                if ( stencilCheckEnabled )
+                {
+                    g_renderState().setStencilCheckEnabled(false);
+                }
+                else
+                {
+                    g_renderState().setStencilCheckEnabled(true);
+
+                    g_renderState().setStencilBufferTestFunction(D3DCMP_ALWAYS);
+
+                    g_renderState().setStencilBufferCompareMask(255u);
+
+                    g_renderState().setStencilPassOperation(D3DSTENCILOP_ZERO);
+                }
+
+                g_renderState().setDepthBufferFunction(D3DCMP_ALWAYS);
+            }
+        }
+        else
+        {
+            g_renderState().setDepthBuffer(D3DZB_FALSE);
+        }
+
+        auto v4 = nglCurScene()->field_334;
+        SetRenderTarget(v4, nglCurScene()->field_338, 0, nglCurScene()->field_8);
+
+        float ScreenWidth = v4->m_width;
+        if ( v4->m_width < 0 ) {
+            ScreenWidth += 4.2949673e9;
+        }
+
+        float ScreenHeight = v4->m_height;
+        if ( v4->m_height < 0 ) {
+            ScreenHeight += 4.2949673e9;
+        }
+
+        uint32_t v7 = ((nglCurScene()->sx1 + 1.0f ) * 0.5f * ScreenWidth + 0.5f);
+        uint32_t v8 = ((nglCurScene()->sy1 + 1.0f ) * 0.5f * ScreenHeight + 0.5f);
+        uint32_t v20 = ((nglCurScene()->sx2 + 1.0f) * 0.5f * ScreenWidth + 0.5f);
+        uint32_t v9 = ((nglCurScene()->sy2 + 1.0f) * 0.5f * ScreenHeight + 0.5f);
+
+        D3DVIEWPORT9 v23;
+        v23.X = 0;
+        v23.Y = 0;
+        v23.Width = ScreenWidth;
+        v23.Height = ScreenHeight;
+        v23.MinZ = 0.0;
+        v23.MaxZ = 1.0;
+        g_Direct3DDevice()->lpVtbl->SetViewport(g_Direct3DDevice(), &v23);
+        auto *v10 = nglCurScene();
+        if ( nglCurScene()->sx1 != -1.0f 
+            || nglCurScene()->sy1 != -1.0f
+            || nglCurScene()->sx2 != 1.0f 
+            || nglCurScene()->sy2 != 1.0f )
+        {
+            RECT v22;
+            v22.right = v20;
+            v22.left = v7;
+            v22.top = v8;
+            v22.bottom = v9;
+
+            g_renderState().setScissorTestEnabled(true);
+
+            g_Direct3DDevice()->lpVtbl->SetScissorRect(g_Direct3DDevice(), &v22);
+        }
+
+        if ( v10->ClearFlags )
+        {
+            g_renderState().setColourBufferWriteEnabled(15u);
+
+            auto v18 = v10->ClearStencil;
+            auto v17 = v10->ClearZ;
+            auto v13 = sub_413A50(v10->ClearColor.r,
+                                v10->ClearColor.g,
+                                v10->ClearColor.b,
+                                v10->ClearColor.a);
+
+            g_Direct3DDevice()->lpVtbl->Clear(g_Direct3DDevice(), 0, 0, v10->ClearFlags, v13, v17, v18);
+        }
+
+        g_renderState().setColourBufferWriteEnabled(v10->FBWriteMask);
+
+        auto v21 = nglIFLSpeed() * v10->field_3FC;
+        nglCurScene()->IFLFrame = std::round(v21);
+        if ( !EnableShader() )
+        {
+            g_Direct3DDevice()->lpVtbl->SetTransform(
+                g_Direct3DDevice(),
+                D3DTS_PROJECTION,
+                bit_cast<D3DMATRIX *>(&a1->ViewToScreen));
+
+            g_Direct3DDevice()->lpVtbl->SetTransform(g_Direct3DDevice(),
+                    D3DTS_VIEW,
+                    bit_cast<D3DMATRIX *>(&a1->WorldToView));
+        }
+    }
     else
     {
         CDECL_CALL(0x0077CBB0, a1);

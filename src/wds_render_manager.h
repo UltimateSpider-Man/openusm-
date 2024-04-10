@@ -61,6 +61,12 @@ struct wds_render_manager {
 
     void create_colorvol_scene();
 
+    //0x0053CED0
+    void render_meshes(camera &a2);
+
+    //0x0053D270
+    void render_legos(camera &a2);
+
     void render_lowlods(camera &);
 
     void render_region_mesh(nglMesh *a2, Float fade);

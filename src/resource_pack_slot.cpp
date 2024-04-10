@@ -19,9 +19,6 @@
 
 #include <cassert>
 
-VALIDATE_OFFSET(resource_pack_slot, field_78, 0x78);
-VALIDATE_OFFSET(resource_pack_slot, m_callback, 0x8C);
-
 VALIDATE_SIZE(resource_pack_slot, 0x94);
 
 Var<resource_pack_slot *> resource_pack_slot::current_alloc_slot{0x0095C820};
@@ -66,21 +63,14 @@ resource_pack_slot::~resource_pack_slot()
     }
 }
 
-bool resource_pack_slot::is_data_ready() 
+void resource_pack_slot::notify_load_cancelled()
 {
-    return (this->m_slot_state == 2
-            || this->m_slot_state == 3
-            || this->m_slot_state == 4);
-}
+    assert(m_slot_state == SLOT_STATE_STREAMING);
 
-void resource_pack_slot::notify_unload_started()
-{
-    assert(m_slot_state == SLOT_STATE_READY);
-
-    auto client_done = this->try_callback(CALLBACK_PRE_DESTRUCT, nullptr);
-    //assert(client_done);
-
-    this->m_slot_state = static_cast<decltype(m_slot_state)>(3);
+    this->m_slot_state = SLOT_STATE_EMPTY;
+    this->clear_pack();
+    auto client_done = !this->try_callback(static_cast<callback_enum>(2), nullptr);
+    assert(client_done);
 }
 
 uint8_t *resource_pack_slot::get_resource(const resource_key &resource_id,
@@ -142,12 +132,24 @@ void resource_pack_slot::set_memory_area(uint8_t *starting_addr, uint32_t how_ma
     std::memset(this->header_mem_addr, 0x77, how_many_bytes);
 }
 
+resource_pack_directory & resource_pack_slot::get_resource_pack_directory()
+{
+    assert(is_data_ready());
+    return this->pack_directory;
+}
+
 resource_directory &resource_pack_slot::get_resource_directory() {
     TRACE("resource_pack_slot::get_resource_directory");
     assert(is_data_ready());
     assert(pack_directory.get_resource_directory() != nullptr);
 
     return (*this->pack_directory.get_resource_directory());
+}
+
+resource_pack_token & resource_pack_slot::get_pack_token()
+{
+    assert(m_slot_state != SLOT_STATE_EMPTY);
+    return this->field_78;
 }
 
 void resource_pack_slot::set_resource_directory(resource_directory *directory) {
@@ -178,12 +180,24 @@ void resource_pack_slot::notify_load_started(const resource_key &a2,
         this->m_callback = cb;
         this->field_78 = token;
         this->m_slot_state = SLOT_STATE_STREAMING;
-        if (cb != nullptr) {
-            cb((callback_enum) 0, &this->field_88->streamer, this, nullptr);
-        }
-    } else {
+
+        auto client_done = !this->try_callback(CALLBACK_LOAD_STARTED, nullptr);
+        assert(client_done);
+    }
+    else
+    {
         THISCALL(0x0050E240, this, &a2, pack_size, cb, &token);
     }
+}
+
+void resource_pack_slot::notify_unload_started()
+{
+    assert(m_slot_state == SLOT_STATE_READY);
+
+    auto client_done = !this->try_callback(CALLBACK_PRE_DESTRUCT, nullptr);
+    assert(client_done);
+
+    this->m_slot_state = SLOT_STATE_UNLOADING;
 }
 
 void resource_pack_slot::notify_load_finished() {
@@ -191,12 +205,8 @@ void resource_pack_slot::notify_load_finished() {
 
     this->m_slot_state = static_cast<slot_state_t>(2);
 
-    [[maybe_unused]] auto client_done = this->try_callback((callback_enum) 1, nullptr);
-    //assert(client_done);
-}
-
-bool resource_pack_slot::is_empty() {
-    return m_slot_state == SLOT_STATE_EMPTY;
+    [[maybe_unused]] auto client_done = !this->try_callback(static_cast<callback_enum>(1), nullptr);
+    assert(client_done);
 }
 
 bool resource_pack_slot::try_callback(callback_enum a2, limited_timer *a3)
@@ -210,7 +220,7 @@ bool resource_pack_slot::try_callback(callback_enum a2, limited_timer *a3)
             return false;
         }
 
-        bool result = cb(a2, &this->field_88->streamer, this, a3);
+        bool result = cb(a2, this->field_88->get_streamer(), this, a3);
         return result;
 
     }
@@ -337,10 +347,11 @@ void *resource_pack_slot::slot_allocate(unsigned int a1, unsigned int a2)
     return p;
 }
 
-void resource_pack_slot_patch() {
+void resource_pack_slot_patch()
+{
     {
         FUNC_ADDRESS(address, &resource_pack_slot::notify_load_started);
-        //REDIRECT(0x0054C7B4, address);
+        REDIRECT(0x0054C7B4, address);
     }
 
     {

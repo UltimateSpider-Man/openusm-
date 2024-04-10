@@ -61,13 +61,6 @@ terrain::terrain(const mString &a2)
 
     if constexpr (1)
     {
-        this->field_24.eligible_packs = {};
-        this->field_24.field_14 = {};
-        this->field_24.field_28 = {};
-
-        this->field_24.field_0 = {};
-        this->field_24.get_ideal_pack_info_callback = nullptr;
-
         this->field_5C = {};
 
         this->field_68 = 0;
@@ -313,13 +306,13 @@ bool terrain::district_load_callback(resource_pack_slot::callback_enum reason,
 
 void terrain::unload_district_immediate(int a2)
 {
-    auto *district_partition = resource_manager::get_partition_pointer(6);
+    auto *district_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_DISTRICT);
     assert(district_partition != nullptr);
 
     auto *district_streamer = district_partition->get_streamer();
     assert(district_streamer != nullptr);
 
-    auto *strip_partition = resource_manager::get_partition_pointer(5);
+    auto *strip_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_STRIP);
     assert(strip_partition != nullptr);
 
     auto *strip_streamer = strip_partition->get_streamer();
@@ -898,24 +891,29 @@ void terrain::force_streamer_refresh() {
     v21[2] = 3.4028235e38;
 }
 
-void terrain::sub_557130() {
-    auto &v1 = resource_manager::partitions()->m_first;
-    auto *district_streamer = &v1[6]->streamer;
-    auto *strip_streamer = &v1[5]->streamer;
-    auto *v4 = &this->field_24;
+void terrain::sub_557130()
+{
+    auto *district_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_DISTRICT);
+    assert(district_partition != nullptr);
+
+    auto *district_streamer = district_partition->get_streamer();
+    assert(district_streamer != nullptr);
+
+    auto *strip_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_STRIP);
+    assert(strip_partition != nullptr);
+
+    auto *strip_streamer = strip_partition->get_streamer();
+    assert(strip_streamer != nullptr);
+
     do {
         district_streamer->flush(game::render_empty_list, 0.02);
         strip_streamer->flush(game::render_empty_list, 0.02);
-        v4->prioritize();
-        if (v4->field_0) {
-            for (auto i = v4->field_14.m_first; i != v4->field_14.m_last; ++i) {
-                (*i)->frame_advance(0.0);
-            }
-        }
+        this->field_24.prioritize();
+        this->field_24.frame_advance(0.0f);
 
-    } while (!v4->sub_537F80());
+    } while (!this->field_24.is_idle());
 
-    v4->clear();
+    this->field_24.clear();
 }
 
 region *terrain::get_district(int a1) {
@@ -942,50 +940,29 @@ region *terrain::find_region(string_hash a2) {
     }
 }
 
-_std::vector<region *> *terrain::sub_6DC8A0(vector3d a2) {
-    if (terrain::regions_for_point() != nullptr) {
-        auto v3 = &terrain::regions_for_point()->m_first;
-        auto v4 = terrain::regions_for_point();
-        auto v5 = terrain::regions_for_point()->m_first;
-        if (v5) {
-            operator delete(v5);
-        }
-
-        *v3 = nullptr;
-        v4->m_last = nullptr;
-        v4->m_end = nullptr;
+_std::vector<region *> *terrain::get_region_info_for_point(vector3d a2)
+{
+    if (regions_for_point() != nullptr) {
+        regions_for_point()->clear();
     } else {
-        terrain::regions_for_point() = new _std::vector<region *>{};
+        regions_for_point() = new _std::vector<region *>{};
     }
 
-    for (int i = 0; i < this->total_regions; ++i) {
-        auto *v15 = this->regions[i];
-        auto *v8 = v15;
-        if (v15->is_inside_or_on(a2)) {
-            auto v9 = terrain::regions_for_point()->m_first;
-            auto size = terrain::regions_for_point()->size();
-
-            if (v9 && size < terrain::regions_for_point()->m_end - v9) {
-                auto v11 = &terrain::regions_for_point()->m_last;
-                auto v12 = terrain::regions_for_point()->m_last;
-                *v12 = v8;
-                *v11 = v12 + 1;
-            } else {
-                THISCALL(0x0048E660,
-                         terrain::regions_for_point(),
-                         terrain::regions_for_point()->end(),
-                         1,
-                         &v15);
-            }
+    for (int i = 0; i < this->total_regions; ++i)
+    {
+        auto *reg = this->regions[i];
+        if (reg->is_inside_or_on(a2)) {
+            regions_for_point()->push_back(reg);
         }
     }
 
     return terrain::regions_for_point();
 }
 
-void terrain::unlock_district_pack_slot(int slot_idx) {
+void terrain::unlock_district_pack_slot(int slot_idx)
+{
     if constexpr (1) {
-        auto *district_partition = resource_manager::get_partition_pointer(6);
+        auto *district_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_DISTRICT);
         assert(district_partition != nullptr);
 
         auto &pack_slots = district_partition->get_pack_slots();
@@ -994,24 +971,7 @@ void terrain::unlock_district_pack_slot(int slot_idx) {
         assert(pack_slots[slot_idx]->is_empty() || pack_slots[slot_idx]->is_pack_unloading());
 
         auto &slot = pack_slots.at(slot_idx);
-
-        auto *v2 = &this->field_24;
-        auto *v3 = this->field_24.field_14.m_first;
-        if (v3 != this->field_24.field_14.m_last) {
-            auto &v4 = slot;
-            do {
-                auto *v5 = *v3;
-                if ((*v3)->my_resource_pack_streamer == &v4->field_88->streamer) {
-                    slot = v4;
-
-                    void (__fastcall *sub_5058F0)(void *, void *, resource_pack_slot **) = CAST(sub_5058F0, 0x005058F0);
-                    sub_5058F0(&v5->field_1C, nullptr, &slot);
-                }
-
-                ++v3;
-            } while (v3 != v2->field_14.m_last);
-        }
-
+        this->field_24.unlock_pack_slot(slot);
     } else {
         THISCALL(0x0053FFA0, this, slot_idx);
     }

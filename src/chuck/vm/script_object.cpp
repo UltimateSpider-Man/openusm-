@@ -189,7 +189,7 @@ void script_instance::dump_threads_to_file(FILE *a2) {
 
 void script_instance::run(bool a2)
 {
-    TRACE("script_instance::run");
+    //TRACE("script_instance::run");
 
     this->flags |= 2u;
     this->build_parameters();
@@ -217,11 +217,14 @@ void script_instance::run_callbacks(
     }
 }
 
-void script_instance::build_parameters() {
-    TRACE("script_instance::build_parameters");
+void script_instance::build_parameters()
+{
+    //TRACE("script_instance::build_parameters");
 
-    if constexpr (1) {
-        if ( this->field_28 != nullptr ) {
+    if constexpr (1)
+    {
+        if ( this->field_28 != nullptr )
+        {
             assert(parent != nullptr);
 
             static const string_hash inst_name {"__parms_builder"};
@@ -445,17 +448,13 @@ void script_object::un_mash(generic_mash_header *header, void *a3, void *a4, gen
         assert(((int)header) % 4 == 0);
 
         this->static_data.un_mash(header, &this->static_data, a5);
-        auto v7 = 4 - (unsigned int)a5->field_0 % 4;
-        if ( v7 < 4 ) {
-            a5->field_0 += v7;
-        }
+
+        rebase(a5->field_0, 4u);
 
         this->funcs = a5->get<vm_executable *>(this->total_funcs);
         for ( auto i = 0; i < this->total_funcs; ++i ) {
-            auto v5 = 4 - (unsigned int)a5->field_0 % 4;
-            if ( v5 < 4 ) {
-                a5->field_0 += v5;
-            }
+
+            rebase(a5->field_0, 4u);
 
             this->funcs[i] = a5->get<vm_executable>();
 

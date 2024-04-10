@@ -46,6 +46,12 @@ game_settings::game_settings() : field_4{""}
     {
         this->m_vtbl = 0x0088B234;
 
+        this->field_4BF = false;
+        this->field_4C0 = false;
+        this->field_4C1 = false;
+        this->field_4C2 = false;
+        this->field_4BF = false;
+
         MemoryUnitManager::Initialize(0);
 
         [[maybe_unused]] auto v4 = os_developer_options::instance()->get_string(os_developer_options::strings_t::SKU);
@@ -54,13 +60,10 @@ game_settings::game_settings() : field_4{""}
 
         this->set_script_buffer_size();
 
-        //this->set_cur_name(Source());
         strncpy(this->field_4A8, "", 12u);
         this->field_4A8[11] = '\0';
 
-        this->field_4C0 = 0;
         this->field_4B8 = 0;
-        this->field_4C2 = 0;
         this->m_slot_num = 0;
         this->field_4C8 = 0;
     } else {
@@ -94,7 +97,10 @@ void game_settings::Callback(MemoryUnitManager::eOperation a2) {
 
 void game_settings::init_script_buffer()
 {
-    if constexpr (1) {
+    TRACE("game_settings::init_script_buffer");
+
+    if constexpr (1)
+    {
         this->sub_579990();
         script_manager::save_game_var_buffer(this->field_494[0]);
         script_manager::save_game_var_buffer(this->field_494[1]);
@@ -208,7 +214,10 @@ void game_settings::update_miles_run_spidey(Float a2) {
     this->field_340.field_94 += a2 * 0.0006213712f;
 }
 
-void game_settings::set_script_buffer_size() {
+void game_settings::set_script_buffer_size()
+{
+    TRACE("game_settings::set_script_buffer_size");
+
     this->field_4B4 = script_manager::save_game_var_buffer(nullptr);
 }
 
@@ -316,7 +325,8 @@ void game_settings::collect_game_settings()
 
 void game_settings::sub_579990()
 {
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if (this->field_494[0] == nullptr) {
             if (this->field_4B4 == 0) {
                 this->set_script_buffer_size();

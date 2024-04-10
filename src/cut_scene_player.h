@@ -1,11 +1,13 @@
 #pragma once
 
+#include "entity_base_vhandle.h"
 #include "float.hpp"
 #include "game_button.h"
 #include "mvector.h"
 
 #include <vector.hpp>
 
+struct entity_base;
 struct cut_scene;
 struct nalStreamInstance;
 struct cut_scene_segment;
@@ -39,12 +41,9 @@ struct cut_scene_player {
     int field_88[12];
 
     int field_B8;
-    int field_BC;
-    int field_C0;
-    int field_C4;
-    int field_C8;
-    int field_CC;
-    int field_D0;
+    _std::vector<entity_base_vhandle> field_BC;
+    entity_base *field_CC;
+    entity_base *field_D0;
     char field_D4;
     char field_D5;
     char field_D6;

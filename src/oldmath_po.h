@@ -107,8 +107,6 @@ struct po {
     //0x005BD320
     void set_translate(const vector3d &a2);
 
-    void sub_415A30(const ptr_to_po &a2);
-
     [[nodiscard]] vector3d sub_5BD2B0(const vector3d &a3);
 
     //0x005BD760

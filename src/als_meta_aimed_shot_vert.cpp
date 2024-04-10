@@ -1,6 +1,7 @@
 #include "als_meta_aimed_shot_vert.h"
 
 #include "common.h"
+#include "nal_anim.h"
 #include "nal_system.h"
 #include "trace.h"
 #include "utility.h"

@@ -20,7 +20,7 @@ struct eligible_pack_category {
                     limited_timer *);
 
     _std::vector<eligible_pack *> field_C;
-    _std::list<void *> field_1C;
+    _std::list<resource_pack_slot *> field_1C;
 
     //0x00543100
     eligible_pack_category(eligible_pack_streamer *a2,
@@ -32,6 +32,17 @@ struct eligible_pack_category {
 
     //0x0053E640
     ~eligible_pack_category();
+
+
+    resource_pack_streamer * get_streamer() {
+        return my_resource_pack_streamer;
+    }
+
+    bool is_pack_slot_locked(resource_pack_slot *a2);
+
+    void lock_pack_slot(resource_pack_slot *s);
+
+    void unlock_pack_slot(resource_pack_slot *s);
 
     //0x005513B0
     void frame_advance(Float a2);

@@ -8,6 +8,7 @@
 #include "func_wrapper.h"
 #include "memory.h"
 #include "resource_pack_streamer.h"
+#include "resource_partition.h"
 #include "terrain.h"
 #include "utility.h"
 
@@ -69,6 +70,19 @@ void eligible_pack_streamer::clear() {
 
 int compare_eligible_pack_names(const void *a1, const void *a2) {
     return CDECL_CALL(0x0050EC30, a1, a2);
+}
+
+void eligible_pack_streamer::unlock_pack_slot(resource_pack_slot *slot)
+{
+    for ( auto &v6 : this->field_14 )
+    {
+        auto *v3 = v6->get_streamer();
+        auto *partition = slot->get_partition();
+        if ( v3 == partition->get_streamer() ) {
+            v6->unlock_pack_slot(slot);
+        }
+
+    }
 }
 
 eligible_pack *eligible_pack_streamer::find_eligible_pack_by_packfile_name_hash(string_hash a2)
@@ -191,40 +205,20 @@ void eligible_pack_streamer::frame_advance(Float a2) {
     }
 }
 
-bool eligible_pack_streamer::sub_537F80() {
+bool eligible_pack_streamer::is_idle() const
+{
     if (!this->field_0) {
         return true;
     }
 
-    auto v2 = this->field_14.m_first;
-    auto v3 = this->field_14.m_last;
-    if (v2 == v3) {
-        return true;
-    }
-
-    while (1) {
-        auto *v4 = (*v2)->my_resource_pack_streamer;
-        if (v4->currently_streaming || v4->field_6C.m_size) {
+    for ( auto &v2 : this->field_14 )
+    {
+        if (!v2->my_resource_pack_streamer->is_idle()) {
             return false;
         }
-
-        auto *v5 = v4->pack_slots;
-        if (v5 != nullptr) {
-            auto v6 = v5->m_first;
-            for (auto i = v5->m_last; v6 != i; ++v6) {
-                auto v8 = (*v6)->m_slot_state;
-                if (v8) {
-                    if (v8 != 4) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        if (++v2 == v3) {
-            return true;
-        }
     }
+
+    return true;
 }
 
 eligible_pack *eligible_pack_streamer::find_eligible_pack_by_token(

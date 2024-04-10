@@ -58,7 +58,7 @@ void FastListAddMesh(nglMesh *Mesh,
 
             math::VecClass<3, 1> a2a = v5;
 
-            auto v18 = sub_414360(a2a, nglCurScene()->field_14C);
+            auto v18 = sub_414360(a2a, nglCurScene()->WorldToView);
 
 #if 0
             auto v9 = Mesh->NLODs - 1;
@@ -99,7 +99,7 @@ void FastListAddMesh(nglMesh *Mesh,
 
         ptr_to_po a2a;
         a2a.m_rel_po = CAST(a2a.m_rel_po, &LocalToWorld);
-        a2a.m_abs_po = CAST(a2a.m_abs_po, nglCurScene()->field_18C);
+        a2a.m_abs_po = CAST(a2a.m_abs_po, &nglCurScene()->WorldToScreen);
 
         v12->field_40 = sub_507130(a2a);
 

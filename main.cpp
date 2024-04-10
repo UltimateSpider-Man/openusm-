@@ -191,6 +191,7 @@
 #include "return_address.h"
 #include "rigid_body.h"
 #include "rumble_manager.h"
+#include "scene_anim.h"
 #include "scene_anim_resource_handler.h"
 #include "scratchpad_stack.h"
 #include "script.h"
@@ -2406,9 +2407,25 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC52F, parse_cmd);
 
+    scene_anim_patch();
+
+    nal_anim_controller_patch();
+
+    camera_patch();
+
+    comic_panels_patch();
+
     us_person_patch();
 
     ngl_patch();
+
+    wds_render_manager_patch();
+
+    game_patch();
+
+    resource_directory_patch();
+
+    tlresource_directory_patch();
 
     //standalone patches
     if constexpr (1)
@@ -2430,8 +2447,6 @@ BOOL install_redirects()
     {
         sound_manager_patch();
 
-        resource_directory_patch();
-
         string_hash_dictionary_patch();
 
         fx_cache_patch();
@@ -2452,8 +2467,6 @@ BOOL install_redirects()
 
         aeps_patch();
 
-        game_patch();
-
         game_camera_patch();
 
         region_patch();
@@ -2472,8 +2485,6 @@ BOOL install_redirects()
 
         swing_state_patch();
 
-        comic_panels_patch();
-
         polytube_patch();
 
         web_interface_patch();
@@ -2481,8 +2492,6 @@ BOOL install_redirects()
         web_polytube_patch();
 
         entity_patch();
-
-        wds_render_manager_patch();
 
         wds_token_manager_patch();
 
@@ -2557,8 +2566,6 @@ BOOL install_redirects()
         resource_pack_slot_patch();
 
         resource_pack_standalone_patch();
-
-        tlresource_directory_patch();
 
         tlResourceDirectory_patch();
         
@@ -2667,8 +2674,6 @@ BOOL install_redirects()
         scratchpad_stack_patch();
 
         hero_inode_patch();
-
-        nal_anim_controller_patch();
 
         character_anim_controller_patch();
 
@@ -2824,8 +2829,6 @@ BOOL install_redirects()
 
     //spline_patch();
 
-
-    //camera_patch();
 
     geometry_manager_patch();
 

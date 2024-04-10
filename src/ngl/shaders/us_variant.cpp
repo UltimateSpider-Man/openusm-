@@ -83,7 +83,7 @@ nglTexture *USVariantShaderNode::ResolveIFL(nglTexture *a2)
 
             idx = param->field_0;
         } else {
-            idx = nglCurScene()->field_400;
+            idx = nglCurScene()->IFLFrame;
         }
 
         return a2->Frames[idx % a2->m_num_palettes];
@@ -99,7 +99,7 @@ double USVariantShaderNode::sub_415D10() {
     vector4d v3, v4;
 
     CDECL_CALL(0x00414360, &v3, &this->m_meshSection->SphereCenter, this->m_meshNode);
-    CDECL_CALL(0x00414360, &v4, &v3, &nglCurScene()->field_14C);
+    CDECL_CALL(0x00414360, &v4, &v3, &nglCurScene()->WorldToView);
     return v4[2] + this->m_meshSection->SphereRadius;
 }
 
@@ -108,7 +108,7 @@ double USVariantShaderNode::sub_41DEA0() const {
     vector4d v3;
 
     CDECL_CALL(0x00414360, &v2, &this->m_meshNode->field_88->field_20, this->m_meshNode);
-    CDECL_CALL(0x00414360, &v3, &v2, &nglCurScene()->field_14C);
+    CDECL_CALL(0x00414360, &v3, &v2, &nglCurScene()->WorldToView);
     return v3[2];
 }
 

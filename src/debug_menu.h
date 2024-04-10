@@ -31,6 +31,10 @@ struct debug_menu
 
     ~debug_menu();
 
+    void * operator new(size_t size);
+
+    void operator delete(void *);
+
     debug_menu *find_submenu_parent(debug_menu *);
 
     void activate_parent();
@@ -139,6 +143,10 @@ struct debug_menu_entry {
     debug_menu_entry(debug_menu *submenu);
 
     ~debug_menu_entry();
+
+    void * operator new(size_t );
+
+    void operator delete(void *) {}
 
     auto get_value_type() const
     {

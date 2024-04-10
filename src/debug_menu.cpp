@@ -60,6 +60,13 @@ debug_menu::~debug_menu()
     }
 }
 
+void * debug_menu::operator new(size_t )
+{
+    return debug_menu::pool.allocate_new_block();
+}
+
+void debug_menu::operator delete(void *) {}
+
 void debug_menu::render_active()
 {
     if ( debug_menu::active_menu != nullptr )
@@ -218,7 +225,7 @@ void debug_menu::activate_parent()
     }
 }
 
-void debug_menu::do_frame_advance(Float a2)
+void debug_menu::do_frame_advance([[maybe_unused]] Float a2)
 {
     if ( virtual_input_state[1] )
     {
@@ -573,29 +580,25 @@ void mission_select_handler(debug_menu_entry *entry)
 }
 
 auto create_menu(const mString &str, debug_menu::sort_mode_t sort_mode) -> debug_menu* {
-    auto *mem = debug_menu::pool.allocate_new_block();
-    auto *entry = new (mem) debug_menu{str, sort_mode};
+    auto *entry = new debug_menu{str, sort_mode};
     return entry;
 }
 
 auto create_menu(const char *str, debug_menu::sort_mode_t sort_mode) -> debug_menu*
 {
-    auto *mem = debug_menu::pool.allocate_new_block();
-    auto *v25 = new (mem) debug_menu{str, sort_mode};
+    auto *v25 = new debug_menu{str, sort_mode};
     return v25;
 }
 
 auto create_menu_entry(const mString &str) -> debug_menu_entry*
 {
-    auto *mem = debug_menu_entry::pool.allocate_new_block();
-    auto *entry = new (mem) debug_menu_entry{str};
+    auto *entry = new debug_menu_entry{str};
     return entry;
 }
 
 auto create_menu_entry(debug_menu *menu) -> debug_menu_entry*
 {
-    auto *mem = debug_menu_entry::pool.allocate_new_block();
-    auto *entry = new (mem) debug_menu_entry{menu};
+    auto *entry = new debug_menu_entry{menu};
     return entry;
 }
 
@@ -768,6 +771,11 @@ void _populate_missions()
     });
 
     assert(0);
+}
+
+void * debug_menu_entry::operator new(size_t )
+{
+    return debug_menu_entry::pool.allocate_new_block();
 }
 
 void debug_menu_entry::set_submenu(debug_menu *submenu)

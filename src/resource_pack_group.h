@@ -2,17 +2,17 @@
 
 #include "fixedstring.h"
 #include "mashable_vector.h"
+#include "resource_key.h"
 
 struct generic_mash_header;
 struct generic_mash_data_ptrs;
 struct mString;
 
 struct resource_pack_group {
-    int field_0;
-    int field_4;
+    resource_key field_0;
     mashable_vector<fixedstring<4>> field_8;
     int *field_10;
-    uint8_t *field_14;
+    int *field_14;
     int field_18;
     int field_1C;
 

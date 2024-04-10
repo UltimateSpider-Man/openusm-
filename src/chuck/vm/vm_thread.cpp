@@ -180,7 +180,7 @@ void vm_thread::slf_error(const mString &a2)
 
 bool vm_thread::run()
 {
-    TRACE("vm_thread::run");
+    //TRACE("vm_thread::run");
 
     assert(PC_stack.end() >= PC_stack.begin());
 
@@ -194,7 +194,8 @@ bool vm_thread::run()
                 this->PC_stack.size());
     }
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         auto dword_965F24 = (int)&this->PC;
         bool v109 = false;
 
@@ -324,7 +325,7 @@ bool vm_thread::run()
                 }
             };
 
-            printf("op = %d, argtype = %s\n", int(op), opcode_arg_t_str[argtype]);
+            //printf("op = %d, argtype = %s\n", int(op), opcode_arg_t_str[argtype]);
             switch ( op )
             {
             case OP_ADD: {
@@ -1081,7 +1082,7 @@ char *vm_thread::install_temp_string(const char *a1) {
 
 bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, const uint16_t *oldPC)
 {
-    TRACE("vm_thread::call_script_library_function");
+    //TRACE("vm_thread::call_script_library_function");
 
     if constexpr (1)
     {

@@ -28,9 +28,6 @@ entity_base *entity_base_vhandle::get_volatile_ptr() const {
     return my_ent;
 }
 
-template<>
-signaller *vhandle_type<signaller, entity_base_vhandle>::get_volatile_ptr() const {}
-
 //0x006022C0
 template<>
 switch_obj *vhandle_type<

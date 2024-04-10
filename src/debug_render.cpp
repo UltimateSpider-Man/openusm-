@@ -325,7 +325,7 @@ void render_beam(const vector3d &a1, const vector3d &a2, color32 a3, Float a4, b
     }
 }
 
-void render_quad(const vector3d &pt1, const vector3d &pt2, const vector3d &pt3, const vector3d &pt4, color32 col, bool double_sided)
+void render_quad(const vector3d &pt1, const vector3d &pt2, const vector3d &pt3, const vector3d &pt4, color32 col, [[maybe_unused]] bool double_sided)
 {
     if ( sub_578420(1u) )
     {

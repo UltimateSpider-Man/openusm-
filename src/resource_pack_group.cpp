@@ -41,20 +41,19 @@ int resource_pack_group::get_num_free_slots() const
 void resource_pack_group::un_mash(generic_mash_header *a2,
                                   [[maybe_unused]] void *a3,
                                   generic_mash_data_ptrs *a4) {
-    if constexpr (1) {
-        std::memcpy(this, a4->field_0, 8);
-        a4->field_0 += 8;
+    if constexpr (1)
+    {
+        this->field_0 = *a4->get<resource_key>();
 
         this->field_8.custom_un_mash(a2, &this->field_8, a4, nullptr);
 
-        if (uint32_t v6 = 4 - ((uint32_t) a4->field_0 % 4); v6 < 4) {
-            a4->field_0 += v6;
-        }
+        rebase(a4->field_0, 4);
 
         auto v7 = this->field_1C;
-        this->field_14 = a4->field_0;
-        a4->field_0 += 4 * v7;
-    } else {
+        this->field_14 = a4->get<int>(v7);
+    }
+    else
+    {
         THISCALL(0x0051F070, this, a2, a3, a4);
     }
 }

@@ -547,7 +547,8 @@ void game::render_world()
             v3 = v2;
         }
 
-        if (v3 != nullptr) {
+        if (v3 != nullptr)
+        {
             auto fov = v3->get_fov();
 
             if (fov >= 0.0024999999f) {
@@ -556,7 +557,7 @@ void game::render_world()
                     dword_92255C() = g_TOD();
                 }
 
-                auto fpf = DEG_TO_RAD(os_developer_options::instance()->get_int(3));
+                auto fpf = DEG_TO_RAD(os_developer_options::instance()->get_int(mString {"CAMERA_FOV"}));
                 if (fov == fpf) {
                     g_tan_half_fov_ratio() = 1.0f;
                 } else {
@@ -600,9 +601,10 @@ void game::render_world()
 
                 geometry_manager::set_far_plane(v11);
 
-                cut_scene_player *v12;
-                if (byte_921D79() && !this->field_16E ||
-                    (v12 = g_cut_scene_player(), v12->field_E1) || v12->field_E2) {
+                if (byte_921D79()
+                        && !this->field_16E
+                        || g_cut_scene_player()->is_playing())
+                {
                     v3->adjust_geometry_pipe(false);
                     auto *v13 = g_femanager().IGO->field_44;
                     auto v14 = v13->field_5C4 || v13->field_5C3;
@@ -682,7 +684,7 @@ void game::advance_state_legal(Float a2)
 
         limited_timer_base v10{};
 
-        auto *my_partition = resource_manager::get_partition_pointer(0);
+        auto *my_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_START);
         assert(my_partition != nullptr);
 
         resource_pack_streamer *streamer = my_partition->get_streamer();
@@ -1147,7 +1149,9 @@ void game::reset_control_mappings() {
 
 static Var<int> g_mem_checkpoint_level{0x00921DC4};
 
-void game::init_motion_blur() {
+void game::init_motion_blur()
+{
+    TRACE("game::init_motion_blur");
     THISCALL(0x00514AB0, this);
 }
 
@@ -1207,7 +1211,7 @@ void game::load_this_level()
 
         assert(level.descriptor != nullptr);
 
-        auto *common_partition = resource_manager::get_partition_pointer(4);
+        auto *common_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_COMMON);
         assert(common_partition != nullptr);
 
         assert(common_partition->get_pack_slots().size() == 1);
@@ -2235,7 +2239,7 @@ void game::load_hero_packfile(const char *str, bool a3)
 
         //sp_log("%d", resource_manager::partitions()->size());
 
-        resource_partition *partition = resource_manager::get_partition_pointer(1u);
+        resource_partition *partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_HERO);
         assert(partition != nullptr);
 
         resource_pack_streamer *streamer = partition->get_streamer();
@@ -2268,8 +2272,16 @@ void game::render_empty_list() {
     CDECL_CALL(0x00510780);
 }
 
-void game::frame_advance(Float a2) {
-    THISCALL(0x0055D780, this, a2);
+void game::frame_advance(Float a2)
+{
+    TRACE("game::frame_advance");
+
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x0055D780, this, a2);
+    }
 }
 
 void game::frame_advance_level(Float time_inc)
@@ -2387,7 +2399,7 @@ void game::unload_current_level()
 
         this->the_world->ent_mgr.destroy_all_entities_and_items();
 
-        auto *my_partition = resource_manager::get_partition_pointer(4);
+        auto *my_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_COMMON);
 
         assert(my_partition != nullptr);
         assert(my_partition->get_streamer() != nullptr);
@@ -2468,13 +2480,13 @@ void game::enable_physics(bool a2) {
 
 void terrain::unload_all_districts_immediate()
 {
-    auto *district_partition = resource_manager::get_partition_pointer(6);
+    auto *district_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_DISTRICT);
     assert(district_partition != nullptr);
 
     auto *district_streamer = district_partition->get_streamer();
     assert(district_streamer != nullptr);
     
-    auto *strip_partition = resource_manager::get_partition_pointer(5);
+    auto *strip_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_STRIP);
     assert(strip_partition != nullptr);
 
     auto *strip_streamer = strip_partition->get_streamer();
@@ -2502,8 +2514,9 @@ void terrain::unload_all_districts_immediate()
     }
 }
 
-void game::unload_hero_packfile() {
-    resource_partition *partition = resource_manager::get_partition_pointer(1);
+void game::unload_hero_packfile()
+{
+    resource_partition *partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_HERO);
     assert(partition != nullptr);
     assert(partition->get_streamer());
 
@@ -2558,7 +2571,7 @@ void game_patch()
 
     {
         FUNC_ADDRESS(address, &game::render_world);
-        //REDIRECT(0x0073E9D1, address);
+        REDIRECT(0x00741CD3, address);
     }
 
     {
@@ -2579,6 +2592,11 @@ void game_patch()
     {
         FUNC_ADDRESS(address, &game::handle_game_states);
         REDIRECT(0x0055D742, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &game::frame_advance);
+        REDIRECT(0x005D70B8, address);
     }
 
     {

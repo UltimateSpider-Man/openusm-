@@ -8,11 +8,10 @@ struct traffic_path_graph;
 struct traffic_path_road;
 
 struct traffic_path_lane {
-    struct eLaneType {
-        int field_0;
+    enum eLaneType {
     };
 
-    vector3d *field_0;
+    vector3d *nodes;
     traffic_path_road *my_road;
     uint16_t total_nodes;
     uint16_t flags;
@@ -21,18 +20,19 @@ struct traffic_path_lane {
 
     int get_type() const;
 
-    int get_num_nodes() const
-    {
+    int get_num_nodes() const {
         return this->total_nodes;
     }
 
     vector3d sub_5E2040();
 
-    vector3d sub_5E2000(int a3);
+    vector3d get_node(int a3) const;
 
     void sub_5CCFB0(entity *ent, int a3);
 
     vector3d get_node_before_point(const vector3d &a3, int *a4);
+
+    void seed_with_pedestrians(entity &ent, int a3);
 
     static bool lane_is_valid(const traffic_path_lane *a1);
 };

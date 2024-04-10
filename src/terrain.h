@@ -121,7 +121,7 @@ struct terrain {
     //0x00556FF0
     void frame_advance(Float a2);
 
-    _std::vector<region *> *sub_6DC8A0(vector3d a2);
+    _std::vector<region *> * get_region_info_for_point(vector3d a2);
 
     //0x0052DFF0
     region *find_region(const vector3d &a2, const region *a3);

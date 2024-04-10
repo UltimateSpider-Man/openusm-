@@ -2,9 +2,9 @@
 
 #include "float.hpp"
 
-extern inline constexpr auto PI = 3.1415927f;
+inline constexpr auto PI = 3.1415927f;
 
-extern inline constexpr auto half_PI = PI * 0.5f;
+inline constexpr auto half_PI = PI * 0.5f;
 
 struct po;
 struct vector3d;

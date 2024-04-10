@@ -45,6 +45,12 @@ namespace geometry_manager {
     //0x00540130
     extern void set_viewport(const aarect<float, vector2d> &a1);
 
+    //0x
+    extern bool get_auto_rebuild_view_frame();
+
+    //0x
+    extern void set_auto_rebuild_view_frame(bool a1);
+
     //0x005153E0
     extern void set_look_at(matrix4x4 *a1,
                             const vector3d &eye,

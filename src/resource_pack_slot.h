@@ -16,11 +16,13 @@ struct resource_partition;
 enum slot_state_t {
     SLOT_STATE_EMPTY = 0,
     SLOT_STATE_STREAMING = 1,
-
+    SLOT_STATE_LOADING = 2,
+    SLOT_STATE_UNLOADING = 3,
     SLOT_STATE_READY = 4,
 };
 
 struct resource_pack_slot {
+
     enum callback_enum {
 		CALLBACK_LOAD_STARTED = 0,
         CALLBACK_CONSTRUCT = 3,
@@ -38,17 +40,11 @@ struct resource_pack_slot {
 
 private:
     resource_key field_4;
-
-public:
-    
     slot_state_t m_slot_state;
     int slot_size;
     int pack_size;
-
-private:
     uint8_t *header_mem_addr;
 
-public:
     resource_pack_directory pack_directory;
     resource_pack_token field_78;
     timed_progress field_80;
@@ -58,7 +54,11 @@ public:
                        resource_pack_streamer *,
                        resource_pack_slot *,
                        limited_timer *);
+
+public:
     bool field_90;
+
+public:
 
     //0x00531C70
     resource_pack_slot();
@@ -67,39 +67,59 @@ public:
     //virtual
     ~resource_pack_slot();
 
-    auto &get_name_key() const
-    {
+    resource_partition * get_partition() {
+        return field_88;
+    }
+
+    void set_partition(resource_partition *p) {
+        field_88 = p;
+    }
+
+    auto &get_name_key() const {
         return field_4;
     }
 
-	resource_pack_token &get_pack_token()
-	{
-		assert(m_slot_state != SLOT_STATE_EMPTY);
-	  	return this->field_78;
-	}
+	resource_pack_token &get_pack_token();
 
     auto *get_header_mem_addr()
     {
         return header_mem_addr;
     }
 
-    inline bool is_pack_unloading() {
-        return (m_slot_state == 3);
+    bool is_empty() const {
+        return m_slot_state == SLOT_STATE_EMPTY;
+    }
+
+    bool is_pack_loading() const {
+        return (this->m_slot_state == SLOT_STATE_LOADING);
+    }
+
+    bool is_pack_unloading() const {
+        return (this->m_slot_state == SLOT_STATE_UNLOADING);
+    }
+
+    bool is_pack_ready() const {
+        return (m_slot_state == SLOT_STATE_READY);
     }
 
     auto get_slot_size() const {
         return slot_size;
     }
 
-    bool is_data_ready();
-
-    inline bool is_pack_ready() {
-        return (m_slot_state == 4);
+    bool is_data_ready() const
+    {
+        return (this->m_slot_state == SLOT_STATE_LOADING
+                || this->m_slot_state == SLOT_STATE_UNLOADING
+                || this->m_slot_state == SLOT_STATE_READY);
     }
+
+    resource_pack_directory & get_resource_pack_directory();
 
     resource_directory &get_resource_directory();
 
     void set_resource_directory(resource_directory *directory);
+
+    void notify_load_cancelled();
 
     void notify_unload_started();
 
@@ -118,8 +138,6 @@ public:
 
     //0x0050E210
     bool try_callback(callback_enum a2, limited_timer *a3);
-
-    bool is_empty();
 
     uint8_t *get_resource(const resource_key &resource_id, int *a3, resource_pack_slot **a4);
 

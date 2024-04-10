@@ -29,6 +29,8 @@ struct panel_params_t;
 
 struct SMPanelParams {
     comic_panels::panel_params_t *field_0;
+
+    static inline Var<int> ID {0x0096FCA0};
 };
 
 struct vector4d;

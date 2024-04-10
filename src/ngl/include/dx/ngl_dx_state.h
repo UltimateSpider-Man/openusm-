@@ -48,7 +48,8 @@ struct RenderState_t {
     float field_94;
     float field_98;
     uint32_t field_9C;
-    int field_A0;
+    uint8_t field_A0;
+    bool field_A1;
     int field_A4;
     uint32_t field_A8;
     D3DCULL m_cullingMode;
@@ -135,6 +136,8 @@ struct RenderState_t {
 
     //0x0077E2B0
     void setLighting(uint8_t a2);
+
+    void setScissorTestEnabled(bool a2);
 
     void setStencilCheckEnabled(bool enabled);
 
