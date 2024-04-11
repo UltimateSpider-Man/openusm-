@@ -2409,8 +2409,6 @@ BOOL install_redirects()
 
     scene_anim_patch();
 
-    nal_anim_controller_patch();
-
     camera_patch();
 
     comic_panels_patch();
@@ -2418,6 +2416,10 @@ BOOL install_redirects()
     us_person_patch();
 
     ngl_patch();
+
+    nal_anim_controller_patch();
+
+    geometry_manager_patch();
 
     wds_render_manager_patch();
 
@@ -2441,6 +2443,26 @@ BOOL install_redirects()
         slab_allocator_patch();
 
         nfl_system_patch();
+    }
+
+    if constexpr (1)
+    {
+        vm_patch();
+
+        vm_thread_patch();
+
+        vm_executable_patch();
+    }
+
+    if constexpr (1)
+    {
+        //us_decal_patch();
+
+        us_lod_patch();
+
+        us_translucentshader_patch();
+
+        us_simpleshader_patch();
     }
 
     if constexpr (1)
@@ -2522,7 +2544,10 @@ BOOL install_redirects()
         anim_record_patch();
 
         sound_interface_patch();
+    }
 
+    if constexpr (1)
+    {
         combo_system_patch();
 
         combo_system_move_patch();
@@ -2537,23 +2562,9 @@ BOOL install_redirects()
 
         daynight_patch();
 
-        vm_patch();
-
-        vm_thread_patch();
-
-        vm_executable_patch();
-
-        //us_decal_patch();
-
         resource_key_patch();
 
-        us_lod_patch();
-
         FrontEnd_Shader_patch();
-
-        us_translucentshader_patch();
-
-        us_simpleshader_patch();
 
         nglShader_patch();
 
@@ -2656,17 +2667,23 @@ BOOL install_redirects()
         ai_path_patch();
 
         ai_core_patch();
-        
-        interactable_interface_patch();
+    }
 
-        animation_logic_system_patch();
+    animation_logic_system_patch();
+        
+    if constexpr (1)
+    {
+        interactable_interface_patch();
 
         event_manager_patch();
 
         trigger_manager_patch();
 
         variant_interface_patch();
+    }
 
+    if constexpr (1)
+    {
         nalStreamInstance_patch();
 
         script_memtrack_patch();
@@ -2674,7 +2691,10 @@ BOOL install_redirects()
         scratchpad_stack_patch();
 
         hero_inode_patch();
+    }
 
+    if constexpr (1)
+    {
         character_anim_controller_patch();
 
         usm_anim_player_patch();
@@ -2829,8 +2849,6 @@ BOOL install_redirects()
 
     //spline_patch();
 
-
-    geometry_manager_patch();
 
     if constexpr (0) {
 

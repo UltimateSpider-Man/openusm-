@@ -18,6 +18,8 @@ struct animation_logic_system_shared;
 struct motion_compensator;
 
 struct animation_logic_system : animation_logic_system_interface {
+
+private:
     animation_logic_system_shared *als_shared;
     _std::vector<als::state_machine *> field_8;
     base_state_machine field_18;
@@ -30,11 +32,17 @@ struct animation_logic_system : animation_logic_system_interface {
     bool field_7E;
     bool field_7F;
 
+public:
+
     //0x004ABB80
     animation_logic_system(actor *a1);
 
     //0x004933C0
     als_meta_anim_table_shared * get_meta_anim_table();
+
+    actor * get_actor() {
+        return field_6C;
+    }
 
     bool sub_49F2A0();
 

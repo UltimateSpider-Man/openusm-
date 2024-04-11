@@ -42,6 +42,11 @@ state_machine::state_machine()
     }
 }
 
+void state_machine::set_anim_handle(animation_controller::anim_ctrl_handle &a2)
+{
+    this->field_48 = a2;
+}
+
 param_node *state_machine::find_external_param(external_parameter_types a2) const
 {
     TRACE("als::state_machine::find_external_param");
@@ -218,21 +223,21 @@ vector3d state_machine::get_vector_param(
         case 108u:
         case 109u:
         case 110u: {
-            auto *v9 = a2->field_6C;
+            auto *v9 = a2->get_actor();
             result = v9->get_abs_po().get_y_facing();
             break;
         }
         case 111u:
         case 112u:
         case 113u: {
-            auto *v11 = a2->field_6C;
+            auto *v11 = a2->get_actor();
             result = v11->get_abs_po().get_x_facing();
             break;
         }
         case 115u:
         case 116u:
         case 117u: {
-            auto *v10 = a2->field_6C;
+            auto *v10 = a2->get_actor();
             result = v10->get_abs_po().get_z_facing();
             break;
         }
@@ -601,14 +606,18 @@ void state_machine::process_requests(animation_logic_system *a2)
         sp_log("%s", v1.m_cat_id.to_string());
     }
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         this->curr_req_data.clear();
         this->field_40.clear_cache();
-        if ( this->field_8.field_0 ) {
+        if ( this->field_8.field_0 )
+        {
             layer_types v4 = this->get_layer_id();
             a2->sub_4A6630(v4);
             this->field_34.clear();
-        } else {
+        }
+        else
+        {
             if ( this->field_8.field_1 ) {
                 if ( this->field_8.field_2 ) {
                     this->do_force_state_trans(a2);
@@ -892,6 +901,11 @@ void als_state_machine_patch()
         set_vfunc(0x00881588, address);
     }
 
+    {
+        FUNC_ADDRESS(address, &als::state_machine::process_requests);
+        REDIRECT(0x004A910D, address);
+    }
+
     return;
 
     {
@@ -924,11 +938,6 @@ void als_state_machine_patch()
     {
         FUNC_ADDRESS(address, &als::state_machine::is_requesting_category);
         SET_JUMP(0x00493470, address);
-    }
-
-    {
-        FUNC_ADDRESS(address, &als::state_machine::process_requests);
-        REDIRECT(0x004A910D, address);
     }
 
     {

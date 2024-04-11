@@ -17,7 +17,7 @@ void motion_compensator::activate(animation_logic_system *a2)
 {
     this->field_4 = a2;
     this->field_8 = (als::state_machine *)this->field_4->get_als_layer_internal(static_cast<als::layer_types>(0));
-    this->the_actor = this->field_4->field_6C;
+    this->the_actor = this->field_4->get_actor();
     this->field_10 = 10.0;
 }
 
@@ -60,12 +60,8 @@ void motion_compensator::set_facing_to_dir_internal(
                 a1 = a2;
             }
 
-            sp_log("DEBUG!!!");
-
             bool v10 = false;
-            auto *v9 = this->field_4->field_6C;
-
-            sp_log("DEBUG!!!");
+            auto *v9 = this->field_4->get_actor();
 
             auto &abs_po = v9->get_abs_po();
             vector3d y_facing = abs_po.get_y_facing();
@@ -73,7 +69,6 @@ void motion_compensator::set_facing_to_dir_internal(
                 v10 = true;
             }
 
-            sp_log("DEBUG!!!");
             auto v11 = dot(a1, a2);
             v11 = std::clamp(v11, -1.0f, 1.0f);
             if ( a8 >= v11 || v10 )

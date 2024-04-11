@@ -26,6 +26,8 @@ enum external_parameter_types {};
 enum internal_parameter_types {};
 
 struct state_machine {
+
+protected:
     std::intptr_t m_vtbl;
     layer_state_machine_shared *shared_portion;
     struct {
@@ -65,8 +67,12 @@ struct state_machine {
     param_cache field_40;
     animation_controller::anim_ctrl_handle field_48;
 
+public:
+
     //0x004A9180
     state_machine();
+
+    void set_anim_handle(animation_controller::anim_ctrl_handle &a2);
 
     void set_pending_params(param_list &a2);
 

@@ -111,8 +111,7 @@ float als_inode::get_eta_of_combat_signal(als::layer_types a2) {
 bool als_inode::is_cat_our_prev_cat(string_hash a2, als::layer_types a3)
 {
     auto *als_layer = this->get_als_layer(a3);
-    bool (__fastcall *is_cat_our_prev_cat)(const void *, void *, string_hash) = CAST(is_cat_our_prev_cat,get_vfunc(als_layer->m_vtbl, 0x58));
-    return is_cat_our_prev_cat(als_layer, nullptr, a2);
+    return als_layer->is_cat_our_prev_cat(a2);
 }
 
 bool als_inode::anim_finished(string_hash a2, als::layer_types a3)

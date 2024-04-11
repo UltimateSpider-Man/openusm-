@@ -8,6 +8,7 @@
 #include "ngl_scene.h"
 #include "oldmath_po.h"
 #include "os_developer_options.h"
+#include "trace.h"
 #include "utility.h"
 #include "vector2d.h"
 #include "vector3d.h"
@@ -48,14 +49,11 @@ void set_xform(xform_t xformtype, const matrix4x4 &a2)
     {
         if (xformtype == XFORM_WORLD_TO_VIEW)
         {
-            auto &v9 = (scene_analyzer_enabled() ? xforms()[8] : a2);
-
-            xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] = v9;
+            xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] = (scene_analyzer_enabled() ? xforms()[8] : a2);
 
             po v13{a2};
             auto *v3 = v13.inverse();
-            auto &v4 = v3->get_matrix();
-            xforms()[XFORM_VIEW_TO_WORLD] = v4;
+            xforms()[XFORM_VIEW_TO_WORLD] = v3->get_matrix();
         }
 
         if (xformtype == 8 && scene_analyzer_enabled()) {
@@ -68,8 +66,7 @@ void set_xform(xform_t xformtype, const matrix4x4 &a2)
             || xformtype == XFORM_PROJECTION_TO_SCREEN)
         {
             if (xformtype == XFORM_VIEW_TO_PROJECTION || xformtype == XFORM_PROJECTION_TO_SCREEN) {
-                auto v5 = xforms()[XFORM_VIEW_TO_PROJECTION] * xforms()[XFORM_PROJECTION_TO_SCREEN];
-                xforms()[XFORM_VIEW_TO_SCREEN] = v5;
+                xforms()[XFORM_VIEW_TO_SCREEN] = xforms()[XFORM_VIEW_TO_PROJECTION] * xforms()[XFORM_PROJECTION_TO_SCREEN];
             }
 
             xforms()[XFORM_WORLD_TO_SCREEN] = xforms()[XFORM_EFFECTIVE_WORLD_TO_VIEW] * xforms()[XFORM_VIEW_TO_SCREEN];
@@ -203,7 +200,10 @@ void geometry_manager::compute_view_frustum_verts_in_world_space() {
     }
 }
 
-void geometry_manager::set_viewport(const aarect<float, vector2d> &a1) {
+void geometry_manager::set_viewport(const aarect<float, vector2d> &a1)
+{
+    TRACE("geometry_manager::set_viewport");
+
     if constexpr (1) {
         viewport_rect() = a1;
 
@@ -304,8 +304,8 @@ void geometry_manager::set_view(const vector3d &a1, const vector3d &a2, const ve
     if constexpr (1)
     {
         matrix4x4 v1;
-        geometry_manager::set_look_at(&v1, a1, a2, a3);
-        geometry_manager::set_xform(XFORM_WORLD_TO_VIEW, v1);
+        set_look_at(&v1, a1, a2, a3);
+        set_xform(XFORM_WORLD_TO_VIEW, v1);
     }
     else
     {
@@ -313,13 +313,17 @@ void geometry_manager::set_view(const vector3d &a1, const vector3d &a2, const ve
     }
 }
 
-void geometry_manager::set_scissor(const aarect<float, vector2d> &a1) {
-    if constexpr (1) {
-        geometry_manager::scissor_rect() = a1;
-        if (geometry_manager::auto_rebuild_view_frame()) {
-            geometry_manager::rebuild_view_frame();
+void geometry_manager::set_scissor(const aarect<float, vector2d> &a1)
+{
+    TRACE("geometry_manager::set_scissor");
+
+    if constexpr (1)
+    {
+        scissor_rect() = a1;
+        if (auto_rebuild_view_frame()) {
+            rebuild_view_frame();
         } else {
-            geometry_manager::view_frame_dirty() = true;
+            view_frame_dirty() = true;
         }
 
     }
@@ -389,7 +393,12 @@ void geometry_manager::rebuild_view_frame() {
     CDECL_CALL(0x0053A930);
 }
 
-void geometry_manager_patch() {
+void geometry_manager_patch()
+{
+    SET_JUMP(0x00540170, geometry_manager::set_scissor);
+
+    SET_JUMP(0x00540130, geometry_manager::set_viewport);
+
     SET_JUMP(0x005153E0, geometry_manager::set_look_at);
 
     REDIRECT(0x00577BC1, geometry_manager::set_view);

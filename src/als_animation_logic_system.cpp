@@ -33,7 +33,7 @@ als_meta_anim_table_shared * animation_logic_system::get_meta_anim_table()
 bool animation_logic_system::sub_49F2A0()
 {
     auto func = [](auto *v4) -> bool {
-        return ( v4->is_active() && v4->m_curr_state->is_flag_set(static_cast<state_flags>(2u)) );
+        return ( v4->is_active() && v4->get_curr_state()->is_flag_set(static_cast<state_flags>(2u)) );
     };
 
     if (func(&this->field_18)) {
@@ -278,7 +278,7 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
                     }
                     else
                     {
-                        auto v10 = this->field_8[i]->shared_portion->field_40;
+                        auto v10 = bit_cast<layer_state_machine *>(this->field_8[i])->get_domain_bitmask();
                         auto v11 = curr_state->field_C;
                         auto v19 = static_cast<als::layer_types>(the_state_machine->get_layer_id());
                         auto v12 = static_cast<als::layer_types>(the_state_machine->get_layer_id());
@@ -286,7 +286,7 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
                         v9 = this->the_controller->play_layer_anim(anim_name, v11, a5, v10, true, v19);
                     }
 
-                    the_state_machine->field_48 = v9;
+                    the_state_machine->set_anim_handle(v9);
                     this->field_7D = false;
                 }
             };
@@ -427,34 +427,32 @@ void animation_logic_system::frame_advance_post_request_processing(Float a2)
     THISCALL(0x0049F1A0, this, a2);
 }
 
+//FIXME
 void animation_logic_system::frame_advance_main_als_advance(Float a2)
 {
     TRACE("animation_logic_system::frame_advance_main_als_advance");
 
-    if constexpr (1) {
-        if ( !this->field_7C ) {
+    if constexpr (0)
+    {
+        if ( !this->field_7C )
+        {
             this->field_7E = false;
             if ( this->field_6C->has_time_ifc() ) {
                 this->field_6C->time_ifc();
             }
 
-            static auto func = [this](auto &the_state_machine) {
-                the_state_machine->process_requests(this);
-
-                if ( the_state_machine->field_14.m_trans_succeed ) {
-                    this->field_7E = true;
-                }
-            };
-
             sp_log("%d", this->field_8.size());
 
-            auto *v6 = &this->field_18;
-            func(v6);
-
-            std::for_each(this->field_8.begin(), this->field_8.end(), [](auto *v6)
+            for ( int i = -1; i < this->field_8.size(); ++i )
             {
-                func(v6);
-            });
+                state_machine &the_machine = (i == -1 ? this->field_18 : *this->field_8[i]);
+
+                the_machine.process_requests(this);
+
+                if ( the_machine.did_do_transition() ) {
+                    this->field_7E = true;
+                }
+            }
         }
     } else {
         THISCALL(0x004A90B0, this, a2);
@@ -518,6 +516,8 @@ void animation_logic_system_patch()
         set_vfunc(0x0088147C, address);
     }
 
+    return;
+
     {
         FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_play_new_animations);
         set_vfunc(0x0088148C, address);
@@ -527,8 +527,6 @@ void animation_logic_system_patch()
         FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_update_pending_params);
         set_vfunc(0x00881490, address);
     }
-    return;
-
 
     {
         FUNC_ADDRESS(address, &als::animation_logic_system::enter_biped_physics);
