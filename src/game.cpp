@@ -601,8 +601,8 @@ void game::render_world()
 
                 geometry_manager::set_far_plane(v11);
 
-                if (byte_921D79()
-                        && !this->field_16E
+                if ( (byte_921D79()
+                        && !this->field_16E)
                         || g_cut_scene_player()->is_playing())
                 {
                     v3->adjust_geometry_pipe(false);
@@ -917,7 +917,7 @@ void game::advance_state_paused(Float a1)
         auto *v4 = g_cut_scene_player();
         if (v4->field_E1 || v4->field_E2) {
             auto *v5 = g_cut_scene_player();
-            v5->sub_741220(a1);
+            v5->frame_advance_lite(a1);
         }
 
         this->frame_advance_game_overlays(a1);

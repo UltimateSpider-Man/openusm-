@@ -710,9 +710,9 @@ bool resource_directory::find_tlresource(uint32_t a1,
                                          resource_directory **out_dir,
                                          tlresource_location **out_loc)
 {
-    TRACE("resource_directory::find_tlresource");
+    TRACE("resource_directory::find_tlresource", std::to_string(a1).c_str());
 
-    if constexpr (1)
+    if constexpr (0)
     {
         assert(tlres_type >= TLRESOURCE_TYPE_NONE && tlres_type < TLRESOURCE_TYPE_Z);
 

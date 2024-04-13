@@ -2407,27 +2407,30 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC52F, parse_cmd);
 
-    scene_anim_patch();
+    if constexpr (1)
+    {
+        scene_anim_patch();
 
-    camera_patch();
+        camera_patch();
 
-    comic_panels_patch();
+        comic_panels_patch();
 
-    us_person_patch();
+        us_person_patch();
 
-    ngl_patch();
+        ngl_patch();
 
-    nal_anim_controller_patch();
+        nal_anim_controller_patch();
 
-    geometry_manager_patch();
+        geometry_manager_patch();
 
-    wds_render_manager_patch();
+        wds_render_manager_patch();
 
-    game_patch();
+        game_patch();
 
-    resource_directory_patch();
+        resource_directory_patch();
 
-    tlresource_directory_patch();
+        tlresource_directory_patch();
+    }
 
     //standalone patches
     if constexpr (1)
@@ -2454,9 +2457,9 @@ BOOL install_redirects()
         vm_executable_patch();
     }
 
-    if constexpr (1)
+    if constexpr (0)
     {
-        //us_decal_patch();
+        us_decal_patch();
 
         us_lod_patch();
 
@@ -2464,6 +2467,7 @@ BOOL install_redirects()
 
         us_simpleshader_patch();
     }
+
 
     if constexpr (1)
     {
@@ -2562,14 +2566,15 @@ BOOL install_redirects()
 
         daynight_patch();
 
-        resource_key_patch();
-
         FrontEnd_Shader_patch();
 
         nglShader_patch();
 
         mission_manager_patch();
+    }
 
+    if constexpr (1)
+    {
         resource_pack_streamer_patch();
 
         resource_partition_patch();
@@ -2578,6 +2583,11 @@ BOOL install_redirects()
 
         resource_pack_standalone_patch();
 
+        resource_key_patch();
+    }
+
+    if constexpr (0)
+    {
         tlResourceDirectory_patch();
         
         PanelMeshSection_patch();
@@ -2592,6 +2602,11 @@ BOOL install_redirects()
 
         MultiLineString_patch();
 
+        menu_nav_bar_patch();
+    }
+
+    if constexpr (1)
+    {
         pause_menu_message_log_patch();
 
         pause_menu_save_load_display_patch();
@@ -2602,9 +2617,11 @@ BOOL install_redirects()
 
         pause_menu_transition_patch();
 
-        menu_nav_bar_patch();
-
         unlockables_menu_patch();
+    }
+
+    if constexpr (1)
+    {
 
         pause_menu_status_patch();
 
@@ -2691,6 +2708,8 @@ BOOL install_redirects()
         scratchpad_stack_patch();
 
         hero_inode_patch();
+
+        cut_scene_player_patch();
     }
 
     if constexpr (1)
@@ -3044,8 +3063,6 @@ BOOL install_redirects()
         combat_state_patch();
 
         line_anchor_patch();
-
-        cut_scene_player_patch();
 
         resource_partition_patch();
 

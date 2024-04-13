@@ -71,8 +71,6 @@ cut_scene_player::cut_scene_player() {
     this->field_164 = 0;
 }
 
-static Var<cut_scene_player> player{0x0096FEB8};
-
 void cut_scene_player::advance_lip_syncing(Float a2) {
     THISCALL(0x00737F60, this, a2);
 }
@@ -115,22 +113,26 @@ void cut_scene_player::frame_advance(Float a2) {
     }
 }
 
-bool cut_scene_player::sub_741220(Float a2) {
-    return (bool) THISCALL(0x00741220, this, a2);
+bool cut_scene_player::frame_advance_lite(Float a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(void *, void *, Float) = CAST(func, 0x00741220);
+        return func(this, nullptr, a2);
+    }
 }
 
 bool cut_scene_player::is_playing() {
     return this->field_E1 || this->field_E2;
 }
 
-cut_scene_player *g_cut_scene_player() {
-    if constexpr (0) {
-        static Var<uint32_t> dword_970020{0x00970020};
-        if (!(dword_970020() & 1)) {
-            dword_970020() |= 1u;
-            player() = cut_scene_player{};
-            atexit(&cut_scene_player::finalize);
-        }
+cut_scene_player *g_cut_scene_player()
+{
+    if constexpr (0)
+    {
+        static Var<cut_scene_player> player {0x0096FEB8};
 
         return &player();
     } else {
@@ -138,8 +140,14 @@ cut_scene_player *g_cut_scene_player() {
     }
 }
 
-void cut_scene_player::stop(cut_scene *a2) {
-    THISCALL(0x00740660, this, a2);
+void cut_scene_player::stop(cut_scene *a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x00740660, this, a2);
+    }
 }
 
 void cut_scene_player_patch() {

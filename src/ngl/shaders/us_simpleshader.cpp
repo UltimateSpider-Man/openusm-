@@ -16,7 +16,8 @@ namespace USSimpleShaderSpace
 #ifdef TARGET_XBOX
         a1->field_20 = nglLoadTexture(*bit_cast<tlHashString *>(&a1->field_1C));
 #else
-        a1->field_20 = nglLoadTexture(*bit_cast<tlFixedString *>(a1->field_1C));
+        auto *Material = bit_cast<USInteriorMaterial *>(a1);
+        Material->field_20 = nglLoadTexture(*Material->field_1C);
 #endif
     }
 
@@ -85,4 +86,5 @@ void us_simpleshader_patch()
         FUNC_ADDRESS(address, func);
         set_vfunc(0x00871608, address);
     }
+
 }

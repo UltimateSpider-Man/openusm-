@@ -14,7 +14,7 @@
 
 namespace script_memtrack {
 
-static std::string current_class_name {}; 
+static std::string current_class_name {""}; 
 
 static int current_heap_usage {0};
 
@@ -28,7 +28,7 @@ void begin_entity_creation(const mString &a1)
 {
     TRACE("script_memtrack::begin_entity_creation");
 
-    assert(current_class_name == "\"");
+    assert(current_class_name == "");
     assert(current_heap_usage == 0);
 
     current_class_name = a1.c_str();
@@ -186,7 +186,8 @@ void create_debug_menu(debug_menu *arg0)
 
 } // namespace script_memtrack
 
-void script_memtrack_patch() {
+void script_memtrack_patch()
+{
     SET_JUMP(0x0064EB20, script_memtrack::begin_entity_creation);
 
     SET_JUMP(0x0064EB30, script_memtrack::end_entity_creation);

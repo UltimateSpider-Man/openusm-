@@ -47,8 +47,6 @@ namespace script_manager {
     void link();
 
     //0x005A0AC0
-    void run_callbacks(script_manager_callback_reason a1);
-
     void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3);
 
     //0x0058F480

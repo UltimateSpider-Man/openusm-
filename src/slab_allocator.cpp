@@ -420,8 +420,11 @@ int slab_allocator::slab_t::get_total_object_count() {
     return this->total_object_count;
 }
 
-slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj) {
-    if constexpr (1) {
+//FIXME
+slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj)
+{
+    if constexpr (0)
+    {
         if (obj == nullptr || !initialized()) {
             return nullptr;
         }
@@ -432,7 +435,8 @@ slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj) {
                static_slab_arena());
 #endif
 
-        if ((obj < static_slab_arena()) || (obj >= slab_allocator::static_slab_arena() + 0x100000)) {
+        if ((obj < static_slab_arena()) || (obj >= static_slab_arena() + 0x100000))
+        {
             uint32_t uVar3 = bit_cast<uint32_t>(obj) & 0xfffff000;
             auto *slab = (slab_t *) (uVar3 + SLAB_SIZE);
 
@@ -483,8 +487,11 @@ slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj) {
         }
 
         return nullptr;
-    } else {
-        return (slab_t *) CDECL_CALL(0x00592D50, obj);
+    }
+    else
+    {
+        slab_t * (*func)(void *) = CAST(func, 0x00592D50);
+        return func(obj);
     }
 }
 
@@ -616,13 +623,16 @@ void slab_allocator::create_slab_debug_menu(debug_menu *parent)
     }
 }
 
-void slab_allocator::deallocate(void *a1, slab_t *slab) {
-    if constexpr (1) {
+void slab_allocator::deallocate(void *a1, slab_t *slab)
+{
+    if constexpr (1)
+    {
         assert(initialized());
 
-        if (a1 != nullptr) {
+        if (a1 != nullptr)
+        {
             if (slab == nullptr) {
-                slab = slab_allocator::find_slab_for_object(a1);
+                slab = find_slab_for_object(a1);
             }
 
             assert(slab != nullptr);
@@ -879,7 +889,8 @@ void slab_allocator::process_lists() {
     }
 }
 
-void slab_allocator_patch() {
+void slab_allocator_patch()
+{
     SET_JUMP(0x0059F750, slab_allocator::allocate);
 
     SET_JUMP(0x0059DCA0, slab_allocator::deallocate);
@@ -890,5 +901,5 @@ void slab_allocator_patch() {
 
     SET_JUMP(0x0059AF70, slab_allocator::process_lists);
 
-    SET_JUMP(0x00592D50, slab_allocator::find_slab_for_object);
+    //SET_JUMP(0x00592D50, slab_allocator::find_slab_for_object);
 }

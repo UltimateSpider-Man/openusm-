@@ -3395,7 +3395,7 @@ void nglReleaseTexture(nglTexture *Tex) {
 
 nglTexture *nglLoadTexture(const tlFixedString &a1)
 {
-    TRACE("nglLoadTexture", tlHashString {a1.GetHash()}.c_str(), a1.to_string());
+    TRACE("nglLoadTexture", a1.to_string());
 
     assert(a1.GetHash() != 0);
 

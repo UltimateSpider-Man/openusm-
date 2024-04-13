@@ -233,13 +233,6 @@ int load_game_var_buffer(char *a1) {
     return script_manager_game_var_container()->load_script_var_buffer(a1);
 }
 
-void run_callbacks(script_manager_callback_reason a1)
-{
-    TRACE("script_manager::run_callbacks");
-
-    CDECL_CALL(0x005A0AC0, a1);
-}
-
 void run_callbacks(script_manager_callback_reason a1, script_executable *a2, const char *a3)
 {
     TRACE("script_manager::run_callbacks");

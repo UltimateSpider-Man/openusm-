@@ -314,7 +314,7 @@ void animation_logic_system::frame_advance_update_pending_params(Float a2)
 {
     TRACE("animation_logic_system::frame_advance_update_pending_params");
 
-    if constexpr (1)
+    if constexpr (0)
     {
         if ( !this->field_7C )
         {
@@ -475,6 +475,7 @@ void animation_logic_system_patch()
         FUNC_ADDRESS(address, &als::animation_logic_system::suspend_logic_system);
         SET_JUMP(0x004931F0, address);
     }
+
     
     {
         FUNC_ADDRESS(address, &als::animation_logic_system::create_instance_data);
@@ -515,8 +516,6 @@ void animation_logic_system_patch()
         FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_main_als_advance);
         set_vfunc(0x0088147C, address);
     }
-
-    return;
 
     {
         FUNC_ADDRESS(address, &als::animation_logic_system::frame_advance_play_new_animations);

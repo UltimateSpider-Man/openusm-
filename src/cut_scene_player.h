@@ -82,7 +82,7 @@ struct cut_scene_player {
     //0x007414E0
     void play_current_segment();
 
-    bool sub_741220(Float a2);
+    bool frame_advance_lite(Float a2);
 
     //0x00741EC0
     void frame_advance(Float a2);

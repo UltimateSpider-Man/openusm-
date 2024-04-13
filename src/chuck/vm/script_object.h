@@ -201,6 +201,8 @@ struct script_instance {
         return this->data.get_buffer();
     }
 
+    bool run_single_thread(vm_thread *a2, bool a3);
+
     //0x005AAE60
     simple_list<vm_thread>::iterator delete_thread(
         simple_list<vm_thread>::iterator a3);

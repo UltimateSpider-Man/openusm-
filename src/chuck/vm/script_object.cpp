@@ -6,6 +6,8 @@
 #include "memory.h"
 #include "parse_generic_mash.h"
 #include "script_executable.h"
+#include "script_executable_entry.h"
+#include "script_manager.h"
 #include "vm_executable.h"
 #include "vm_thread.h"
 #include "common.h"
@@ -797,6 +799,43 @@ script_instance::~script_instance()
 
         t->~vm_thread();
         vm_thread::pool().remove(t);
+    }
+}
+
+bool script_instance::run_single_thread(vm_thread *a2, bool a3)
+{
+    TRACE("script_instance::run_single_thread");
+
+    if constexpr (0)
+    {
+        this->flags |= 2u;
+        bool v4 = false;
+        auto *inst = a2->get_instance();
+        auto *so = inst->get_parent();
+        auto *parent = so->get_parent();
+        auto *entry = script_manager::find_entry(a2->inst->parent->parent);
+        assert(entry != nullptr);
+
+        script_manager::run_callbacks(static_cast<script_manager_callback_reason>(10), parent, entry->field_8);
+        if ( (a3 || (a2->flags & 1) == 0) && a2->run() )
+        {
+            auto end = this->threads.end();
+            for (auto it = this->threads.begin(); it != end; ++it )
+            {
+                if ( &(*it) == a2 ) {
+                    this->delete_thread(it);
+                }
+            }
+
+            v4 = true;
+        }
+
+        script_manager::run_callbacks(static_cast<script_manager_callback_reason>(11), parent, entry->field_8);
+        return v4;
+    }
+    else
+    {
+        return THISCALL(0x005AF100, this, a2, a3);
     }
 }
 
