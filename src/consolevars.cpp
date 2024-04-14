@@ -113,9 +113,10 @@ void HealthVariable::setValue(const std::string &arg0, const std::string &a1) {
                 auto end = v39->end();
                 bool v36 = false;
 
-                while (it != end) {
+                while (it != end)
+                {
                     auto &v4 = (*it);
-                    auto *v35 = v4.get_actor(0);
+                    auto *v35 = v4->get_actor(0);
 
                     auto v6 = v35->get_id();
                     auto v34 = v6;

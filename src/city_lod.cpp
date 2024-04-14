@@ -19,7 +19,7 @@ city_lod::city_lod(const char *a1) {
     if constexpr (1) {
         this->field_4 = false;
         this->field_0 = nullptr;
-        this->field_4 = os_developer_options::instance()->get_flag(0xE);
+        this->field_4 = os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(0xE));
 
         if (this->field_4) {
             resource_key resource_id {string_hash {a1}, RESOURCE_KEY_TYPE_LOD};

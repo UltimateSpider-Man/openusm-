@@ -172,13 +172,13 @@ app::app()
     sound_manager::create_inst();
     script_sound_manager::create_inst();
     ambient_audio_manager::create_inst();
-    if (!os_developer_options::instance()->get_flag(105)) { //DISABLE_AUDIO_BOXES
+    if (!os_developer_options::instance()->get_flag(mString {"DISABLE_AUDIO_BOXES"})) {
         audio_box_manager::create_inst();
     }
 
     gab_manager::create_inst();
 
-    set_god_mode(os_developer_options::instance()->get_int(29)); //GOD_MODE
+    set_god_mode(os_developer_options::instance()->get_int(mString {"GOD_MODE"}));
 
     colgeom_init_lists();
     physics_system_init();
@@ -187,7 +187,7 @@ app::app()
     g_game_ptr() = this->m_game;
 
     resource_manager::create_inst();
-    if (os_developer_options::instance()->get_int(9) > 0) { //MONKEY_MODE
+    if (os_developer_options::instance()->get_int(mString {"MONKEY_MODE"}) > 0) {
         spider_monkey::start();
     }
 

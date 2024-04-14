@@ -22,6 +22,11 @@ marky_camera::marky_camera(const string_hash &a2) : game_camera(a2, nullptr) {
     this->field_1D8 = -1001.0;
 }
 
+void * marky_camera::operator new(size_t size)
+{
+    return _aligned_malloc(size, 4);
+}
+
 void marky_camera::set_affixed_x_facing(bool a2)
 {
     this->field_1BD = a2;

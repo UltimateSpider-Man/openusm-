@@ -1,8 +1,15 @@
 #include "controller.h"
 
+#include "memory.h"
+
 controller::controller()
 {
 
+}
+
+void * controller::operator new(size_t size)
+{
+    return mem_alloc(size);
 }
 
 void controller::kill() {

@@ -42,10 +42,10 @@ public:
     mString(const char *a2);
 
     //0x00421090
-    mString(float a2);
+    explicit mString(float a2);
 
     //0x00420FD0
-    mString(int a2);
+    explicit mString(int a2);
 
     //0x00421220
     mString(const mString &a2);
@@ -162,8 +162,10 @@ public:
 
     mString remove_surrounding_whitespace();
 
+    //0x00421B60
     mString remove_leading(const char *a1);
 
+    //0x00421C50
     mString remove_trailing(const char *a2);
 
     //0x0055DAB0

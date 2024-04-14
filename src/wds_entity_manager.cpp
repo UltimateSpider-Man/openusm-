@@ -8,6 +8,7 @@
 #include "entity_mash.h"
 #include "func_wrapper.h"
 #include "item.h"
+#include "mic.h"
 #include "mstring.h"
 #include "oldmath_po.h"
 #include "osassert.h"
@@ -387,6 +388,11 @@ void wds_entity_manager::add_camera(_std::vector<entity *> *vec, camera *a2) {
     TRACE("wds_entity_manager::add_camera");
 
     this->add_entity_internal(vec, a2);
+}
+
+void wds_entity_manager::add_mic(_std::vector<entity *> *a1, mic *a2)
+{
+    this->add_entity_internal(a1, a2);
 }
 
 void wds_entity_manager::process_time_limited_entities(Float a2) {

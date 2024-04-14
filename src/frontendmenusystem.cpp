@@ -102,7 +102,7 @@ void FrontEndMenuSystem::sub_60C240() {
 
 bool FrontEndMenuSystem::WaitForMemCheck() {
     return this->field_30 != 10 &&
-        !os_developer_options::instance()->os_developer_options::get_flag(66);
+        !os_developer_options::instance()->os_developer_options::get_flag(static_cast<os_developer_options::flags_t>(66));
 }
 
 bool FrontEndMenuSystem::sub_60C230() {

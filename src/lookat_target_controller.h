@@ -3,6 +3,7 @@
 #include "controller.h"
 #include "euler_direction.h"
 #include "float.hpp"
+#include "variable.h"
 #include "vector3d.h"
 
 struct entity_base;
@@ -20,3 +21,5 @@ struct lookat_target_controller : controller {
     //virtual
     void frame_advance(Float);
 };
+
+inline Var<lookat_target_controller *> g_lookat_controller {0x0095C1E0};

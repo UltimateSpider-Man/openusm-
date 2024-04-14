@@ -199,7 +199,7 @@ void FEMenu::OnAnyButtonPress(int a2, int a3) {
     sp_log("OnAnyButtonPress:");
 
     if ((128 & this->field_28) != 0 && (a3 == 4 || a3 == 8 || a3 == 16 || a3 == 32) &&
-        a2 == input_mgr::instance()->field_58.field_0 - 1000000) {
+        a2 == input_mgr::instance()->field_58 - 1000000) {
         this->field_2A = a3;
         this->field_1C = 0.30000001;
     }
@@ -207,7 +207,7 @@ void FEMenu::OnAnyButtonPress(int a2, int a3) {
 
 void FEMenu::OnButtonRelease(int a2, int a3) {
     if ((128 & this->field_28) != 0 && (a3 == 4 || a3 == 8 || a3 == 16 || a3 == 32) &&
-        a2 == input_mgr::instance()->field_58.field_0 - 1000000 && a3 == this->field_2A) {
+        a2 == input_mgr::instance()->field_58 - 1000000 && a3 == this->field_2A) {
         this->field_2A = -1;
     }
 }

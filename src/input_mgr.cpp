@@ -91,7 +91,7 @@ void input_mgr::scan_devices() {
                 pc_input_mgr::instance()->pad[j]->poll();
             }
         }
-        if (this->field_58.field_0 == -1 || this->field_26) {
+        if (this->field_58 == -1 || this->field_26) {
             auto v5 = 0u;
             while (!pc_input_mgr::instance()->pad[v5]->is_connected()) {
                 if (++v5 >= 4) {
@@ -99,7 +99,7 @@ void input_mgr::scan_devices() {
                 }
             }
 
-            this->field_58.field_0 = v5 + 1000000;
+            this->field_58 = static_cast<device_id_t>(v5 + 1000000);
             if (g_game_ptr() != nullptr) {
                 g_game_ptr()->setup_inputs_p();
             }
@@ -143,18 +143,18 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const
         {
             --v16;
             auto id = axis.m_device_id;
-            if ( a3.field_0 != -1 && a3.field_0 != id )
+            if ( a3 != INVALID_DEVICE_ID && a3 != id )
             {
                 if ( v17 || v16 != 0 )
                 {
                     continue;
                 }
 
-                id = a3.field_0;
+                id = a3;
             }
 
             v17 = true;
-            auto *device = this->get_device(device_id_t{id});
+            auto *device = this->get_device(static_cast<device_id_t>(id));
             if ( device!= nullptr && device->is_connected() )
             {
                 auto v12 = device->get_axis_state(axis.field_4, axis.field_8);
@@ -257,8 +257,10 @@ void input_mgr::poll_devices() {
     }
 }
 
-float input_mgr::get_control_delta(control_id_t control, device_id_t a3) const {
-    if constexpr (1) {
+float input_mgr::get_control_delta(int control, device_id_t a3) const
+{
+    if constexpr (1)
+    {
         if (m_delta_callback != nullptr) {
             return m_delta_callback(control);
         }
@@ -301,7 +303,7 @@ float input_mgr::get_control_delta(control_id_t control, device_id_t a3) const {
 
             v8 = true;
 
-            if (input_device *v12 = this->get_device_from_map(device_id_t{id});
+            if (input_device *v12 = this->get_device_from_map(static_cast<device_id_t>(id));
                 v12 != nullptr && v12->is_connected()) {
                 auto v18 = v7->_Myval.field_4;
 
@@ -347,22 +349,24 @@ float input_mgr::get_control_delta(control_id_t control, device_id_t a3) const {
 
         return result;
 
-        if (!v9) {
+        if (!v9)
+        {
             while (1) {
                 auto v10 = v7->_Myval.m_device_id;
                 auto v11 = size - 1;
                 int v21 = v11;
-                if (a3.field_0 != -1 && a3.field_0 != v10) {
+                if (a3 != INVALID_DEVICE_ID && a3 != v10)
+                {
                     if (v8 || v11 != 0.0) {
                         goto LABEL_29;
                     }
 
-                    v10 = a3.field_0;
+                    v10 = a3;
                 }
 
                 v8 = true;
 
-                if (input_device *v12 = this->get_device_from_map(device_id_t{v10});
+                if (input_device *v12 = this->get_device_from_map(static_cast<device_id_t>(v10));
                     v12 != nullptr && v12->is_connected()) {
                     auto v18 = v7->_Myval.field_4;
 
@@ -424,9 +428,8 @@ float input_mgr::get_control_delta(control_id_t control, device_id_t a3) const {
 }
 
 input_device *input_mgr::get_device(device_id_t id) const {
-    if constexpr (1) {
-        static constexpr device_id_t INVALID_DEVICE_ID = {-1};
-
+    if constexpr (1)
+    {
         auto IS_JOYSTICK_DEVICE = [](device_id_t id) -> bool {
             return id >= 0xF4240 && id <= 0xF4247;
         };
@@ -440,13 +443,13 @@ input_device *input_mgr::get_device(device_id_t id) const {
                 IS_KEYBOARD_DEVICE(id) ||
                 IS_MOUSE_DEVICE(id));
 
-        if (id.field_0 <= 0x1E8480) {
+        if (id <= 0x1E8480) {
             if (IS_KEYBOARD_DEVICE(id)) {
                 return this->field_50;
             }
 
             if (IS_JOYSTICK_DEVICE(id)) {
-                return (input_device *) *((uint32_t *) &this[0xFFFF562B] + id.field_0 - 0x11);
+                return (input_device *) *((uint32_t *) &this[0xFFFF562B] + id - 0x11);
             }
 
             return this->get_device_from_map(id);
@@ -478,7 +481,7 @@ void input_mgr::clear_mapping() {
 
 void input_mgr::map_control(int a2, device_id_t a3, int a4) {
     if constexpr (1) {
-        int v4 = a3.field_0;
+        int v4 = a3;
 
         _std::map<device_id_t, input_device *>::iterator it;
         THISCALL(0x00569CE0, &this->field_8, &it, &a3);

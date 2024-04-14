@@ -4,11 +4,30 @@
 #include "common.h"
 #include "custom_math.h"
 #include "func_wrapper.h"
+#include "memory.h"
 #include "oldmath_po.h"
 
 #include <cmath>
 
 VALIDATE_SIZE(theta_and_psi_mcs, 0x1Cu);
+
+theta_and_psi_mcs::theta_and_psi_mcs(
+        entity *a2,
+        Float a3,
+        Float a4)
+{
+    this->m_vtbl = 0x00888EB4;
+    this->field_C = a3;
+    this->field_10 = a4;
+    this->field_14 = 0.0;
+    this->field_18 = 0.0;
+    this->field_8 = a2;
+}
+
+void * theta_and_psi_mcs::operator new(size_t size)
+{
+    return mem_alloc(size);
+}
 
 void theta_and_psi_mcs::reset_angles() {
     if constexpr (1) {

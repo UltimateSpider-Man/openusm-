@@ -107,6 +107,9 @@ struct wds_entity_manager {
     //0x005DFC80
     void add_camera(_std::vector<entity *> *vec, camera *a2);
 
+    //0x005DFC90
+    void add_mic(_std::vector<entity *> *a1, mic *a2);
+
     void check_water(Float);
 
     //0x005DBC00

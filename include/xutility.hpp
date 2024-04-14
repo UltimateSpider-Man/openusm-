@@ -16,7 +16,10 @@
 #endif /* _MSC_VER */
 
 #ifndef _CRT_SECURE_MEMMOVE
-#define _CRT_SECURE_MEMMOVE
+#define _CRT_SECURE_MEMMOVE(a1, a2, a3, a4)     \
+    do {                                        \
+    } while (0)
+
 #endif
 
 #ifndef _STDEXT_BEGIN

@@ -3,7 +3,14 @@
 #include "func_wrapper.h"
 #include "mouselook_controller.h"
 
-dolly_and_strafe_mcs::dolly_and_strafe_mcs() {}
+dolly_and_strafe_mcs::dolly_and_strafe_mcs(camera *a2)
+{
+    this->m_vtbl = 0x00889104;
+    this->field_C = 0.0;
+    this->field_10 = 0.0;
+    this->field_14 = 0.0;
+    this->field_8 = a2;
+}
 
 void dolly_and_strafe_mcs::frame_advance([[maybe_unused]] Float a2) {
     if constexpr (1) {

@@ -327,7 +327,7 @@ void os_file::open(const mString &path, int shareMode) {
     if constexpr (1) {
 
         if (os_file::system_locked() &&
-            !os_developer_options::instance()->get_flag(39)) { //MOVE_EDITOR
+            !os_developer_options::instance()->get_flag(mString {"MOVE_EDITOR"})) {
             mString a1 = path + ": os_file system is locked; no file access allowed";
         }
 

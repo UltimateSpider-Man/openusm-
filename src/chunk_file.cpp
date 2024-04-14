@@ -5,11 +5,26 @@
 
 #include "func_wrapper.h"
 #include "script_object.h"
+#include "variables.h"
 
 chunk_flavor::chunk_flavor(const char *s)
 {
     assert(strlen( s ) < CHUNK_FLAVOR_SIZE);
     strcpy(this->field_0, s);
+}
+
+void chunk_file::set_fp(int lDistanceToMove, os_file::filepos_t a3)
+{
+    if ( g_is_the_packer() ) {
+        this->io.set_fp(lDistanceToMove, a3);
+    }
+}
+
+void chunk_file::close()
+{
+    if ( !this->opened ) {
+        this->io.close();
+    }
 }
 
 bool chunk_flavor::operator==(const chunk_flavor &a2) const {

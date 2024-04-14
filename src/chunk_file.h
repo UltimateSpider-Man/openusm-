@@ -71,6 +71,10 @@ struct chunk_file : text_file {
     //0x005CBB90
     void open(const mString &a1, int a3);
 
+    void set_fp(int lDistanceToMove, os_file::filepos_t a3);
+
+    void close();
+
     void read(script_object *so);
 
     template<typename T>

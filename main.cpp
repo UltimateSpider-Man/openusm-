@@ -616,7 +616,7 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
 
                     byte_965BF9() = (wParam != 0);
                     if (os_developer_options::instance() != nullptr &&
-                        os_developer_options::instance()->get_flag(117)) {
+                        os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(117))) {
                         byte_965BF9() = true;
                     }
 
@@ -1273,13 +1273,13 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
     parse_cmd(lpCmdLine);
 
-    if (os_developer_options::instance()->get_flag(25)) { //HALT_ON_ASSERTS
+    if (os_developer_options::instance()->get_flag(mString {"HALT_ON_ASSERTS"})) {
         g_debug().field_1 |= 1;
     } else {
         g_debug().field_1 &= 0xFE;
     }
 
-    if (g_is_the_packer() || !os_developer_options::instance()->get_flag(26)) { //SCREEN_ASSERTS
+    if (g_is_the_packer() || !os_developer_options::instance()->get_flag(mString {"SCREEN_ASSERTS"})) {
         g_debug().field_1 &= 0xFD;
     } else {
         g_debug().field_1 |= 2;
@@ -1303,7 +1303,7 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
     nflStart(dword_965C00());
 
-    int v17 = os_developer_options::instance()->get_int(10); //RANDOM_SEED
+    int v17 = os_developer_options::instance()->get_int(mString {"RANDOM_SEED"});
     if (v17) {
         srand(v17);
     } else {
@@ -1555,16 +1555,16 @@ int __stdcall myWinMain(HINSTANCE hInstance,
         0.001f;
 
     Settings::SoundMode() = g_settings()->sub_81D010("Settings\\SoundMode", 2);
-    Settings::GameSoundVolume() = (double) g_settings()->sub_81D010("Settings\\GameSoundVolume",
+    Settings::GameSoundVolume() = g_settings()->sub_81D010("Settings\\GameSoundVolume",
                                                                     10) *
         0.1;
-    Settings::MusicVolume() = (double) g_settings()->sub_81D010("Settings\\MusicVolume", 10) * 0.1f;
+    Settings::MusicVolume() = g_settings()->sub_81D010("Settings\\MusicVolume", 10) * 0.1f;
 
-    if (os_developer_options::instance()->get_flag(67)) { //EXCEPTION_HANDLER
+    if (os_developer_options::instance()->get_flag(mString {"EXCEPTION_HANDLER"})) {
         SetUnhandledExceptionFilter(TopLevelExceptionFilter);
     }
 
-    ALLOW_ERROR_POPUPS() = os_developer_options::instance()->get_flag(112); //ALLOW_ERROR_POPUPS
+    ALLOW_ERROR_POPUPS() = os_developer_options::instance()->get_flag(mString {"ALLOW_ERROR_POPUPS"});
     if (!ALLOW_ERROR_POPUPS()) {
         SetErrorMode(2u);
     }

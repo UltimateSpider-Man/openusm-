@@ -49,6 +49,8 @@ struct game {
         //0x00561EA0
         level_load_stuff();
 
+        void reset_level_load_data();
+
         //0x0050B5F0
         bool wait_for_mem_check();
 
@@ -123,9 +125,12 @@ struct game {
     bool field_170;
     bool field_171;
     bool m_user_camera_enabled;
-    char empty5[253];
+    bool field_173;
+    vector3d field_174;
+    vector3d field_180[10];
+    vector3d field_1F8[10];
     int field_270;
-    int field_274;
+    float field_274;
     float field_278;
     int field_27C;
     int field_280;
@@ -188,6 +193,8 @@ struct game {
     bool is_paused() const;
 
     bool is_physics_enabled() const;
+
+    bool is_marky_cam_enabled() const;
 
     //0x0054FBE0
     void pause();

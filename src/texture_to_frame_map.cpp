@@ -19,5 +19,5 @@ void texture_to_frame_map::un_mash(char *image_ptr, int *a3)
 
 mString texture_to_frame_map::get_ifl_name() const
 {
-    return {this->field_4};
+    return mString {this->field_4};
 }

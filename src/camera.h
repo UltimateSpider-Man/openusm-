@@ -15,6 +15,8 @@ struct camera : actor {
     //0x00577970
     camera(entity *a2, const string_hash &a3);
 
+    void * operator new(size_t size);
+
     float compute_xz_projected_fov();
 
     bool is_externally_controlled() const;

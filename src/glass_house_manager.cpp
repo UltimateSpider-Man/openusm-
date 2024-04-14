@@ -7,7 +7,7 @@
 #include "glass_house.h"
 
 bool glass_house_manager::is_enabled() {
-    bool result = enabled() && os_developer_options::instance()->get_flag(122);
+    bool result = enabled() && os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(122));
 
     return result;
 }

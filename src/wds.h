@@ -21,6 +21,7 @@
 #include <vector.hpp>
 
 struct box_trigger;
+struct game_camera;
 struct terrain;
 struct camera;
 struct entity;
@@ -34,6 +35,8 @@ struct item;
 struct scene_brew;
 struct scene_entity_brew;
 struct scene_spline_path_brew;
+
+inline constexpr auto MAX_GAME_PLAYERS = 1u;
 
 struct world_dynamics_system {
     slot_pool<nal_anim_control *, uint32_t> *field_0;
@@ -52,8 +55,8 @@ struct world_dynamics_system {
     cached_special_effect field_1B0;
     cached_special_effect field_1F0;
 
-    entity *field_230[1];
-    camera *field_234[1];
+    entity *field_230[MAX_GAME_PLAYERS];
+    camera *field_234[MAX_GAME_PLAYERS];
     int num_players;
     _std::list<entity *> field_23C;
     _std::list<unsigned int> field_248;
@@ -152,6 +155,8 @@ struct world_dynamics_system {
 
     //0x0055B100
     terrain *create_terrain(const mString &a2);
+
+    void set_chase_cam_ptr(int index, game_camera *a3);
 
     //0x0050D1F0
     camera *get_chase_cam_ptr(int a2);

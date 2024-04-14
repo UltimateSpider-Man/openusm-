@@ -118,51 +118,63 @@ void debug_menu::gather_input(Float a1)
     memset(current_input_state, 0, sizeof(current_input_state));
     memset(virtual_input_state, 0, sizeof(virtual_input_state));
 
-    if ( v3->get_control_state(69, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(69, INVALID_DEVICE_ID) > 0.5 )
     {
         current_input_state[1] = 1;
     }
 
-    if ( v3->get_control_state(68, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(68, INVALID_DEVICE_ID) > 0.5 )
     {
         current_input_state[0] = 1;
     }
 
-    if ( v3->get_control_state(76, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(76, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[6] = 1;
+    }
     
-    if ( v3->get_control_state(77, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(77, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[7] = 1;
+    }
 
-    if ( v3->get_control_state(74, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(74, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[2] = 1;
+    }
 
-    if ( v3->get_control_state(75, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(75, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[3] = 1;
+    }
 
-    if ( v3->get_control_state(78, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(78, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[4] = 1;
+    }
 
-    if ( v3->get_control_state(79, device_id_t {-1}) > 0.5 )
+    if ( v3->get_control_state(79, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[5] = 1;
+    }
 
-    if ( v3->get_control_state(73, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(73, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[8] = 1;
+    }
 
-    if ( v3->get_control_state(72, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(72, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[9] = 1;
+    }
 
-    if ( v3->get_control_state(70, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(70, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[3] = 1;
+    }
 
-    if ( v3->get_control_state(70, device_id_t{-1}) < -0.5 )
+    if ( v3->get_control_state(70, INVALID_DEVICE_ID) < -0.5 ) {
         current_input_state[2] = 1;
+    }
 
-    if ( v3->get_control_state(71, device_id_t{-1}) > 0.5 )
+    if ( v3->get_control_state(71, INVALID_DEVICE_ID) > 0.5 ) {
         current_input_state[7] = 1;
+    }
 
-    if ( v3->get_control_state(71, device_id_t{-1}) < -0.5 )
+    if ( v3->get_control_state(71, INVALID_DEVICE_ID) < -0.5 ) {
         current_input_state[6] = 1;
+    }
 
     for (auto i = 0; i < 10; ++i )
     {
@@ -435,16 +447,16 @@ mString entry_render_callback_default(debug_menu_entry *a2) {
         case ValueType::POINTER_INT:
         {
             auto v4 = a2->get_ival();
-            out = {v4};
+            out = mString {v4};
             break;
         }
         case ValueType::POINTER_MENU:
         {
-            out = mString{">"};
+            out = mString {">"};
             break;
         }
         default:
-            out = mString{};
+            out = mString {};
             break;
         }
     }

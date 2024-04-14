@@ -41,7 +41,7 @@ void fe_controller_disconnect::draw() {
             if (currently_plugged_in()) {
                 text_box()->SetText(global_text_enum{472});
             } else {
-                auto v8 = input_mgr::instance()->field_58.field_0;
+                auto v8 = input_mgr::instance()->field_58;
                 int v9 = 1;
                 if (v8 != -1) {
                     v9 = v8 - 999999;

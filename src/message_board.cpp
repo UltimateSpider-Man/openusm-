@@ -89,7 +89,8 @@ void message_board::render()
     }
 }
 
-void message_board_patch() {
+void message_board_patch()
+{
     {
         FUNC_ADDRESS(address, &message_board::post);
         SET_JUMP(0x00515EB0, address);

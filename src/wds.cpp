@@ -323,9 +323,8 @@ void manage_standing_for_all_physical_interfaces(Float a1) {
     CDECL_CALL(0x004F28B0, a1);
 }
 
-entity *world_dynamics_system::get_hero_ptr(int index) {
-    static constexpr auto MAX_GAME_PLAYERS = 1;
-
+entity *world_dynamics_system::get_hero_ptr(int index)
+{
     assert(index >= 0 && index <= MAX_GAME_PLAYERS);
 
     auto *result = this->field_230[index];
@@ -1227,6 +1226,13 @@ bool world_dynamics_system::load_scene(resource_key &a2,
     }
 }
 
+void world_dynamics_system::set_chase_cam_ptr(int index, game_camera *a3)
+{
+    assert(index >= 0 && index <= MAX_GAME_PLAYERS);
+
+    this->field_234[index] = a3;
+}
+
 camera *world_dynamics_system::get_chase_cam_ptr(int a2) {
     auto v1 = this->field_234[a2];
 
@@ -1442,9 +1448,7 @@ int world_dynamics_system::add_player(const mString &a2)
             string_hash v43 {v76.c_str()};
             auto *v31 = this->field_230[this->num_players];
 
-            auto *mem = mem_alloc(sizeof(spiderman_camera));
-            auto *v42 = new (mem) spiderman_camera {v43, v31};
-            this->field_234[this->num_players] = v42;
+            this->field_234[this->num_players] = new spiderman_camera {v43, v31};
 
             auto *v73 = this->field_234[this->num_players];
             g_world_ptr()->ent_mgr.add_camera(nullptr, v73);

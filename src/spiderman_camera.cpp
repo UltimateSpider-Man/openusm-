@@ -15,9 +15,27 @@ VALIDATE_OFFSET(spiderman_camera, field_1A0, 0x1A0);
 
 Var<spiderman_camera *> g_spiderman_camera_ptr{0x00959A70};
 
-spiderman_camera::spiderman_camera(const string_hash &a2, entity *a3) : game_camera(a2, a3) {
-    THISCALL(0x004B78E0, this, &a2, a3);
+spiderman_camera::spiderman_camera(const string_hash &a2, entity *a3) : game_camera(a2, a3)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x004B78E0, this, &a2, a3);
+    }
 }
+
+void * spiderman_camera::operator new(size_t size)
+{
+    return _aligned_malloc(size, 4);
+}
+
+
+void spiderman_camera::operator delete(void *ptr)
+{
+    _aligned_free(ptr);
+}
+
 
 void spiderman_camera::adjust_geometry_pipe(bool a1) {
     if constexpr (1) {

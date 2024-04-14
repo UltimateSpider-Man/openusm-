@@ -11,8 +11,7 @@ lookat_target_controller::lookat_target_controller(entity_base *a2) {
     this->field_8 = a2;
     this->m_vtbl = 0x00889858;
 
-    static Var<vector3d> ZEROVEC_5{0x0095C968};
-    this->field_C = ZEROVEC_5();
+    this->field_C = ZEROVEC;
     this->field_18 = 0.0;
     this->field_1C.set(0.2617994, 3.0);
 

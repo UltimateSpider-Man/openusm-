@@ -16,12 +16,8 @@ const float AXIS_MAX  = 1.0f;
 const float AXIS_MID  = 0.0f;
 const float AXIS_MIN  = -1.0f;
 
-struct device_id_t {
-    int field_0;
-
-    operator int() const {
-        return field_0;
-    }
+enum device_id_t {
+    INVALID_DEVICE_ID = -1,
 };
 
 struct input_mgr : singleton {

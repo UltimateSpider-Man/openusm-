@@ -7,6 +7,7 @@
 #include "func_wrapper.h"
 #include "geometry_manager.h"
 #include "local_collision.h"
+#include "memory.h"
 #include "oldmath_po.h"
 #include "trace.h"
 #include "utility.h"
@@ -27,6 +28,11 @@ camera::camera([[maybe_unused]] entity *a2, const string_hash &a3)
     THISCALL(0x00577970, this, a2, &a3);
 
 #endif
+}
+
+void * camera::operator new(size_t size)
+{
+    return mem_alloc(size);
 }
 
 void camera::sync(camera &a2) {

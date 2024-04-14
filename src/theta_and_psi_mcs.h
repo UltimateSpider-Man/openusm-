@@ -6,15 +6,23 @@
 #include <cstdint>
 
 struct camera;
+struct entity;
 
 struct theta_and_psi_mcs : motion_control_system {
     bool field_4;
     bool field_5;
-    camera *field_8;
+    entity *field_8;
     float field_C;
     float field_10;
     float field_14;
     float field_18;
+
+    theta_and_psi_mcs(
+        entity *a2,
+        Float a3,
+        Float a4);
+
+    void * operator new(size_t size);
 
     //0x005196E0
     void reset_angles();

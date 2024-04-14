@@ -112,9 +112,9 @@ struct ai_core {
 
     void advance_machine_recursive(ai_state_machine *a1, Float a2, bool a3);
 
-    static inline Var<_std::list<ai_core> *> the_ai_core_list_high{0x0096BE24};
+    static inline Var<_std::list<ai_core *> *> the_ai_core_list_high{0x0096BE24};
 
-    static inline Var<_std::list<ai_core> *> the_ai_core_list_low{0x0096BE28};
+    static inline Var<_std::list<ai_core *> *> the_ai_core_list_low{0x0096BE28};
 };
 
 } // namespace ai

@@ -983,10 +983,13 @@ void terrain::frame_advance(Float a2) {
 
         IGOZoomOutMap *v3;
 
-        if (!os_developer_options::instance()->get_flag(13) ||
-            (v3 = g_femanager().IGO->field_44, v3->field_5C4) || v3->field_5C3) {
+        if (!os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(13)) ||
+            (v3 = g_femanager().IGO->field_44, v3->field_5C4) || v3->field_5C3)
+        {
             ent = g_world_ptr()->get_hero_ptr(0);
-        } else {
+        }
+        else
+        {
             auto *game_ptr = g_game_ptr();
             auto *v5 = comic_panels::get_current_view_camera(0);
 

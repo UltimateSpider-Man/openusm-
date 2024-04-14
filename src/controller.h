@@ -9,6 +9,8 @@ struct controller {
 
     controller();
 
+    void * operator new(size_t size);
+
     //0x0055E7C0
     //virtual
     void kill();

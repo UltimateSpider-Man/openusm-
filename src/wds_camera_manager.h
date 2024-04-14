@@ -15,19 +15,23 @@ struct wds_camera_manager {
     _std::vector<motion_control_system *> field_0;
     _std::vector<controller *> field_10;
     camera *field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
-    int field_30;
-    int field_34;
-    int field_38;
-    int field_3C;
-    int field_40;
+    motion_control_system *field_24;
+    motion_control_system *field_28;
+    controller *field_2C;
+    camera *field_30;
+    motion_control_system *field_34;
+    motion_control_system *field_38;
+    controller *field_3C;
+    camera *field_40;
     marky_camera *field_44;
     bool field_48;
 
     //0x0053DB80
     wds_camera_manager();
+
+    bool is_marky_cam_enabled() const {
+        return this->field_48;
+    }
 
     //0x00542630
     int add_controller(controller *a2);

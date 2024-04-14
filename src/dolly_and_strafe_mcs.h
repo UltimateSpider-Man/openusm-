@@ -15,7 +15,7 @@ struct dolly_and_strafe_mcs : motion_control_system {
     float field_10;
     float field_14;
 
-    dolly_and_strafe_mcs();
+    dolly_and_strafe_mcs(camera *a2);
 
     //0x00526940
     int do_dolly(Float a2);

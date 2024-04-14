@@ -1,5 +1,8 @@
 #pragma once
 
+#if 1 
+enum game_control_t {};
+#else
 enum game_control_t
 {
   /////////////////////////////////////////////////////////////////////////////
@@ -280,5 +283,6 @@ enum game_control_t
 
   NUM_GAME_CONTROLS
 };
+#endif
 
 //static_assert(TOGGLE_CAMERA_LOCK == 30 );

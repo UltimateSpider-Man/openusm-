@@ -133,7 +133,7 @@ void text_file::read(char *a2, int maxlen) {
                 if ( v26 >= maxlen )
                 {
                     *cp = 0;
-                    auto v5 = this->get_name() + ": string too long for buffer: " + maxlen;
+                    mString v5 = this->get_name() + ": string too long for buffer: " + a2;
                     sp_log(v5.c_str());
                     assert(0);
                 }
