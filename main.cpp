@@ -48,6 +48,7 @@
 #include "box_trigger_resource_handler.h"
 #include "cached_special_effect.h"
 #include "camera.h"
+#include "camera_mode.h"
 #include "camera_target_info.h"
 #include "character_anim_controller.h"
 #include "character_pose_skel.h"
@@ -122,6 +123,7 @@
 #include "link_system.h"
 #include "localized_string_table.h"
 #include "local_collision.h"
+#include "lookat_target_controller.h"
 #include "mAvlTree.h"
 #include "main_menu_keyboard.h"
 #include "main_menu_options.h"
@@ -137,6 +139,7 @@
 #include "mission_manager.h"
 #include "morph_file_resource_handler.h"
 #include "moved_entities.h"
+#include "mouselook_controller.h"
 #include "mstring.h"
 #include "multilinestring.h"
 #include "nal_anim_controller.h"
@@ -175,6 +178,7 @@
 #include "physics_inode.h"
 #include "physics_system.h"
 #include "pick_up_state.h"
+#include "player_controller_inode.h"
 #include "plr_loco_crawl_state.h"
 #include "plr_loco_crawl_transition_state.h"
 #include "pole_swing_state.h"
@@ -1624,8 +1628,8 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
         g_timer()->sub_582180();
 
-        g_game_ptr()->gamefile->field_340.field_6C = Settings::InvertCameraH();
-        g_game_ptr()->gamefile->field_340.field_6D = Settings::InvertCameraV();
+        g_game_ptr()->gamefile->field_340.m_invert_camera_horz = Settings::InvertCameraH();
+        g_game_ptr()->gamefile->field_340.m_invert_camera_vert = Settings::InvertCameraV();
         auto *rumble_ptr = input_mgr::instance()->rumble_ptr;
         if (rumble_ptr != nullptr) {
             rumble_ptr->disable_vibration();
@@ -2409,6 +2413,24 @@ BOOL install_redirects()
 
     if constexpr (1)
     {
+        web_zip_state_patch();
+
+        player_controller_inode_patch();
+
+        camera_mode_patch();
+
+        game_button_patch();
+
+        pc_joypad_device_patch();
+
+        mouselook_controller_patch();
+    
+        lookat_target_controller_patch();
+
+        controller_patch();
+
+        wds_camera_manager_patch();
+
         scene_anim_patch();
 
         camera_patch();
@@ -2418,6 +2440,8 @@ BOOL install_redirects()
         us_person_patch();
 
         ngl_patch();
+
+        script_controller_patch();
 
         nal_anim_controller_patch();
 
@@ -2467,7 +2491,6 @@ BOOL install_redirects()
 
         us_simpleshader_patch();
     }
-
 
     if constexpr (1)
     {
@@ -2859,8 +2882,6 @@ BOOL install_redirects()
 
     os_developer_options_patch();
 
-    //pc_joypad_device_patch();
-
 
     //moved_entities_patch();
 
@@ -3040,8 +3061,6 @@ BOOL install_redirects()
 
         FileUSM_patch();
 
-        web_zip_state_patch();
-
         ai_state_machine_patch();
 
         state_graph_patch();
@@ -3057,8 +3076,6 @@ BOOL install_redirects()
         fe_mission_text_patch();
 
         alternate_costumes_patch();
-
-        script_controller_patch();
 
         combat_state_patch();
 

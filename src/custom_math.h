@@ -55,4 +55,6 @@ extern float calculate_xz_angle_relative_to_local_po(const vector3d &a1,
                                                      const vector3d &a4,
                                                      const vector3d &a5);
 
+extern int sign(float a1);
+
 extern float sqr(float);

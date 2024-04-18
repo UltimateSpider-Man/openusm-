@@ -44,9 +44,9 @@ float input_device::get_axis_state(int a2, int a3) {
     return get_axis_state(this, nullptr, a2, a3);
 }
 
-int input_device::get_id() const
+device_id_t input_device::get_id() const
 {
-    int (__fastcall *get_id)(const input_device *) = CAST(get_id, get_vfunc(m_vtbl, 0x8));
+    device_id_t (__fastcall *get_id)(const input_device *) = CAST(get_id, get_vfunc(m_vtbl, 0x8));
 
     return get_id(this);
 }

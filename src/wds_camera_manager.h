@@ -57,3 +57,5 @@ struct wds_camera_manager {
     //0x0050D4C0
     void enable_marky_cam(bool a2, Float a3);
 };
+
+extern void wds_camera_manager_patch();

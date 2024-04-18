@@ -42,7 +42,7 @@ struct web_zip_inode : info_node {
     };
 
     line_info field_1C;
-    int field_78;
+    int m_zip_type;
     int field_7C;
     int field_80[9];
     SpidermanLocoSwingBack field_A4[3];
@@ -61,6 +61,9 @@ struct web_zip_inode : info_node {
 
     //0x0045D600
     bool find_zip_anchor_from_crawl();
+
+    //0x0044CBD0
+    bool correct_zip_target_pos(line_info *si);
 
     //0x0045DFD0
     bool find_zip_anchor_and_transition_to_zip_jump(web_zip_inode::eZipReattachMode a2);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fixedstring.h"
+#include "float.hpp"
 #include "mstring.h"
 #include "string_hash.h"
 

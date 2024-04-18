@@ -19,7 +19,12 @@ struct lookat_target_controller : controller {
 
     //0x0051D0F0
     //virtual
-    void frame_advance(Float);
+    void _frame_advance(Float);
+
+    //virtual
+    bool _is_mouselook_controller() const;
 };
 
 inline Var<lookat_target_controller *> g_lookat_controller {0x0095C1E0};
+
+extern void lookat_target_controller_patch();

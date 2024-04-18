@@ -6,8 +6,6 @@
 #include "slab_allocator.h"
 #include "variable.h"
 
-#include <float.hpp>
-
 #include <windef.h>
 
 extern Var<int> mString_count;

@@ -3,6 +3,9 @@
 #include "camera.h"
 
 struct game_camera : camera {
+
+    static inline constexpr auto CAMERA_SHAKES_TOTAL = 4u;
+
     struct _camera_shake_t {
         int field_0;
         int field_4;
@@ -27,7 +30,7 @@ struct game_camera : camera {
     bool field_12C;
     char pad[3];
 
-    _camera_shake_t field_130[4];
+    _camera_shake_t field_130[CAMERA_SHAKES_TOTAL];
 
     int empty1[1];
 
@@ -45,6 +48,10 @@ struct game_camera : camera {
     //virtual
     //0x0057CC90
     void frame_advance(Float t);
+
+    //virtual
+    //0x0057F0D0
+    void _sync(camera &a2);
 };
 
 

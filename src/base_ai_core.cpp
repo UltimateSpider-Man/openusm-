@@ -293,10 +293,16 @@ void ai_core::frame_advance_all_core_ais(Float a2) {
     CDECL_CALL(0x006B4AD0, a2);
 }
 
-void ai_core::frame_advance(Float a2) {
+void ai_core::frame_advance(Float a2)
+{
     TRACE("ai_core::frame_advance");
 
-    THISCALL(0x006B48A0, this, a2);
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x006B48A0, this, a2);
+    }
 }
 
 bool ai_core::change_locomotion_machine(const string_hash &a2) {

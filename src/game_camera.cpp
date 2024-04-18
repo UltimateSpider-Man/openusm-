@@ -55,7 +55,10 @@ entity *game_camera::get_target_entity() const
 
 }
 
-void game_camera::set_target_entity(entity *e) {
+void game_camera::set_target_entity(entity *e)
+{
+    TRACE("game_camera::set_target_entity");
+
     if (e != nullptr) {
         this->field_118 = {e->get_my_handle()};
     } else {
@@ -184,6 +187,15 @@ void game_camera::frame_advance(Float t)
     }
 }
 
+void game_camera::_sync(camera &a2)
+{
+    if ( !this->is_externally_controlled() )
+    {
+        camera::sync(a2);
+        this->field_12C = false;
+    }
+}
+
 void game_camera::blend(vector3d arg0, vector3d eax0, Float arg18)
 {
     THISCALL(0x0057A330, this, arg0, eax0, arg18);
@@ -194,5 +206,10 @@ void game_camera_patch()
     {
         FUNC_ADDRESS(address, &game_camera::frame_advance);
         set_vfunc(0x00881CF4, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &game_camera::set_target_entity);
+        SET_JUMP(0x0057CC50, address);
     }
 }

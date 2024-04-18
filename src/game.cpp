@@ -290,12 +290,16 @@ game::game()
 
         this->field_2B8 = 0;
         this->field_2BC = 0;
-        this->field_15C = 0;
-        this->field_15D = 0;
-        this->field_2B5 = 0;
 
-        game_button a2{};
-        this->field_80.sub_48C800(&a2);
+        this->field_15C = false;
+        this->field_15D = false;
+
+        this->field_2B5 = false;
+
+        this->field_80 = game_button {
+            game_button {static_cast<game_control_t>(105)},
+            game_button {static_cast<game_control_t>(102)},
+            4};
 
         occlusion::init();
         init_subdivision();
@@ -1073,15 +1077,16 @@ void sub_5975C0(const char *Format, bool a2, bool a3)
     }
 }
 
-static Var<bool> g_debug_cam_get_next_target {0x0095C75C};
-
 static Var<bool> g_debug_cam_get_prev_target {0x0095C75D};
-
-static Var<actor *> g_debug_cam_target_actor {0x0095C758};
 
 void game::handle_cameras(input_mgr *a2, const Float &time_inc)
 {
     TRACE("game::handle_cameras");
+
+    if (this->field_5C != nullptr) {
+
+        sp_log("0x%08X", this->field_5C->m_vtbl);
+    }
 
     sp_log("%d %d", this->is_user_camera_enabled(),
             os_developer_options::instance()->get_int(static_cast<os_developer_options::ints_t>(2)));
@@ -3093,12 +3098,24 @@ void game::unload_hero_packfile()
     sound_manager::unload_hero_sound_bank();
 }
 
-void game__setup_inputs(game *a1) {
-    CDECL_CALL(0x00605950, a1);
+void game__setup_inputs(game *a1)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x00605950, a1);
+    }
 }
 
-void game__setup_input_registrations(game *a1) {
-    CDECL_CALL(0x006063C0, a1);
+void game__setup_input_registrations(game *a1)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x006063C0, a1);
+    }
 }
 
 void game_patch()

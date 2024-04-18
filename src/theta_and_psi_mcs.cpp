@@ -17,11 +17,11 @@ theta_and_psi_mcs::theta_and_psi_mcs(
         Float a4)
 {
     this->m_vtbl = 0x00888EB4;
-    this->field_C = a3;
-    this->field_10 = a4;
-    this->field_14 = 0.0;
-    this->field_18 = 0.0;
-    this->field_8 = a2;
+    this->m_theta = a3;
+    this->m_psi = a4;
+    this->d_theta_for_next_frame = 0.0;
+    this->d_psi_for_next_frame = 0.0;
+    this->m_ent = a2;
 }
 
 void * theta_and_psi_mcs::operator new(size_t size)
@@ -30,17 +30,19 @@ void * theta_and_psi_mcs::operator new(size_t size)
 }
 
 void theta_and_psi_mcs::reset_angles() {
-    if constexpr (1) {
-        auto &z_facing = this->field_8->get_abs_po().get_z_facing();
+    if constexpr (1)
+    {
+        auto &z_facing = this->m_ent->get_abs_po().get_z_facing();
 
         auto cross = vector3d::cross(z_facing, YVEC);
 
-        this->field_10 = std::atan2(z_facing[1], z_facing[2] / cross[0]);
-        this->field_C = std::atan2(cross[2], cross[0]);
+        this->m_psi = std::atan2(z_facing[1], z_facing[2] / cross[0]);
+        this->m_theta = std::atan2(cross[2], cross[0]);
 
         float v5;
-        if (this->field_10 >= -half_PI) {
-            if (this->field_10 <= half_PI) {
+        if (this->m_psi >= -half_PI)
+        {
+            if (this->m_psi <= half_PI) {
                 return;
             }
 
@@ -49,9 +51,11 @@ void theta_and_psi_mcs::reset_angles() {
             v5 = -PI;
         }
 
-        this->field_10 = v5 - this->field_10;
-        this->field_C += PI;
-    } else {
+        this->m_psi = v5 - this->m_psi;
+        this->m_theta += PI;
+    }
+    else
+    {
         THISCALL(0x005196E0, this);
     }
 }

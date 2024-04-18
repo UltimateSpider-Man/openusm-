@@ -5,31 +5,115 @@
 #include "input_mgr.h"
 #include "memory.h"
 #include "slab_allocator.h"
+#include "trace.h"
+#include "utility.h"
 
 #include <cassert>
 
 VALIDATE_SIZE(game_button, 0x34u);
 
-game_button::game_button() {
-    if constexpr (0) {
+game_button::game_button()
+{
+    if constexpr (0)
+    {
         this->field_4 = input_mgr::instance()->field_58;
         this->field_C = nullptr;
         this->field_10 = nullptr;
         this->m_flags = 0;
         this->m_trigger_type = 4;
         this->field_2C = 0.0;
-        this->set_control((game_control_t) 0);
+        this->set_control(static_cast<game_control_t>(0));
         this->clear();
-    } else {
+    }
+    else
+    {
         THISCALL(0x0048D9A0, this);
     }
 }
 
-void game_button::override(Float a2, Float a3, Float a4) {
+game_button::game_button(game_control_t a2)
+{
+    this->field_4 = input_mgr::instance()->field_58;
+    this->field_C = nullptr;
+    this->field_10 = nullptr;
+    this->m_flags = 0;
+    this->m_trigger_type = 4;
+    this->field_2C = 0.0;
+    this->set_control(a2);
+    this->clear();
+}
+
+game_button::game_button(const game_button &a2)
+{
+    this->field_4 = input_mgr::instance()->field_58;
+    this->field_C = nullptr;
+    this->field_10 = nullptr;
+    (*this) = a2;
+}
+
+game_button::game_button(
+        const game_button &a2,
+        const game_button &a3,
+        int a4)
+{
+    this->field_4 = input_mgr::instance()->field_58;
+    this->field_8 = static_cast<game_control_t>(0);
+    this->field_C = nullptr;
+    this->field_10 = nullptr;
+    this->m_flags = 0;
+    this->m_trigger_type = a4;
+    this->field_2C = 0.0;
+    this->set_primary(a2);
+    this->set_modifier(a3);
+    this->clear();
+}
+
+game_button & game_button::operator=(const game_button &a2)
+{
+    if ( this->field_C != nullptr )
+    {
+        delete this->field_C;
+        this->field_C = nullptr;
+    }
+
+    if ( this->field_10 != nullptr )
+    {
+        delete this->field_10;
+        this->field_10 = nullptr;
+    }
+
+    this->m_trigger_type = a2.m_trigger_type;
+    this->field_4 = a2.field_4;
+    this->field_8 = a2.field_8;
+    this->field_30 = a2.field_30;
+    this->m_flags = a2.m_flags;
+    this->field_14 = a2.field_14;
+    this->field_18 = a2.field_18;
+    this->field_1C = a2.field_1C;
+    this->field_20 = a2.field_20;
+    this->field_24 = a2.field_24;
+    this->field_2C = a2.field_2C;
+    this->field_28 = a2.field_28;
+
+    if ( a2.field_C != nullptr ) {
+        this->set_primary(*a2.field_C);
+    }
+
+    if ( auto *v5 = a2.field_10; v5 != nullptr )
+    {
+        this->set_modifier(*v5);
+    }
+
+    return (*this);
+}
+
+void game_button::override(Float a2, Float a3, Float a4)
+{
     THISCALL(0x0050B640, this, a2, a3, a4);
 }
 
-double game_button::sub_55ED50() {
+double game_button::sub_55ED50()
+{
     double result = 0.0;
 
     if ((this->m_flags & 0x20) == 0) {
@@ -72,7 +156,10 @@ double game_button::sub_55ED30() {
     return result;
 }
 
-void game_button::update(Float a2) {
+void game_button::update(Float a2)
+{
+    TRACE("game_button::update");
+
     if constexpr (0) {
         auto *v3 = this->field_C;
         if (v3 == nullptr) {
@@ -238,27 +325,35 @@ void game_button::update(Float a2) {
     }
 }
 
-game_button::~game_button() {
+game_button::~game_button()
+{
     game_button *v2 = this->field_C;
-    if (v2 != nullptr) {
-        this->field_C->~game_button();
-
-        mem_dealloc(v2, sizeof(*v2));
-
+    if (v2 != nullptr)
+    {
+        delete this->field_C;
         this->field_C = nullptr;
     }
 
     game_button *v3 = this->field_10;
-    if (v3 != nullptr) {
-        this->field_10->~game_button();
-
-        mem_dealloc(v3, sizeof(*v3));
-
+    if (v3 != nullptr)
+    {
+        delete this->field_10;
         this->field_10 = nullptr;
     }
 }
 
-void game_button::clear() {
+void * game_button::operator new(size_t size)
+{
+    return mem_alloc(size);
+}
+
+void game_button::operator delete(void *ptr, size_t size)
+{
+    mem_dealloc(ptr, size);
+}
+
+void game_button::clear()
+{
     this->field_18 = 0.0;
     this->field_14 = 0.0;
     this->field_1C = 0.0;
@@ -268,11 +363,14 @@ void game_button::clear() {
     this->field_28 = this->field_2C;
 }
 
-void game_button::sub_48C800(game_button *a2) {
-    THISCALL(0x0048C800, this, a2);
+void game_button::set_trigger_type(int a2)
+{
+    this->m_trigger_type = a2;
+    this->clear();
 }
 
-void game_button::set_control(game_control_t a2) {
+void game_button::set_control(game_control_t a2)
+{
     game_button *v3 = this->field_C;
     if (v3 != nullptr) {
         this->field_C->~game_button();
@@ -293,4 +391,48 @@ void game_button::set_control(game_control_t a2) {
 
     this->field_8 = a2;
     this->clear();
+}
+
+void game_button::set_id(device_id_t a2)
+{
+    this->field_4 = a2;
+    this->clear();
+}
+
+void game_button::set_primary(const game_button &a2)
+{
+    auto *v3 = this->field_C;
+    if ( v3 != nullptr )
+    {
+        delete this->field_C;
+        this->field_C = nullptr;
+    }
+
+    this->field_C = new game_button {a2};
+
+    this->field_C->set_id(this->field_4);
+    this->clear();
+}
+
+void game_button::set_modifier(const game_button &a2)
+{
+    if ( this->field_10 != nullptr )
+    {
+        delete this->field_10;
+        this->field_10 = nullptr;
+    }
+
+    if ( this->field_C == nullptr ) {
+        this->set_primary(*this);
+    }
+
+    this->field_10 = new game_button {a2};
+    this->field_10->set_id(this->field_4);
+    this->clear();
+}
+
+void game_button_patch()
+{
+    FUNC_ADDRESS(address, &game_button::update);
+    REDIRECT(0x004B6100, address);
 }

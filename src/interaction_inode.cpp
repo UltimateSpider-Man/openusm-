@@ -46,7 +46,10 @@ interaction_inode::interaction_inode() : info_node() {
     this->curr_status = 0;
 }
 
-bool interaction_inode::is_eligible(string_hash a2, bool a3) {
+bool interaction_inode::is_eligible(string_hash a2, bool a3)
+{
+    TRACE("ai::interaction_inode::is_eligible");
+
     return THISCALL(0x00479850, this, a2, a3);
 }
 
@@ -235,4 +238,12 @@ void interaction_inode_patch() {
     void (ai::interaction_inode::*func)(enum_anim_key::key_enum) = &ai::interaction_inode::set_curr_anim;
     FUNC_ADDRESS(address, func);
     REDIRECT(0x00463C59, address);
+
+    {
+        FUNC_ADDRESS(address, &ai::interaction_inode::is_eligible);
+        REDIRECT(0x00488711, address);
+        REDIRECT(0x00488B15, address);
+        REDIRECT(0x00488DCD, address);
+        REDIRECT(0x00488FEE, address);
+    }
 }

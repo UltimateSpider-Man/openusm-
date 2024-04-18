@@ -201,6 +201,23 @@ void closest_point_line_segment_line_segment(
     }
 }
 
+bool sub_5B8F40(const vector3d &a1, const vector3d &a2, const vector3d &a3, const vector3d &a4, float *t)
+{
+    assert(t != nullptr);
+
+    auto v5 = (a2[2] - a1[2]) * a4[2]
+            + (a2[1] - a1[1]) * a4[1]
+            + (a2[0] - a1[0]) * a4[0];
+    if ( fabs(v5) < EPSILON ) {
+        return false;
+    }
+
+    *t = ((a3[2] - a1[2]) * a4[2]
+        + (a3[1] - a1[1]) * a4[1]
+        + (a3[0] - a1[0]) * a4[0]) / v5;
+    return true;
+}
+
 void collide_aux_patch()
 {
     SET_JUMP(0x005C3900, compute_bounding_sphere_for_two_capsules);

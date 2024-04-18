@@ -9,13 +9,10 @@ struct camera;
 struct entity;
 
 struct theta_and_psi_mcs : motion_control_system {
-    bool field_4;
-    bool field_5;
-    entity *field_8;
-    float field_C;
-    float field_10;
-    float field_14;
-    float field_18;
+    float m_theta;
+    float m_psi;
+    float d_theta_for_next_frame;
+    float d_psi_for_next_frame;
 
     theta_and_psi_mcs(
         entity *a2,

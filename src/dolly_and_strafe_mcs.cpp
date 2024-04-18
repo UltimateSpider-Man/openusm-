@@ -1,27 +1,32 @@
 #include "dolly_and_strafe_mcs.h"
 
+#include "common.h"
 #include "func_wrapper.h"
 #include "mouselook_controller.h"
 
-dolly_and_strafe_mcs::dolly_and_strafe_mcs(camera *a2)
+VALIDATE_SIZE(dolly_and_strafe_mcs, 0x18u);
+
+dolly_and_strafe_mcs::dolly_and_strafe_mcs(entity *a2)
 {
     this->m_vtbl = 0x00889104;
-    this->field_C = 0.0;
-    this->field_10 = 0.0;
-    this->field_14 = 0.0;
-    this->field_8 = a2;
+    this->m_dolly = 0.0;
+    this->m_strafe = 0.0;
+    this->m_lift = 0.0;
+    this->m_ent = a2;
 }
 
-void dolly_and_strafe_mcs::frame_advance([[maybe_unused]] Float a2) {
-    if constexpr (1) {
+void dolly_and_strafe_mcs::frame_advance([[maybe_unused]] Float a2)
+{
+    if constexpr (1)
+    {
         if (g_mouselook_controller() != nullptr) {
             if (g_mouselook_controller()->field_4) {
-                this->do_dolly(this->field_C);
-                this->do_strafe(this->field_10);
-                this->do_lift(this->field_14);
-                this->field_14 = 0.0;
-                this->field_10 = 0.0;
-                this->field_C = 0.0;
+                this->do_dolly(this->m_dolly);
+                this->do_strafe(this->m_strafe);
+                this->do_lift(this->m_lift);
+                this->m_dolly = 0.0;
+                this->m_strafe = 0.0;
+                this->m_lift = 0.0;
             }
         }
     } else {

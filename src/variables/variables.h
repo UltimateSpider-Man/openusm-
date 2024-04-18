@@ -11,6 +11,16 @@ struct InputSettings;
 
 inline constexpr bool STANDALONE_SYSTEM = 0;
 
+inline Var<float> sluggish_mix {0x00959E44};
+
+inline Var<float> med_mix {0x00959E50};
+
+inline Var<float> fast_mix {0x00959E38};
+
+inline Var<float> pronto_mix {0x00959E40};
+
+inline Var<float> slow_mix {0x00959E4C};
+
 inline Var<float> nglIFLSpeed {0x0093BC78};
 
 inline Var<float> s_camera_target_radius_factor {0x0087EBC4};

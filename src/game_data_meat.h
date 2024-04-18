@@ -44,8 +44,8 @@ struct game_data_meat {
     float m_hero_health;
     int m_hero_type;
     int m_swing_speed;
-    bool field_6C;
-    bool field_6D;
+    bool m_invert_camera_horz;
+    bool m_invert_camera_vert;
     bool field_6E;
     bool field_6F;
     bool field_70;

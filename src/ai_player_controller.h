@@ -12,7 +12,12 @@
 struct actor;
 struct conglomerate;
 
-enum eHeroLocoMode {};
+enum eHeroLocoMode {
+    RUNNING = 1,
+    CRAWLING = 2,
+    SWINGING = 3,
+    FALLING = 5,
+};
 
 struct ai_player_controller {
     std::intptr_t m_vtbl = 0x0;
@@ -22,7 +27,7 @@ struct ai_player_controller {
     eHeroLocoMode m_prev_spidey_loco_mode;
     int field_14;
     game_button gb_jump;
-    game_button field_4C;
+    game_button gb_swing_raw;
     game_button gb_attack;
     game_button gb_attack_secondary;
     game_button gb_grab;
@@ -52,8 +57,13 @@ struct ai_player_controller {
 
     //0x00449A90
     anchor_storage_class get_poleswing_anchor() const;
+
     //0x00449940
     int get_spidey_loco_mode() const;
+
+    eHeroLocoMode get_prev_spidey_loco_mode() const {
+        return this->m_prev_spidey_loco_mode;
+    }
 
     //0x004696A0
     void set_player_num(int a2);

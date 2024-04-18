@@ -9,6 +9,7 @@
 #include "input.h"
 #include "inputsettings.h"
 #include "pausemenusystem.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
 
@@ -122,7 +123,8 @@ pc_joypad_device::pc_joypad_device(int in_port) : input_device() {
     }
 }
 
-float pc_joypad_device::get_axis_state(Axis a2, [[maybe_unused]] int a3) {
+float pc_joypad_device::get_axis_state(Axis a2, [[maybe_unused]] int a3)
+{
     float result;
 
     if (a2 == 22) {
@@ -167,69 +169,48 @@ void pc_joypad_device::clear_state() {
     std::memset(&this->m_axis_old_state, 0, sizeof(this->m_axis_old_state));
 }
 
-int InputGetState(unsigned int dwUserIndex, InputState *pState) {
-    if constexpr (1) {
+int InputGetState(unsigned int dwUserIndex, InputState *pState)
+{
+    if constexpr (1)
+    {
         Input::instance()->poll();
         auto *v2 = (InputSettings *) *(&Input::instance()->m_current_connected + dwUserIndex);
         auto &v20 = pState->field_4;
         *(uint32_t *) &pState->field_4 = 0;
         *(uint32_t *) &pState->m_punch = 0;
         *(uint32_t *) &pState->field_C = 0;
+
         pState->field_10 = 0;
         pState->field_14 = 0;
-        auto *v3 = &v2->field_18;
         pState->field_18 = 0;
         pState->field_1C = 0;
 
-        constexpr float flt_8BD430 = -32767.0f;
-        constexpr float flt_889EE4 = 32767.0f;
+        auto *v3 = &v2->field_18;
 
-        int v4 = v3->sub_821E90(InputAction::TurnLeft) * flt_8BD430;
-        int v5 = v3->sub_821E90(InputAction::TurnRight) * flt_889EE4;
-        auto v6 = std::abs(v5);
-        auto v7 = std::abs(v4);
-        if (v7 <= v6) {
-            if (v7 != v6) {
-                pState->field_10 = v5;
+        static constexpr float flt_8BD430 = -32767.0f;
+        static constexpr float flt_889EE4 = 32767.0f;
+
+        auto func = [&v3](int &result, InputAction minInput, InputAction maxInput) {
+            int min = v3->sub_821E90(minInput) * flt_8BD430;
+            int max = v3->sub_821E90(maxInput) * flt_889EE4;
+            auto abs_min = std::abs(min);
+            auto abs_max = std::abs(max);
+            if (abs_min <= abs_max) {
+                if (abs_min != abs_max) {
+                    result = max;
+                }
+            } else {
+                result = min;
             }
-        } else {
-            pState->field_10 = v4;
-        }
+        };
 
-        int v8 = v3->sub_821E90(InputAction::Forward) * flt_889EE4;
-        int v9 = v3->sub_821E90(InputAction::Backward) * flt_8BD430;
-        auto v10 = std::abs(v9);
-        auto v11 = std::abs(v8);
-        if (v11 <= v10) {
-            if (v11 != v10)
-                pState->field_14 = v9;
-        } else {
-            pState->field_14 = v8;
-        }
+        func(pState->field_10, InputAction::TurnLeft, InputAction::TurnRight);
 
-        int v12 = v3->sub_821E90(InputAction::CameraLeft) * flt_8BD430;
-        int v13 = v3->sub_821E90(InputAction::CameraRight) * flt_889EE4;
-        auto v14 = std::abs(v13);
-        auto v15 = std::abs(v12);
-        if (v15 <= v14) {
-            if (v15 != v14) {
-                pState->field_18 = v13;
-            }
-        } else {
-            pState->field_18 = v12;
-        }
+        func(pState->field_14, InputAction::Backward, InputAction::Forward);
 
-        int v16 = v3->sub_821E90(InputAction::CameraUp) * flt_889EE4;
-        int v17 = v3->sub_821E90(InputAction::CameraDown) * flt_8BD430;
-        auto v18 = std::abs(v17);
-        auto v19 = std::abs(v16);
-        if (v19 <= v18) {
-            if (v19 != v18) {
-                pState->field_1C = v17;
-            }
-        } else {
-            pState->field_1C = v16;
-        }
+        func(pState->field_18, InputAction::CameraLeft, InputAction::CameraRight);
+
+        func(pState->field_1C, InputAction::CameraDown, InputAction::CameraUp);
 
         constexpr float flt_871978 = 255.f;
 
@@ -358,11 +339,14 @@ double sub_58E7F0(int a1) {
     return result;
 }
 
-float pc_joypad_device::get_axis_state(Axis axis, InputState input_state) {
+float pc_joypad_device::get_axis_state(Axis axis, InputState input_state)
+{
+    TRACE("pc_joypad_device::get_axis_state");
+    sp_log("%d", int(axis));
+
     auto result = 0.0f;
 
     float v5;
-    bool v4;
     double a2a;
     switch (axis) {
     case 0: {
@@ -370,27 +354,25 @@ float pc_joypad_device::get_axis_state(Axis axis, InputState input_state) {
             return (-1.0f);
         }
 
-        v4 = (input_state.field_4 & 8) == 0;
-
+        bool v4 = (input_state.field_4 & 8) == 0;
         if (v4) {
             return 0.0f;
         }
 
         return 1.0f;
     }
-    case 1:
+    case 1: {
         if ((input_state.field_4 & 1) != 0) {
             return (-1.0f);
         }
 
-        v4 = (input_state.field_4 & 2) == 0;
-
+        bool v4 = (input_state.field_4 & 2) == 0;
         if (v4) {
             return 0.0f;
         }
 
         return 1.0f;
-
+    }
     case 2: {
         a2a = sub_58E7F0(input_state.field_10);
         if ((input_state.field_4 & 8) != 0) {
@@ -438,55 +420,40 @@ float pc_joypad_device::get_axis_state(Axis axis, InputState input_state) {
     case 5:
         return -sub_58E7F0(input_state.field_14);
     case 6: {
-        v4 = (input_state.field_4 & 0x40) == 0;
-        if (v4) {
-            return 0.0f;
-        }
-
-        return 1.0f;
+        return ((input_state.field_4 & 0x40) != 0);
     }
     case 7:
         return sub_58E7F0(input_state.field_18);
-    case 8:
-        return -sub_58E7F0(input_state.field_1C);
-    case 9: {
-        if ((input_state.field_4 & 0x80u) != 0) {
-            return 1.0f;
+    case 8: {
+
+        result = -sub_58E7F0(input_state.field_1C);
+
+        if (result > 0) {
+            sp_log("camera_up");
+        } else if (result < 0) {
+            sp_log("camera_down");
         }
 
-        return 0.0f;
+        return result;
+    }
+    case 9: {
+        return ((input_state.field_4 & 0x80u) != 0);
     }
     case Axis::Jump: {
-        if (input_state.m_jump > 30u) {
-            return 1.0f;
-        }
-
-        return 0.0f;
+        return (input_state.m_jump > 30u);
     }
     case 11: {
-        if (input_state.m_stick_to_walls > 30u) {
-            return 1.0f;
-        }
-
-        return 0.0f;
+        return (input_state.m_stick_to_walls > 30u);
     }
     case 12:
     case 15: {
         return 0.0f;
     }
     case 13: {
-        if (input_state.m_punch > 30u) {
-            return 1.0f;
-        }
-
-        return 0.0f;
+        return (input_state.m_punch > 30u);
     }
     case 14: {
-        if (input_state.m_kick > 30u) {
-            return 1.0f;
-        }
-
-        return 0.0f;
+        return (input_state.m_kick > 30u);
     }
     case 16: {
         return (input_state.field_C * 0.0039215689f);
@@ -495,54 +462,43 @@ float pc_joypad_device::get_axis_state(Axis axis, InputState input_state) {
         return (input_state.field_D * 0.0039215689f);
     }
     case 18: {
-        if (input_state.m_black_button <= 30u) {
-            return 0.0f;
-        }
-
-        return 1.0f;
+        float result = (input_state.m_black_button > 30u);
+        return result;
     }
     case 19: {
-        if (input_state.m_throw_web > 30u) {
-            return 1.0f;
-        }
-
-        return 0.0f;
+        float result = (input_state.m_throw_web > 30u );
+        return result;
     }
     case 20: {
-        v4 = (input_state.field_4 & 0x10) == 0;
-        if (v4) {
-            return 0.0f;
-        }
-
-        return 1.0f;
+        return ((input_state.field_4 & 0x10) != 0);
     }
     case 21: {
-        v4 = (input_state.field_4 & 0x20) == 0;
-        if (v4) {
-            return 0.0f;
-        }
-
-        return 1.0f;
+        return ((input_state.field_4 & 0x20) != 0);
     }
     case 22: {
-        v4 = this->field_88 == 0;
-        if (v4) {
-            return 0.0f;
-        }
-
-        return 1.0f;
+        return (this->field_88 != 0);
     }
     default:
-
         assert(0 && "Invalid axis.");
 
         return result;
     }
 }
 
-void pc_joypad_device_patch() {
+void pc_joypad_device_patch()
+{
     {
         FUNC_ADDRESS(address, &pc_joypad_device::poll);
         set_vfunc(0x0088EAA0, address);
     }
+
+    {
+
+        float (pc_joypad_device::*func)(pc_joypad_device::Axis, InputState) = &pc_joypad_device::get_axis_state;
+        FUNC_ADDRESS(address, func);
+        set_vfunc(0x0088EAC4, address);
+    }
+
 }
+
+

@@ -10,7 +10,7 @@ struct sampling_window {
         float time;
     };
 
-    sample field_0[31];
+    sample samples[31];
     int current_sample;
     int end_sample;
     bool field_100;

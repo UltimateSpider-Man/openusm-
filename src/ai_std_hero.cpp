@@ -31,10 +31,12 @@
 #include "plr_loco_crawl_state.h"
 #include "plr_loco_crawl_transition_state.h"
 #include "put_down_state.h"
+#include "terrain.h"
 #include "throw_state.h"
 #include "utility.h"
 #include "vector2d.h"
 #include "vtbl.h"
+#include "wds.h"
 
 #include <cmath>
 
@@ -220,7 +222,8 @@ void hero_inode::frame_advance(Float a2)
     }
 }
 
-bool hero_inode::is_a_crawl_state(string_hash a1, bool a2) {
+bool hero_inode::is_a_crawl_state(string_hash a1, bool a2)
+{
     auto result = (a1 == plr_loco_crawl_state::default_id);
     if (a2)
     {
@@ -581,6 +584,118 @@ void extend_capsule_for_jump(actor *act) {
 
 bool have_relative_movement(entity *a1, entity *a2) {
     return (bool) CDECL_CALL(0x0069F9A0, a1, a2);
+}
+
+bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3, vector3d *corrected_hit_pos)
+{
+    assert(corrected_hit_pos != nullptr);
+
+    auto v25 = a3 * a2 + a1;
+    auto v7 = -a3;
+    auto arg4a = v7;
+
+    vector3d a5, a6;
+    auto check1 = find_intersection(
+                    a1,
+                    v25,
+                    *local_collision::entfilter_entity_no_capsules(),
+                    *local_collision::obbfilter_lineseg_test(),
+                    &a5,
+                    &a6,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    false);
+    auto v9 = v7 * a2[0];
+
+    vector3d v27;
+    v27[1] = v7 * a2[1];
+    v27[2] = v7 * a2[2];
+
+    v25[0] = v9 + a1[0];
+    v25[1] = v27[1] + a1[1];
+    v25[2] = v27[2] + a1[2];
+
+    vector3d v29, v33;
+
+    auto check2 = find_intersection(
+                    a1,
+                    v25,
+                    *local_collision::entfilter_entity_no_capsules(),
+                    *local_collision::obbfilter_lineseg_test(),
+                    &v29,
+                    &v33,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    false);
+
+    if ( !check1 && !check2 )
+    {
+        auto v11 = a2 * a3;
+        auto v26 = v11 + a1;
+        auto v13 = a2 * 0.15000001;
+
+        vector3d v24 = a1 - v13;
+        check1 = g_world_ptr()->the_terrain->find_region(v24, nullptr)
+            && find_intersection(
+                        v24,
+                        v26,
+                        *local_collision::entfilter_entity_no_capsules(),
+                        *local_collision::obbfilter_lineseg_test(),
+                        &a5,
+                        &a6,
+                        nullptr,
+                        nullptr,
+                        nullptr,
+                        false);
+
+        auto v15 = arg4a * a2;
+
+        v26 = v15 + a1;
+
+        v24 = a2 * 0.15000001 + a1;
+        check2 = g_world_ptr()->the_terrain->find_region(v24, nullptr)
+            && find_intersection(
+                v24,
+                v26,
+                *local_collision::entfilter_entity_no_capsules(),
+                *local_collision::obbfilter_lineseg_test(),
+                &v29,
+                &v33,
+                nullptr,
+                nullptr,
+                nullptr,
+                false);
+    }
+
+    if (check1 && check2) {
+        return false;
+    }
+
+    if ( check1 != check2 )
+    {
+        if ( check1 )
+        {
+            auto v22 = a2 * a3;
+            v27 = a5 - v22;
+
+            *corrected_hit_pos = v27;
+        }
+        else
+        {
+            assert(check2);
+
+            auto v19 = a2 * a3;
+            auto v27 = v19 + v29;
+
+            *corrected_hit_pos = v27;
+
+            *corrected_hit_pos = *corrected_hit_pos - a1;
+        }
+    }
+
+    return true;
 }
 
 void hero_inode_patch() {

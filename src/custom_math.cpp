@@ -211,6 +211,11 @@ bool approx_equals(Float a1, Float a2, Float epsilon) {
 #endif
 }
 
+int sign(float a1)
+{
+    return (a1 >= 0.0 ? a1 > 0 : -1);
+}
+
 float sqr(float a1)
 {
     return a1 * a1;

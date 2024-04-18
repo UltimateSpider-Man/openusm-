@@ -5,17 +5,14 @@
 
 #include <cstdint>
 
-struct camera;
+struct entity;
 
 struct dolly_and_strafe_mcs : motion_control_system {
-    bool field_4;
-    bool field_5;
-    camera *field_8;
-    float field_C;
-    float field_10;
-    float field_14;
+    float m_dolly;
+    float m_strafe;
+    float m_lift;
 
-    dolly_and_strafe_mcs(camera *a2);
+    dolly_and_strafe_mcs(entity *a2);
 
     //0x00526940
     int do_dolly(Float a2);

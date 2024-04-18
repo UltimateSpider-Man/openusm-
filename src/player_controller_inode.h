@@ -14,7 +14,10 @@ struct player_controller_inode : controller_inode {
 
     //0x00467E10
     //virtual
-    [[nodiscard]] game_button get_button(controller_inode::eControllerButton a3);
+    [[nodiscard]] game_button _get_button(controller_inode::eControllerButton a3);
 };
 
 } // namespace ai
+
+
+extern void player_controller_inode_patch();

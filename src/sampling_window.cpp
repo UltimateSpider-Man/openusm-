@@ -9,8 +9,14 @@ VALIDATE_SIZE(sampling_window, 0x104);
 
 sampling_window::sampling_window() {}
 
-void sampling_window::push_sample(Float a2, Float a3) {
-    THISCALL(0x00527040, this, a2, a3);
+void sampling_window::push_sample(Float a2, Float a3)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x00527040, this, a2, a3);
+    }
 }
 
 float sampling_window::average(Float duration) const
@@ -28,10 +34,12 @@ float sampling_window::average(Float duration) const
 
     auto v3 = 0.0f;
     auto v4 = 0.0f;
-    auto *smp = &this->field_0[this->current_sample];
+    auto *smp = &this->samples[this->current_sample];
     auto duration_left = v9;
     while ( duration_left > DURATION_EPSILON )
     {
+        assert(smp->time >= DURATION_EPSILON && smp->time < SAMPLING_PERIOD + EPSILON);
+
         auto v7 = smp->time;
         if ( v7 > duration_left ) {
             v7 = duration_left;
@@ -43,9 +51,10 @@ float sampling_window::average(Float duration) const
         v3 += v7;
         duration_left = duration_left - v7;
         if ( --smp < bit_cast<sample *>(this) ) {
-            smp = &this->field_0[this->end_sample - 1];
+            smp = &this->samples[this->end_sample - 1];
         }
     }
+
     return v4 / v3;
 }
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config.h"
-
 #include "float.hpp"
 #include "log.h"
 #include "mstring.h"
@@ -163,6 +161,8 @@ struct vector3d
     //0x00401690
     float length() const;
 
+    void sub_4B9FA0(vector3d a2, Float a5);
+
     static float abs(Float a1);
 
     //0x00401870
@@ -171,7 +171,6 @@ struct vector3d
     static vector3d min(const vector3d &, const vector3d &); 
 
     static vector3d max(const vector3d &a2, const vector3d &a3);
-
 };
 
 //0x005BF0B0

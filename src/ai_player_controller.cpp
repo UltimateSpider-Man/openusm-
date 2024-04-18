@@ -73,8 +73,73 @@ void ai_player_controller::set_player_num(int a2) {
     this->remap_controls();
 }
 
-void ai_player_controller::remap_controls() {
-    THISCALL(0x00468FE0, this);
+void ai_player_controller::remap_controls()
+{
+    if constexpr (0)
+    {
+        auto v2 = input_mgr::instance()->field_58;
+        this->gb_jump.set_id(v2);
+
+        this->gb_swing_raw.set_id(v2);
+        this->gb_attack.set_id(v2);
+        this->gb_attack_secondary.set_id(v2);
+        this->gb_grab.set_id(v2);
+        this->gb_range.set_id(v2);
+        this->field_150.set_id(v2);
+        this->field_254.set_id(v2);
+        this->field_288.set_id(v2);
+        this->gb_camera_center.set_id(v2);
+        this->field_1B8.set_id(v2);
+        this->gb_swing.set_id(v2);
+        this->field_220.set_id(v2);
+
+        this->field_2BC[0].set_id(v2);
+        this->field_2BC[1].set_id(v2);
+        this->field_2BC[2].set_id(v2);
+        this->field_2BC[3].set_id(v2);
+        this->field_2BC[4].set_id(v2);
+        this->field_2BC[5].set_id(v2);
+
+        this->gb_jump.set_control(static_cast<game_control_t>(96));
+        this->gb_swing_raw.set_control(static_cast<game_control_t>(101));
+
+        this->gb_swing_raw.set_modifier(game_button {static_cast<game_control_t>(104)});
+
+        this->gb_swing_raw.set_trigger_type(0);
+
+        this->gb_attack.set_control((game_control_t)97);
+        this->gb_attack_secondary.set_control((game_control_t)99);
+        this->gb_grab.set_control((game_control_t)98);
+        this->gb_range.set_control((game_control_t)104);
+
+        this->gb_range.field_2C = 0.1f;
+
+        this->field_150.set_control((game_control_t)100);
+        this->field_254.set_control((game_control_t)104);
+        this->field_288.set_control((game_control_t)101);
+
+        this->gb_camera_center.set_primary(game_button {(game_control_t)100});
+        this->gb_camera_center.set_modifier(game_button {(game_control_t)103});
+
+        this->gb_camera_center.set_trigger_type(1);
+
+        this->field_1B8.set_control((game_control_t)101);
+        this->field_1B8.field_2C = 0.1f;
+
+        this->gb_swing.set_control((game_control_t)101);
+        this->field_220.set_control((game_control_t)114);
+
+        this->field_2BC[0].set_control(106);
+        this->field_2BC[1].set_control(107);
+        this->field_2BC[2].set_control(110);
+        this->field_2BC[3].set_control(111);
+        this->field_2BC[4].set_control(108);
+        this->field_2BC[5].set_control(109);
+    }
+    else
+    {
+        THISCALL(0x00468FE0, this);
+    }
 }
 
 game_button *ai_player_controller::get_gb_jump() {
@@ -158,10 +223,12 @@ vector3d ai_player_controller::compute_left_stick_from_camera() {
 
 void ai_player_controller::update_controls(Float a2, bool a3)
 {
+    TRACE("ai_player_controller::update_controls");
+
     if (a3 || this->field_3DC && is_a_controllable_mode(this->m_spidey_loco_mode))
     {
         this->gb_jump.update(a2);
-        this->field_4C.update(a2);
+        this->gb_swing_raw.update(a2);
         this->gb_attack.update(a2);
         this->gb_attack_secondary.update(a2);
         this->gb_grab.update(a2);
@@ -184,7 +251,10 @@ void ai_player_controller::update_controls(Float a2, bool a3)
     this->field_220.update(a2);
 }
 
-void ai_player_controller::frame_advance(Float a2) {
+void ai_player_controller::frame_advance(Float a2)
+{
+    TRACE("ai_player_controller::frame_advance");
+
     if (this->field_4[0] == nullptr) {
         this->field_4[0] = CAST(this->field_4[0], g_game_ptr()->current_game_camera);
     }

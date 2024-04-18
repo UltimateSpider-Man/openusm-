@@ -1,6 +1,5 @@
 #include "oldmath_usefulmath.h"
 
-#include <cassert>
 #include <cmath>
 
 static constexpr float _2PI = 3.1415927 * 2.0;
@@ -13,3 +12,4 @@ float wrap_angle(float ang)
     auto angb = anga - std::floor(anga);
     return (angb * _2PI);
 }
+

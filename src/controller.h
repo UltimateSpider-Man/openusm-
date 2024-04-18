@@ -18,4 +18,9 @@ struct controller {
     //0x0055E7D0
     //virtual
     void resurrect();
+
+    //virtual
+    bool is_controller() const;
 };
+
+extern void controller_patch();

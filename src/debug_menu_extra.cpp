@@ -817,12 +817,12 @@ void populate_gamefile_menu([[maybe_unused]] debug_menu_entry *entry)
         v2->add_entry(v43);
 
         auto *v44 = create_menu_entry(mString {"CAM_INVERTED_X"});
-        v44->set_pt_bval((bool *)&v493->field_340.field_6C);
+        v44->set_pt_bval(&v493->field_340.m_invert_camera_horz);
         v44->set_max_value(1000.0);
         v2->add_entry(v44);
 
         auto *v45 = create_menu_entry(mString {"CAM_INVERTED_Y"});
-        v45->set_pt_bval((bool *)&v493->field_340.field_6D);
+        v45->set_pt_bval(&v493->field_340.m_invert_camera_vert);
         v45->set_max_value(1000.0);
         v2->add_entry(v45);
 
@@ -1329,37 +1329,43 @@ void game_flags_handler(debug_menu_entry *a1)
         auto v13 = a1->get_ival();
         a1->set_ival(v13, false);
         auto v16 = a1->get_ival();
-        if ( v16 != 0 )
-        {
-            if ( v16 == 1 )
-            {
-                if ( geometry_manager::is_scene_analyzer_enabled() )
-                {
-                    geometry_manager::enable_scene_analyzer(false);
-                }
+        enum {
+            CHASE_CAM = 0,
+            USER_CAM = 1,
+            SCENE_ANALYZER_CAM = 2,
+        };
 
-                g_game_ptr()->m_user_camera_enabled = true;
-
-            }
-            else if ( v16 == 2 )
-            {
-                g_game_ptr()->m_user_camera_enabled = false;
-                geometry_manager::enable_scene_analyzer(true);
-            }
-        }
-        else
+        switch (v16)
         {
-            if ( geometry_manager::is_scene_analyzer_enabled() )
-            {
+        case CHASE_CAM: {
+            if ( geometry_manager::is_scene_analyzer_enabled() ) {
                 geometry_manager::enable_scene_analyzer(false);
             }
 
-            g_game_ptr()->m_user_camera_enabled = false;
+            g_game_ptr()->enable_user_camera(false);
+
+            break;
         }
-    break;
+        case USER_CAM: {
+            if ( geometry_manager::is_scene_analyzer_enabled() ) {
+                geometry_manager::enable_scene_analyzer(false);
+            }
+
+            g_game_ptr()->enable_user_camera(true);
+            break;
+        }
+        case SCENE_ANALYZER_CAM: {
+            g_game_ptr()->enable_user_camera(false);
+            geometry_manager::enable_scene_analyzer(true);
+            break;
+        }
+        default:
+            assert(0);
+        }
+        break;
     }
     default:
-    return;
+        return;
     }
 }
 

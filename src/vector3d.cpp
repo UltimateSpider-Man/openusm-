@@ -4,6 +4,7 @@
 #include "euler_direction.h"
 #include "func_wrapper.h"
 #include "matrix4x4.h"
+#include "oldmath_usefulmath.h"
 #include "quaternion.h"
 #include "trace.h"
 #include "vector4d.h"
@@ -285,6 +286,13 @@ vector3d vector3d::max(const vector3d &a2, const vector3d &a3)
     auto v5 = std::max(a2[1], a3[1]);
     auto v3 = std::max(a2[0], a3[0]);
     return vector3d {v3, v5, v6};
+}
+
+void vector3d::sub_4B9FA0(vector3d a2, Float a5)
+{
+    auto v3 = lerp(a2, *this, a5);
+
+    (*this) = v3.normalized();
 }
 
 #ifndef USE_GLM

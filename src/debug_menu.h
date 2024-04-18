@@ -2,6 +2,7 @@
 
 #include "mstring.h"
 #include "fixed_pool.h"
+#include "float.hpp"
 
 namespace ai {
 struct ai_core;

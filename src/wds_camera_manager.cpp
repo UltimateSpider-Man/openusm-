@@ -60,19 +60,36 @@ void wds_camera_manager::frame_advance(Float a2) {
     }
 }
 
-int wds_camera_manager::add_controller(controller *a2) {
-    return THISCALL(0x00542630, this, a2);
+int wds_camera_manager::add_controller(controller *a2)
+{
+    TRACE("wds_camera_manager::add_controller");
+
+    if constexpr (0)
+    {}
+    else
+    {
+        return THISCALL(0x00542630, this, a2);
+    }
 }
 
-int wds_camera_manager::add_mcs(motion_control_system *a2) {
-    return THISCALL(0x005426A0, this, a2);
+int wds_camera_manager::add_mcs(motion_control_system *a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        return THISCALL(0x005426A0, this, a2);
+    }
 }
 
-void wds_camera_manager::advance_controllers(Float a2) {
+void wds_camera_manager::advance_controllers(Float a2)
+{
     TRACE("wds_camera_manager::advance_controllers");
 
-    if constexpr (0) {
-        for (auto &cntrl : this->field_10) {
+    if constexpr (0)
+    {
+        for (auto &cntrl : this->field_10)
+        {
             if (cntrl->field_4) {
                 struct Vtbl {
                     int field_0;
@@ -189,4 +206,19 @@ void wds_camera_manager::enable_marky_cam(bool a2, Float a3) {
     assert(this->field_44 != nullptr);
 
     THISCALL(0x0050D4C0, this, a2, a3);
+}
+
+void wds_camera_manager_patch()
+{
+    {
+        FUNC_ADDRESS(address, &wds_camera_manager::add_controller);
+        REDIRECT(0x0054BAA8, address);
+        REDIRECT(0x0054BAE3, address);
+        REDIRECT(0x0054BDEA, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &wds_camera_manager::advance_controllers);
+        REDIRECT(0x0055841B, address);
+    }
 }

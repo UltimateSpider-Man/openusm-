@@ -20,6 +20,23 @@ VALIDATE_SIZE(input_mgr, 0x5Cu);
 
 VALIDATE_SIZE(input_mgr::control_map, 12);
 
+bool IS_JOYSTICK_DEVICE(int id) {
+    return id >= 0xF4240 && id <= 0xF4247;
+}
+
+bool IS_KEYBOARD_DEVICE(int id) {
+    return id == 0x1E8480;
+}
+
+bool IS_MOUSE_DEVICE(device_id_t id) {
+    return id == 0x2DC6C0;
+}
+
+int DEVICE_ID_TO_MOUSE_INDEX(int id) {
+    return id - MOUSE1_DEVICE;
+}
+
+
 input_mgr::input_mgr() {
     THISCALL(0x005E0EA0, this);
 }
@@ -36,8 +53,10 @@ void input_mgr::create_inst() {
     }
 }
 
-void input_mgr::register_control(const game_control &control) {
-    if constexpr (0) {
+void input_mgr::register_control(const game_control &control)
+{
+    if constexpr (0)
+    {
         _std::map<int, game_control> *map = &this->control_map;
 
         assert(map->find(control.name) == map->end());
@@ -117,6 +136,7 @@ void input_mgr::frame_advance(Float a2) {
 float input_mgr::get_control_state(int a2, device_id_t a3) const
 {
     TRACE("input_mgr::get_control_state");
+    sp_log("control = %d", a2);
 
     if constexpr (1)
     {
@@ -126,15 +146,17 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const
 
         auto it = [this, a2]() {
             decltype(this->control_map)::iterator it;
-            THISCALL(0x005E47A0, &this->control_map, &it, &a2); 
+
+            void (__fastcall *func)(const decltype(this->control_map) *, void *edx, decltype(it) *, const int *) = CAST(func, 0x005E47A0);
+            func(&this->control_map, nullptr, &it, &a2); 
             assert(it != this->control_map.end());
             return it;
         }();
 #endif
 
         auto &pair = *it;
-        auto *control = &pair.second;
-        auto &list = control->mapping;
+        auto &control = pair.second;
+        auto &list = control.mapping;
         float a1 = 0.0;
         bool v17 = false;
         auto v16 = list.size();
@@ -154,21 +176,19 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const
             }
 
             v17 = true;
-            auto *device = this->get_device(static_cast<device_id_t>(id));
+            auto *device = this->get_device_from_map(static_cast<device_id_t>(id));
             if ( device!= nullptr && device->is_connected() )
             {
                 auto v12 = device->get_axis_state(axis.field_4, axis.field_8);
-                if ( control->type == 0 )
+                if ( control.type == CT_BOOLEAN )
                 {
                     auto func = [](float a1) -> float
                     {
-                        if ( a1 < -0.75 )
-                        {
+                        if ( a1 < -0.75 ) {
                             return -1.0;
                         }
 
-                        if ( a1 > 0.75 )
-                        {
+                        if ( a1 > 0.75 ) {
                             return 1.0;
                         }
 
@@ -193,19 +213,24 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const
 
 void input_mgr::insert_device(input_device *a2)
 {
+    TRACE("input_mgr::insert_device");
+
+    sp_log("0x%X", a2->get_id());
+
     if constexpr(0)
     {
         auto *v2 = a2;
         auto id = a2->get_id();
-        auto found_device = (input_device *) THISCALL(0x005E8400, &this->field_8, &id);
-        found_device = v2;
+        auto found_device = (input_device **) THISCALL(0x005E8400, &this->field_8, &id);
+        *found_device = v2;
         
-        if ( v2->get_id() < 0xF4240 || v2->get_id() > 0xF4247 )
+        if ( !IS_JOYSTICK_DEVICE(v2->get_id()) )
         {
-            if ( v2->get_id() < 0x1E8480 || v2->get_id() > 0x1E8480 )
+            if ( !IS_KEYBOARD_DEVICE(v2->get_id()) )
             {
-                if ( v2->get_id() >= 3000000 && v2->get_id() <= 3000000 )
+                if ( IS_MOUSE_DEVICE(v2->get_id()) ) {
                     *((DWORD *)&this[0xFFFE027F] + v2->get_id() - 0x14) = (DWORD)v2;
+                }
             }
             else
             {
@@ -232,8 +257,15 @@ void input_mgr::set_control_delta_monkey_callback(float (*a2)(int)) {
     this->m_delta_callback = a2;
 }
 
-input_device *input_mgr::get_device_from_map(device_id_t a2) const {
-    return (input_device *) THISCALL(0x005D59B0, this, a2);
+input_device *input_mgr::get_device_from_map_internal(device_id_t a2) const
+{
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        return (input_device *) THISCALL(0x005D59B0, this, a2);
+    }
 }
 
 void input_mgr::poll_devices() {
@@ -259,6 +291,9 @@ void input_mgr::poll_devices() {
 
 float input_mgr::get_control_delta(int control, device_id_t a3) const
 {
+    TRACE("input_mgr::get_control_delta");
+    sp_log("control = %d", control);
+
     if constexpr (1)
     {
         if (m_delta_callback != nullptr) {
@@ -272,18 +307,12 @@ float input_mgr::get_control_delta(int control, device_id_t a3) const
 
             assert(it != control_map.end());
 
-            const auto &ctrl = it->second;
-            const auto &dalist = ctrl.mapping;
-
             return it;
         }();
 
         auto &dalist = it->second.mapping;
         int size = dalist.size();
-        auto *v6 = dalist.m_head;
-        auto *v7 = v6->_Next;
         bool v8 = false;
-        bool v9 = v6->_Next == v6;
         float result = 0;
 
         for (auto it_list = dalist.begin(); it_list != dalist.end(); ++it_list) {
@@ -292,7 +321,7 @@ float input_mgr::get_control_delta(int control, device_id_t a3) const
 
             int id = it_list->m_device_id;
 
-            if (a3 != -1 && a3 != id) {
+            if (a3 != INVALID_DEVICE_ID && a3 != id) {
                 ++it_list;
                 if (v8 || size != 0) {
                     continue;
@@ -304,13 +333,16 @@ float input_mgr::get_control_delta(int control, device_id_t a3) const
             v8 = true;
 
             if (input_device *v12 = this->get_device_from_map(static_cast<device_id_t>(id));
-                v12 != nullptr && v12->is_connected()) {
-                auto v18 = v7->_Myval.field_4;
+                v12 != nullptr && v12->is_connected())
+            {
+                auto &axis = (*it_list);
 
                 float v17;
-                if (it._Ptr->_Myval.second.type != 0)
+                auto &pair = *it;
+                auto &control = pair.second;
+                if (control.type == CT_RATIONAL)
                 {
-                    v17 = v12->get_axis_delta(v18, v7->_Myval.field_8);
+                    v17 = v12->get_axis_delta(axis.field_4, axis.field_8);
                 }
                 else 
                 {
@@ -323,10 +355,10 @@ float input_mgr::get_control_delta(int control, device_id_t a3) const
                         return v2;
                     };
 
-                    auto axis_old_state = v12->get_axis_old_state(v18, v7->_Myval.field_8);
+                    auto axis_old_state = v12->get_axis_old_state(axis.field_4, axis.field_8);
                     auto v21 = sub_C079D0(axis_old_state);
 
-                    auto axis_state = v12->get_axis_state(v7->_Myval.field_4, v7->_Myval.field_8);
+                    auto axis_state = v12->get_axis_state(axis.field_4, axis.field_8);
                     auto v16 = sub_C079D0(axis_state);
 
                     auto v17 = v16 - v21;
@@ -348,104 +380,28 @@ float input_mgr::get_control_delta(int control, device_id_t a3) const
         }
 
         return result;
-
-        if (!v9)
-        {
-            while (1) {
-                auto v10 = v7->_Myval.m_device_id;
-                auto v11 = size - 1;
-                int v21 = v11;
-                if (a3 != INVALID_DEVICE_ID && a3 != v10)
-                {
-                    if (v8 || v11 != 0.0) {
-                        goto LABEL_29;
-                    }
-
-                    v10 = a3;
-                }
-
-                v8 = true;
-
-                if (input_device *v12 = this->get_device_from_map(static_cast<device_id_t>(v10));
-                    v12 != nullptr && v12->is_connected()) {
-                    auto v18 = v7->_Myval.field_4;
-
-                    float v17;
-                    if (it._Ptr->_Myval.second.type) {
-                        v17 = v12->get_axis_delta(v18, v7->_Myval.field_8);
-
-                    } else {
-                        auto sub_C079D0 = [](float a1) -> float {
-                            if (a1 < -0.75) {
-                                return -1.0;
-                            }
-
-                            float v2;
-                            if (a1 <= 0.75) {
-                                v2 = 0.0;
-                            } else {
-                                v2 = 1.0;
-                            }
-
-                            return v2;
-                        };
-
-                        auto axis_old_state = v12->get_axis_old_state(v18, v7->_Myval.field_8);
-                        auto v21 = sub_C079D0(axis_old_state);
-
-                        auto axis_state = v12->get_axis_state(v7->_Myval.field_4,
-                                                              v7->_Myval.field_8);
-                        auto v16 = sub_C079D0(axis_state);
-
-                        auto v17 = v16 - v21;
-                        if (v17 >= 0.0f) {
-                            if (v17 > 0.0f) {
-                                v17 = 0.0f;
-                            }
-
-                        } else {
-                            v17 = -1.f;
-                        }
-                    }
-
-                    result += v17;
-                }
-
-            LABEL_29:
-                v7 = v7->_Next;
-                if (v7 == it._Ptr->_Myval.second.mapping.m_head) {
-                    return result;
-                }
-
-                size = v21;
-            }
-        }
-
-        return result;
-    } else {
+    }
+    else
+    {
         return (float) THISCALL(0x005D87C0, this, control, a3);
     }
 }
 
-input_device *input_mgr::get_device(device_id_t id) const {
+input_device *input_mgr::get_device_from_map(device_id_t id) const
+{
+    TRACE("input_mgr::get_device_from_map");
+
     if constexpr (1)
     {
-        auto IS_JOYSTICK_DEVICE = [](device_id_t id) -> bool {
-            return id >= 0xF4240 && id <= 0xF4247;
-        };
-
-        auto IS_KEYBOARD_DEVICE = [](device_id_t id) -> bool { return id == 0x1E8480; };
-
-        auto IS_MOUSE_DEVICE = [](device_id_t id) -> bool { return id == 0x2DC6C0; };
-
         assert(id == INVALID_DEVICE_ID ||
                 IS_JOYSTICK_DEVICE(id) ||
                 IS_KEYBOARD_DEVICE(id) ||
                 IS_MOUSE_DEVICE(id));
 
-        if (id <= 0x1E8480) {
+        if (id <= 0x1E8480)
+        {
             if (IS_KEYBOARD_DEVICE(id)) {
-                return this->field_50;
+                return this->keyboard_devices[0];
             }
 
             if (IS_JOYSTICK_DEVICE(id)) {
@@ -455,11 +411,12 @@ input_device *input_mgr::get_device(device_id_t id) const {
             return this->get_device_from_map(id);
         }
 
-        if (!IS_MOUSE_DEVICE(id)) {
-            return this->get_device_from_map(id);
+        if ( IS_MOUSE_DEVICE(id) ) {
+            return this->mouse_devices[0];
         }
 
-        return this->field_54;
+        return this->get_device_from_map(id);
+
     } else {
         return (input_device *) THISCALL(0x0055E850, this, id);
     }
@@ -528,17 +485,26 @@ int input_mgr::map_control(int a2, const device_axis &a3) {
     }
 }
 
-void input_mgr_patch() {
-    FUNC_ADDRESS(address, &input_mgr::get_control_delta);
-    REDIRECT(0x00552FD4, address);
+void input_mgr_patch()
+{
+    {
+        FUNC_ADDRESS(address, &input_mgr::insert_device);
+        REDIRECT(0x005990C0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &input_mgr::get_control_delta);
+        //SET_JUMP(0x005D87C0, address);
+    }
 
     {
         FUNC_ADDRESS(address, &input_mgr::get_control_state);
-        //SET_JUMP(0x005D86D0, address);
+        SET_JUMP(0x005D86D0, address);
     }
 
     {
         FUNC_ADDRESS(address, &input_mgr::get_device_from_map);
-        //SET_JUMP(0x0055E850, address);
+        //REDIRECT(0x005D8734, address);
+        //REDIRECT(0x005D884C, address);
     }
 }

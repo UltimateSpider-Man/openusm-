@@ -15,6 +15,7 @@
 #include "event.h"
 #include "from_mash_in_place_constructor.h"
 #include "func_wrapper.h"
+#include "glass_house_manager.h"
 #include "hit_react_state.h"
 #include "oldmath_po.h"
 #include "physics_inode.h"
@@ -77,7 +78,7 @@ bool web_zip_inode::can_go_to(string_hash a2)
 
         auto *v3 = this->field_DC;
         auto *v4 = v3->field_20;
-        auto zip_type = this->field_78;
+        auto zip_type = this->m_zip_type;
 
         switch (zip_type) {
         case 0: {
@@ -108,7 +109,7 @@ bool web_zip_inode::can_go_to(string_hash a2)
             break;
         }
         case 2: {
-            if (hero_inode::is_a_crawl_state(a2, 1)
+            if (hero_inode::is_a_crawl_state(a2, true)
                 && a2 == ai::run_state::default_id )
             {
                 return false;
@@ -116,7 +117,7 @@ bool web_zip_inode::can_go_to(string_hash a2)
 
             auto *v18 = v4->get_als_layer(static_cast<als::layer_types>(0));
             auto v29 = v18->get_time_to_signal(event::ANIM_ACTION);
-            return !hero_inode::is_a_crawl_state(a2, 1) && v29 < 0.0f;
+            return !hero_inode::is_a_crawl_state(a2, true) && v29 < 0.0f;
         }
         default: {
             assert(0 && "Unknown zip type!");
@@ -133,6 +134,8 @@ static Var<string_hash> loco_allow_web_zip_id{0x00958E64};
 
 bool web_zip_inode::is_eligible(string_hash a2)
 {
+    TRACE("web_zip_inode::is_eligible", a2.to_string());
+
     if constexpr (1)
     {
         auto *v3 = &this->field_8->field_50;
@@ -154,24 +157,30 @@ bool web_zip_inode::is_eligible(string_hash a2)
 
         bool result;
 
-        if (a2 == run_state::default_id) {
-            this->field_78 = 0;
+        if (a2 == run_state::default_id)
+        {
+            this->m_zip_type = 0;
             result = this->find_zip_anchor_and_transition_to_zip_jump({0});
-        } else if (a2 == jump_state::default_id) {
-            this->field_78 = 2;
-            result = this->find_zip_anchor_and_transition_to_zip_jump({0});
-        } else {
-            if (hero_inode::is_a_crawl_state(a2, true)) {
-                this->field_78 = 1;
-                result = this->find_zip_anchor_from_crawl();
-            } else {
-                auto str = a2.to_string();
-                sp_log("Trying to switch to web_zip from invalid state: %s", str);
-                assert(0);
-
-                result = true;
-            }
         }
+        else if (a2 == jump_state::default_id)
+        {
+            this->m_zip_type = 2;
+            result = this->find_zip_anchor_and_transition_to_zip_jump({0});
+        }
+        else if (hero_inode::is_a_crawl_state(a2, true))
+        {
+            this->m_zip_type = 1;
+            result = this->find_zip_anchor_from_crawl();
+        }
+        else
+        {
+            auto str = a2.to_string();
+            sp_log("Trying to switch to web_zip from invalid state: %s", str);
+            assert(0);
+
+            result = true;
+        }
+
         return result;
 
     } else {
@@ -183,8 +192,27 @@ bool web_zip_inode::find_zip_anchor_from_crawl() {
     return THISCALL(0x0045D600, this);
 }
 
-bool web_zip_inode::find_zip_anchor_and_transition_to_zip_jump(web_zip_inode::eZipReattachMode a2) {
-    return THISCALL(0x0045DFD0, this, a2);
+bool web_zip_inode::find_zip_anchor_and_transition_to_zip_jump(web_zip_inode::eZipReattachMode a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        return THISCALL(0x0045DFD0, this, a2);
+    }
+}
+
+bool web_zip_inode::correct_zip_target_pos(line_info *si)
+{
+    TRACE("web_zip_inode::correct_zip_target_pos");
+
+    auto result = THISCALL(0x0044CBD0, this, si);
+
+    if (result) {
+        assert(glass_house_manager::is_point_in_glass_house(si->hit_pos));
+    }
+
+    return result;
 }
 
 int web_zip_inode::deactivate() {
@@ -324,7 +352,6 @@ void web_zip_state_patch() {
 
         {
             FUNC_ADDRESS(address, &ai::web_zip_inode::is_eligible);
-
             SET_JUMP(0x0046C280, address);
         }
 }

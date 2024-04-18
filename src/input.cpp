@@ -16,7 +16,8 @@ static Var<HRESULT(__stdcall *)(
     HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID *ppvOut, LPUNKNOWN punkOuter)>
     p_DirectInput8Create{0x00987944};
 
-Input::Input() {
+Input::Input()
+{
     static Var<bool> din_intialized{0x00987950};
 
     this->field_0 = false;

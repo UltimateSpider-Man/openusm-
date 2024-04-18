@@ -1,5 +1,7 @@
 #pragma once
 
+#include "input_mgr.h"
+
 #include <cstdint>
 
 struct input_device {
@@ -28,5 +30,5 @@ struct input_device {
     float get_axis_state(int a2, int a3);
 
     //virtual
-    int get_id() const;
+    device_id_t get_id() const;
 };

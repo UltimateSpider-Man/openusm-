@@ -18,7 +18,13 @@ const float AXIS_MIN  = -1.0f;
 
 enum device_id_t {
     INVALID_DEVICE_ID = -1,
+
+    MOUSE1_DEVICE = 11,
 };
+
+inline constexpr auto MAX_MOUSE_DEVICES = 1;
+
+inline constexpr auto MAX_KEYBOARD_DEVICES = 1;
 
 struct input_mgr : singleton {
     rumble_manager *rumble_ptr;
@@ -35,8 +41,8 @@ struct input_mgr : singleton {
     float (*m_delta_callback)(int);
     void *field_30[1];
     int empty1[7];
-    input_device *field_50;
-    input_device *field_54;
+    input_device *keyboard_devices[MAX_KEYBOARD_DEVICES];
+    input_device *mouse_devices[MAX_MOUSE_DEVICES];
     device_id_t field_58;
 
     //0x005E0EA0
@@ -74,10 +80,10 @@ struct input_mgr : singleton {
     void set_control_delta_monkey_callback(float (*a2)(int));
 
     //0x0055E850
-    input_device *get_device(device_id_t id) const;
+    input_device *get_device_from_map(device_id_t id) const;
 
     //0x005D59B0
-    input_device *get_device_from_map(device_id_t a2) const;
+    input_device *get_device_from_map_internal(device_id_t a2) const;
 
     //0x005DC2A0
     void clear_mapping();

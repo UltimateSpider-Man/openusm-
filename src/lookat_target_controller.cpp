@@ -2,6 +2,8 @@
 
 #include "common.h"
 #include "entity_base.h"
+#include "trace.h"
+#include "utility.h"
 
 VALIDATE_SIZE(lookat_target_controller, 0x24u);
 
@@ -20,8 +22,12 @@ lookat_target_controller::lookat_target_controller(entity_base *a2) {
     }
 }
 
-void lookat_target_controller::frame_advance(Float) {
-    if (this->field_4) {
+void lookat_target_controller::_frame_advance(Float)
+{
+    TRACE("lookat_target_controller::frame_advance");
+
+    if (this->field_4)
+    {
         auto v3 = this->field_18;
         auto v4 = this->field_1C.m_heading;
 
@@ -40,5 +46,17 @@ void lookat_target_controller::frame_advance(Float) {
         a2a[2] = v8 + this->field_C[2];
         v6->set_abs_position(a2a);
         v6->look_at(this->field_C);
+    }
+}
+
+bool lookat_target_controller::_is_mouselook_controller() const {
+    return false;
+}
+
+void lookat_target_controller_patch()
+{
+    {
+        FUNC_ADDRESS(address, &lookat_target_controller::_frame_advance);
+        set_vfunc(0x0088985C, address);
     }
 }

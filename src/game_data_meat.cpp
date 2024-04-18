@@ -54,8 +54,8 @@ void game_data_meat::init() {
         this->m_hero_health = 200.0;
         this->m_hero_type = 1;
         this->m_swing_speed = 2;
-        this->field_6C = 0;
-        this->field_6D = 0;
+        this->m_invert_camera_horz = false;
+        this->m_invert_camera_vert = false;
         this->field_6E = 0;
         this->field_6F = 0;
         this->field_70 = 0;

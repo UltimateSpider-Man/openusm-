@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ai_player_controller.h"
 #include "float.hpp"
 #include "vector3d.h"
 
@@ -24,6 +25,14 @@ struct camera_target_info {
 
     //0x004B28A0
     int get_loco_mode() const;
+
+    eHeroLocoMode get_prev_loco_mode() const;
+
+    float sub_4B42E0() const;
+
+    bool sub_4B2980() const;
+
+    bool sub_4B29C0() const;
 };
 
 extern void camera_target_info_patch();
