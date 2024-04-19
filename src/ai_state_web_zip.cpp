@@ -146,8 +146,12 @@ bool web_zip_inode::is_eligible(string_hash a2)
 
         game_button v10 = this->field_DC->field_24->get_button(
             static_cast<controller_inode::eControllerButton>(13));
-        auto v4 = v10.m_flags;
-        auto v5 = ((v4 & 0x20) == 0 && (v4 & 2) != 0);
+
+        auto v5 = [](game_button &v10) -> bool {
+            auto v4 = v10.m_flags;
+            bool v5 = ((v4 & 0x20) == 0 && (v4 & GBFLAG_TRIGGERED) != 0);
+            return v5;
+        }(v10);
 
         //sp_log("%d", v5);
 

@@ -116,14 +116,23 @@ struct region
 
     void unload_textures();
 
-    int get_district_id();
+    int get_district_id() const;
 
-    bool is_loaded();
+    int get_strip_id() const;
 
-    bool is_locked() const
-    {
+    void set_strip_id(int a2);
+
+    bool is_loaded() const;
+
+    bool is_locked() const {
         return this->flags & 1;
     }
+
+    bool is_forced() const {
+        return (this->flags & 2) != 0;
+    }
+
+    bool already_visited() const;
 
     void get_region_extents(vector3d *min_extent, vector3d *max_extent) const;
 
@@ -153,9 +162,9 @@ struct region
 
 	void remove(light_source *a2);
 
-    bool has_quad_paths();
+    bool has_quad_paths() const;
 
-    bool is_interior();
+    bool is_interior() const;
 
     //0x0054FF40
     void add(entity *e);

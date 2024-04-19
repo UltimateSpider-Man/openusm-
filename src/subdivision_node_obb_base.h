@@ -38,6 +38,15 @@ struct subdivision_node_obb_base {
     //0x0052B880
     bool line_segment_intersection(const vector3d &arg0, const vector3d &arg4);
 
+    //0x00538D60
+    bool line_segment_intersection(
+        const vector3d &a1,
+        const vector3d &a2,
+        vector3d *a3,
+        vector3d *a4,
+        float *a5,
+        bool a6);
+
     bool sphere_intersection(
         const vector3d &arg0, Float arg4, vector3d *arg8, vector3d *argC, float *arg10);
 

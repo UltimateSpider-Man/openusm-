@@ -17,6 +17,7 @@
 #include "game.h"
 #include "igofrontend.h"
 #include "igozoomoutmap.h"
+#include "loaded_regions_cache.h"
 #include "memory.h"
 #include "mstring.h"
 #include "oldmath_po.h"
@@ -32,7 +33,10 @@
 #include "resource_manager.h"
 #include "rstr.h"
 #include "scratchpad_stack.h"
+#include "script.h"
+#include "script_object.h"
 #include "simple_region_visitor.h"
+#include "spider_monkey.h"
 #include "stack_allocator.h"
 #include "subdivision_static_region_list.h"
 #include "subdivision_node_obb_base.h"
@@ -43,6 +47,9 @@
 #include "utility.h"
 #include "vector3d.h"
 #include "wds.h"
+
+#include <list>
+#include <map>
 
 VALIDATE_SIZE(terrain, 0x8C);
 VALIDATE_SIZE((*terrain::strips), 0x28);
@@ -62,11 +69,7 @@ terrain::terrain(const mString &a2)
     if constexpr (1)
     {
         this->field_5C = {};
-
-        this->field_68 = 0;
-
         this->field_70 = {};
-
         this->field_80 = {};
 
         this->regions = nullptr;
@@ -79,7 +82,7 @@ terrain::terrain(const mString &a2)
         this->field_5C.field_8 = true;
 
         this->traffic_ptr = nullptr;
-        this->field_68 = 0;
+        this->field_68 = nullptr;
 
         filespec v30{a2};
         v30.m_ext = {".dsg"};
@@ -360,24 +363,55 @@ void terrain::unload_district_immediate(int a2)
     }
 }
 
-int terrain::find_innermost_region(const vector3d &a1) {
-    return THISCALL(0x00534890, this, &a1);
+region * terrain::find_innermost_region(const vector3d &a1)
+{
+    if constexpr (0)
+    {
+        assert(region_map != nullptr);
+
+        fixed_vector<region *, 15> a2 {};
+        loaded_regions_cache::get_regions_intersecting_sphere(a1, 0.0f, &a2);
+        if ( a2.size() == 0 ) {
+            return nullptr;
+        }
+
+        if ( a2.m_size == 1 ) {
+            return a2.at(0);
+        }
+
+        for ( int i = 0; i < a2.size(); ++i )
+        {
+            auto *r = a2.at(i);
+            assert(r != nullptr);
+
+            if ( r->is_interior() ) {
+                return r;
+            }
+        }
+
+        return a2.at(0);
+    }
+    else
+    {
+        return (region *) THISCALL(0x00534890, this, &a1);
+    }
 }
 
-region *terrain::find_region(const vector3d &a2, const region *a3)
+region *terrain::find_region(const vector3d &a2, region *a3)
 {
     TRACE("terrain::find_region");
 
     region *result;
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if (a3 != nullptr && a3->obb->point_inside_or_on(a2)) {
-            return (region *) a3;
+            return a3;
         }
 
         assert(this->region_map != nullptr);
 
-        simple_region_visitor visitor{a2, false};
+        simple_region_visitor visitor {a2, false};
 
         ++region::visit_key2();
         static_region_list_methods::init();
@@ -387,7 +421,9 @@ region *terrain::find_region(const vector3d &a2, const region *a3)
         assert(visitor.region_count <= 1);
 
         result = static_cast<region *>(visitor.region_count != 0 ? visitor.field_14[0] : nullptr);
-    } else {
+    }
+    else
+    {
         result = (region *) THISCALL(0x0052DFF0, this, &a2, a3);
     }
 
@@ -397,7 +433,25 @@ region *terrain::find_region(const vector3d &a2, const region *a3)
 int terrain::get_region_index_by_name(const fixedstring<4> &a2)
 {
     TRACE("terrain::get_region_index_by_name", a2.to_string());
-    return THISCALL(0x0054F670, this, &a2);
+
+    if constexpr (0)
+    {
+        region_lookup_entry v8 {a2.to_string(), 0};
+
+        auto *found = this->field_5C.find(&v8);
+        if (found != nullptr)
+        {
+            assert(found->reg_idx >= 0 && found->reg_idx < total_regions);
+
+            return found->reg_idx;
+        }
+
+        return -1;
+    }
+    else
+    {
+        return THISCALL(0x0054F670, this, &a2);
+    }
 }
 
 region *terrain::get_region(int idx)
@@ -535,8 +589,10 @@ void terrain::register_region_change_callback(void (*a3)(bool, region *)) {
     }
 }
 
-void terrain::show_obbs() {
-    if constexpr (0) {
+void terrain::show_obbs()
+{
+    if constexpr (0)
+    {
         sp_log("show_obbs");
 
         if (1) //(j_debug_render_get_ival((debug_render_items_e) 21) || SHOW_OBBS || SHOW_DISTRICTS)
@@ -604,20 +660,296 @@ void terrain::show_obbs() {
                 ++v14;
             });
         }
-    } else {
+    }
+    else
+    {
         ;
     }
 }
 
-void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *a2) {
-    THISCALL(0x00552C50, this, a2);
+void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack_infos)
+{
+    assert(ideal_pack_infos != nullptr && ideal_pack_infos->empty());
+
+    if constexpr (0)
+    {
+        static Var<bool> byte_960C00 {0x00960C00};
+        if ( g_world_ptr() != nullptr )
+        {
+            auto *v3 = g_world_ptr()->get_hero_ptr(0);
+            if ( v3 != nullptr )
+            {
+                if ( !g_game_ptr()->field_170 )
+                {
+                    auto a2a = v3->get_abs_position();
+                    auto *hero_reg = this->find_region(a2a, nullptr);
+
+                    if (hero_reg == nullptr) {
+                        sp_log("Spiderman placed outside the world!  (%.1f %.1f %.1f)", a2a[0], a2a[1], a2a[2])
+                    }
+
+                    if ( hero_reg != nullptr
+                            || spider_monkey::is_running() )
+                    {
+                        byte_960C00() = false;
+                        auto *current_view_camera = g_game_ptr()->get_current_view_camera(0);
+                        auto camera_abs_pos = current_view_camera->get_abs_position();
+                        auto *cam_reg = this->find_region(camera_abs_pos, nullptr);
+                        if ( cam_reg == nullptr ) {
+                            cam_reg = hero_reg;
+                        }
+
+                        _std::vector<region *> a4 {};
+
+                        for ( auto &v1 : this->field_80 ) {
+                            a4.push_back(v1);
+                        }
+
+                        if ( os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"}) )
+                        {
+                            if ( hero_reg != nullptr ) {
+                                a4.push_back(hero_reg);
+                            }
+
+                            this->find_ideal_terrain_packs_internal(camera_abs_pos, cam_reg, &a4, ideal_pack_infos);
+                        }
+                        else
+                        {
+                            if ( cam_reg != nullptr ) {
+                                a4.push_back(cam_reg);
+                            }
+
+                            this->find_ideal_terrain_packs_internal(a2a, hero_reg, &a4, ideal_pack_infos);
+                        }
+
+                        this->field_68 = hero_reg;
+                    }
+                    else if ( !byte_960C00() )
+                    {
+                        byte_960C00() = true;
+
+                        auto v11 = g_world_ptr()->get_hero_ptr(0)->get_my_handle();
+                        g_world_ptr()->entity_sinks({v11});
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        THISCALL(0x00552C50, this, ideal_pack_infos);
+    }
+}
+
+float sub_53A7A0(const vector3d &a1, region *a2)
+{
+    auto *obb = a2->obb;
+    vector3d v8 {obb->field_4[0], obb->field_4[1], obb->field_4[2]};
+
+    vector3d v9, v10;
+    if ( !obb->line_segment_intersection(a1, v8, &v9, &v10, nullptr, false) ) {
+        return 0.0f;
+    }
+
+    auto v4 = v9 - a1;
+    return v4.length();
 }
 
 void terrain::find_ideal_terrain_packs_internal(const vector3d &a2,
-                                                region *a3,
+                                                region *center_region,
                                                 _std::vector<region *> *a4,
-                                                _std::vector<ideal_pack_info> *a5) {
-    THISCALL(0x0054EC50, this, &a2, a3, a4, a5);
+                                                _std::vector<ideal_pack_info> *ideal_pack_infos)
+{
+    assert(ideal_pack_infos != nullptr && ideal_pack_infos->empty());
+
+    if constexpr (0)
+    {
+        if ( center_region != nullptr )
+        {
+            float v81 = 3.4028235e38;
+
+            std::map<region *, float> region_priorities {};
+
+            assert(center_region != nullptr);
+
+            auto sub_6626C0 = [](region *self) -> bool
+            {
+                return (self->flags & 0x4000) != 0;
+            };
+
+            if ( !center_region->is_locked() && sub_6626C0(center_region) )
+            {
+                v81 = 0.0;
+                auto &v8 = region_priorities.at(center_region);
+                v8 = v81;
+            }
+
+            std::map<int, float> v79 {};
+
+            assert(center_region->get_strip_id() >= 0);
+
+            assert(center_region->get_strip_id() < total_strips);
+
+            auto v42 = center_region->get_strip_id();
+            auto &v10 = v79.at(v42);
+            v10 = v81;
+
+            std::list<region *> regions {};
+
+            ++region::visit_key();
+
+            auto sub_69FD45 = [](region *self) -> void {
+                self->visited = region::visit_key();
+            };
+
+            sub_69FD45(center_region);
+            for ( int i = 0; i < center_region->get_num_neighbors(); ++i )
+            {
+                auto *neighbor = center_region->get_neighbor(i);
+                assert(neighbor != nullptr);
+
+                auto sub_6A9A39 = [](region *self) -> bool
+                {
+                    return (0x20000 & self->flags) != 0;
+                };
+
+                sub_69FD45(neighbor);
+                if ( !neighbor->is_locked() && sub_6626C0(neighbor) && !sub_6A9A39(neighbor) )
+                {
+                    auto v75 = sub_53A7A0(a2, neighbor);
+                    auto &v12 = region_priorities.at(neighbor);
+                    v12 = v75;
+
+                    auto strip_id = neighbor->get_strip_id();
+                    assert(strip_id >= 0);
+
+                    assert(strip_id < total_strips);
+
+                    auto v37 = v79.end();
+                    auto v13 = v79.find(strip_id);
+                    if ( v13 == v37 || v79.at(strip_id) > v75 )
+                    {
+                        auto &v15 = v79.at(strip_id);
+                        v15 = v75;
+                    }
+
+                    regions.push_back(neighbor);
+                }
+            }
+
+            while ( !regions.empty() )
+            {
+                auto *reg = regions.front();
+
+                assert(reg != nullptr && reg->already_visited());
+
+                regions.erase(regions.begin());
+                for ( int j = 0; j < reg->get_num_neighbors(); ++j )
+                {
+                    auto *neighbor = reg->get_neighbor(j);
+                    assert(neighbor != nullptr);
+
+                    if ( !neighbor->already_visited() )
+                    {
+                        sub_69FD45(neighbor);
+                        if ( !neighbor->is_locked() && sub_6626C0(neighbor) )
+                        {
+                            assert(region_priorities.find( neighbor ) == region_priorities.end());
+
+                            assert(region_priorities.find( reg ) != region_priorities.end());
+
+                            float v70 = 3.4028235e38;
+                            if ( region_priorities.at(reg) != 3.4028235e38 ) {
+                                v70 = sub_53A7A0(a2, neighbor);
+                            }
+
+                            if ( terrain::MAX_STREAMING_DISTANCE() > v70 )
+                            {
+                                auto &v21 = region_priorities.at(neighbor);
+                                v21 = v70;
+
+                                auto strip_id = neighbor->get_strip_id();
+
+                                assert(strip_id >= 0);
+
+                                assert(strip_id < total_strips);
+
+                                auto v37 = v79.end();
+                                auto v22 = v79.find(strip_id);
+
+                                if ( v22 == v37 || v79.at(strip_id) > v70 )
+                                {
+                                    auto &v24 = v79.at(strip_id);
+                                    v24 = v70;
+                                }
+
+                                regions.push_back(neighbor);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ( a4 != nullptr )
+            {
+                for ( auto &r : (*a4) )
+                {
+                    assert(r != nullptr);
+
+                    if ( r && !r->is_locked() ) {
+                        region_priorities.at(r) = 0.0;
+                    }
+
+                }
+            }
+
+            for ( auto &v1 : region_priorities )
+            {
+                auto *first = v1.first;
+                auto second_low = v1.second;
+                for ( auto &ep : first->field_108 )
+                {
+                    ideal_pack_info v31 {ep, second_low};
+                    ideal_pack_infos->push_back(v31);
+                }
+            }
+
+            float v62 = -0.0099999998;
+            for ( auto &v33 : v79 )
+            {
+                auto *v34 = bit_cast<char *>(this->strips) + 40 * v33.first;
+                string_hash v37 {v34};
+
+                auto *ep = this->field_24.find_eligible_pack_by_name(v37);
+
+                assert(ep != nullptr);
+
+                ideal_pack_info v36 {ep, v33.second + v62};
+                ideal_pack_infos->push_back(v36);
+            }
+        }
+        else
+        {
+            auto *gsoi = script::get_gsoi();
+            auto *gso = script::get_gso();
+            auto func = gso->find_func(string_hash {"spidey_sinks()"});
+            if ( func < 0 )
+            {
+                sp_log("Couldn't find spidey_sinks() script function");
+            }
+            else
+            {
+                auto v37 = func;
+                auto *v7 = script::get_gso();
+                auto v82 = v7->get_func(v37);
+                gsoi->add_thread(nullptr, v82, nullptr);
+            }
+        }
+    }
+    else
+    {
+        THISCALL(0x0054EC50, this, &a2, center_region, a4, ideal_pack_infos);
+    }
 }
 
 //FIXME
@@ -754,7 +1086,8 @@ void terrain::start_streaming(void (*callback)(void))
 
 void terrain::set_district_variant(int district_id, int variant, bool a4)
 {
-	if constexpr (0) {
+	if constexpr (0)
+    {
 		assert(variant >= 0);
 
 		auto *v5 = this->get_district(district_id);
@@ -804,15 +1137,19 @@ void terrain::set_district_variant(int district_id, int variant, bool a4)
 			}
 		}
 
-	} else {
+	}
+    else
+    {
 		THISCALL(0x00557480, this, district_id, variant, a4);
 	}
 }
 
-region *terrain::find_outermost_region(const vector3d &a2) {
+region *terrain::find_outermost_region(const vector3d &a2)
+{
     assert(region_map != nullptr);
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         simple_region_visitor a3{a2, true};
 
         ++region::visit_key2();
@@ -856,9 +1193,11 @@ void terrain::un_mash_region_paths(char *a1, int *a2, region *reg) {
 bool terrain::un_mash_traffic_paths(char *a2, int *a3, region *reg, traffic_path_brew &a5) {
     TRACE("terrain::un_mash_traffic_paths");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         bool v6 = !(bit_cast<traffic_path_graph *>(a2)->un_mash(a2, a3, reg, a5));
-        if (reg != nullptr) {
+        if (reg != nullptr)
+        {
             if (v6) {
                 assert(0 && "There is traffic data attached to a district");
 
@@ -871,7 +1210,7 @@ bool terrain::un_mash_traffic_paths(char *a2, int *a3, region *reg, traffic_path
             assert(traffic_ptr == nullptr);
 
             if (v6) {
-                this->traffic_ptr = (traffic_path_graph *) a2;
+                this->traffic_ptr = bit_cast<traffic_path_graph *>(a2);
             } else {
                 this->traffic_ptr = nullptr;
             }
@@ -920,22 +1259,56 @@ region *terrain::get_district(int a1) {
     return region_lookup_cache::lookup_by_district_id(a1);
 }
 
-void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions) {
+void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions)
+{
     assert(regions != nullptr);
 
     assert(region_map != nullptr);
 
-    if constexpr (0) {
-    } else {
+    if constexpr (0)
+    {
+        regions->clear();
+        simple_region_visitor v5 {a2, true};
+
+        ++region::visit_key2();
+
+        static_region_list_methods::init();
+        this->region_map->traverse_point(a2, v5);
+        static_region_list_methods::term();
+
+        for ( int i = 0; i < v5.region_count; ++i )
+        {
+            auto *v3 = static_cast<region *>(v5.field_14[i]);
+            if ( v3 != nullptr ) {
+                regions->push_back(v3);
+            }
+        }
+    }
+    else
+    {
         THISCALL(0x005444F0, this, &a2, regions);
     }
 }
 
-region *terrain::find_region(string_hash a2) {
+region *terrain::find_region(string_hash a2)
+{
     TRACE("terrain::find_region", a2.to_string());
 
-    if constexpr (0) {
-    } else {
+    if constexpr (0)
+    {
+        region_lookup_entry v7 {a2, 0};
+        auto *found = this->field_5C.find(&v7);
+        if ( found != nullptr )
+        {
+            assert(found->reg_idx >= 0 && found->reg_idx < total_regions);
+
+            return this->regions[found->reg_idx];
+        }
+
+        return nullptr;
+    }
+    else
+    {
         return (region *) THISCALL(0x00534920, this, a2);
     }
 }
@@ -977,13 +1350,15 @@ void terrain::unlock_district_pack_slot(int slot_idx)
     }
 }
 
-void terrain::frame_advance(Float a2) {
-    if constexpr (1) {
+void terrain::frame_advance(Float a2)
+{
+    if constexpr (1)
+    {
         entity *ent;
 
         IGOZoomOutMap *v3;
 
-        if (!os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(13)) ||
+        if (!os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"}) ||
             (v3 = g_femanager().IGO->field_44, v3->field_5C4) || v3->field_5C3)
         {
             ent = g_world_ptr()->get_hero_ptr(0);
@@ -1020,7 +1395,8 @@ void terrain::frame_advance(Float a2) {
     }
 }
 
-void find_ideal_terrain_packs_callback(_std::vector<ideal_pack_info> *a1) {
+void find_ideal_terrain_packs_callback(_std::vector<ideal_pack_info> *a1)
+{
     auto *ter = g_world_ptr()->get_the_terrain();
 
     ter->find_ideal_terrain_packs(a1);
@@ -1106,7 +1482,7 @@ void terrain_patch()
 
     {
 
-        region * (terrain::*func)(const vector3d &a2, const region *a3) = &terrain::find_region;
+        region * (terrain::*func)(const vector3d &a2, region *a3) = &terrain::find_region;
         FUNC_ADDRESS(address, func);
         REDIRECT(0x0055CF7F, address);
     }

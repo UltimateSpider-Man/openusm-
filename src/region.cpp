@@ -28,6 +28,8 @@ VALIDATE_OFFSET(region, field_108, 0x108);
 
 static Var<fixed_pool> lego_bitvector_pool {0x009222D4};
 
+static constexpr auto REGION_UNINITIALIZED_STRIP_ID = -1;
+
 region::region(const mString &a2)
 {
 	if constexpr (0) {
@@ -163,6 +165,20 @@ float region::get_ground_level() const {
     return 0.0;
 }
 
+int region::get_strip_id() const
+{
+    assert(strip_id != REGION_UNINITIALIZED_STRIP_ID && "dsg and sin probably out of sync");
+
+    return this->strip_id;
+}
+
+void region::set_strip_id(int a2)
+{
+    assert(strip_id == REGION_UNINITIALIZED_STRIP_ID);
+
+    this->strip_id = a2;
+}
+
 void region::set_ambient(uint8_t a2, uint8_t a3, uint8_t a4) {
     assert(mash_info != nullptr);
 
@@ -236,15 +252,20 @@ void region::remove(light_source *a2)
 
 }
 
-bool region::has_quad_paths() {
+bool region::has_quad_paths() const {
     return (this->flags & 0x800) != 0;
 }
 
-bool region::is_interior() {
+bool region::is_interior() const {
     uint32_t v6 = this->flags;
 
     return ((v6 & 0x100) != 0) && ((v6 & 0x40000) != 0);
 }
+
+bool region::already_visited() const {
+    return visit_key() == this->visited;
+}
+
 
 traffic_path_graph *region::get_traffic_path_graph() {
     auto *result = g_world_ptr()->the_terrain->traffic_ptr;
@@ -255,7 +276,8 @@ traffic_path_graph *region::get_traffic_path_graph() {
     return result;
 }
 
-int region::get_district_id() {
+int region::get_district_id() const
+{
     static constexpr auto REGION_UNINITIALIZED_DISTRICT_ID = 0;
 
     assert(district_id != REGION_UNINITIALIZED_DISTRICT_ID && "dsg and sin probably out of sync");
@@ -263,7 +285,7 @@ int region::get_district_id() {
     return this->district_id;
 }
 
-bool region::is_loaded() {
+bool region::is_loaded() const {
     return (this->flags & 0x10) != 0;
 }
 

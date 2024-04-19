@@ -282,7 +282,7 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2)
             return false;
         }
 
-        auto result = ((self.m_flags & 1) != 0);
+        auto result = ((self.m_flags & GBFLAG_PRESSED) != 0);
         return result;
     };
 

@@ -7,6 +7,7 @@
 #include "slab_allocator.h"
 #include "trace.h"
 #include "utility.h"
+#include "vector3d.h"
 
 #include <cassert>
 
@@ -109,7 +110,86 @@ game_button & game_button::operator=(const game_button &a2)
 
 void game_button::override(Float a2, Float a3, Float a4)
 {
-    THISCALL(0x0050B640, this, a2, a3, a4);
+    if constexpr (0)
+    {
+        bool v9 = this->m_flags & GBFLAG_PRESSED;
+        if ( this->field_2C > EPSILON )
+        {
+            if ( std::abs(a3) < 0.5f )
+            {
+                this->field_28 = this->field_2C;
+            }
+            else if ( this->field_28 > 0.0f )
+            {
+                auto v4 = this->field_28 - a2;
+                this->field_28 = v4;
+                if ( v4 > 0.0f ) {
+                    a3 = 0.0;
+                }
+
+                a4 = a3 - this->field_18;
+            }
+        }
+
+        this->field_18 = a3;
+        this->field_14 = a4;
+
+        auto func = [](game_button *self, uint16_t a2, bool a3) -> void
+        {
+            if ( a3 ) {
+                self->m_flags |= a2;
+            } else {
+                self->m_flags &= ~a2;
+            }
+        };
+
+        auto v5 = (
+                (this->m_flags & GBFLAG_PRESSED) != 0
+                && (this->m_flags & GBFLAG_TRIGGERED) != 0
+                && this->field_14 <= -0.5f );
+
+        func(this, 0x10, v5);
+
+        func(this, 1u, std::abs(this->field_18) >= 0.5f);
+        func(this, 2u, std::abs(this->field_14) >= 0.5f);
+        func(this, 4u, std::abs(this->field_14) <= -0.5f);
+
+        if ( (this->m_flags & GBFLAG_PRESSED) != 0 && v9 )
+        {
+            this->field_1C += a2; 
+        }
+        else if (!v9)
+        {
+            this->field_1C = 0.0;
+        }
+
+        assert(!(this->m_flags & GBFLAG_PRESSED && this->m_flags & GBFLAG_RELEASED));
+
+        assert(!(this->m_flags & GBFLAG_TRIGGERED && this->m_flags & GBFLAG_RELEASED));
+
+        if ( this->field_30 > 0 )
+        {
+            this->field_20 += a2;
+            if ( this->field_20 > this->field_24 )
+            {
+                this->field_30 = 0;
+                this->field_20 = 0.0;
+            }
+        }
+
+        if ( (this->m_flags & GBFLAG_PRESSED) != 0 && !v9 )
+        {
+            if ( this->field_20 <= this->field_24 ) {
+                ++this->field_30;
+            }
+
+            this->field_20 = 0.0;
+        }
+    }
+    else
+    {
+        THISCALL(0x0050B640, this, a2, a3, a4);
+    }
 }
 
 double game_button::sub_55ED50()
@@ -160,24 +240,27 @@ void game_button::update(Float a2)
 {
     TRACE("game_button::update");
 
-    if constexpr (0) {
+    if constexpr (0)
+    {
         auto *v3 = this->field_C;
-        if (v3 == nullptr) {
-            auto v37 = input_mgr::instance()->get_control_state(this->field_8,
-                                                                this->field_4);
-            auto v35 = input_mgr::instance()->get_control_delta(this->field_8,
-                                                                this->field_4);
+        if (v3 == nullptr)
+        {
+            auto *inst = input_mgr::instance();
+            auto v37 = inst->get_control_state(this->field_8, this->field_4);
+            auto v35 = inst->get_control_delta(this->field_8, this->field_4);
             this->override(a2, v37, v35);
             return;
         }
 
         v3->update(a2);
         auto *v6 = this->field_10;
-        if (v6 != nullptr) {
+        if (v6 != nullptr)
+        {
             auto v8 = this->m_flags;
-            if ((v8 & 8) != 0) {
+            if ((v8 & 8) != 0)
+            {
                 auto *v9 = this->field_C;
-                if ((v9->m_flags & 0x20) == 0 && (v9->m_flags & 1) != 0) {
+                if ((v9->m_flags & 0x20) == 0 && (v9->m_flags & GBFLAG_PRESSED) != 0) {
                     this->override(a2, 0.0, 0.0);
                     return;
                 }
@@ -186,8 +269,6 @@ void game_button::update(Float a2)
             }
 
             v6->update(a2);
-
-            float a2b;
 
             switch (this->m_trigger_type) {
             case 0: {
@@ -200,12 +281,13 @@ void game_button::update(Float a2)
                     v13 = v11;
                 }
 
-                a2b = v13->sub_55ED30();
+                float a2b = v13->sub_55ED30();
                 if (!v11->sub_48B270() || !v10->sub_48B270()) {
                     a2b = 0.0;
                 }
 
-                goto LABEL_42;
+                this->override(a2, a2b, a2b - this->field_18);
+                break;
             }
             case 1: {
                 auto *v14 = this->field_10;
@@ -217,12 +299,13 @@ void game_button::update(Float a2)
                     v17 = v15;
                 }
 
-                a2b = v17->sub_55ED30();
+                float a2b = v17->sub_55ED30();
                 if (!v15->sub_48B270() && !v14->sub_48B270()) {
                     a2b = 0.0;
                 }
 
-                goto LABEL_42;
+                this->override(a2, a2b, a2b - this->field_18);
+                break;
             }
             case 2: {
                 auto *v18 = this->field_10;
@@ -234,49 +317,52 @@ void game_button::update(Float a2)
                     v21 = v19;
                 }
 
-                a2b = v21->sub_55ED30();
-                if (v19->sub_48B270() && v18->sub_48B270() ||
-                    !v19->sub_48B270() && !v18->sub_48B270()) {
+                float a2b = v21->sub_55ED30();
+                if ((v19->sub_48B270() && v18->sub_48B270()) ||
+                    (!v19->sub_48B270() && !v18->sub_48B270())) {
                     a2b = 0.0;
                 }
 
-                goto LABEL_42;
+                this->override(a2, a2b, a2b - this->field_18);
+                break;
             }
             case 3: {
-                {
-                    auto *v22 = this->field_10;
-                    auto *v23 = this->field_C;
-                    auto a2f = v22->sub_55ED30();
-                    auto v24 = v23->sub_55ED30();
-                    auto *v25 = v22;
-                    if (v24 <= a2f) {
-                        v25 = v23;
-                    }
-
-                    a2b = 0.f - v25->sub_55ED30();
-                    if (v23->sub_48B270() || v22->sub_48B270()) {
-                        a2b = 0.0;
-                    }
+                auto *v22 = this->field_10;
+                auto *v23 = this->field_C;
+                auto a2f = v22->sub_55ED30();
+                auto v24 = v23->sub_55ED30();
+                auto *v25 = v22;
+                if (v24 <= a2f) {
+                    v25 = v23;
                 }
 
-            LABEL_42:
-                auto v31 = a2b - this->field_18;
-                this->override(a2, a2b, v31);
-                return;
+                float a2b = 0.f - v25->sub_55ED30();
+                if (v23->sub_48B270() || v22->sub_48B270()) {
+                    a2b = 0.0;
+                }
+
+                this->override(a2, a2b, a2b - this->field_18);
+                break;
             }
             case 4: {
                 auto *v27 = this->field_10;
-                if (!v27->sub_48B270()) {
-                    goto LABEL_46;
+                if (!v27->sub_48B270())
+                {
+                    auto v33 = -this->field_18;
+                    this->override(a2, 0.0, v33);
+                    return;
                 }
 
                 game_button *v28;
 
                 if (v27->sub_48B290() && (v28 = this->field_C, v28->sub_48B270()) &&
-                    !v28->sub_48B290()) {
+                    !v28->sub_48B290())
+                {
                     this->m_flags |= 8u;
                     this->override(a2, 0.0, 0.0);
-                } else {
+                }
+                else
+                {
                     auto *v29 = this->field_C;
                     auto v34 = v29->sub_55ED50();
                     auto v30 = v29->sub_55ED30();
@@ -285,11 +371,13 @@ void game_button::update(Float a2)
                 break;
             }
             case 5: {
-                if (this->field_10->sub_48B270()) {
-                LABEL_46:
+                if (this->field_10->sub_48B270())
+                {
                     auto v33 = -this->field_18;
                     this->override(a2, 0.0, v33);
-                } else {
+                }
+                else
+                {
                     auto v26 = this->field_C->sub_55ED30();
 
                     auto v32 = v26 - this->field_18;
@@ -303,24 +391,20 @@ void game_button::update(Float a2)
 
                 return;
             }
-        } else {
+        }
+        else
+        {
             auto *v7 = this->field_C;
 
-            float a2a = 0.0f;
-
-            if ((v7->m_flags & 0x20) == 0) {
-                a2a = v7->field_14;
-            }
-
-            float v36 = 0.0f;
-            if ((v7->m_flags & 0x20) == 0) {
-                v36 = v7->field_18;
-            }
+            float a2a = ( (v7->m_flags & 0x20) != 0 ? v7->field_14 : 0.0f );
+            float v36 = ( (v7->m_flags & 0x20) != 0 ? v7->field_18 : 0.0f );
 
             this->override(a2, v36, a2a);
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x0051D510, this, a2);
     }
 }
@@ -372,20 +456,16 @@ void game_button::set_trigger_type(int a2)
 void game_button::set_control(game_control_t a2)
 {
     game_button *v3 = this->field_C;
-    if (v3 != nullptr) {
-        this->field_C->~game_button();
-
-        mem_dealloc(v3, sizeof(*v3));
-
+    if (v3 != nullptr)
+    {
+        delete this->field_C;
         this->field_C = nullptr;
     }
 
     game_button *v4 = this->field_10;
-    if (v4 != nullptr) {
-        v4->~game_button();
-
-        mem_dealloc(v4, sizeof(*v4));
-
+    if (v4 != nullptr)
+    {
+        delete this->field_10;
         this->field_10 = nullptr;
     }
 

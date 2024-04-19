@@ -18,4 +18,14 @@ struct AvlTree {
     int addHelper(TreeNode<T> *, TreeNode<T> *&, TreeNode<T> *);
 
     void dump(TreeNode<T> *&a2, int a3);
+
+    T * find(T *a2)
+    {
+        auto *v3 = this->findHelper(this->field_0, a2);
+        if ( v3 != nullptr ) {
+            return v3->m_key;
+        }
+
+        return nullptr;
+    }
 };

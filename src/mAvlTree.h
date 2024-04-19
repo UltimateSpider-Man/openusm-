@@ -125,7 +125,8 @@ struct mAvlTree : mContainer {
         this->field_0 = 0;
     }
 
-    inline T *find(T *a1) {
+    T * find(T *a1)
+    {
         auto v1 = findHelper(this->m_head, a1);
         if (v1 != nullptr) {
             return v1->m_key;

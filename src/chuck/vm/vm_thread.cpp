@@ -91,7 +91,6 @@ vm_thread::~vm_thread()
 
         this->field_1C8.pop_back();
     }
-
 }
 
 void vm_thread::set_flag(flags_t a2, bool a3)

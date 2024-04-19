@@ -40,7 +40,7 @@ struct terrain {
     vector3d field_18;
     eligible_pack_streamer field_24;
     AvlTree<region_lookup_entry> field_5C;
-    int field_68;
+    region *field_68;
     traffic_path_graph *traffic_ptr;
     _std::vector<pack_switch_info_t> field_70;
     _std::list<region *> field_80;
@@ -124,13 +124,13 @@ struct terrain {
     _std::vector<region *> * get_region_info_for_point(vector3d a2);
 
     //0x0052DFF0
-    region *find_region(const vector3d &a2, const region *a3);
+    region *find_region(const vector3d &a2, region *a3);
 
     //0x00534920
     region *find_region(string_hash a2);
 
     //0x00534890
-    int find_innermost_region(const vector3d &a1);
+    region *find_innermost_region(const vector3d &a1);
 
     //0x0053FC90
     void register_region_change_callback(void (*a3)(bool, region *));
@@ -178,6 +178,8 @@ struct terrain {
     static inline Var<void (*)(void)> load_complete_callback{0x0095C8C8};
 
     static inline Var<_std::list<void (*)(bool, region *)> *> region_change_callbacks{0x0095C8CC};
+
+    static inline Var<float> MAX_STREAMING_DISTANCE {0x00921DA4};
 };
 
 //0x

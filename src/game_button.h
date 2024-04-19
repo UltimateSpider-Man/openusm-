@@ -11,6 +11,7 @@ inline constexpr auto GBFLAG_TRIGGERED = 2;
 inline constexpr auto GBFLAG_RELEASED = 4;
 
 struct game_button {
+
     int m_trigger_type;
     device_id_t field_4;
     game_control_t field_8;

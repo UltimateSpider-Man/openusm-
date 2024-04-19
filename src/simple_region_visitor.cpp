@@ -13,7 +13,8 @@ simple_region_visitor::simple_region_visitor(const vector3d &a2, bool a3) {
     this->field_24 = a3;
 }
 
-int simple_region_visitor::visit(subdivision_node *a2) {
+int simple_region_visitor::visit(subdivision_node *a2)
+{
     for (auto i = 0; i < this->region_count; ++i) {
         if (this->field_14[i] == a2) {
             return 0;

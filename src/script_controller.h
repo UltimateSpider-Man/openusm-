@@ -9,6 +9,19 @@ struct script_controller : signaller {
     //0x0065F8A0
     //virtual;
     void update();
+
+    bool is_button_pressed(int a1) const;
+
+    float get_axis_position(int a1) const;
+
+    bool is_left_pressed() const {
+        return this->get_axis_position(2) <= -1.0 * 0.7;
+    }
+
+    bool is_right_pressed() const {
+        return this->get_axis_position(2) >= 1.0 * 0.7;
+    }
+
 };
 
 extern Var<script_controller *> script_pad;

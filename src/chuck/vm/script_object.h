@@ -211,6 +211,9 @@ struct script_instance {
 
     void run(bool a2);
 
+    //0x005AAD50
+    void add_thread(void *a2, const vm_executable *a3, const char *a4);
+
     //0x0059EC70
     void run_callbacks(
         script_instance_callback_reason_t a2,

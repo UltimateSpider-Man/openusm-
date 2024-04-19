@@ -187,7 +187,7 @@ void hero_inode::frame_advance(Float a2)
                 return false;
             }
 
-            return self->m_flags & 1;
+            return self->m_flags & GBFLAG_PRESSED;
         }(gb_swing);
         if (cond) {
 

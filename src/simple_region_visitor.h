@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+struct region;
 struct subdivision_node;
 
 inline constexpr auto MAX_REGIONS_TO_FIND_FROM_POINT = 4;

@@ -38,6 +38,7 @@
 #include "hires_screenshot.h"
 #include "igofrontend.h"
 #include "igozoomoutmap.h"
+#include "input_device.h"
 #include "input_mgr.h"
 #include "instance_bank.h"
 #include "keyboard.h"
@@ -2699,8 +2700,9 @@ void game::render_ui()
                 byte_965BF5() = false;
             }
 
-            if (os_developer_options::instance()->get_int(static_cast<os_developer_options::ints_t>(26)) == 2 &&
-                (this->field_80.m_flags & 0x20) == 0 && (this->field_80.m_flags & 2) != 0) {
+            if (os_developer_options::instance()->get_int(static_cast<os_developer_options::ints_t>(26)) == 2
+                    && (this->field_80.m_flags & 0x20) == 0 && (this->field_80.m_flags & GBFLAG_TRIGGERED) != 0)
+            {
                 static Var<bool> capturing{0x00960B47};
 
                 if (capturing()) {
@@ -3096,6 +3098,29 @@ void game::unload_hero_packfile()
     my_streamer->flush(game::render_empty_list);
 
     sound_manager::unload_hero_sound_bank();
+}
+
+bool game::is_button_pressed(int a4) const
+{
+    auto id = input_mgr::instance()->field_58;
+    if ( id == INVALID_DEVICE_ID ) {
+        return false;
+    }
+
+    bool result = false;
+    auto *device = input_mgr::instance()->get_device_from_map(id);
+
+    if ( device != nullptr )
+    {
+        if ( 1.0f != device->get_axis_state(22, 0) )
+        {
+            auto v7 = device->get_axis_id(a4);
+            if ( 1.0f == device->get_axis_delta(v7, 0) ) {
+                return true;
+            }
+        }
+    }
+    return result;
 }
 
 void game__setup_inputs(game *a1)

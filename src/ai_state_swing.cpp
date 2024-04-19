@@ -701,8 +701,8 @@ bool swing_inode::is_eligible(string_hash a2, Float a3) {
         vector3d v29;
 
         auto func = [](const game_button &self) -> bool {
-            if ((32 & self.m_flags) == 0) {
-                return (self.m_flags & 1);
+            if ((0x20 & self.m_flags) == 0) {
+                return (self.m_flags & GBFLAG_PRESSED);
             }
 
             return false;
@@ -1198,9 +1198,11 @@ void swing_inode::update_pendulums(Float a2)
                 static string_hash cat_id_swing_reel_up{int(to_hash("Swing_Reel_Up"))};
 
                 bool v53 = false;
-                if ((v51.m_flags & 0x20) == 0) {
-                    auto v112 = v51.m_flags & 1;
-                    if (v112) {
+                if ((v51.m_flags & 0x20) == 0)
+                {
+                    auto v112 = ((v51.m_flags & GBFLAG_PRESSED) != 0);
+                    if (v112)
+                    {
                         if (swingers()[0].field_0.get_constraint() > minimum_web_length) {
                             v53 = true;
                         }
@@ -1449,11 +1451,11 @@ void swing_inode::update_pendulums(Float a2)
         }
         else
         {
-            auto v103 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(9)).m_flags;
+            auto v103 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(9));
             bool v104 = false;
-            if ((v103 & 0x20) == 0)
+            if ((v103.m_flags & 0x20) == 0)
             {
-                if ((v103 & 2) != 0 && boost_cooldown_timer() <= 0.0f) {
+                if ((v103.m_flags & GBFLAG_TRIGGERED) != 0 && boost_cooldown_timer() <= 0.0f) {
                     v104 = true;
                 }
             }

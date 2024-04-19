@@ -321,6 +321,9 @@ struct game {
     //0x0052B250
     void render_ui();
 
+    //0x0051D1C0
+    bool is_button_pressed(int a4) const;
+
     //0x00510780
     static void render_empty_list();
 

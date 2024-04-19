@@ -861,6 +861,17 @@ vm_thread *script_instance::add_thread(const vm_executable *ex, const char *parm
     return nt;
 }
 
+void script_instance::add_thread(void *a2, const vm_executable *a3, const char *a4)
+{
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        THISCALL(0x005AAD50, this, a2, a3, a4);
+    }
+}
+
 void script_instance::recursive_massacre_threads(vm_thread *root)
 {
     assert(root != nullptr);

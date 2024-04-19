@@ -8,3 +8,8 @@ region_lookup_entry::region_lookup_entry()
 {
 
 }
+
+region_lookup_entry::region_lookup_entry(
+                            string_hash a2,
+                            int a3) : field_0(a2), reg_idx(a3)
+{}

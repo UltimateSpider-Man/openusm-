@@ -207,7 +207,8 @@ bool sub_562450(const vector4d &a1, const vector4d &a2, const vector4d &a3) {
 }
 
 bool subdivision_node_obb_base::line_segment_intersection(const vector3d &arg0,
-                                                          const vector3d &arg4) {
+                                                          const vector3d &arg4)
+{
     if constexpr (1) {
         if ((this->field_14 & 0x101) != 0) {
             return false;
@@ -280,6 +281,17 @@ bool subdivision_node_obb_base::line_segment_intersection(const vector3d &arg0,
     } else {
         return THISCALL(0x0052B880, this, &arg0, &arg4);
     }
+}
+
+bool subdivision_node_obb_base::line_segment_intersection(
+        const vector3d &a1,
+        const vector3d &a2,
+        vector3d *a3,
+        vector3d *a4,
+        float *a5,
+        bool a6)
+{
+    return THISCALL(0x00538D60, this, a1, a2, a3, a4, a5, a6);
 }
 
 bool subdivision_node_obb_base::sphere_intersection(
