@@ -63,15 +63,15 @@ camera_target_info::camera_target_info(entity *_target,
 
         assert(up.is_normal());
 
-        auto v19 = this->field_54;
-        auto *v20 = v19->m_player_controller;
-        int v21 = 0;
-        if ( v20 != nullptr )
-        {
-            v21 = v20->field_420;
-        }
+        int hero_type = [](auto *v19) -> int {
+            auto v20 = v19->m_player_controller;
+            return ( v20 != nullptr
+                        ? v20->m_hero_type
+                        : 0
+                    );
+        }(this->field_54);
 
-        switch (v21)
+        switch (hero_type)
         {
             case 1:
                 this->radius = 0.75;
@@ -83,7 +83,7 @@ camera_target_info::camera_target_info(entity *_target,
                 this->radius = 0.75;
                 break;
             default: {
-                auto v24 = v19->get_visual_radius() * flt_881AC0;
+                auto v24 = this->field_54->get_visual_radius() * flt_881AC0;
                 if ( v24 >= flt_87EA34 )
                 {
                     if ( v24 > flt_882098 )
