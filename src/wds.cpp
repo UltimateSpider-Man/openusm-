@@ -89,7 +89,6 @@
 VALIDATE_SIZE(world_dynamics_system, 0x400u);
 VALIDATE_SIZE((*world_dynamics_system::field_0), 0x3C);
 VALIDATE_OFFSET(world_dynamics_system, ent_mgr, 0x74);
-VALIDATE_OFFSET(world_dynamics_system, field_230, 0x230);
 VALIDATE_OFFSET(world_dynamics_system, the_terrain, 0x1AC);
 
 static constexpr auto ENTITIES_TAG = 0;
@@ -99,10 +98,6 @@ static constexpr auto AUDIO_BOXES_TAG = 8;
 static constexpr auto REGION_MESH_VOBBS_TAG = 13;
 
 Var<world_dynamics_system *> g_world_ptr{0x0095C770};
-
-int *sub_566A70() {
-    return (int *) CDECL_CALL(0x00566A70);
-}
 
 world_dynamics_system::world_dynamics_system()
     : field_4(), field_3E0()
@@ -251,7 +246,12 @@ int world_dynamics_system::add_generator(force_generator *generator) {
 void world_dynamics_system::advance_entity_animations(Float a3) {
     TRACE("world_dynamics_system::advance_entity_animations");
 
-    THISCALL(0x00537170, this, a3);
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x00537170, this, a3);
+    }
 }
 
 void zero_xz_velocity_for_effectively_standing_physical_interfaces() {
@@ -1319,7 +1319,9 @@ void world_dynamics_system::create_water_kill_trigger()
         trig->set_sees_dead_people(true);
 
         trig->add_callback(event::ENTER, wds_enter_water_trigger_callback, nullptr, false);
-    } else {
+    }
+    else
+    {
         THISCALL(0x0054A430, this);
     }
 }
@@ -1328,7 +1330,8 @@ int world_dynamics_system::add_player(const mString &a2)
 {
     TRACE("world_dynamics_system::add_player");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ( this->num_players < 1 )
         {
             if ( this->num_players == 0 )
@@ -1338,14 +1341,12 @@ int world_dynamics_system::add_player(const mString &a2)
             }
 
             auto *marker = this->field_230[0];
-            if ( marker == nullptr )
-            {
+            if ( marker == nullptr ) {
                 marker = (entity *) find_marker(string_hash {"HERO_START"});
             }
 
             auto v82 = marker->get_abs_po();
-            uint32_t num_players = this->num_players;
-            switch ( num_players )
+            switch ( this->num_players )
             {
             case 0u:
                 break;
@@ -1385,8 +1386,7 @@ int world_dynamics_system::add_player(const mString &a2)
                 auto v81 = v82.get_z_facing();
                 if ( v81.y <= 0.99000001 ) {
                     v81.y = 0.0;
-                }
-                else {
+                } else {
                     v81 = ZVEC;
                 }
 
@@ -1403,16 +1403,10 @@ int world_dynamics_system::add_player(const mString &a2)
                 sub_48D840(&v82);
             }
 
-            mString v79{};
-            if ( this->num_players >= 1 )
-            {
-                auto v42 = "HERO" + mString {this->num_players};
-                v79 = v42;
-            }
-            else
-            {
-                v79 = mString {"HERO"};
-            }
+            mString v79 = ( this->num_players >= 1
+                            ? "HERO" + mString {this->num_players}
+                            : mString {"HERO"}
+                            );
 
             auto *__old_context = resource_manager::get_and_push_resource_context(RESOURCE_PARTITION_HERO);
             mString v62 {};
@@ -1434,16 +1428,11 @@ int world_dynamics_system::add_player(const mString &a2)
             resource_manager::pop_resource_context();
             
             assert(resource_manager::get_resource_context() == __old_context);
-            mString v76{};
-            if ( this->num_players >= 1 )
-            {
-                auto v42 = "CHASE_CAM" + mString {this->num_players};
-                v76 = v42;
-            }
-            else
-            {
-                v76 = mString {"CHASE_CAM"};
-            }
+
+            mString v76 = ( this->num_players >= 1
+                            ? "CHASE_CAM" + mString {this->num_players}
+                            : mString {"CHASE_CAM"}
+                            );
 
             string_hash v43 {v76.c_str()};
             auto *v31 = this->field_230[this->num_players];
@@ -1452,6 +1441,7 @@ int world_dynamics_system::add_player(const mString &a2)
 
             auto *v73 = this->field_234[this->num_players];
             g_world_ptr()->ent_mgr.add_camera(nullptr, v73);
+
             if ( this->num_players == 0 ) {
                 g_spiderman_camera_ptr() = CAST(g_spiderman_camera_ptr(), this->field_234[0]);
             }
@@ -1466,7 +1456,9 @@ int world_dynamics_system::add_player(const mString &a2)
         }
 
         return this->num_players;
-    } else {
+    }
+    else
+    {
         return THISCALL(0x0055B400, this, &a2);
     }
 }
@@ -1534,8 +1526,10 @@ void world_dynamics_system::activate_corner_web_splats()
     assert(resource_manager::get_resource_context() == __old_context);
 }
 
-entity *world_dynamics_system::get_hero_or_marky_cam_ptr() {
-    if constexpr (1) {
+entity *world_dynamics_system::get_hero_or_marky_cam_ptr()
+{
+    if constexpr (1)
+    {
         auto *result = this->get_hero_ptr(0);
         if (result == nullptr) {
             result = (entity *) this->field_28.field_44;
@@ -1607,8 +1601,9 @@ bool world_dynamics_system::is_loading_from_scn_file() {
     return this->m_loading_from_scn_file;
 }
 
-int world_dynamics_system::remove_player(int player_num) {
-    assert(player_num == num_players - 1);
+int world_dynamics_system::remove_player(int player_num)
+{
+    assert(player_num == this->num_players - 1);
 
     cut_scene_player *v3 = g_cut_scene_player();
     v3->stop(nullptr);
@@ -1914,6 +1909,14 @@ void world_dynamics_system::add_anim_ctrl(animation_controller *a2)
     } else {
         THISCALL(0x00542160, this, a2);
     }
+
+    {
+        auto *v6 = a2;
+        auto e = v6->field_4->get_my_vhandle();
+
+        assert(e.get_volatile_ptr() != nullptr);
+
+    }
 }
 
 nal_anim_control *world_dynamics_system::get_anim_ctrl(uint32_t a1)
@@ -1926,10 +1929,11 @@ nal_anim_control *world_dynamics_system::get_anim_ctrl(uint32_t a1)
     return nullptr;
 }
 
-int get_hero_type_helper() {
+int get_hero_type_helper()
+{
     auto *hero_ptr = (actor *) g_world_ptr()->get_hero_ptr(0);
     if (hero_ptr != nullptr) {
-        return hero_ptr->m_player_controller->field_420;
+        return hero_ptr->m_player_controller->m_hero_type;
     }
 
     assert(0 && "no hero available right now");
@@ -1938,6 +1942,11 @@ int get_hero_type_helper() {
 
 void world_dynamics_system_patch()
 {
+    {
+        FUNC_ADDRESS(address, &world_dynamics_system::add_anim_ctrl);
+        REDIRECT(0x0049BD38, address);
+    }
+
     {
         FUNC_ADDRESS(address, &world_dynamics_system::update_collision_proximity_maps_for_moved_entities);
         REDIRECT(0x00558517, address);

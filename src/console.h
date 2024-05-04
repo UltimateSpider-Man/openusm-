@@ -16,26 +16,6 @@ struct PanelQuad;
 struct ConsoleCommand;
 struct ConsoleVariable;
 
-struct KeyEvent {
-    int field_0;
-
-    operator int() const {
-        return field_0;
-    }
-};
-
-enum InputConsole {
-    PROCESS_CMD = 45,
-    COMPLETE_CMD = 48,
-    SHOW_CONSOLE = 57,
-
-    SCROLL_LOG_BUFFER_TOP = 77,
-    SCROLL_LOG_BUFFER_BOTTOM = 78,
-
-    SCROLL_LOG_BUFFER_UP = 79,
-    SCROLL_LOG_BUFFER_DOWN = 80,
-};
-
 struct Console {
     bool m_visible;
     char oldCurrent[256];

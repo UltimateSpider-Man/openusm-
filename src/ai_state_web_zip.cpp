@@ -136,7 +136,7 @@ bool web_zip_inode::is_eligible(string_hash a2)
 {
     TRACE("web_zip_inode::is_eligible", a2.to_string());
 
-    if constexpr (1)
+    if constexpr (0)
     {
         auto *v3 = &this->field_8->field_50;
 
@@ -186,9 +186,11 @@ bool web_zip_inode::is_eligible(string_hash a2)
         }
 
         return result;
-
-    } else {
-        return THISCALL(0x0046C280, this, a2);
+    }
+    else
+    {
+        bool (__fastcall *func)(const void *, void *edx, string_hash a2) = CAST(func, 0x0046C280);
+        return func(this, nullptr, a2);
     }
 }
 
@@ -227,16 +229,20 @@ void web_zip_inode::unmash(mash_info_struct *a2, void *a3) {
     THISCALL(0x00474010, this, a2, a3);
 }
 
-void web_zip_inode::process_zip(Float a2) {
-    if constexpr (1) {
+void web_zip_inode::process_zip(Float a2)
+{
+    if constexpr (1)
+    {
         auto *v3 = this->field_DC->field_28;
 
         static Var<string_hash> has_tentacle_zip_id{0x009591A4};
 
         auto *v4 = &this->field_8->field_50;
 
-        if (!v4->get_pb_int(has_tentacle_zip_id())) {
-            if (this->field_7C == 0) {
+        if (!v4->get_pb_int(has_tentacle_zip_id()))
+        {
+            if (this->field_7C == 0)
+            {
                 auto *v5 = this->field_C;
 
                 if (v5->event_raised_last_frame(event::ANIM_ACTION)) {
@@ -246,7 +252,7 @@ void web_zip_inode::process_zip(Float a2) {
 
                     actor *hero_ptr = bit_cast<actor *>(g_world_ptr()->get_hero_ptr(0));
 
-                    auto v7 = hero_ptr->get_player_controller()->field_420;
+                    auto v7 = hero_ptr->get_player_controller()->m_hero_type;
                     if (v7 == 1 || v7 == 3) {
                         swing_inode::do_web_splat(this->field_1C.hit_pos,
                                                   this->field_1C.hit_norm,
@@ -320,7 +326,16 @@ void web_zip_inode::process_zip(Float a2) {
 
 } // namespace ai
 
-void web_zip_state_patch() {
+void web_zip_state_patch()
+{
+    {
+        FUNC_ADDRESS(address, &ai::web_zip_inode::is_eligible);
+        REDIRECT(0x0048899E, address);
+        REDIRECT(0x00488CBF, address);
+        REDIRECT(0x00488F54, address);
+    }
+
+    return;
     {
         FUNC_ADDRESS(address, &ai::web_zip_state::frame_advance);
         //set_vfunc(0x008775D0, address);
@@ -352,10 +367,6 @@ void web_zip_state_patch() {
             FUNC_ADDRESS(address, &entity_base::event_raised_last_frame);
             REDIRECT(0x00478AD0, address);
         }
-        }
+    }
 
-        {
-            FUNC_ADDRESS(address, &ai::web_zip_inode::is_eligible);
-            SET_JUMP(0x0046C280, address);
-        }
 }

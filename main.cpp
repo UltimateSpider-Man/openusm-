@@ -877,8 +877,12 @@ bool sub_586FA0(unsigned char a1) {
     return result;
 }
 
-void sub_5952D0() {
-    if constexpr (1) {
+void sub_5952D0()
+{
+    TRACE("sub_5952D0");
+
+    if constexpr (0)
+    {
         operator delete(dword_965C24()[0]);
         operator delete(dword_965C24()[1]);
         operator delete(dword_965C24()[2]);
@@ -909,114 +913,110 @@ void sub_5952D0() {
 
         VALIDATE_SIZE(v29, 0x48);
 
-        decltype(v29) dword_88D648[18] =
-            {{"Forward", {0, 0, 0, 0, 0, 0, 0, 0}, 65553, false, 65736, false, 196612, 0},
-             {"Backward", {0, 0, 0, 0, 0, 0, 0, 0}, 65567, false, 65744, false, 196611, 0},
-             {"TurnLeft", {0, 0, 0, 0, 0, 0, 0, 0}, 65566, false, 65739, false, 196610, 0},
-             {"TurnRight", {0, 0, 0, 0, 0, 0, 0, 0}, 65568, false, 65741, false, 196609, 0},
-             {"Jump", {0, 0, 0, 0, 0, 0, 0, 0}, 65593, false, 65535, false, 196629, 0},
-             {"StickToWalls", {0, 0, 0, 0, 0, 0, 0, 0}, 65569, false, 65578, false, 196630, 0},
-             {"Punch", {0, 0, 0, 0, 0, 0, 0, 0}, 65552, false, 65565, false, 196631, 0},
-             {"Kick", {0, 0, 0, 0, 0, 0, 0, 0}, 65554, false, 65592, false, 196632, 0},
-             {"ThrowWeb", {0, 0, 0, 0, 0, 0, 0, 0}, 131082, false, 65582, false, 65535, 0},
-             {"BlackButton", {0, 0, 0, 0, 0, 0, 0, 0}, 131081, false, 65583, false, 65535, 0},
-             {"CameraUp", {0, 0, 0, 0, 0, 0, 0, 0}, 65608, false, 65737, false, 65535, 0},
-             {"CameraDown", {0, 0, 0, 0, 0, 0, 0, 0}, 65616, false, 65745, false, 65535, 0},
-             {"CameraLeft", {0, 0, 0, 0, 0, 0, 0, 0}, 65611, false, 65535, false, 65535, 0},
-             {"CameraRight", {0, 0, 0, 0, 0, 0, 0, 0}, 65613, false, 65535, false, 65535, 0},
-             {"CameraCenter", {0, 0, 0, 0, 0, 0, 0, 0}, 65584, false, 65535, false, 65535, 0},
-             {"Pause", {0, 0, 0, 0, 0, 0, 0, 0}, 65537, true, 65535, false, 65535, 0},
-             {"BackButton", {0, 0, 0, 0, 0, 0, 0, 0}, 65586, false, 65535, false, 65535, 0},
-             {"ScreenShot", {0, 0, 0, 0, 0, 0, 0, 0}, 65623, false, 65535, false, 65535, 0}};
+        static constexpr decltype(v29) input_value[18] = {
+            {"Forward",      {0, 0, 0, 0, 0, 0, 0, 0},  65553, false, 65736, false, 196612, 0},
+            {"Backward",     {0, 0, 0, 0, 0, 0, 0, 0},  65567, false, 65744, false, 196611, 0},
+            {"TurnLeft",     {0, 0, 0, 0, 0, 0, 0, 0},  65566, false, 65739, false, 196610, 0},
+            {"TurnRight",    {0, 0, 0, 0, 0, 0, 0, 0},  65568, false, 65741, false, 196609, 0},
+            {"Jump",         {0, 0, 0, 0, 0, 0, 0, 0}, 0x10000 + DIK_SPACE, false, 65535, false, 196629, 0},
+            {"StickToWalls", {0, 0, 0, 0, 0, 0, 0, 0},  65569, false, 65578, false, 196630, 0},
+            {"Punch",        {0, 0, 0, 0, 0, 0, 0, 0}, 0x10000 + DIK_Q, false, 65565, false, 196631, 0},
+            {"Kick",         {0, 0, 0, 0, 0, 0, 0, 0}, 0x10000 + DIK_E, false, 65592, false, 196632, 0},
+            {"ThrowWeb",     {0, 0, 0, 0, 0, 0, 0, 0}, 131082, false, 65582, false,  65535, 0},
+            {"BlackButton",  {0, 0, 0, 0, 0, 0, 0, 0}, 131081, false, 65583, false,  65535, 0},
+            {"CameraUp",     {0, 0, 0, 0, 0, 0, 0, 0},  65608, false, 65737, false,  65535, 0},
+            {"CameraDown",   {0, 0, 0, 0, 0, 0, 0, 0},  65616, false, 65745, false,  65535, 0},
+            {"CameraLeft",   {0, 0, 0, 0, 0, 0, 0, 0},  65611, false, 65535, false,  65535, 0},
+            {"CameraRight",  {0, 0, 0, 0, 0, 0, 0, 0},  65613, false, 65535, false,  65535, 0},
+            {"CameraCenter", {0, 0, 0, 0, 0, 0, 0, 0}, 0x10000 + 48, false, 65535, false,  65535, 0},
+            {"Pause",        {0, 0, 0, 0, 0, 0, 0, 0},  65537, true,  65535, false,  65535, 0},
+            {"BackButton",   {0, 0, 0, 0, 0, 0, 0, 0},  65586, false, 65535, false,  65535, 0},
+            {"ScreenShot",   {0, 0, 0, 0, 0, 0, 0, 0},  65623, false, 65535, false,  65535, 0}
+        };
 
         //0x00922940
-        constexpr InputAction input_actions[18] = {InputAction::Forward,
-                                                   InputAction::Backward,
-                                                   InputAction::TurnLeft,
-                                                   InputAction::TurnRight,
-                                                   InputAction::Jump,
-                                                   InputAction::StickToWalls,
-                                                   InputAction::Punch,
-                                                   InputAction::Kick,
-                                                   InputAction::ThrowWeb,
-                                                   InputAction::BlackButton,
-                                                   InputAction::CameraUp,
-                                                   InputAction::CameraDown,
-                                                   InputAction::CameraLeft,
-                                                   InputAction::CameraRight,
-                                                   InputAction::CameraCenter,
-                                                   InputAction::Pause,
-                                                   InputAction::BackButton,
-                                                   InputAction::ScreenShot};
+        static constexpr InputAction input_actions[18] = {
+                       InputAction::Forward,
+                       InputAction::Backward,
+                       InputAction::TurnLeft,
+                       InputAction::TurnRight,
+                       InputAction::Jump,
+                       InputAction::StickToWalls,
+                       InputAction::Punch,
+                       InputAction::Kick,
+                       InputAction::ThrowWeb,
+                       InputAction::BlackButton,
+                       InputAction::CameraUp,
+                       InputAction::CameraDown,
+                       InputAction::CameraLeft,
+                       InputAction::CameraRight,
+                       InputAction::CameraCenter,
+                       InputAction::Pause,
+                       InputAction::BackButton,
+                       InputAction::ScreenShot
+        };
 
-        for (auto i = 0u; i < 18u; ++i) {
+        for (auto i = 0u; i < std::size(input_actions); ++i)
+        {
             auto &v22 = input_actions[i];
 
-            v29 = dword_88D648[i];
+            v29 = input_value[i];
 
             char Dest[264];
             sprintf(Dest, "Controls\\Player%d\\%s1", 1, v29.field_0);
 
-            uint16_t v23;
-            uint32_t v0;
+            uint32_t v0 = ( v29.field_34 
+                            ? v29.field_30
+                            : g_settings()->sub_81D010(Dest, v29.field_30)
+                            );
 
-            if (v29.field_34) {
-                v23 = v29.field_30;
-                v0 = v29.field_30;
-            } else {
-                v0 = g_settings()->sub_81D010(Dest, v29.field_30);
-                v23 = v0;
-            }
-
-            uint16_t v27;
-            uint32_t v1;
+            const uint16_t v23 = v0;
 
             sprintf(Dest, "Controls\\Player%d\\%s2", 1, v29.field_0);
-            if (v29.field_3C) {
-                v27 = v29.field_38;
-                v1 = v29.field_38;
-            } else {
-                v1 = g_settings()->sub_81D010(Dest, v29.field_38);
-                v27 = v1;
-            }
+            uint32_t v1 = ( v29.field_3C
+                            ? v29.field_38
+                            : g_settings()->sub_81D010(Dest, v29.field_38));
+
+            const uint16_t v27 = v1;
 
             sprintf(Dest, "Controls\\Player%d\\%s3", 1, v29.field_0);
             uint32_t v2 = g_settings()->sub_81D010(Dest, 0);
-            uint16_t v28 = v2;
             if (v2 == 0 && Input::instance()->sub_820080() > 0) {
-                v28 = v29.field_40;
                 v2 = v29.field_40;
             }
 
-            uint32_t v3 = (uint16_t) v0;
-            uint32_t v19 = (uint16_t) v0;
+            const uint16_t v28 = v2;
+
             InputType v4 = static_cast<InputType>(HIWORD(v0));
+            sp_log("%d, %d, %d", v4, v0, v23);
 
-            g_inputSettingsInGame()->field_18.set(v22, 0, v4, v19);
+            g_inputSettingsInGame()->field_18.set(v22, 0, v4, v23);
 
-            int v20 = (__int16) v1;
-            uint32_t v24 = (__int16) v1;
             InputType v5 = static_cast<InputType>(HIWORD(v1));
-            g_inputSettingsInGame()->field_18.set(v22, 1u, v5, v20);
+            g_inputSettingsInGame()->field_18.set(v22, 1u, v5, v27);
 
-            int v21 = (__int16) v2;
             InputType v6 = static_cast<InputType>(HIWORD(v2));
-            uint32_t v25 = v21;
-            g_inputSettingsInGame()->field_18.set(v22, 2u, v6, v21);
-            if (v22 == InputAction::Pause) {
-                g_inputSettingsMenu()->field_18.set(InputAction::Kick, 0, v4, v3);
-                g_inputSettingsMenu()->field_18.set(InputAction::Kick, 1u, v5, v24);
-                g_inputSettingsMenu()->field_18.set(InputAction::Kick, 2u, v6, v25);
+            g_inputSettingsInGame()->field_18.set(v22, 2u, v6, v28);
+
+            if (v22 == InputAction::Pause)
+            {
+                g_inputSettingsMenu()->field_18.set(InputAction::Kick, 0, v4, v23);
+                g_inputSettingsMenu()->field_18.set(InputAction::Kick, 1u, v5, v27);
+                g_inputSettingsMenu()->field_18.set(InputAction::Kick, 2u, v6, v28);
             }
 
-            if (v22 == InputAction::Forward && v4 == InputType::Key && v23 != 200) {
-                g_inputSettingsMenu()->field_18.set_key(v22, 1u, v3);
-            } else {
+            if (v22 == InputAction::Forward && v4 == InputType::Key && v23 != 200)
+            {
+                g_inputSettingsMenu()->field_18.set_key(v22, 1u, v23);
+            }
+            else
+            {
                 uint16_t v8;
-                if (v22 == InputAction::Backward && v4 == InputType::Key) {
+                if (v22 == InputAction::Backward && v4 == InputType::Key)
+                {
                     v8 = v23;
                     if (v23 != 208) {
-                        g_inputSettingsMenu()->field_18.set_key(v22, 1u, v3);
+                        g_inputSettingsMenu()->field_18.set_key(v22, 1u, v23);
                     }
 
                 } else {
@@ -1025,37 +1025,42 @@ void sub_5952D0() {
 
                 if ((v22 == InputAction::TurnLeft && v4 == InputType::Key && v8 != 203) ||
                     (v22 == InputAction::TurnRight && v4 == InputType::Key && v8 != 205)) {
-                    g_inputSettingsMenu()->field_18.set_key(v22, 1u, v3);
+                    g_inputSettingsMenu()->field_18.set_key(v22, 1u, v23);
                 }
             }
 
-            if (v22 == InputAction::Pause) {
+            if (v22 == InputAction::Pause)
+            {
                 if (v4 == InputType::Joy && v23 != 21 && v23 != 24) {
-                    g_inputSettingsMenu()->field_18.set(InputAction::Pause, 1u, InputType::Joy, v3);
+                    g_inputSettingsMenu()->field_18.set(InputAction::Pause, 1u, InputType::Joy, v23);
                 }
 
-                if (v22 == InputAction::Pause) {
+                if (v22 == InputAction::Pause)
+                {
                     if (v5 == InputType::Joy && v23 != 21 && v27 != 24) {
                         g_inputSettingsMenu()->field_18.set(InputAction::Pause,
                                                             1u,
                                                             InputType::Joy,
-                                                            v24);
+                                                            v27);
                     }
 
-                    if (v22 == InputAction::Pause && v6 == InputType::Joy && v23 != 21 &&
-                        v28 != 24) {
+                    if (v22 == InputAction::Pause
+                            && v6 == InputType::Joy
+                            && v23 != 21
+                            && v28 != 24)
+                    {
                         g_inputSettingsMenu()->field_18.set(InputAction::Pause,
                                                             1u,
                                                             InputType::Joy,
-                                                            v25);
+                                                            v28);
                     }
                 }
             }
 
             const char *v10;
-            auto *v9 = Input::instance()->get_string(v4, v3);
-            if (v9 != nullptr || (v9 = Input::instance()->get_string(v5, v24)) != nullptr ||
-                (v9 = Input::instance()->get_string(v6, v25)) != nullptr) {
+            auto *v9 = Input::instance()->get_string(v4, v23);
+            if (v9 != nullptr || (v9 = Input::instance()->get_string(v5, v27)) != nullptr ||
+                (v9 = Input::instance()->get_string(v6, v28)) != nullptr) {
                 v10 = v9;
             } else {
                 v10 = get_msg(g_fileUSM(), "NONE");
@@ -1067,18 +1072,19 @@ void sub_5952D0() {
                 v9 = v10;
             }
 
-            char v13;
-
             sprintf(v12, "\"%s\"", v9);
             if (strlen(v12) == 3 && sub_586FA0(v12[1])) {
-                v13 = v12[1] - ' ';
+                auto v13 = v12[1] - ' ';
 
                 v12[1] = v13;
 
-            } else if (strlen(v12) == 3) {
+            }
+            else if (strlen(v12) == 3)
+            {
                 unsigned char v14 = v12[1];
-                if (v14 > '`' && v14 < '{') {
-                    v13 = toupper(v14);
+                if (v14 > '`' && v14 < '{')
+                {
+                    auto v13 = toupper(v14);
                     v12[1] = v13;
                 }
             }
@@ -1149,8 +1155,9 @@ void sub_5952D0() {
         g_inputSettings4()->field_18.set_key(InputAction::TurnRight, 3u, DIK_RIGHT);
         g_inputSettings4()->field_18.find_and_clear(InputType::Mouse, 9);
         g_inputSettings4()->field_18.find_and_clear(InputType::Mouse, 10);
-
-    } else {
+    } 
+    else
+    {
         CDECL_CALL(0x005952D0);
     }
 }
@@ -1271,7 +1278,7 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
     create_sound_ifc(g_appHwnd());
     ShowCursor(0);
-    os_developer_options::instance()->set_int(26, 1); //ALLOW_SCREENSHOT
+    os_developer_options::instance()->set_int(mString {"ALLOW_SCREENSHOT"}, 1);
 
     window_manager::instance()->field_4 = g_appHwnd();
 
@@ -1674,8 +1681,9 @@ int __stdcall myWinMain(HINSTANCE hInstance,
                     DWORD v168 = timeGetTime() - v158;
                     app::instance()->m_game->field_278 = v168 * 0.001f;
 
-                    if (g_inputSettingsInGame()->field_18.sub_821E90(InputAction::ScreenShot) <=
-                        0.0) {
+                    if (g_inputSettingsInGame()->field_18.get_state(InputAction::ScreenShot) <=
+                        0.0)
+                    {
                         if (!byte_965BF5() && byte_965BF6()) {
                             byte_965BF5() = true;
                             byte_965BF6() = false;
@@ -2151,8 +2159,7 @@ void GetDeviceStateHandleKeyboardInput(LPVOID lpvData) {
 
 		if (keysCurrent[i] != 0) {
 			++keys[i];
-		}
-		else {
+		} else {
 			keys[i] = 0;
 		}
 	}
@@ -2187,8 +2194,6 @@ HRESULT __stdcall GetDeviceStateHook(IDirectInputDevice8* self, DWORD cbData, LP
     {
         return res;
     }
-
-    //printf("DIK_NUMPAD5 = %d %d %c\n", keys[DIK_NUMPAD5], g_state, g_console->isVisible() ? 'y' : 'n');
 
     static constexpr struct {
         int key;
@@ -2243,50 +2248,49 @@ HRESULT __stdcall GetDeviceStateHook(IDirectInputDevice8* self, DWORD cbData, LP
     };
 
     if (key_is_pressed(DIK_GRAVE)) {
-        _kbevcb(KeyEvent{1}, KB_TILDE);
+        _kbevcb(KeyEvent::Press, KB_TILDE);
     }
 
-    if (g_console->isVisible()) {
-
+    if (g_console->isVisible())
+    {
         if (key_is_pressed(DIK_TAB))
         {
-            _kbevcb(KeyEvent{1}, KB_TAB);
+            _kbevcb(KeyEvent::Press, KB_TAB);
         }
         else if (key_is_pressed(DIK_RETURN)) {
-            _kbevcb(KeyEvent{1}, KB_RETURN);
+            _kbevcb(KeyEvent::Press, KB_RETURN);
         } else if (key_is_pressed(DIK_HOME)) {
-            _kbevcb(KeyEvent{1}, KB_HOME);
+            _kbevcb(KeyEvent::Press, KB_HOME);
         } else if (key_is_pressed(DIK_END)) {
-            _kbevcb(KeyEvent{1}, KB_END);
+            _kbevcb(KeyEvent::Press, KB_END);
         } else if (key_is_pressed(DIK_PGUP)) {
-            _kbevcb(KeyEvent{1}, KB_PAGEUP);
+            _kbevcb(KeyEvent::Press, KB_PAGEUP);
         } else if (key_is_pressed(DIK_PGDN)) {
-            _kbevcb(KeyEvent{1}, KB_PAGEDOWN);
+            _kbevcb(KeyEvent::Press, KB_PAGEDOWN);
         } else if (key_is_pressed(DIK_UP)) {
-            _kbevcb(KeyEvent{1}, KB_UP);
+            _kbevcb(KeyEvent::Press, KB_UP);
         } else if (key_is_pressed(DIK_DOWN)) {
-            _kbevcb(KeyEvent{1}, KB_DOWN);
+            _kbevcb(KeyEvent::Press, KB_DOWN);
         }
         else if(key_is_pressed(DIK_BACKSPACE))
         {
-            _kbevcb(KeyEvent{1}, KB_BACKSPACE);
+            _kbevcb(KeyEvent::Press, KB_BACKSPACE);
         }
         else if (key_is_pressed(DIK_MINUS)) {
             _kbchcb('_');
         } else if (key_is_pressed(DIK_SPACE)) {
             _kbchcb(' ');
-        } else if (char ch = char_key_is_pressed(); ch != 0) {
-
-            if (GetKeyState(VK_SHIFT) & 0x8000)
-            {
+        }
+        else if (char ch = char_key_is_pressed(); ch != 0)
+        {
+            if (GetKeyState(VK_SHIFT) & 0x8000) {
                 _kbchcb(toupper(ch));
-            }
-            else
-            {
+            } else {
                 _kbchcb(ch);
             }
-        } else if (char ch = num_key_is_pressed(); ch != 0) {
-
+        }
+        else if (char ch = num_key_is_pressed(); ch != 0)
+        {
             if ((GetKeyState(VK_SHIFT) & 0x8000))
             {
                 if (ch == '9')
@@ -2307,7 +2311,7 @@ HRESULT __stdcall GetDeviceStateHook(IDirectInputDevice8* self, DWORD cbData, LP
     }
 
 	if (g_console->isVisible()) {
-		memset(lpvData, 0, cbData);
+        memset(lpvData, 0, cbData);
 	}
 
 	//printf("Device State called %08X %d\n", this, cbData);
@@ -2411,9 +2415,17 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC52F, parse_cmd);
 
+    Timer_patch();
+
+    //REDIRECT(0, sub_5952D0);
+
     if constexpr (1)
     {
-        web_zip_state_patch();
+        moved_entities_patch();
+
+        input_settings_patch();
+
+        pc_joypad_device_patch();
 
         player_controller_inode_patch();
 
@@ -2421,10 +2433,14 @@ BOOL install_redirects()
 
         game_button_patch();
 
-        pc_joypad_device_patch();
+        game_patch();
+
+        game_settings_patch();
 
         mouselook_controller_patch();
-    
+
+        web_zip_state_patch();
+
         lookat_target_controller_patch();
 
         controller_patch();
@@ -2449,11 +2465,18 @@ BOOL install_redirects()
 
         wds_render_manager_patch();
 
-        game_patch();
+        input_mgr_patch();
 
         resource_directory_patch();
 
         tlresource_directory_patch();
+    }
+
+    {
+        DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
+        REDIRECT(0x008218B0, hookDirectInputAddress);
+        set_nop(0x008218B5, 1);
+        sp_log("Patching the DirectInput8Create call\n");
     }
 
     //standalone patches
@@ -2534,6 +2557,8 @@ BOOL install_redirects()
 
         swing_state_patch();
 
+        jump_state_patch();
+
         polytube_patch();
 
         web_interface_patch();
@@ -2575,15 +2600,24 @@ BOOL install_redirects()
 
     if constexpr (1)
     {
+        script_executable_patch();
+
+        script_patch();
+
+        script_instance_patch();
+
+        script_access_patch();
+    }
+
+    if constexpr (1)
+    {
         combo_system_patch();
 
         combo_system_move_patch();
 
         meta_anim_interact_patch();
 
-        input_mgr_patch();
-
-        script_executable_patch();
+        Input_patch();
 
         sin_container_patch();
 
@@ -2596,7 +2630,7 @@ BOOL install_redirects()
         mission_manager_patch();
     }
 
-    if constexpr (1)
+    if constexpr (0)
     {
         resource_pack_streamer_patch();
 
@@ -2628,7 +2662,7 @@ BOOL install_redirects()
         menu_nav_bar_patch();
     }
 
-    if constexpr (1)
+    if constexpr (0)
     {
         pause_menu_message_log_patch();
 
@@ -2640,16 +2674,15 @@ BOOL install_redirects()
 
         pause_menu_transition_patch();
 
-        unlockables_menu_patch();
-    }
-
-    if constexpr (1)
-    {
-
         pause_menu_status_patch();
 
         pause_menu_root_patch();
 
+        unlockables_menu_patch();
+    }
+
+    if constexpr (0)
+    {
         PauseMenuSystem_patch();
 
         cg_mesh_patch();
@@ -2672,10 +2705,13 @@ BOOL install_redirects()
 
         localized_string_table_patch();
 
-        animation_logic_sytem_shared_patch();
+        animation_logic_system_shared_patch();
 
         mash_info_struct_patch();
+    }
 
+    if constexpr (1)
+    {
         worldly_pack_slot_patch();
 
         nsl_patch();
@@ -2691,16 +2727,15 @@ BOOL install_redirects()
         terrain_patch();
 
         chuck_callbacks_patch();
+    }
 
+    if constexpr (1)
+    {
         os_file_patch();
 
         traffic_patch();
 
         traffic_path_lane_patch();
-
-        script_instance_patch();
-
-        script_access_patch();
 
         spawnable_patch();
 
@@ -2710,7 +2745,7 @@ BOOL install_redirects()
     }
 
     animation_logic_system_patch();
-        
+
     if constexpr (1)
     {
         interactable_interface_patch();
@@ -2856,13 +2891,6 @@ BOOL install_redirects()
         als_motion_compensator_patch();
     }
 
-    {
-        DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
-        REDIRECT(0x008218B0, hookDirectInputAddress);
-        set_nop(0x008218B5, 1);
-        sp_log("Patching the DirectInput8Create call\n");
-    }
-
     return TRUE;
 
     tlInstanceBank_patch();
@@ -2878,12 +2906,8 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC4A9, register_class_and_create_window);
 
-    SET_JUMP(0x005952D0, sub_5952D0);
-
     os_developer_options_patch();
 
-
-    //moved_entities_patch();
 
     //rbc_contact_patch();
 
@@ -2914,8 +2938,6 @@ BOOL install_redirects()
 
         FEMenu_patch();
 
-        game_settings_patch();
-
         main_menu_keyboard_patch();
 
         main_menu_options_patch();
@@ -2923,8 +2945,6 @@ BOOL install_redirects()
         FrontEndMenuSystem_patch();
 
         game_data_meat_patch();
-
-        Input_patch();
 
         TextureInputPack_patch();
 
@@ -3047,7 +3067,6 @@ BOOL install_redirects()
 
         physical_interface_patch();
 
-        script_patch();
 
         nglRenderList_patch();
 
@@ -3064,8 +3083,6 @@ BOOL install_redirects()
         ai_state_machine_patch();
 
         state_graph_patch();
-
-        jump_state_patch();
 
         character_viewer_patch();
 

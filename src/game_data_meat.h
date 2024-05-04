@@ -100,8 +100,8 @@ struct game_data_meat {
     int field_108;
     int field_10C;
     int field_110;
-    fixedstring<8> field_114;
-    fixedstring<8> field_134;
+    fixedstring<8> m_hero_name;
+    fixedstring<8> m_district_name;
 
     //0x00581090
     game_data_meat();

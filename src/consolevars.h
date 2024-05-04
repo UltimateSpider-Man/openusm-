@@ -22,9 +22,9 @@ struct ConsoleVariable {
 
     void setName(const std::string &pName);
 
-    bool match(std::string a2);
+    bool match(std::string a2) const;
 
-    std::string getName();
+    std::string getName() const;
 };
 
 extern std::list<ConsoleVariable *> *g_console_vars;
@@ -63,6 +63,18 @@ struct RenderFramerateVariable : ConsoleVariable {
     }
 };
 
+struct RenderInterfaceVariable : ConsoleVariable {
+    RenderInterfaceVariable();
+
+    void setValue(const std::string &a1) override;
+
+    std::string getValue() override;
+
+    const char *helpText() override {
+        return "Render in-game user interface";
+    }
+};
+
 struct ProjZoomVariable : ConsoleVariable {
     ProjZoomVariable();
 
@@ -84,5 +96,20 @@ struct DifficultyVariable : ConsoleVariable {
 
     const char *helpText() override {
         return "Difficulty level (0=bleep, 1=ez, 2=norm, 3=hero, 4=super hero)";
+    }
+};
+
+struct DisableOcclusionCullingVariable : ConsoleVariable {
+
+    DisableOcclusionCullingVariable() {
+        setName("disable_occlusion_culling");
+    }
+
+    void setValue(const std::string &a2) override;
+
+    std::string getValue() override;
+
+    const char *helpText() override {
+        return "1 = disable entity culling, 2 = disable terrain culling, 3 = disable both";
     }
 };

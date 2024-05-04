@@ -185,33 +185,31 @@ bool Console::StrnCopy(const char *src, char *dest, int *a3) {
 
 ConsoleCommand *Console::getCommand(const std::string &a1)
 {
-    if (g_console_cmds != nullptr)
-    {
-        for (auto &cmd : (*g_console_cmds))
-        {
-            if (cmd != nullptr) {
-                if (cmd->match(a1)) {
-                    return cmd;
-                }
-            }
-        }
+    if (g_console_cmds == nullptr) {
+        return nullptr;
     }
 
-    return nullptr;
+    auto &cmds = (*g_console_cmds);
+
+    auto it = std::find_if(cmds.begin(), cmds.end(), [&a1](auto &cmd) -> bool {
+        return cmd->match(a1);
+    });
+
+    return (it != cmds.end() ? (*it) : nullptr);
 }
 
-ConsoleVariable *Console::getVariable(const std::string &a1) {
-    if (g_console_vars != nullptr) {
-        for (auto &var : (*g_console_vars)) {
-            if (var != nullptr) {
-                if (var->match(a1)) {
-                    return var;
-                }
-            }
-        }
+ConsoleVariable *Console::getVariable(const std::string &a1)
+{
+    if (g_console_vars == nullptr) {
+        return nullptr;
     }
 
-    return nullptr;
+    auto &vars = (*g_console_vars);
+    auto it = std::find_if(vars.begin(), vars.end(), [&a1](auto &var) -> bool {
+        return var->match(a1);
+    });
+
+    return (it != vars.end() ? (*it) : nullptr);
 }
 
 void Console::addToLog(const char *arg4, ...) {
@@ -442,8 +440,10 @@ void Console::getMatchingCmds(const char *a2, std::list<mString> &cmds) {
     cmds.clear();
     const auto a3a = strlen(a2);
 
-    if (g_console_cmds != nullptr) {
-        for (auto &cmd : (*g_console_cmds)) {
+    if (g_console_cmds != nullptr)
+    {
+        for (auto &cmd : (*g_console_cmds))
+        {
             if (cmd != nullptr)
             {
                 if (strncmp(cmd->field_4, a2, a3a) == 0)
@@ -456,14 +456,17 @@ void Console::getMatchingCmds(const char *a2, std::list<mString> &cmds) {
         }
     }
 
-    if (g_console_vars != nullptr) {
-        for (auto &var : (*g_console_vars)) {
-            if (var != nullptr) {
-                if (strncmp(var->field_4, a2, a3a) == 0) {
-                    mString v15{var->field_4};
+    if (g_console_vars != nullptr)
+    {
+        auto func = [&a2, &a3a](auto &var) -> bool {
+            return (var != nullptr
+                    && strncmp(var->field_4, a2, a3a) == 0);
+        };
 
-                    cmds.push_back(v15);
-                }
+        for (auto &var : (*g_console_vars))
+        {
+            if ( func(var) ) {
+                cmds.push_back(mString {var->field_4});
             }
         }
     }

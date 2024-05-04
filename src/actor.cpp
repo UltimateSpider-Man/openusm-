@@ -25,6 +25,7 @@
 #include "intraframe_trajectory.h"
 #include "lego_map.h"
 #include "memory.h"
+#include "moved_entities.h"
 #include "nal_skeleton.h"
 #include "nal_system.h"
 #include "ngl.h"
@@ -966,8 +967,9 @@ void actor::swap_all_mesh_buffers() {
     }
 }
 
-vector3d actor::get_colgeom_center() {
-    void (__fastcall *func)(actor *, void *, vector3d *) = CAST(func, get_vfunc(m_vtbl, 0x258));
+vector3d actor::get_colgeom_center() const
+{
+    void (__fastcall *func)(const actor *, void *, vector3d *) = CAST(func, get_vfunc(m_vtbl, 0x258));
 
     vector3d result;
     func(this, nullptr, &result);
@@ -1068,8 +1070,9 @@ void actor::create_damage_ifc()
     this->m_damage_interface = new (mem) damage_interface {this};
 }
 
-double actor::get_colgeom_radius() {
-    float (__fastcall *func)(actor *) = CAST(func, get_vfunc(m_vtbl, 0x254));
+float actor::get_colgeom_radius() const
+{
+    float (__fastcall *func)(const actor *) = CAST(func, get_vfunc(m_vtbl, 0x254));
     return func(this);
 };
 
@@ -1093,7 +1096,8 @@ movement_info *actor::get_movement_info() {
     return nullptr;
 }
 
-po *actor::get_frame_delta() {
+po *actor::get_frame_delta() const
+{
     if constexpr (1) {
         po *result = nullptr;
 
@@ -1109,6 +1113,15 @@ po *actor::get_frame_delta() {
 
     } else {
         return (po *) THISCALL(0x004B9000, this);
+    }
+}
+
+void actor::set_frame_delta(const po &a2, Float a3)
+{
+    if ( a3 > 0.0f )
+    {
+        this->set_frame_delta_no_update(a2, a3);
+        moved_entities::add_moved({this->my_handle});
     }
 }
 
@@ -1319,8 +1332,10 @@ void actor::mesh_buffers::set_mesh(nglMesh *Mesh)
 
 namespace ai {
 
-void setup_hero_capsule(actor *act) {
-    if constexpr (1) {
+void setup_hero_capsule(actor *act)
+{
+    if constexpr (1)
+    {
         auto *core = act->get_ai_core();
 
         core->create_capsule_alter();
@@ -1328,7 +1343,8 @@ void setup_hero_capsule(actor *act) {
         auto *ctrl = act->m_player_controller;
         conglomerate *cngl = CAST(cngl, act);
 
-        if (ctrl != nullptr && ctrl->field_420 == 2) {
+        if (ctrl != nullptr && ctrl->m_hero_type == 2)
+        {
             capsule_alter->set_avoid_floor(false);
             capsule_alter->set_avg_radius(0.64999998);
             capsule_alter->set_mode((capsule_alter_sys::eAlterMode) 3);

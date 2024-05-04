@@ -5,9 +5,12 @@
 #include "camera.h"
 #include "common.h"
 #include "conglom.h"
+#include "debugutil.h"
 #include "func_wrapper.h"
 #include "game.h"
+#include "osassert.h"
 #include "pole_swing_inode.h"
+#include "spiderman_camera.h"
 
 #include <vtbl.h>
 
@@ -15,7 +18,103 @@ VALIDATE_SIZE(ai_player_controller, 0x424u);
 
 ai_player_controller::ai_player_controller(actor *a2)
 {
-    THISCALL(0x004728D0, this, a2);
+    if constexpr (0)
+    {
+        this->m_vtbl = 0x0087EAD8;
+
+        this->gb_jump = {};
+
+        this->gb_swing_raw = {};
+
+        this->gb_attack = {};
+
+        this->gb_attack_secondary = {};
+
+        this->gb_grab = {};
+
+        this->gb_range = {};
+
+        this->field_150 = {};
+
+        this->field_254 = {};
+        this->field_288 = {};
+
+        this->gb_camera_center = {};
+
+        this->field_1B8 = {};
+
+        this->gb_swing = {};
+
+        this->field_220 = {};
+
+        for ( auto &axis : this->field_2BC ) {
+            axis = {};
+        }
+
+        for ( auto &axis : this->field_2BC ) {
+            axis.field_8 = 0.1;
+        }
+
+
+        this->field_3E0 = ZEROVEC;
+        this->field_4[1] = bit_cast<conglomerate *>(a2);
+        this->field_14 = 0;
+        this->field_4[0] = nullptr;
+
+        this->m_spidey_loco_mode = static_cast<eHeroLocoMode>(0);
+        this->m_prev_spidey_loco_mode = static_cast<eHeroLocoMode>(0);
+
+        this->field_3F8 = 0.0;
+        this->field_3FC = 0.0;
+
+        this->field_400 = YVEC;
+        this->m_hero_type = this->find_hero_type();
+
+        this->unlock_controls(false);
+
+        this->force_always_camera_relative(false);
+        this->remap_controls();
+    }
+    else
+    {
+        THISCALL(0x004728D0, this, a2);
+    }
+}
+
+void ai_player_controller::lock_controls(bool a2)
+{
+    TRACE("ai_player_controller::lock_controls");
+
+    return;
+
+    if ( a2 && !this->field_3DC ) {
+        error("Someone (likely script or UI code) tried to lock controls when they were already locked.");
+    }
+
+    if ( this->field_3DC ) {
+        debug_print_va("-- controls locked (previous was %s)", "locked");
+    } else {
+        debug_print_va("-- controls locked (previous was %s)", "unlocked");
+    }
+
+    this->field_3DC = false;
+    g_spiderman_camera_ptr()->sub_4B3260(true);
+}
+
+void ai_player_controller::unlock_controls(bool a2)
+{
+    if ( a2 && this->field_3DC ) {
+        error("Someone (likely script or UI code) tried to unlock controls when they were already unlocked.");
+    }
+
+    if ( this->field_3DC ) {
+        debug_print_va("-- controls unlocked (previous was %s)", "locked");
+    } else {
+        debug_print_va("-- controls unlocked (previous was %s)", "unlocked");
+    }
+
+    this->field_3DC = true;
+    g_spiderman_camera_ptr()->sub_4B3260(false);
 }
 
 void ai_player_controller::set_spidey_loco_mode(eHeroLocoMode a2)
@@ -68,9 +167,28 @@ int ai_player_controller::get_spidey_loco_mode() const
     return this->m_spidey_loco_mode;
 }
 
-void ai_player_controller::set_player_num(int a2) {
+void ai_player_controller::set_player_num(int a2)
+{
     this->field_14 = a2;
     this->remap_controls();
+}
+
+void ai_player_controller::clear_controls()
+{
+    debug_print_va("-- controls cleared");
+    this->remap_controls();
+    this->gb_jump.sub_50B630();
+    this->gb_swing_raw.sub_50B630();
+    this->gb_attack.sub_50B630();
+    this->gb_attack_secondary.sub_50B630();
+    this->gb_grab.sub_50B630();
+    this->gb_range.sub_50B630();
+    this->field_150.sub_50B630();
+    this->field_254.sub_50B630();
+    this->field_288.sub_50B630();
+    this->gb_camera_center.sub_50B630();
+    this->field_1B8.sub_50B630();
+    this->gb_swing.sub_50B630();
 }
 
 void ai_player_controller::remap_controls()
@@ -166,23 +284,32 @@ game_button *ai_player_controller::get_gb_camera_center() {
     return &this->gb_camera_center;
 }
 
-game_button *ai_player_controller::get_gb_swing_raw() {
-    return &this->gb_swing;
+game_button & ai_player_controller::get_gb_swing_raw() {
+    return this->gb_swing;
 }
 
-vector3d ai_player_controller::convert_left_stick_from_camera_space_to_world_space(bool a3) {
-    vector3d result;
-    THISCALL(0x00457C20, this, &result, a3);
+vector3d ai_player_controller::convert_left_stick_from_camera_space_to_world_space(bool a3)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        vector3d result;
+        THISCALL(0x00457C20, this, &result, a3);
 
-    return result;
+        return result;
+    }
 }
 
-vector3d ai_player_controller::compute_left_stick_from_camera() {
+vector3d ai_player_controller::compute_left_stick_from_camera()
+{
     vector3d result;
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         auto *cam = g_game_ptr()->get_current_view_camera(0);
-        if (cam != nullptr) {
+        if (cam != nullptr)
+        {
             auto v8 = this->field_2BC[1].field_10;
             auto v7 = this->field_2BC[0].field_10;
 
@@ -230,6 +357,7 @@ void ai_player_controller::update_controls(Float a2, bool a3)
         this->gb_jump.update(a2);
         this->gb_swing_raw.update(a2);
         this->gb_attack.update(a2);
+
         this->gb_attack_secondary.update(a2);
         this->gb_grab.update(a2);
         this->gb_range.update(a2);
@@ -257,6 +385,9 @@ void ai_player_controller::frame_advance(Float a2)
 
     if (this->field_4[0] == nullptr) {
         this->field_4[0] = CAST(this->field_4[0], g_game_ptr()->current_game_camera);
+
+        auto *hero_camera = this->field_4[0];
+        assert(hero_camera != nullptr);
     }
 
     this->update_controls(a2, false);
@@ -277,5 +408,10 @@ void ai_player_controller_patch()
     {
         FUNC_ADDRESS(address, &ai_player_controller::frame_advance);
         SET_JUMP(0x00468E80, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai_player_controller::lock_controls);
+        REDIRECT(0x00741839, address);
     }
 }

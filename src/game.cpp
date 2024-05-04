@@ -103,6 +103,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <numeric>
 
 VALIDATE_SIZE(game::level_load_stuff, 0x3C);
 VALIDATE_SIZE(game, 0x2C4u);
@@ -125,8 +126,7 @@ Var<game *> g_game_ptr = (0x009682E0);
 
 static Var<int> g_debug_mem_dump_frame{0x00921DCC};
 
-Var<int (*)(game *)> game::setup_input_registrations_p = (0x0095C8F8);
-Var<int (*)(game *)> game::setup_inputs_p = (0x0095C8FC);
+Var<int (*)(game *)> game::setup_input_registrations_p {0x0095C8F8};
 
 void sub_538D10() {
     scratchpad_stack::stk().alignment = 16;
@@ -173,6 +173,12 @@ game::level_load_stuff::level_load_stuff()
 game::game()
 {
     TRACE("game::game");
+
+    if constexpr (1)
+    {
+        static Var<void (*)(game *)> setup_inputs_p {0x0095C8FC};
+        setup_inputs_p() = game__setup_inputs;;
+    }
 
     if constexpr (1)
     {
@@ -242,9 +248,9 @@ game::game()
         this->field_160 = 0;
         this->field_164 = false;
         bExit() = false;
-        this->field_165 = 0;
-        this->field_166 = 0;
-        this->field_163 = 0;
+        this->field_165 = false;
+        this->field_166 = false;
+        this->field_163 = false;
         this->field_161 = false;
         this->field_162 = false;
         this->flag.level_is_loaded = 0;
@@ -278,6 +284,7 @@ game::game()
         this->field_5C = nullptr;
         this->field_64 = nullptr;
         this->field_7C = nullptr;
+
         this->setup_input_registrations();
         this->setup_inputs();
 
@@ -547,13 +554,7 @@ void game::render_world()
 
     if constexpr (0)
     {
-        auto *v2 = comic_panels::get_current_view_camera(0);
-
-        camera *v3;
-        if (v2 != nullptr || (v2 = this->the_world->field_234[0], v3 = this->field_5C, v3 == v2)) {
-            v3 = v2;
-        }
-
+        auto *v3 = this->get_current_view_camera(0);
         if (v3 != nullptr)
         {
             auto fov = v3->get_fov();
@@ -682,8 +683,9 @@ void game::advance_state_legal(Float a2)
 {
     //sp_log("advance_state_legal: start");
 
-    if constexpr (1) {
-        mString v12{"legalscreen"};
+    if constexpr (1)
+    {
+        mString v12 {"legalscreen"};
 
         resource_key v11{string_hash{"legalscreen"}, RESOURCE_KEY_TYPE_PACK};
 
@@ -1144,14 +1146,14 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
         }
 
         if ( AXIS_MAX == a2->get_control_delta(SINGLE_STEP, INVALID_DEVICE_ID)
-            && 0.0f == a2->get_control_state(PLANE_BOUNDS_MOD, INVALID_DEVICE_ID) )
+            && AXIS_MID == a2->get_control_state(PLANE_BOUNDS_MOD, INVALID_DEVICE_ID) )
         {
             this->flag.single_step = true;
         }
 
-        if ( 1.0f == a2->get_control_delta(119, INVALID_DEVICE_ID) )
+        if ( AXIS_MAX == a2->get_control_delta(119, INVALID_DEVICE_ID) )
         {
-            auto *v8 = g_world_ptr()->field_230[0];
+            auto *v8 = g_world_ptr()->get_hero_ptr(0);
 
             auto v11 = v8->get_abs_position();
 
@@ -1175,7 +1177,8 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             os_developer_options::instance()->toggle_flag(static_cast<os_developer_options::flags_t>(20));
         }
 
-        if ( AXIS_MAX == a2->get_control_delta(28, INVALID_DEVICE_ID) && !this->flag.game_paused )
+        if ( AXIS_MAX == a2->get_control_delta(USERCAM_EQUALS_CHASECAM, INVALID_DEVICE_ID)
+                && !this->flag.game_paused )
         {
             auto *ent = entity_handle_manager::find_entity(string_hash {"USER_CAM"}, IGNORE_FLAVOR, false);
             auto *v18 = entity_handle_manager::find_entity(string_hash {"CHASE_CAM"}, IGNORE_FLAVOR, false);
@@ -1192,11 +1195,11 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             cam_target_locked() = false;
         }
 
-        if ( 1.0f == a2->get_control_delta(33, INVALID_DEVICE_ID) ) {
+        if ( AXIS_MAX == a2->get_control_delta(33, INVALID_DEVICE_ID) ) {
             g_debug_cam_get_next_target() = true;
         }
 
-        if ( 1.0f == a2->get_control_delta(34, INVALID_DEVICE_ID) ) {
+        if ( AXIS_MAX == a2->get_control_delta(34, INVALID_DEVICE_ID) ) {
             g_debug_cam_get_prev_target() = true;
         }
 
@@ -1208,7 +1211,6 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
 
         if ( g_debug_cam_get_next_target() || g_debug_cam_get_prev_target() )
         {
-
             int v5 = 0;
 
             camera * arr_camera[64] {};
@@ -1217,19 +1219,20 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             {
                 for ( auto &the_core : (*ai::ai_core::the_ai_core_list_high()) )
                 {
-                    if (the_core != nullptr)
-                    {
-                        auto *v24 = the_core->field_64;
-                        if ( v24 != nullptr )
-                        {
-                            auto *v25 = v24->get_ai_core();
-                            if ( ! ai::pedestrian_inode::is_a_pedestrian(v25) && v5 < 64 ) {
-                                arr_camera[v5++] = bit_cast<camera *>(v24);
-                            }
-                        }
+                    if (the_core == nullptr) {
+                        continue;
+                    }
+
+                    auto *v24 = the_core->field_64;
+                    if ( v24 == nullptr ) {
+                        continue;
+                    }
+
+                    auto *v25 = v24->get_ai_core();
+                    if ( ! ai::pedestrian_inode::is_a_pedestrian(v25) && v5 < 64 ) {
+                        arr_camera[v5++] = bit_cast<camera *>(v24);
                     }
                 }
-
             }
             else
             {
@@ -1263,7 +1266,6 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
 
                 if ( g_debug_cam_get_prev_target() )
                 {
-
                     int i = v5 - 1;
                     for (; v26 != arr_camera[i] && i >= 0; --i) {
                         ;
@@ -1279,7 +1281,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             }
         }
 
-        if ( 1.0f == a2->get_control_delta(51, INVALID_DEVICE_ID) )
+        if ( AXIS_MAX == a2->get_control_delta(51, INVALID_DEVICE_ID) )
         {
             static char byte_960C08[128] {};
 
@@ -1321,12 +1323,12 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             sub_5975C0(byte_960C08, true, false);
         }
 
-        if ( 1.0f == a2->get_control_delta(50, INVALID_DEVICE_ID) ) {
+        if ( AXIS_MAX == a2->get_control_delta(50, INVALID_DEVICE_ID) ) {
             GetAsyncKeyState(VK_MENU);
         }
 
         if ( os_developer_options::instance()->get_flag(mString {"CAMERA_EDITOR"})
-            && 1.0f == a2->get_control_delta(49, INVALID_DEVICE_ID) )
+            && AXIS_MAX == a2->get_control_delta(49, INVALID_DEVICE_ID) )
         {
             chunk_file file {};
             mString v147 = this->level.name_mission_table + "_caminfo.txt";
@@ -1409,7 +1411,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
 
         if ( os_developer_options::instance()->get_flag(mString {"CAMERA_EDITOR"}) )
         {
-            if ( 1.0f == a2->get_control_delta(47, INVALID_DEVICE_ID) )
+            if ( AXIS_MAX == a2->get_control_delta(47, INVALID_DEVICE_ID) )
             {
                 mString v86 {this->field_270};
                 mString v143 = v86 + " Recorded.";
@@ -1417,11 +1419,13 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                 this->mb->post(*bit_cast<message_board::string *>(&v138), 2.0f, color32 {0xFFFFFFFF});
             }
 
-            if ( 1.0f == a2->get_control_state(48, INVALID_DEVICE_ID) )
+            if ( AXIS_MAX == a2->get_control_state(48, INVALID_DEVICE_ID) )
             {
-                for (uint32_t i {0}; i < 10; ++i)
+                static uint32_t arr[10] {};
+                std::iota(std::begin(arr), std::end(arr), 0);
+                for (auto &i : arr)
                 {
-                    if ( 1.0f == a2->get_control_delta(35 + i, INVALID_DEVICE_ID) && this->field_270 > i )
+                    if ( AXIS_MAX == a2->get_control_delta(35 + i, INVALID_DEVICE_ID) && this->field_270 > i )
                     {
                         this->field_5C->set_abs_position(this->field_180[i]);
                         mString v138 = "Cam Position " + mString {static_cast<int>(i + 1)};
@@ -1433,7 +1437,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             {
                 for ( uint32_t i {0}; i < 10; ++i )
                 {
-                    if ( 1.0f == a2->get_control_delta(35 + i, INVALID_DEVICE_ID) )
+                    if ( AXIS_MAX == a2->get_control_delta(35 + i, INVALID_DEVICE_ID) )
                     {
                         this->field_180[i] = this->field_5C->get_abs_position();
 
@@ -1451,7 +1455,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                 }
             }
 
-            if ( 1.0f == a2->get_control_delta(45, INVALID_DEVICE_ID) )
+            if ( AXIS_MAX == a2->get_control_delta(45, INVALID_DEVICE_ID) )
             {
                 auto v118 = this->field_270;
                 if ( v118 > 1 )
@@ -1462,8 +1466,8 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                 }
             }
 
-            if ( 1.0f == a2->get_control_delta(46, INVALID_DEVICE_ID)
-                && 1.0f == a2->get_control_state(48, INVALID_DEVICE_ID) )
+            if ( AXIS_MAX == a2->get_control_delta(46, INVALID_DEVICE_ID)
+                && AXIS_MAX == a2->get_control_state(48, INVALID_DEVICE_ID) )
             {
                 this->field_270 = 0;
                 mString v138 {"Dolly Clear"};
@@ -1490,19 +1494,17 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                 assert(time_inc > 0 && time_inc < 10.0f);
 
                 auto *v121 = this->field_5C;
-                if ( v121 != the_world->field_234[0] ) {
+                if ( v121 != the_world->get_chase_cam_ptr(0) ) {
                     v121->frame_advance(time_inc);
                 }
 
-                auto *v122 = this->field_5C;
-                if ( !v122->is_externally_controlled() )
+                if ( !v121->is_externally_controlled() )
                 {
                     auto *v123 = this->the_world;
-                    auto *v124 = v123->field_234[0];
-                    auto *current_game_camera = this->current_game_camera;
-                    if ( current_game_camera != v124 )
+                    auto *v124 = v123->get_chase_cam_ptr(0);
+                    if ( this->current_game_camera != v124 )
                     {
-                        if ( v122 == current_game_camera ) {
+                        if ( v121 == this->current_game_camera ) {
                             this->set_current_camera(this->the_world->get_chase_cam_ptr(0), false);
                         }
 
@@ -1687,14 +1689,17 @@ void game::setup_input_registrations() {
     setup_input_registrations_p()(this);
 }
 
-void game::setup_inputs() {
-    setup_inputs_p()(this);
+void game::setup_inputs()
+{
+    setup_inputs_p(this);
 }
 
-void game::reset_control_mappings() {
+void game::reset_control_mappings()
+{
     input_mgr::instance()->clear_mapping();
     input_mgr::instance()->scan_devices();
-    game::setup_inputs_p()(this);
+
+    this->setup_inputs();
 }
 
 static Var<int> g_mem_checkpoint_level{0x00921DC4};
@@ -1888,9 +1893,9 @@ void game::load_this_level()
         g_world_ptr()->field_28.setup_cameras();
         script_manager::link();
         this->the_world->field_140.hook_up_global_script_object();
-        mString str {this->gamefile->field_340.field_114.to_string()};
+        mString hero_name {this->gamefile->field_340.m_hero_name.to_string()};
 
-        this->the_world->add_player(str);
+        this->the_world->add_player(hero_name);
 
         po v86;
 
@@ -2193,14 +2198,17 @@ void system_idle() {
     }
 }
 
-camera *game::get_current_view_camera(int a2) {
-    if constexpr (1) {
+camera *game::get_current_view_camera(int a2)
+{
+    if constexpr (1)
+    {
         auto *cam = comic_panels::get_current_view_camera(a2);
-        if (cam == nullptr) {
+        if (cam == nullptr)
+        {
             auto v4 = this->the_world;
             cam = this->field_5C;
-            if (cam == (camera *) v4->field_234[0]) {
-                cam = (camera *) v4->field_234[a2];
+            if (cam == (camera *) v4->get_chase_cam_ptr(0)) {
+                cam = (camera *) v4->get_chase_cam_ptr(a2);
             }
         }
 
@@ -2523,6 +2531,8 @@ mString game::get_hero_info()
 
 void game::show_debug_info()
 {
+    TRACE("game::show_debug_info");
+
     auto DEBUG_INFO_FONT_PCT = os_developer_options::instance()->get_int(mString{"DEBUG_INFO_FONT_PCT"});
     auto v15 = (float)DEBUG_INFO_FONT_PCT / 100.0;
     auto a1 = this->get_hero_info();
@@ -2724,6 +2734,13 @@ void game::render_ui()
 
 void hook_nglListEndScene()
 {
+    {
+        if (os_developer_options::instance()->get_flag(mString{"SHOW_DEBUG_INFO"}))
+        {
+            g_game_ptr()->show_debug_info();
+        }
+    }
+
     g_console->render();
 
     nglCurScene() = nglCurScene()->field_30C;
@@ -2800,11 +2817,10 @@ void game::load_hero_packfile(const char *str, bool a3)
 {
     TRACE("load_hero_packfile", str);
 
-    if constexpr (1) {
-        fixedstring<8> v12{str};
-
+    if constexpr (1)
+    {
         game_settings *v8 = this->gamefile;
-        v8->field_340.field_114 = v12;
+        v8->field_340.m_hero_name = fixedstring<8> {str};
 
         //sp_log("%d", resource_manager::partitions()->size());
 
@@ -2832,18 +2848,28 @@ void game::load_hero_packfile(const char *str, bool a3)
 
         sound_manager::load_hero_sound_bank(str, true);
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x0055A420, this, str, a3);
     }
 }
 
-void game::render_empty_list() {
-    CDECL_CALL(0x00510780);
+void game::render_empty_list()
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x00510780);
+    }
 }
 
 void game::frame_advance(Float a2)
 {
     TRACE("game::frame_advance");
+
+    sp_log("%f", float(a2));
 
     if constexpr (0)
     {}
@@ -2866,42 +2892,32 @@ void game::frame_advance_level(Float time_inc)
             gimme_the_lowdown() = false;
         }
 
-        static Var<int> achy_breaky_int{0x0095C734};
+        this->sub_524170();
 
-        if (g_world_ptr()->field_158.field_C == 13111) {
-            ++achy_breaky_int();
-        }
-
-        script_pad()->update();
-        input_mgr::instance()->scan_devices();
-        if (this->flag.field_3 && 1.0f != v2->get_control_state(54, INVALID_DEVICE_ID)) {
+        if (this->flag.field_3 && AXIS_MAX != v2->get_control_state(54, INVALID_DEVICE_ID)) {
             this->flag.field_3 = false;
         }
 
-        auto v4 = time_inc;
-        script_sound_manager::frame_advance(time_inc);
-        if (!os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(105))) {
-            audio_box_manager::frame_advance(v4);
-        }
+        this->sub_559F50(&time_inc);
 
-        ambient_audio_manager::frame_advance(v4);
-        sound_manager::frame_advance(v4);
-        gab_manager::frame_advance(v4);
-        input_mgr::instance()->frame_advance(v4);
+        this->sub_5241D0(time_inc);
+
         if (time_inc != 0.0f) {
-            game_clock::frame_advance(v4);
+            game_clock::frame_advance(time_inc);
         }
 
-        if (this->field_163) {
-            this->unload_current_level();
-        }
+        this->sub_5580F0();
+
+        assert(time_inc >= 0 && time_inc < 10.0f);
 
         this->handle_game_states(time_inc);
         this->handle_cameras(v2, time_inc);
-        mission_manager::s_inst()->frame_advance(v4);
-        spider_monkey::frame_advance(v4);
-        this->gamefile->frame_advance(v4);
-    } else {
+        mission_manager::s_inst()->frame_advance(time_inc);
+        spider_monkey::frame_advance(time_inc);
+        this->gamefile->frame_advance(time_inc);
+    }
+    else
+    {
         THISCALL(0x0055D650, this, time_inc);
     }
 }
@@ -3120,13 +3136,227 @@ bool game::is_button_pressed(int a4) const
             }
         }
     }
+
     return result;
+}
+
+void game::sub_5580F0()
+{
+    if ( this->field_163 ) {
+        this->unload_current_level();
+    }
+}
+
+void game::sub_5241D0(Float a1)
+{
+    input_mgr::instance()->frame_advance(a1);
+}
+
+void game::sub_524170()
+{
+    static Var<int> achy_breaky_int{0x0095C734};
+
+    if ( g_world_ptr()->field_158.field_C == 13111 ) {
+        ++achy_breaky_int();
+    }
+
+    script_pad()->update();
+    input_mgr::instance()->scan_devices();
+}
+
+void game::sub_559F50(Float *a1)
+{
+    script_sound_manager::frame_advance(*a1);
+
+    if ( !os_developer_options::instance()->get_flag(mString {"DISABLE_AUDIO_BOXES"}) ) {
+        audio_box_manager::frame_advance(*a1);
+    }
+
+    ambient_audio_manager::frame_advance(*a1);
+    sound_manager::frame_advance(*a1);
+    gab_manager::frame_advance(*a1);
+}
+
+void map_spiderman_controls()
+{
+    auto *v1 = input_mgr::instance();
+    auto id = v1->field_58;
+    v1->map_control(96, id, 10);
+    v1->map_control(98, id, 11);
+    v1->map_control(97, id, 13);
+    v1->map_control(99, id, 14);
+    v1->map_control(100, id, 17);
+    v1->map_control(101, id, 19);
+    v1->map_control(102, id, 9);
+    v1->map_control(103, id, 16);
+    v1->map_control(104, id, 18);
+    v1->map_control(105, id, 6);
+    v1->map_control(106, id, 5);
+    v1->map_control(107, id, 4);
+    v1->map_control(108, id, 8);
+    v1->map_control(109, id, 7);
+    v1->map_control(110, id, 1);
+    v1->map_control(111, id, 0);
+    v1->map_control(112, id, 3);
+    v1->map_control(113, id, 2);
+    v1->map_control(112, id, 1);
+    v1->map_control(113, id, 0);
+    v1->map_control(114, id, 20);
+    v1->map_control(115, id, 21);
+}
+
+void map_pc_2_playstation_inputs()
+{
+    auto *v0 = input_mgr::instance();
+    auto id = v0->field_58;
+    v0->map_control(80, id, 10);
+    v0->map_control(81, id, 11);
+    v0->map_control(82, id, 14);
+    v0->map_control(83, id, 13);
+    v0->map_control(84, id, 16);
+    v0->map_control(85, id, 18);
+    v0->map_control(86, id, 6);
+    v0->map_control(87, id, 17);
+    v0->map_control(88, id, 19);
+    v0->map_control(89, id, 9);
+    v0->map_control(90, id, 3);
+    v0->map_control(91, id, 2);
+    v0->map_control(90, id, 1);
+    v0->map_control(91, id, 0);
+    v0->map_control(94, id, 8);
+    v0->map_control(95, id, 7);
+    v0->map_control(92, id, 20);
+    v0->map_control(93, id, 21);
 }
 
 void game__setup_inputs(game *a1)
 {
+    TRACE("game::setup_inputs");
+
     if constexpr (0)
-    {}
+    {
+        auto *v2 = input_mgr::instance();
+        v2->clear_mapping();
+        auto id = v2->field_58;
+        
+        v2->map_control(1, id, 10);
+        v2->map_control(2, id, 11);
+        v2->map_control(3, id, 13);
+        v2->map_control(4, id, 14);
+        v2->map_control(5, id, 3);
+        v2->map_control(6, id, 2);
+        v2->map_control(5, id, 8);
+        v2->map_control(6, id, 7);
+        v2->map_control(61, id, 20);
+        v2->map_control(67, id, 20);
+        v2->map_control(63, id, 16);
+        v2->map_control(64, id, 17);
+        v2->map_control(65, id, 3);
+        v2->map_control(66, id, 2);
+        v2->map_control(61, id, 10);
+        v2->map_control(62, id, 11);
+        v2->map_control(62, id, 21);
+        v2->map_control(70, id, 3);
+        v2->map_control(71, id, 2);
+        v2->map_control(78, id, 16);
+        v2->map_control(79, id, 17);
+        v2->map_control(70, id, 1);
+        v2->map_control(71, id, 0);
+        v2->map_control(68, id, 10);
+        v2->map_control(69, id, 11);
+        v2->map_control(69, id, 14);
+        v2->map_control(72, id, 20);
+        v2->map_control(73, id, 21);
+
+
+        static constexpr device_id_t KEYBOARD_DEVICE = static_cast<device_id_t>(0x1E8480);
+
+        {
+            enum {
+                EDITCAM_FORWARD = 14,
+                EDITCAM_BACKWARD = 15,
+            };
+
+            v2->map_control(EDITCAM_FORWARD, KEYBOARD_DEVICE, KB_I);
+            v2->map_control(EDITCAM_BACKWARD, KEYBOARD_DEVICE, KB_K);
+        }
+
+        if constexpr (0)
+        {
+            v2->map_control(74, KEYBOARD_DEVICE, 86);
+            v2->map_control(75, KEYBOARD_DEVICE, 85);
+            v2->map_control(76, KEYBOARD_DEVICE, 84);
+            v2->map_control(77, KEYBOARD_DEVICE, 83);
+            v2->map_control(68, KEYBOARD_DEVICE, 45);
+            v2->map_control(69, KEYBOARD_DEVICE, 54);
+            v2->map_control(53, KEYBOARD_DEVICE, 77);
+            v2->map_control(10, KEYBOARD_DEVICE, 92);
+
+            v2->map_control(16, KEYBOARD_DEVICE, 10);
+            v2->map_control(17, KEYBOARD_DEVICE, 12);
+            v2->map_control(16, KEYBOARD_DEVICE, 17);
+            v2->map_control(17, KEYBOARD_DEVICE, 5);
+            v2->map_control(18, KEYBOARD_DEVICE, 15);
+            v2->map_control(19, KEYBOARD_DEVICE, 21);
+            v2->map_control(18, KEYBOARD_DEVICE, 24);
+            v2->map_control(19, KEYBOARD_DEVICE, 26);
+            v2->map_control(22, KEYBOARD_DEVICE, 18);
+            v2->map_control(23, KEYBOARD_DEVICE, 6);
+            v2->map_control(24, KEYBOARD_DEVICE, 4);
+            v2->map_control(25, KEYBOARD_DEVICE, 1);
+            v2->map_control(26, KEYBOARD_DEVICE, 37);
+            v2->map_control(26, KEYBOARD_DEVICE, 38);
+            v2->map_control(27, KEYBOARD_DEVICE, 41);
+            v2->map_control(27, KEYBOARD_DEVICE, 42);
+            v2->map_control(29, KEYBOARD_DEVICE, 20);
+            v2->map_control(30, KEYBOARD_DEVICE, 22);
+            v2->map_control(31, KEYBOARD_DEVICE, 3);
+            v2->map_control(32, KEYBOARD_DEVICE, 49);
+            v2->map_control(28, KEYBOARD_DEVICE, 54);
+            v2->map_control(33, KEYBOARD_DEVICE, 91);
+            v2->map_control(34, KEYBOARD_DEVICE, 90);
+            v2->map_control(35, KEYBOARD_DEVICE, 27);
+            v2->map_control(36, KEYBOARD_DEVICE, 28);
+            v2->map_control(37, KEYBOARD_DEVICE, 29);
+            v2->map_control(38, KEYBOARD_DEVICE, 30);
+            v2->map_control(39, KEYBOARD_DEVICE, 31);
+            v2->map_control(40, KEYBOARD_DEVICE, 32);
+            v2->map_control(41, KEYBOARD_DEVICE, 33);
+            v2->map_control(42, KEYBOARD_DEVICE, 34);
+            v2->map_control(43, KEYBOARD_DEVICE, 35);
+            v2->map_control(44, KEYBOARD_DEVICE, 36);
+            v2->map_control(45, KEYBOARD_DEVICE, 13);
+            v2->map_control(46, KEYBOARD_DEVICE, 16);
+            v2->map_control(47, KEYBOARD_DEVICE, 60);
+            v2->map_control(48, KEYBOARD_DEVICE, 38);
+            v2->map_control(49, KEYBOARD_DEVICE, 66);
+            v2->map_control(50, KEYBOARD_DEVICE, 65);
+            v2->map_control(51, KEYBOARD_DEVICE, 72);
+            v2->map_control(7, KEYBOARD_DEVICE, 7);
+            v2->map_control(8, KEYBOARD_DEVICE, 70);
+            v2->map_control(9, KEYBOARD_DEVICE, 69);
+            v2->map_control(119, KEYBOARD_DEVICE, 68);
+
+            v2->map_control(116, KEYBOARD_DEVICE, 51);
+            v2->map_control(117, KEYBOARD_DEVICE, 50);
+            v2->map_control(118, KEYBOARD_DEVICE, 47);
+        }
+
+        {
+            static constexpr device_id_t MOUSE_DEVICE = static_cast<device_id_t>(0x2DC6C0); 
+            v2->map_control(20, MOUSE_DEVICE, 1);
+            v2->map_control(21, MOUSE_DEVICE, 0);
+            v2->map_control(26, MOUSE_DEVICE, 3);
+        }
+
+        v2->map_control(54, id, 20);
+        v2->map_control(54, id, 22);
+        v2->map_control(55, id, 10);
+
+        map_pc_2_playstation_inputs();
+
+        map_spiderman_controls();
+    }
     else
     {
         CDECL_CALL(0x00605950, a1);
@@ -3227,6 +3457,13 @@ void game_patch()
         SET_JUMP(0x00557E10, address);
     }
 
+    if constexpr (0)
+    {
+        REDIRECT(0x00514EC1, game__setup_inputs);
+        REDIRECT(0x005244CA, game__setup_inputs);
+        REDIRECT(0x00557A48, game__setup_inputs);
+    }
+
     if constexpr (0) {
 
         {
@@ -3306,6 +3543,5 @@ void game_patch()
             FUNC_ADDRESS(address, &game::enable_marky_cam);
             REDIRECT(0x0057EB54, address);
         }
-
     }
 }

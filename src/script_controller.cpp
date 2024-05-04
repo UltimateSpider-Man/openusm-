@@ -23,6 +23,11 @@ void script_controller::update()
 {
     TRACE("script_controller::update");
 
+    {
+        auto v1 = input_mgr::instance()->field_58;
+        sp_log("0x%X", v1);
+    }
+
     if constexpr (0)
     {}
     else

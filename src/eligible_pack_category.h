@@ -13,7 +13,7 @@ struct eligible_pack;
 
 struct eligible_pack_category {
     resource_pack_streamer *my_resource_pack_streamer;
-    eligible_pack_streamer *field_4;
+    eligible_pack_streamer *my_eligible_pack_streamer;
     bool (*field_8)(resource_pack_slot::callback_enum,
                     resource_pack_streamer *,
                     resource_pack_slot *,
@@ -33,12 +33,13 @@ struct eligible_pack_category {
     //0x0053E640
     ~eligible_pack_category();
 
+    void clear();
 
     resource_pack_streamer * get_streamer() {
         return my_resource_pack_streamer;
     }
 
-    bool is_pack_slot_locked(resource_pack_slot *a2);
+    bool is_pack_slot_locked(resource_pack_slot *a2) const;
 
     void lock_pack_slot(resource_pack_slot *s);
 
@@ -46,4 +47,10 @@ struct eligible_pack_category {
 
     //0x005513B0
     void frame_advance(Float a2);
+
+    int find_empty_pack_slot() const;
+
+    int find_lowest_priority_unloadable_loaded_pack_slot();
+
+    int find_lowest_priority_unloadable_loading_pack_slot();
 };

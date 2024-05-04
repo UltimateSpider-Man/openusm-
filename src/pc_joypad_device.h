@@ -4,7 +4,7 @@
 
 struct InputState {
     int field_0;
-    uint8_t field_4;
+    uint8_t m_flags;
     char field_5;
     uint8_t m_jump;
     uint8_t m_stick_to_walls;
@@ -58,27 +58,27 @@ struct pc_joypad_device : input_device {
     pc_joypad_device(int in_port);
 
     //0x0058E560
-    /* virtual */ float get_axis_state(Axis a2, int a3);
+    /* virtual */ float _get_axis_state(Axis a2, int a3);
 
     //0x0058E7B0
-    /* virtual */ float get_axis_old_state(Axis a2, int a3);
+    /* virtual */ float _get_axis_old_state(Axis a2, int a3);
 
     //0x0058E740
-    /* virtual */ float get_axis_delta(Axis a2, int a3);
+    /* virtual */ float _get_axis_delta(Axis a2, int a3);
 
     //0x0058E6F0
     //virtual
-    bool is_connected();
+    bool _is_connected();
 
     //0x0058E700
     //virtual
-    void clear_state();
+    void _clear_state();
 
     //0x0058E5C0
-    /* virtual */ void poll();
+    /* virtual */ void _poll();
 
     //0x0058E870
-    /* virtual */ float get_axis_state(Axis axis, InputState input_state);
+    /* virtual */ float _get_axis_state(Axis axis, InputState input_state);
 };
 
 extern int InputOpen(int a1, unsigned int a2);

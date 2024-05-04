@@ -44,12 +44,12 @@ struct cut_scene_player {
     _std::vector<entity_base_vhandle> field_BC;
     entity_base *field_CC;
     entity_base *field_D0;
-    char field_D4;
-    char field_D5;
-    char field_D6;
-    char field_D7;
-    char field_D8;
-    char field_D9;
+    bool field_D4;
+    bool field_D5;
+    bool field_D6;
+    bool field_D7;
+    bool m_traffic_enabled;
+    bool m_peds_enabled;
     int field_DC;
     bool field_E0;
     bool field_E1;

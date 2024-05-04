@@ -26,8 +26,9 @@ enum InputType {
 };
 
 struct InputSettings {
+
     struct internal_struct {
-        uint32_t field_0{};
+        uint32_t m_size {};
 
         struct {
             InputType m_input_type;
@@ -55,7 +56,7 @@ struct InputSettings {
 
         void set(InputAction a2, uint32_t a3, InputType input_type, int value);
 
-        float sub_821E90(InputAction a2);
+        float get_state(InputAction a2) const;
     };
 
     bool field_0;
@@ -73,6 +74,8 @@ struct InputSettings {
     //0x00822010
     InputSettings();
 };
+
+extern void input_settings_patch();
 
 extern Var<InputSettings *> g_inputSettingsMenu;
 extern Var<InputSettings *> g_inputSettingsInGame;

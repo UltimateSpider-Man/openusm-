@@ -120,30 +120,30 @@ void wds_camera_manager::setup_cameras()
             v46 = v2->get_abs_position();
         }
 
-        auto *v8 = new camera {nullptr, string_hash {"USER_CAM"}};
+        auto *user_cam = new camera {nullptr, string_hash {"USER_CAM"}};
 
-        v8->set_abs_position(v46);
-        g_world_ptr()->ent_mgr.add_camera(nullptr, v8);
+        user_cam->set_abs_position(v46);
+        g_world_ptr()->ent_mgr.add_camera(nullptr, user_cam);
 
-        auto *v14 = new theta_and_psi_mcs {v8, 0.0, 0.0};
+        auto *v14 = new theta_and_psi_mcs {user_cam, 0.0, 0.0};
         g_theta_and_psi_mcs() = v14;
         this->add_mcs(v14);
 
-        auto *v16 = new dolly_and_strafe_mcs {v8};
+        auto *v16 = new dolly_and_strafe_mcs {user_cam};
         this->add_mcs(v16);
 
         auto *v19 = new mouselook_controller {v16, v14, nullptr};
         g_mouselook_controller() = v19;
         this->add_controller(v19);
 
-        auto *v21 = new lookat_target_controller {v8};
+        auto *v21 = new lookat_target_controller {user_cam};
         g_lookat_controller() = v21;
         this->add_controller(v21);
 
         this->field_28 = v14;
         this->field_24 = v16;
         this->field_2C = v19;
-        this->field_30 = v8;
+        this->field_30 = user_cam;
 
         if ( g_femanager().m_fe_menu_system != nullptr ) {
             g_femanager().m_fe_menu_system->RenderLoadMeter(0);
@@ -151,21 +151,19 @@ void wds_camera_manager::setup_cameras()
 
         system_idle();
 
-        auto *v25 = new mic {g_world_ptr()->field_230[0], string_hash {"BOOM_MIC"}};
+        auto *v25 = new mic {g_world_ptr()->get_hero_ptr(0), string_hash {"BOOM_MIC"}};
         g_world_ptr()->ent_mgr.add_mic(nullptr, v25);
 
-        auto *v27 = new sniper_camera {string_hash {"SNIPER_CAM"}, g_world_ptr()->field_230[0]};
-        this->field_20 = v27;
-        g_world_ptr()->ent_mgr.add_camera(nullptr, v27);
+        this->field_20 = new sniper_camera {string_hash {"SNIPER_CAM"}, g_world_ptr()->get_hero_ptr(0)};
+        g_world_ptr()->ent_mgr.add_camera(nullptr, this->field_20);
 
-        auto *v29 = new marky_camera {string_hash {"MARKY_CAM"}};
-        this->field_44 = v29;
-        g_world_ptr()->ent_mgr.add_camera(nullptr, v29);
+        this->field_44 = new marky_camera {string_hash {"MARKY_CAM"}};
+        g_world_ptr()->ent_mgr.add_camera(nullptr, this->field_44);
         g_world_ptr()->set_chase_cam_ptr(0, this->field_44);
 
         g_femanager().RenderLoadMeter(false);
 
-        auto *scene_analyzer_cam  = new camera {nullptr, string_hash {"SCENE_ANALYZER_CAM"}};
+        auto *scene_analyzer_cam = new camera {nullptr, string_hash {"SCENE_ANALYZER_CAM"}};
         scene_analyzer_cam->set_abs_position(v46);
 
         g_world_ptr()->ent_mgr.add_camera(nullptr, scene_analyzer_cam);

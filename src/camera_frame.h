@@ -18,6 +18,8 @@ struct camera_frame
 
     vector3d fix_up_vector(vector3d upn) const;
 
+    po get_po() const;
+
     vector3d get_right() const;
 
     void avoid_target(const camera_target_info &a1, Float a2);

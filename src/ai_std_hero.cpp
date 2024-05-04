@@ -142,13 +142,15 @@ bool hero_inode::jump_can_go_to(string_hash a2) {
     }
 }
 
-void hero_inode::frame_advance(Float a2)
+void hero_inode::_frame_advance(Float a2)
 {
     TRACE("hero_inode::frame_advance");
 
-    if constexpr (1) {
-        auto *v5 = (physics_inode *) this->field_8->get_info_node(physics_inode::default_id, true);
-        if (!this->field_1C) {
+    if constexpr (1)
+    {
+        auto *v5 = bit_cast<physics_inode *>(this->field_8->get_info_node(physics_inode::default_id, true));
+        if (!this->field_1C)
+        {
             setup_hero_capsule(this->field_C);
             this->field_1C = true;
         }
@@ -181,7 +183,7 @@ void hero_inode::frame_advance(Float a2)
 
         float v17 = 0.0;
         auto *player_controller = this->get_actor()->get_player_controller();
-        auto *gb_swing = player_controller->get_gb_swing_raw();
+        auto *gb_swing = &player_controller->get_gb_swing_raw();
         auto cond = [](game_button *self) -> bool {
             if ((self->m_flags & 0x20) != 0) {
                 return false;
@@ -189,7 +191,9 @@ void hero_inode::frame_advance(Float a2)
 
             return self->m_flags & GBFLAG_PRESSED;
         }(gb_swing);
-        if (cond) {
+
+        if (cond)
+        {
 
             auto v11 = [](game_button *self) -> float {
                 return ((self->m_flags & 0x20) != 0 ? 0.0f : self->field_1C);
@@ -217,7 +221,9 @@ void hero_inode::frame_advance(Float a2)
 
         cleanup_collision_lists();
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x006A7950, this, a2);
     }
 }
@@ -546,7 +552,7 @@ void shrink_capsule_for_slanted_surfaces(actor *act) {
         auto *ctrl = act->m_player_controller;
         assert(ctrl != nullptr);
 
-        if (ctrl->field_420 == 2) {
+        if (ctrl->m_hero_type == 2) {
             capsule_alter->set_avg_radius(0.5);
         } else {
             capsule_alter->set_avg_radius(0.30000001);
@@ -698,9 +704,10 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
     return true;
 }
 
-void hero_inode_patch() {
+void hero_inode_patch()
+{
     {
-        FUNC_ADDRESS(address, &ai::hero_inode::frame_advance);
+        FUNC_ADDRESS(address, &ai::hero_inode::_frame_advance);
         set_vfunc(0x0087DAC0, address);
     }
 

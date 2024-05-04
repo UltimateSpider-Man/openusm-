@@ -55,8 +55,12 @@ struct world_dynamics_system {
     cached_special_effect field_1B0;
     cached_special_effect field_1F0;
 
+
+private:
     entity *field_230[MAX_GAME_PLAYERS];
     camera *field_234[MAX_GAME_PLAYERS];
+
+public:
     int num_players;
     _std::list<entity *> field_23C;
     _std::list<unsigned int> field_248;
@@ -141,11 +145,11 @@ struct world_dynamics_system {
                     worldly_pack_slot *a6,
                     limited_timer *a7);
 
-    inline auto *get_the_terrain() {
+    auto *get_the_terrain() {
         return this->the_terrain;
     }
 
-    inline int get_num_players() {
+    int get_num_players() {
         return this->num_players;
     }
 

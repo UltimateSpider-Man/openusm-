@@ -9,6 +9,7 @@ enum control_id_t {
     STOP_PHYSICS = 8,
     SINGLE_STEP = 9,
     SHOW_DEBUG_INFO = 10,
+    USERCAM_EQUALS_CHASECAM = 28,
     PLANE_BOUNDS_MOD = 48,
 };
 

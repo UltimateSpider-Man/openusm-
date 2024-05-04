@@ -73,9 +73,6 @@ struct terrain {
     //0x0055C3F0
     void start_streaming(void (*callback)(void));
 
-    //0x00523EC0
-    region *find_outermost_region(const vector3d &a2);
-
     //0x00557480
     void set_district_variant(int a2, int a3, bool a4);
 
@@ -95,28 +92,30 @@ struct terrain {
     region *get_district(int a1);
 
     //0x005444F0
-    void find_regions(const vector3d &a2, _std::vector<region *> *regions);
+    void find_regions(const vector3d &a2, _std::vector<region *> *regions) const;
 
     //0x00523E70
     int add_strip(const mString &a2);
 
     //0x005148A0
-    int unlock_district(int a2);
+    void unlock_district(int a2);
 
     region *get_region(int idx);
 
-    inline auto get_num_regions() {
+    auto get_num_regions() const {
         return total_regions;
     }
 
     //0x005145A0
-    int find_strip(const mString &a2);
+    int find_strip(const mString &a2) const;
 
     //0x0054F670
-    int get_region_index_by_name(const fixedstring<4> &a2);
+    int get_region_index_by_name(const fixedstring<4> &a2) const;
 
     //0x0053FFA0
     void unlock_district_pack_slot(int slot_idx);
+
+    bool is_district_pack_slot_locked(int slot_idx) const;
 
     //0x00556FF0
     void frame_advance(Float a2);
@@ -124,13 +123,16 @@ struct terrain {
     _std::vector<region *> * get_region_info_for_point(vector3d a2);
 
     //0x0052DFF0
-    region *find_region(const vector3d &a2, region *a3);
+    region *find_region(const vector3d &a2, region *a3) const;
 
     //0x00534920
-    region *find_region(string_hash a2);
+    region *find_region(string_hash a2) const;
 
     //0x00534890
-    region *find_innermost_region(const vector3d &a1);
+    region *find_innermost_region(const vector3d &a1) const;
+
+    //0x00523EC0
+    region *find_outermost_region(const vector3d &a2) const;
 
     //0x0053FC90
     void register_region_change_callback(void (*a3)(bool, region *));

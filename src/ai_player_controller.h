@@ -45,14 +45,30 @@ struct ai_player_controller {
     bool field_3DD;
     vector3d field_3E0;
     vector3d field_3EC;
-    int field_3F8[10];
-    hero_type_enum field_420;
+    float field_3F8;
+    float field_3FC;
+    vector3d field_400;
+    float field_40C;
+    int field_410;
+    int field_414;
+    int field_418;
+    int field_41C;
+    hero_type_enum m_hero_type;
 
     //0x004728D0
     ai_player_controller(actor *a2);
 
+    void lock_controls(bool a2);
+
+    void unlock_controls(bool a2);
+
     void set_spidey_loco_mode(eHeroLocoMode a2);
 
+    void force_always_camera_relative(bool a2) {
+        this->field_3DD = a2;
+    }
+
+    //0x00449390
     hero_type_enum find_hero_type() const;
 
     //0x00449A90
@@ -67,6 +83,8 @@ struct ai_player_controller {
 
     //0x004696A0
     void set_player_num(int a2);
+
+    void clear_controls();
 
     //0x00468FE0
     void remap_controls();
@@ -90,7 +108,7 @@ struct ai_player_controller {
     game_button *get_gb_camera_center();
 
     //0x00449B50
-    game_button *get_gb_swing_raw();
+    game_button & get_gb_swing_raw();
 
     //0x00468E80
     void frame_advance(Float a2);

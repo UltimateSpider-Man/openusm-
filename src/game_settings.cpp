@@ -134,12 +134,15 @@ void game_settings::frame_advance(Float a2)
             this->load_game(this->m_slot_num);
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x005802D0, this, a2);
     }
 }
 
-void game_settings::export_game_options() {
+void game_settings::export_game_options()
+{
     sound_manager::set_source_type_volume(0, Settings::GameSoundVolume(), 0.0);
     sound_manager::set_source_type_volume(1u, Settings::GameSoundVolume(), 0.0);
     sound_manager::set_source_type_volume(2u, Settings::MusicVolume(), 0.0);
@@ -155,7 +158,8 @@ void game_settings::export_game_options() {
         v2->disable_vibration();
     }
 
-    if (g_world_ptr()->get_hero_ptr(0) != nullptr) {
+    if (g_world_ptr()->get_hero_ptr(0) != nullptr)
+    {
         mString a1{"gv_hero_spawn_point"};
 
         auto *v3 = (const vector3d *) script_manager::get_game_var_address(a1, nullptr, nullptr);
@@ -376,7 +380,8 @@ int game_settings::get_game_size()
     return size;
 }
 
-void game_settings::save(int slot_num) {
+void game_settings::save(int slot_num)
+{
     if constexpr (1) {
         static constexpr auto MAX_GAMEFILE_SLOTS = 3;
 
@@ -429,22 +434,112 @@ void game_settings::save(int slot_num) {
     }
 }
 
-bool game_settings::set_num(const resource_key &att, Float a3) {
+bool game_settings::set_str(const resource_key &att, const mString &a3)
+{
     assert(att.get_type() == RESOURCE_KEY_TYPE_IFC_ATTRIBUTE);
 
-    return (bool) THISCALL(0x00573AE0, this, &att, a3);
+    static resource_key pstring_set[2] {
+        resource_key {string_hash {int(to_hash("HERO_NAME"))}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE},
+        resource_key {string_hash {int(to_hash("DISTRICT_NAME"))}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE},
+    };
+
+    if ( att == pstring_set[0] )
+    {
+        this->field_340.m_hero_name = a3.c_str();
+        return true;
+    }
+    else if ( att == pstring_set[1] )
+    {
+        this->field_340.m_district_name = a3.c_str();
+        return true;
+    }
+    else
+    {
+        assert(0 && "invalid game setting");
+
+        return false;
+    }
 }
 
-bool game_settings::get_num(const resource_key &att, float &a3, bool a4) {
+bool game_settings::get_str(const resource_key &att, mString &a3) const
+{
     assert(att.get_type() == RESOURCE_KEY_TYPE_IFC_ATTRIBUTE);
 
-    return (bool) THISCALL(0x00575930, this, &att, &a3, a4);
+    static resource_key pstring_get[2] {
+        resource_key {string_hash {int(to_hash("HERO_NAME"))}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE},
+        resource_key {string_hash {int(to_hash("DISTRICT_NAME"))}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE},
+    };
+
+    if ( att == pstring_get[0] )
+    {
+        a3 = this->field_340.m_hero_name.to_string();
+        return true;
+    }
+    else if ( att == pstring_get[1] )
+    {
+        a3 = this->field_340.m_district_name.to_string();
+        return true;
+    }
+    else
+    {
+        assert(0 && "invalid game setting");
+
+        return false;
+    }
 }
 
-void game_settings_patch() {
+bool game_settings::set_num(const resource_key &att, Float a3)
+{
+    TRACE("game_settings::set_num", att.m_hash.to_string());
+
+    assert(att.get_type() == RESOURCE_KEY_TYPE_IFC_ATTRIBUTE);
+
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(const void *, void *edx, const resource_key *, Float) = CAST(func, 0x00573AE0);
+        return func(this, nullptr, &att, a3);
+    }
+}
+
+bool game_settings::get_num(const resource_key &att, float &a3, bool a4) const
+{
+    TRACE("game_settings::get_num", att.m_hash.to_string());
+
+    assert(att.get_type() == RESOURCE_KEY_TYPE_IFC_ATTRIBUTE);
+
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(const void *, void *edx, const resource_key *att, float *a3, bool a4) = CAST(func, 0x00575930);
+        bool result = func(this, nullptr, &att, &a3, a4);
+        sp_log("%f", a3);
+
+        if (!result) {
+            assert(0 && "invalid game setting");
+        }
+
+        return result;
+    }
+}
+
+void game_settings_patch()
+{
     {
         FUNC_ADDRESS(address, &game_settings::frame_advance);
         REDIRECT(0x0055D770, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &game_settings::set_num);
+        REDIRECT(0x00663BED, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &game_settings::get_num);
+        REDIRECT(0x00663C6A, address);
     }
 
     if constexpr (0) {

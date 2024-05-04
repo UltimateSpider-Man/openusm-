@@ -33,6 +33,14 @@ enum class game_state {
     PAUSED = 7,
 };
 
+struct game;
+
+//0x006063C0
+extern void game__setup_input_registrations(game *a1);
+
+//0x00605950
+extern void game__setup_inputs(game *a1);
+
 struct game {
     struct level_load_stuff {
         level_descriptor_t *descriptor;
@@ -324,6 +332,14 @@ struct game {
     //0x0051D1C0
     bool is_button_pressed(int a4) const;
 
+    void sub_5580F0();
+
+    void sub_524170();
+
+    void sub_559F50(Float *a1);
+
+    void sub_5241D0(Float a1);
+
     //0x00510780
     static void render_empty_list();
 
@@ -331,14 +347,8 @@ struct game {
     static Var<int (*)(game *)> setup_input_registrations_p;
 
     //0x0095C8FC
-    static Var<int (*)(game *)> setup_inputs_p;
+    static inline void (* setup_inputs_p)(game *) = game__setup_inputs;
 };
-
-//0x006063C0
-extern void game__setup_input_registrations(game *a1);
-
-//0x00605950
-extern void game__setup_inputs(game *a1);
 
 extern Var<game *> g_game_ptr;
 

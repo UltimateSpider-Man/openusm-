@@ -9,6 +9,7 @@
 #include "common.h"
 #include "controller_inode.h"
 #include "custom_math.h"
+#include "dvar.h"
 #include "debug_user_render.h"
 #include "from_mash_in_place_constructor.h"
 #include "func_wrapper.h"
@@ -25,6 +26,12 @@
 
 #include <cmath>
 
+static Var<float> g_base_factor {0x0091F6D8};
+
+static Var<float> g_snow_balling {0x0091F6DC};
+
+static Var<float> g_jump_cap_vel {0x0091F6E0};
+
 namespace ai {
 
 VALIDATE_SIZE(jump_param_t, 0x10);
@@ -40,6 +47,11 @@ jump_state::jump_state(from_mash_in_place_constructor *a2) {
     THISCALL(0x00449D10, this, a2);
 }
 
+void jump_state::apply_jets(Float a1)
+{
+    THISCALL(0x00458890, this, a1);
+}
+
 vector3d jump_state::sub_44A580(vector3d a3, vector3d a6, Float a9, Float a10) {
     auto *v10 = this->field_30->field_28;
 
@@ -53,7 +65,8 @@ vector3d jump_state::sub_44A580(vector3d a3, vector3d a6, Float a9, Float a10) {
     return result;
 }
 
-vector3d jump_state::compute_force(vector3d a3, vector3d a4) {
+vector3d jump_state::compute_force(vector3d a3, vector3d a4)
+{
     if constexpr (1) {
         auto v5 = this->field_30->field_50;
         auto *v8 = this->get_core();
@@ -273,7 +286,9 @@ void jump_state::initiate_from_swing() {
 
         field_4C = this->compute_force(v17, v16);
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x0044ADA0, this);
     }
 }
@@ -324,7 +339,31 @@ int jump_state::get_mash_sizeof() {
 
 } // namespace ai
 
-void jump_state_patch() {
+
+void __fastcall set_velocity(ai::physics_inode *self, void *, const vector3d *a2, bool a3)
+{
+    self->field_1C->set_velocity(*a2, a3);
+
+    {
+        debug_variable_t v67 {"jump_cap_vel", g_jump_cap_vel()};
+        g_jump_cap_vel() = v67;
+
+        debug_variable_t v68 {"snow_balling", g_snow_balling()};
+        g_snow_balling() = v68;
+
+        debug_variable_t v88 {"base_factor", g_base_factor()};
+        g_base_factor() = v88;
+    }
+}
+
+
+void jump_state_patch()
+{
+
+    {
+        REDIRECT(0x004593B2, set_velocity);
+    }
+
     {
         FUNC_ADDRESS(address, &ai::jump_state::process_flying);
         REDIRECT(0x00473FD3, address);

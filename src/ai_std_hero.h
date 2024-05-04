@@ -154,7 +154,7 @@ struct hero_inode : info_node {
 
     //0x006A7950
     //virtual
-    void frame_advance(Float a2);
+    void _frame_advance(Float a2);
 
     static hero_type_enum get_hero_type();
 

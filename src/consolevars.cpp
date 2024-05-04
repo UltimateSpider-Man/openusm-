@@ -11,13 +11,15 @@
 #include "message_board.h"
 #include "mstring.h"
 #include "os_developer_options.h"
+#include "variables.h"
 #include "wds.h"
 
 #include <cassert>
 
 std::list<ConsoleVariable *> *g_console_vars{nullptr};
 
-ConsoleVariable::ConsoleVariable() {
+ConsoleVariable::ConsoleVariable()
+{
     this->setName({});
 
     if (g_console_vars == nullptr) {
@@ -41,20 +43,24 @@ std::string ConsoleVariable::getValue() {
     return {};
 }
 
-void ConsoleVariable::setName(const std::string &pName) {
+void ConsoleVariable::setName(const std::string &pName)
+{
     assert(pName.size() < MAX_VARIABLE_NAME_LEN);
+
     auto *v2 = pName.c_str();
     strcpy(this->field_4, v2);
     strlwr(this->field_4);
 }
 
-bool ConsoleVariable::match(std::string a2) {
+bool ConsoleVariable::match(std::string a2) const
+{
     std::string v4{this->field_4};
 
     return (v4 == a2);
 }
 
-std::string ConsoleVariable::getName() {
+std::string ConsoleVariable::getName() const
+{
     std::string a2{this->field_4};
     return a2;
 }
@@ -214,7 +220,7 @@ bool get_boolean_value(const char *a1) {
     return a1 != nullptr && (!strcmpi(a1, "on") || !strcmpi(a1, "true") || !strcmp(a1, "1"));
 }
 
-//static RenderFramerateVariable g_RenderFramerateVariable{};
+static RenderFramerateVariable g_RenderFramerateVariable{};
 
 RenderFramerateVariable::RenderFramerateVariable() {
     setName("render_fps");
@@ -227,6 +233,25 @@ void RenderFramerateVariable::setValue(const std::string &a1) {
 
 std::string RenderFramerateVariable::getValue() {
     auto show_fps = os_developer_options::instance()->get_flag(mString{"SHOW_FPS"});
+
+    return (show_fps ? "on" : "off");
+}
+
+static RenderInterfaceVariable g_RenderInterfaceVariable {};
+
+RenderInterfaceVariable::RenderInterfaceVariable() {
+    setName("render_interface");
+}
+
+void RenderInterfaceVariable::setValue(const std::string &a1)
+{
+    auto *v1 = a1.c_str();
+    os_developer_options::instance()->set_flag(mString{"INTERFACE_DISABLE"}, !get_boolean_value(v1));
+}
+
+std::string RenderInterfaceVariable::getValue()
+{
+    auto show_fps = !os_developer_options::instance()->get_flag(mString{"SHOW_FPS"});
 
     return (show_fps ? "on" : "off");
 }
@@ -252,9 +277,8 @@ void ProjZoomVariable::setValue(const std::string &a2) {
 }
 
 std::string ProjZoomVariable::getValue() {
-    auto a2 = geometry_manager::get_zoom();
-    std::string a1{a2};
-    return a1;
+    float a2 = geometry_manager::get_zoom();
+    return std::to_string(a2);
 }
 
 static DifficultyVariable g_DifficultyVariable{};
@@ -282,6 +306,18 @@ void DifficultyVariable::setValue(const std::string &a2) {
 std::string DifficultyVariable::getValue() {
     auto *v1 = g_game_ptr()->get_game_settings();
     float v2 = v1->field_340.m_difficulty;
-    std::string a1{v2};
-    return a1;
+    return std::to_string(v2);
+}
+
+static DisableOcclusionCullingVariable g_DisableOcclusionCullingVariable {};
+
+void DisableOcclusionCullingVariable::setValue(const std::string &a2)
+{
+    g_disable_occlusion_culling() = mString {a2.c_str()}.to_int();
+}
+
+std::string DisableOcclusionCullingVariable::getValue() {
+    char a1[32] {};
+    sprintf(a1, "%d", g_disable_occlusion_culling());
+    return std::string {a1};
 }

@@ -125,7 +125,7 @@ struct mAvlTree : mContainer {
         this->field_0 = 0;
     }
 
-    T * find(T *a1)
+    T * find(T *a1) const
     {
         auto v1 = findHelper(this->m_head, a1);
         if (v1 != nullptr) {
@@ -135,7 +135,8 @@ struct mAvlTree : mContainer {
         return nullptr;
     }
 
-    node_type *findHelper(node_type *a1, T *a2) {
+    node_type *findHelper(node_type *a1, T *a2) const
+    {
         if (a1 == nullptr || a2 == nullptr) {
             return nullptr;
         }

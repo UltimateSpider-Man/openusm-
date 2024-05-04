@@ -94,9 +94,24 @@ trigger *trigger_manager::find_instance(entity_base *ent)
 
         return nullptr;
 
-    } else {
+    }
+    else
+    {
         return (trigger *) THISCALL(0x0051E5B0, this, ent);
     }
+}
+
+trigger * trigger_manager::find_instance(const mString &a2) const
+{
+    const string_hash v3 {a2.c_str()};
+    for ( auto *trig = this->m_triggers; trig != nullptr; trig = trig->m_next_trigger )
+    {
+        if ( trig->get_id() == v3 ) {
+            return trig;
+        }
+    }
+
+    return nullptr;
 }
 
 void trigger_manager::remove(trigger **trem)

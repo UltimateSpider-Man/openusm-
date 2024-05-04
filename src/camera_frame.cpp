@@ -44,6 +44,27 @@ vector3d camera_frame::fix_up_vector(vector3d upn) const
     return upn;
 }
 
+po make_look_at(const vector3d &a1, const vector3d &a2, const vector3d &a3)
+{
+    po v19 {};
+
+    auto v12 = a2 - a1;
+    auto v17 = v12.normalized();
+
+    auto v18 = sub_87D3A0(a3, v17);
+
+    v19.set_po(v17, v18, a1);
+    return v19;
+}
+
+po camera_frame::get_po() const
+{
+    auto v8 = this->fwd + this->eye;
+    auto upn = this->fix_up_vector(this->up);
+    auto a2 = make_look_at(this->eye, v8, upn);
+    return a2;
+}
+
 vector3d camera_frame::get_right() const
 {
     auto r = vector3d::cross(this->up, this->fwd);

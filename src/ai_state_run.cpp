@@ -285,11 +285,11 @@ ai::state_trans_messages run_state::_frame_advance(Float a2)
 
             v92 = cam_ptr->get_abs_po().m[2];
 
-            if (Input::instance()->field_129D8[0]->field_18.sub_821E90(InputAction::Forward) >
+            if (Input::instance()->field_129D8[0]->field_18.get_state(InputAction::Forward) >
                     0.80000001f &&
-                Input::instance()->field_129D8[0]->field_18.sub_821E90(InputAction::Backward) <
+                Input::instance()->field_129D8[0]->field_18.get_state(InputAction::Backward) <
                     0.80000001f &&
-                Input::instance()->field_129D8[0]->field_18.sub_821E90(InputAction::TurnRight) <
+                Input::instance()->field_129D8[0]->field_18.get_state(InputAction::TurnRight) <
                     0.80000001f) {
                 p_list.add_param(27u, v92);
                 v51 = &v92;

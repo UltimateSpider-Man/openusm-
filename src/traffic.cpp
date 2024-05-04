@@ -37,70 +37,78 @@ void sub_6BA2A0(vhandle_type<entity> a1, uint32_t a2)
     }
 }
 
+//FIXME
+void traffic::terminate_traffic()
+{
+    if ( !traffic_initialized() ) {
+        return;
+    }
+
+    bool v13 = false;
+    bool v14 = true;
+
+    while (v14)
+    {
+        v14 = false;
+        for ( auto &the_traffic : traffic_list() )
+        {
+            if ( the_traffic != nullptr )
+            {
+                if ( the_traffic->field_4 && the_traffic->field_158 )
+                {
+                    if ( !the_traffic->field_5 )
+                    {
+                        if ( the_traffic->get_current_lane() != nullptr) {
+                            the_traffic->un_spawn();
+                        }
+                    }
+
+                    the_traffic->field_158 = false;
+                    auto *e = the_traffic->get_my_actor();
+                    auto bodytype = the_traffic->field_C.bodytype;
+                    the_traffic = nullptr;
+                    assert(e != nullptr);
+
+                    if ( e != nullptr ) {
+                        sub_6BA2A0(vhandle_type<entity> {e->get_my_handle()}, bodytype);
+                    }
+
+                    v14 = true;
+                    continue;
+                }
+
+                sp_log("traffic was disabled with mission cars in world - this may cause problems");
+                v13 = true;
+            }
+        }
+    }
+
+    if ( !v13 )
+    {
+        vehicle::terminate_vehicles();
+        traffic_list().clear();
+    }
+
+    traffic_initialized() = false;
+}
+
 void traffic::enable_traffic(bool a1, bool a2)
 {
     TRACE("traffic::enable_traffic");
 
-    a1 = false;
-
-    if constexpr (1) {
+    if constexpr (1)
+    {
         traffic_enabled() = a1;
-        if ( a1 && !traffic_initialized() )
-        {
+        if ( a1 && !traffic_initialized() ) {
             initialize_traffic();
         }
 
-        if (!a1 && traffic_initialized() )
-        {
-            bool v13 = false;
-            bool v14 = true;
-            while (v14)
-            {
-                v14 = false;
-                for ( auto &the_traffic : traffic_list() )
-                {
-                    if ( the_traffic != nullptr )
-                    {
-                        if ( the_traffic->field_4 && the_traffic->field_158 )
-                        {
-                            if ( !the_traffic->field_5 )
-                            {
-                                if ( the_traffic->get_current_lane() != nullptr)
-                                {
-                                    the_traffic->un_spawn();
-                                }
-                            }
-
-                            the_traffic->field_158 = false;
-                            auto *e = the_traffic->get_my_actor();
-                            auto bodytype = the_traffic->field_C.bodytype;
-                            the_traffic = nullptr;
-                            assert(e != nullptr);
-
-                            if ( e != nullptr )
-                            {
-                                sub_6BA2A0(vhandle_type<entity> {e->get_my_handle()}, bodytype);
-                            }
-
-                            v14 = true;
-                            continue;
-                        }
-
-                        sp_log("traffic was disabled with mission cars in world - this may cause problems");
-                        v13 = true;
-                    }
-                }
-            }
-
-            if ( !v13 )
-            {
-                vehicle::terminate_vehicles();
-                traffic::traffic_list().clear();
-            }
-
-            traffic_initialized() = false;
+        if (!a1 && traffic_initialized() ) {
+            terminate_traffic();
         }
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x006D33C0, a1, a2);
     }
 }
@@ -192,5 +200,5 @@ traffic *traffic::get_traffic_from_entity(vhandle_type<entity> a1) {
 
 void traffic_patch()
 {
-    SET_JUMP(0x006D33C0, traffic::enable_traffic);
+    //SET_JUMP(0x006D33C0, traffic::enable_traffic);
 }

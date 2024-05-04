@@ -5,48 +5,47 @@
 
 VALIDATE_SIZE(input_device, 0x8);
 
-input_device::input_device() {
-    m_vtbl = 0x0088E4D0;
-    this->field_4 = -1;
+input_device::input_device()
+{
+    m_vtbl = CAST(m_vtbl, 0x0088E4D0);
+    this->field_4 = INVALID_DEVICE_ID;
 }
 
 uint8_t input_device::normalize(int a1) {
     return a1;
 }
 
-bool input_device::is_connected() {
-    bool (__fastcall *is_connected)(void *) = CAST(is_connected, get_vfunc(m_vtbl, 0x2C));
+bool input_device::is_connected() const {
 
-    return is_connected(this);
+    return this->m_vtbl->is_connected(this);
 }
 
 int input_device::get_axis_id(int a1) {
-    int (__fastcall *get_axis_id)(void *, void *, int) = CAST(get_axis_id, get_vfunc(m_vtbl, 0x10));
 
-    return get_axis_id(this, nullptr, a1);
+    return this->m_vtbl->get_axis_id(this, nullptr, a1);
 }
 
 float input_device::get_axis_delta(int a2, int a3) {
-    float (__fastcall *get_axis_delta)(void *, void *, int, int) = CAST(get_axis_delta, get_vfunc(m_vtbl, 0x1C));
 
-    return get_axis_delta(this, nullptr, a2, a3);
+    return this->m_vtbl->get_axis_delta(this, nullptr, a2, a3);
+}
+
+void input_device::poll() {
+
+    return this->m_vtbl->poll(this);
 }
 
 float input_device::get_axis_old_state(int a2, int a3) {
-    float (__fastcall *get_axis_old_state)(void *, void *, int, int) = CAST(get_axis_old_state, get_vfunc(m_vtbl, 0x18));
 
-    return get_axis_old_state(this, nullptr, a2, a3);
+    return this->m_vtbl->get_axis_old_state(this, nullptr, a2, a3);
 }
 
 float input_device::get_axis_state(int a2, int a3) {
-    float (__fastcall *get_axis_state)(void *, void *, int, int) = CAST(get_axis_state, get_vfunc(m_vtbl, 0x14));
 
-    return get_axis_state(this, nullptr, a2, a3);
+    return this->m_vtbl->get_axis_state(this, nullptr, a2, a3);
 }
 
 device_id_t input_device::get_id() const
 {
-    device_id_t (__fastcall *get_id)(const input_device *) = CAST(get_id, get_vfunc(m_vtbl, 0x8));
-
-    return get_id(this);
+    return this->m_vtbl->get_id(this);
 }

@@ -8,10 +8,11 @@
 #include "variable.h"
 
 struct box_trigger;
+struct entity_base;
 struct entity_trigger;
+struct mString;
 struct point_trigger;
 struct trigger;
-struct entity_base;
 struct trigger_struct;
 
 struct trigger_manager : singleton {
@@ -32,6 +33,8 @@ struct trigger_manager : singleton {
     void update_trigger(trigger **a1, trigger_struct *a2, int a3);
 
     trigger *find_instance(entity_base *a2);
+
+    trigger *find_instance(const mString &a2) const;
 
     void remove(trigger **trem);
 

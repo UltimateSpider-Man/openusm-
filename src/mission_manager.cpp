@@ -1,23 +1,26 @@
 #include "mission_manager.h"
 
 #include "common.h"
+#include "event.h"
+#include "event_manager.h"
 #include "func_wrapper.h"
 #include "game.h"
 #include "log.h"
 #include "mission_manager_script_data.h"
 #include "mission_table_container.h"
 #include "mstring.h"
+#include "oldmath_po.h"
+#include "parse_generic_mash.h"
+#include "region.h"
 #include "resource_manager.h"
 #include "script_manager.h"
-#include "variables.h"
-#include "wds.h"
-#include "event_manager.h"
 #include "sound_manager.h"
-#include "event.h"
-#include "parse_generic_mash.h"
 #include "script_executable.h"
 #include "script_executable_entry.h"
 #include "trace.h"
+#include "trigger_manager.h"
+#include "variables.h"
+#include "wds.h"
 
 #include <cassert>
 
@@ -25,10 +28,16 @@ VALIDATE_SIZE(mission_manager, 0x100u);
 
 Var<mission_manager *> mission_manager::s_inst{0x00968518};
 
-Var<mString> current_mission_debug_title{0x00969E90};
+Var<mString> mission_manager::current_mission_debug_title {0x00969E90};
 
-mission_manager::mission_manager() {
-    THISCALL(0x005DA010, this);
+mission_manager::mission_manager()
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x005DA010, this);
+    }
 }
 
 void mission_manager::prepare_unload_script()
@@ -496,22 +505,98 @@ void mission_manager::update_hero_switch() {
     }
 }
 
-entity_base *mission_manager::get_mission_key_entity()
+entity_base *mission_manager::get_mission_key_entity() const
 {
     assert(m_script != nullptr);
 
     string_hash a1 {this->m_script->field_84.c_str()};
-    return entity_handle_manager::find_entity(a1, (entity_flavor_t)29, false);
+    return entity_handle_manager::find_entity(a1, IGNORE_FLAVOR, false);
 }
 
-int *mission_manager::get_mission_nums()
+trigger * mission_manager::get_mission_key_trigger() const
 {
-    return &this->m_script->field_34;
+    mString v3 {this->m_script->field_84.c_str()};
+    auto *instance = trigger_manager::instance()->find_instance(v3);
+    return instance;
 }
 
-int *mission_manager::get_mission_strings()
+_std::vector<float> * mission_manager::get_mission_nums()
 {
+    assert(m_script != nullptr);
+
+    assert(m_script->nums.size() > 0);
+
+    return &this->m_script->nums;
+}
+
+_std::vector<mString> * mission_manager::get_mission_strings()
+{
+    assert(m_script != nullptr);
+
+    assert(m_script->strings.size() > 0);
+
     return &this->m_script->strings;
+}
+
+void mission_manager::set_mission_key_po(const po &a2)
+{
+    assert(m_script != nullptr);
+
+    *this->m_script->field_94 = a2;
+}
+
+po mission_manager::get_mission_key_po() const
+{
+    assert(m_script != nullptr);
+
+    return *this->m_script->field_94;
+}
+
+bool mission_manager::is_story_active() const
+{
+    mString v3 {"gv_story_finished"};
+    float *game_var_address = (float *)script_manager::get_game_var_address(v3, nullptr, nullptr);
+    return *game_var_address == 0.0f;
+}
+
+bool mission_manager::is_mission_active() const
+{
+    return this->m_script != nullptr;
+}
+
+void mission_manager::get_missions_nums_by_index(
+        int a2,
+        const char *a3,
+        int a4,
+        _std::vector<float> *nums_result)
+{
+    assert(nums_result != nullptr);
+
+    for ( uint32_t i = 0; i < this->m_district_table_count; ++i )
+    {
+        auto *reg = this->m_district_table_containers[i]->get_region();
+        if ( a2 == reg->get_district_id()
+            && this->m_district_table_containers[i]->append_nums(a3, a4, nums_result) )
+        {
+            return;
+        }
+    }
+
+    assert(0 && "Attempted to find nums for nonexistent mission.");
+}
+
+int mission_manager::sub_5C5BD0() const
+{
+    int v1 = (this->field_68 / 60u) / 60 % 24;
+    if ( v1 <= 7 ) {
+        return 2;
+    }
+
+    if ( v1 >= 19 ) {
+        return 2;
+    }
+
+    return 1;
 }
 
 void mission_manager_patch()

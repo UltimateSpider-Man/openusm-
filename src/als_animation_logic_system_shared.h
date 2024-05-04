@@ -28,4 +28,4 @@ struct animation_logic_system_shared {
 };
 } // namespace als
 
-extern void animation_logic_sytem_shared_patch();
+extern void animation_logic_system_shared_patch();

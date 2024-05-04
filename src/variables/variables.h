@@ -11,6 +11,10 @@ struct InputSettings;
 
 inline constexpr bool STANDALONE_SYSTEM = 0;
 
+inline Var<float> g_strafe_mult {0x00921B70};
+
+inline Var<float> g_move_mult {0x00921B6C};
+
 inline Var<float> sluggish_mix {0x00959E44};
 
 inline Var<float> med_mix {0x00959E50};

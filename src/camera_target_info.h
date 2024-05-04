@@ -12,7 +12,7 @@ struct camera_target_info {
     vector3d field_C;
     float radius;
     float min_look_dist;
-    float field_20;
+    float max_look_dist;
     vector3d field_24;
     vector3d up;
     vector3d facing;
@@ -34,5 +34,11 @@ struct camera_target_info {
 
     bool sub_4B29C0() const;
 };
+
+extern Var<float> g_camera_min_dist;
+
+extern Var<float> g_camera_max_dist;
+
+extern Var<float> g_camera_supermax_dist;
 
 extern void camera_target_info_patch();

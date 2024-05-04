@@ -5,9 +5,11 @@
 #include "console.h"
 #include "consolevars.h"
 #include "debug_render.h"
+#include "dvar.h"
 #include "entity_handle_manager.h"
 #include "filespec.h"
 #include "game.h"
+#include "game_settings.h"
 #include "mstring.h"
 #include "nal_anim.h"
 #include "nal_system.h"
@@ -22,7 +24,8 @@
 
 std::list<ConsoleCommand *> *g_console_cmds{nullptr};
 
-ConsoleCommand::ConsoleCommand() {
+ConsoleCommand::ConsoleCommand()
+{
     this->setName({});
 
     if (g_console_cmds == nullptr) {
@@ -34,7 +37,8 @@ ConsoleCommand::ConsoleCommand() {
 
 static constexpr auto MAX_COMMAND_NAME_LEN = 32;
 
-std::string ConsoleCommand::getName() {
+std::string ConsoleCommand::getName() const
+{
     std::string out{this->field_4};
     return out;
 }
@@ -51,7 +55,8 @@ bool ConsoleCommand::process_cmd(const std::vector<std::string> &) {
     return false;
 }
 
-bool ConsoleCommand::match(const std::string &a2) {
+bool ConsoleCommand::match(const std::string &a2) const
+{
     std::string v4{this->field_4};
 
     return (v4 == a2);
@@ -72,8 +77,10 @@ HelpCommand::HelpCommand() {
     setName(std::string{"help"});
 }
 
-bool HelpCommand::process_cmd(const std::vector<std::string> &a2) {
-    if (!a2.empty()) {
+bool HelpCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    if (!a2.empty())
+    {
         g_console->addToLog("");
         auto &v2 = a2[0];
 
@@ -173,30 +180,25 @@ VariableList::VariableList() {
     setName("varlist");
 }
 
-bool VariableList::process_cmd(const std::vector<std::string> &) {
+bool VariableList::process_cmd(const std::vector<std::string> &)
+{
     g_console->addToLog("");
     g_console->addToLog("<-- Console Variables -->");
 
-    if (g_console_vars != nullptr && g_console_vars->size()) {
-        auto it = g_console_vars->begin();
-        while (1) {
-            auto end = g_console_vars->end();
-            if (it == end) {
-                break;
-            }
-
-            if ((*it) != nullptr) {
-                auto &v3 = (*it);
+    if (g_console_vars != nullptr && g_console_vars->size())
+    {
+        auto &vars = *g_console_vars;
+        for (auto &v3 : vars)
+        {
+            if (v3 != nullptr)
+            {
                 auto v9 = v3->getValue();
-
                 auto v8 = v3->getName();
 
                 auto *v7 = v9.c_str();
                 auto *v5 = v8.c_str();
                 g_console->addToLog("%s %s", v5, v7);
             }
-
-            ++it;
         }
     }
 
@@ -209,7 +211,8 @@ SetCommand::SetCommand() {
     setName("set");
 }
 
-bool SetCommand::process_cmd(const std::vector<std::string> &a2) {
+bool SetCommand::process_cmd(const std::vector<std::string> &a2)
+{
     if (a2.size() > 1) {
         auto &v2 = a2[0];
         auto *v12 = g_console->getVariable(v2);
@@ -313,6 +316,244 @@ bool GameStateCommand::process_cmd(const std::vector<std::string> &cmds) {
     return true;
 }
 
+static GameInfoCommand g_GameInfoCommand {};
+
+bool GameInfoCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    if ( a2.size() != 0 )
+    {
+        auto &v2 = a2.at(0);
+        resource_key a2a {string_hash {v2.c_str()}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE};
+        if ( a2.size() <= 1 )
+        {
+            float a3 = 0.0;
+            auto *v11 = g_game_ptr()->get_game_settings();
+            v11->get_num(a2a, a3, true);
+
+            auto &v8 = a2.at(0);
+            auto *v9 = v8.c_str();
+            g_console->addToLog("%s = %.2f", v9, a3);
+        }
+        else
+        {
+            auto &v4 = a2.at(1);
+            auto *v5 = v4.c_str();
+            auto num = atof(v5);
+            auto *v6 = g_game_ptr()->get_game_settings();
+            v6->set_num(a2a, num);
+        }
+    }
+    else
+    {
+        g_console->addToLog("");
+
+        auto func = [](const char *str) -> void {
+            resource_key key {string_hash {str}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE};
+            float num = 0.0;
+            auto *v11 = g_game_ptr()->get_game_settings();
+            if ( v11->get_num(key, num, true) ) {
+                g_console->addToLog("%s = %.2f", str, num);
+            }
+        };
+
+        func("HERO_POINTS");
+
+        func("UPG_MINIMAP_PTS");
+
+        func("UPG_IMPACT_WEB_PTS");
+
+        func("UPG_HERO_METER_PTS");
+
+        func("UPG_2ND_CHANCE_PTS");
+
+        func("UPG_SPEED_PTS");
+
+        func("UPG_UNDERDOG_PTS");
+
+        func("HERO_METER_LEVEL_1");
+
+        func("HERO_METER_LEVEL_2");
+
+        func("HERO_METER_LEVEL_3");
+
+        func("CUR_HERO_METER_LEVEL");
+
+        func("CUR_HERO_METER_POINTS");
+
+        func("OPT_SCORE_DISPLAY");
+
+        func("OPT_CONT_1_RUMBLE");
+
+        func("OPT_AUDIO_MODE");
+
+        func("OPT_LEVELS_GAME");
+
+        func("OPT_LEVELS_MUSIC");
+
+        func("OPT_CONT_CONFIG");
+
+        func("MINI_MAP_ENABLED");
+
+        func("ENABLE_WEB_SHOT");
+
+        func("ENABLE_WEB_DOME");
+
+        func("ENABLE_ADV_WEB_DOME");
+
+        func("ENABLE_WEB_GLOVES");
+
+        func("ENABLE_ADV_WEB_GLOVES");
+
+        func("ENABLE_IMPACT_WEB");
+
+        func("ENABLE_ADV_IMPACT_WEB");
+
+        func("ENABLE_WEB_COWBOY");
+
+        func("ENABLE_WEB_YANK");
+
+        func("ENABLE_YANK_MANIP");
+
+        func("ENABLE_ZIP_WEB_ATTACK");
+
+        func("ENABLE_SWING_CANNONBALL");
+
+        func("ENABLE_DIRECTIONAL_ATTACK");
+
+        func("ENABLE_DIRECTIONAL_DODGE");
+
+        func("DIFFICULTY");
+
+        func("RUN_SENSITIVITY");
+
+        func("CHAR_REL_MOVEMENT");
+
+        func("CRAWL_CHAR_REL_MOVEMENT");
+
+        func("SHOW_STYLE_SCORE");
+
+        func("HERO_HEALTH");
+
+        func("HERO_TYPE");
+
+        func("SWING_SPEED");
+
+        func("CAM_INVERTED_X");
+
+        func("CAM_INVERTED_Y");
+
+        func("SPEED_DEMON");
+
+        func("YOURE_AMAZING");
+
+        func("ERRAND_BOY");
+
+        func("BETTER_TO_DO");
+
+        func("FANBOY");
+
+        func("ANGSTY");
+
+        func("SECRET_IDENTITY");
+
+        func("STYLE");
+
+        func("FASHION");
+
+        func("PICTURES");
+
+        func("BUNNY");
+
+        func("CLOBBER");
+
+        func("SCRAP_HEAP");
+
+        func("SILVER_SPOON");
+
+        func("KUNG_FU_FIGHTING");
+
+        func("BIG_TIME_SUPER_HERO");
+
+        func("ENJOY_THE_SUNSHINE");
+
+        func("TIME_PLAYED");
+
+        func("STORY_PERCENT_COMPLETE");
+
+        func("STORY_MISSION_FAILURES");
+
+        func("STORY_MISSIONS_COMPLETED");
+
+        func("SPIDEY_RACES_COMPLETED");
+
+        func("MILES_RUN_SPIDEY");
+
+        func("MILES_CRAWLED_SPIDEY");
+
+        func("MILES_WEB_SWINGING");
+
+        func("MILES_WEB_ZIPPING");
+
+        func("WEB_FLUID_USED");
+
+        func("YANCY_DEFEATED");
+
+        func("DIE_CASTEDEFEATED");
+
+        func("HIGH_ROLLERSDEFEATED");
+
+        func("FOU_TOU_BANGDEFEATED");
+
+        func("VENOM_RACES_COMPLETED");
+
+        func("MILES_RUN_VENOM");
+
+        func("MILES_CRAWLED_VENOM");
+
+        func("MILES_LOCOMOTION_JUMPED");
+
+        func("PEOPLE_EATEN");
+
+        func("CARS_THROWN");
+
+        func("VENOM_HOT_PERSUIT");
+
+        func("TOKENS_COLLECTED_COUNT");
+
+        func("RACE_POINTS_EARNED_COUNT");
+
+        func("COMBAT_TOURS_COMPLETED_COUNT");
+
+        func("CITY_EVENTS_COMPLETED_COUNT");
+
+        func("TOKENS_COLLECTED_MAX");
+
+        func("RACE_POINTS_EARNED_MAX");
+
+        func("COMBAT_TOURS_COMPLETED_MAX");
+
+        func("CITY_EVENTS_COMPLETED_MAX");
+
+        func("TOKENS_COLLECTED_TOT_COUNT");
+
+        func("RACE_POINTS_EARNED_TOT_COUNT");
+
+        func("COMBAT_TOURS_COMPLETED_TOT_COUNT");
+
+        func("CITY_EVENTS_COMPLETED_TOT_COUNT");
+
+        func("TOKENS_COLLECTED_TOT_MAX");
+
+        func("RACE_POINTS_EARNED_TOT_MAX");
+
+        func("COMBAT_TOURS_COMPLETED_TOT_MAX");
+
+        func("CITY_EVENTS_COMPLETED_TOT_MAX");
+    }
+
+    return true;
+}
+
 static QuitCommand g_QuitCommand{};
 
 QuitCommand::QuitCommand() {
@@ -330,26 +571,22 @@ CommandList::CommandList() {
     this->setName("cmdlist");
 }
 
-bool CommandList::process_cmd(const std::vector<std::string> &) {
+bool CommandList::process_cmd(const std::vector<std::string> &)
+{
     g_console->addToLog("");
     g_console->addToLog("<-- Console Commands -->");
-    if (g_console_cmds != nullptr && g_console_cmds->size()) {
-        auto a1 = g_console_cmds->begin();
-        while (1) {
-            auto v2 = g_console_cmds->end();
-            if (a1 == v2) {
-                break;
-            }
-
-            auto &cmd = (*a1);
-            if (cmd != nullptr) {
+    if (g_console_cmds != nullptr && g_console_cmds->size())
+    {
+        auto &cmds = *g_console_cmds;
+        for (auto &cmd : cmds)
+        {
+            if (cmd != nullptr)
+            {
                 auto v6 = cmd->getName();
 
                 auto *v4 = v6.c_str();
                 g_console->addToLog("%s", v4);
             }
-
-            ++a1;
         }
     }
 
@@ -437,7 +674,79 @@ ListDebugVariablesCommand::ListDebugVariablesCommand()
 
 bool ListDebugVariablesCommand::process_cmd(const std::vector<std::string> &)
 {
-    return false;
+    g_console->addToLog("<-- DVars -->");
+    for ( auto &v3 : g_dvars )
+    {
+        auto *v4 = v3.first.c_str();
+        g_console->addToLog("  %s", v4);
+    }
+
+    return true;
+}
+
+static DebugVarCommand g_DebugVarCommand {};
+
+DebugVarCommand::DebugVarCommand()
+{
+    setName("dvar");
+}
+
+bool DebugVarCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    if ( a2.size() == 0 ) {
+        return false;
+    }
+
+    auto &v3 = a2.at(0);
+    auto a1 = g_dvars.find(mString {v3.c_str()});
+    if ( a2.size() == 1 )
+    {
+        auto v4 = g_dvars.end();
+        if ( a1 == v4 )
+        {
+            auto &v5 = a2.at(0);
+            auto *v6 = v5.c_str();
+            g_console->addToLog("Couldn't find debug variable %s.", v6);
+        }
+        else
+        {
+            auto &v7 = (*a1);
+            auto *v16 = v7.second.c_str();
+            auto &v8 = a2.at(0);
+            auto *v9 = v8.c_str();
+            g_console->addToLog("%s -> %s", v9, v16);
+        }
+
+        return true;
+    }
+    else if ( a2.size() == 2 )
+    {
+        auto v10 = g_dvars.end();
+        if ( a1 == v10 )
+        {
+            auto &v17 = a2.at(1);
+            auto &v11 = a2.at(0);
+            std::pair<mString, mString> v20 {mString {v11.c_str()}, mString {v17.c_str()} };
+            g_dvars.insert(v20);
+        }
+        else
+        {
+            auto &v18 = a2.at(1);
+            auto &v12 = (*a1);
+            v12.second = mString {v18.c_str()};
+        }
+
+        auto &v13 = a2.at(1);
+        auto *v19 = v13.c_str();
+        auto &v14 = a2.at(0);
+        auto *v15 = v14.c_str();
+        g_console->addToLog("%s -> %s", v15, v19);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 static ListMissionsCommand g_ListMissionsCommand{};

@@ -4,12 +4,16 @@
 #include "float.hpp"
 #include "variable.h"
 
+#include <vector.hpp>
+
 struct entity_base;
 struct mString;
 struct mission_manager_script_data;
-struct resource_key;
 struct mission_table_container;
+struct po;
 struct region;
+struct resource_key;
+struct trigger;
 
 struct mission_manager {
     int field_0;
@@ -127,13 +131,31 @@ struct mission_manager {
     //0x005DBD00
     void unload_script_if_requested();
 
-    entity_base *get_mission_key_entity();
+    entity_base *get_mission_key_entity() const;
+
+    trigger * get_mission_key_trigger() const;
 
     //0x005BB160
-    int *get_mission_nums();
+    _std::vector<float> * get_mission_nums();
 
     //0x005BB150
-    int *get_mission_strings();
+    _std::vector<mString> * get_mission_strings();
+
+    void set_mission_key_po(const po &a2);
+
+    po get_mission_key_po() const;
+
+    bool is_story_active() const;
+
+    bool is_mission_active() const;
+
+    void get_missions_nums_by_index(
+        int a2,
+        const char *a3,
+        int a4,
+        _std::vector<float> *nums_result);
+
+    int sub_5C5BD0() const;
 
     static Var<mission_manager *> s_inst;
 

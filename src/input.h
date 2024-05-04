@@ -87,9 +87,9 @@ struct Input {
 
     int sub_820080();
 
-    float sub_820370(int a2, int a3);
+    float get_joy_state(int a2, int a3);
 
-    float sub_81FE60(InputMouse a2, int mode);
+    float get_mouse_state(InputMouse a2, int mode);
 
     void sub_8204C0(InputSettings::internal_struct *a2, int mode);
 

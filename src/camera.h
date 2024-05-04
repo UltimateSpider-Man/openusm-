@@ -28,6 +28,9 @@ struct camera : actor {
     //virtual
     void sync(camera &a2);
 
+    //virtual
+    void set_fov(Float fov);
+
     /* virtual */ float get_fov();
 
     /* virtual */ float get_far_plane_factor();

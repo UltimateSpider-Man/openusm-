@@ -2,6 +2,9 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "game.h"
+#include "trace.h"
+#include "utility.h"
 
 #include <profileapi.h>
 
@@ -9,7 +12,10 @@ VALIDATE_SIZE(Timer, 0x58);
 
 Var<Timer *> g_timer{0x00965BF0};
 
-Timer::Timer(Float a2, Float a3) {
+Timer::Timer(Float a2, Float a3)
+{
+    TRACE("Timer::Timer", std::to_string(float(a2)).c_str(), std::to_string(float(a3)).c_str());
+
     this->field_24 = QueryPerformanceFrequency(&this->field_0);
     this->field_8.LowPart = 0;
     this->field_8.HighPart = 0;
@@ -32,11 +38,16 @@ Timer::Timer(Float a2, Float a3) {
     this->field_34 = 1.0 / a3;
 }
 
-double Timer::sub_5821D0() {
-    return (double) THISCALL(0x005821D0, this);
+float Timer::sub_5821D0()
+{
+    float (__fastcall *func)(void *) = CAST(func, 0x005821D0);
+    auto time_inc = func(this);
+
+    return time_inc;
 }
 
-void Timer::sub_582180() {
+void Timer::sub_582180()
+{
     if (this->field_24) {
         QueryPerformanceCounter(&this->field_8);
         this->field_3C = 0;
@@ -52,5 +63,24 @@ void Timer::sub_582180() {
         this->field_44 = 0;
         this->field_4C = 0;
         this->field_1C = v2;
+    }
+}
+
+Timer * __fastcall Timer_constructor(Timer *self, void *, Float a2, Float a3)
+{
+    return new (self) Timer {a2, a3};
+}
+
+void Timer_patch()
+{
+    {
+        REDIRECT(0x005AC399, Timer_constructor);
+        REDIRECT(0x0076E7DF, Timer_constructor);
+    }
+
+    {
+        FUNC_ADDRESS(address, &Timer::sub_5821D0);
+        REDIRECT(0x005D7000, address);
+        REDIRECT(0x005D702C, address);
     }
 }

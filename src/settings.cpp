@@ -58,7 +58,23 @@ void Settings::sub_81CFA0(const char *a1, const char *a2, char *Type, DWORD cbDa
     }
 }
 
-bool Settings::sub_81D050(const char *a2, bool a3) {
+bool Settings::sub_81CF80(const char *Source, BYTE Data)
+{
+    return this->sub_81CC80(Source, 4u, &Data, 4u);
+}
+
+bool Settings::sub_81CC80(const char *Source, DWORD dwType, BYTE *lpData, DWORD cbData)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        return THISCALL(0x0081CC80, this, Source, dwType, lpData, cbData);
+    }
+}
+
+bool Settings::sub_81D050(const char *a2, bool a3)
+{
     auto result = (bool) THISCALL(0x0081D050, this, a2, a3);
 
     return result;

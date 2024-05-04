@@ -30,9 +30,11 @@ struct Timer {
     //0x00582100
     Timer(Float a2, Float a3);
 
-    double sub_5821D0();
+    float sub_5821D0();
 
     void sub_582180();
 };
 
 extern Var<Timer *> g_timer;
+
+extern void Timer_patch();

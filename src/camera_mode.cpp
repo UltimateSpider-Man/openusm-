@@ -23,6 +23,8 @@ VALIDATE_SIZE(camera_mode, 0xC);
 
 VALIDATE_SIZE(camera_mode_lookaround, 0x78);
 
+VALIDATE_SIZE(camera_mode_fixedstatic, 0x28u);
+
 static Var<int> dword_959E5C {0x00959E5C};
 
 bool sub_4B2180(vector3d &a1, float a2)
@@ -118,6 +120,19 @@ void camera_mode::frame_advance(Float a2, camera_frame &frame, const camera_targ
     {
         this->m_vtbl->frame_advance(this, nullptr, a2, &frame, &a4);
     }
+}
+
+void camera_mode::set_fixedstatic(
+        const vector3d &a2,
+        const vector3d &a3)
+{
+
+    this->m_vtbl->set_fixedstatic(this, nullptr, &a2, &a3);
+}
+
+void camera_mode::clear_fixedstatic()
+{
+    this->m_vtbl->clear_fixedstatic(this);
 }
 
 void camera_mode_shake::_frame_advance(
@@ -382,10 +397,20 @@ camera_mode_passive::camera_mode_passive(
             camera_mode *a3) : camera_mode(a2, a3)
 {
     this->m_vtbl = CAST(m_vtbl, 0x00882408);
-    this->field_10 = 4.5;
-    this->field_C = 2.25;
+    this->field_10 = g_camera_max_dist();
+    this->field_C = g_camera_min_dist();
     this->field_14 = -0.5;
     this->field_18 = 0.69999999;
+    this->field_1C = YVEC;
+}
+
+void camera_mode_passive::_activate(camera_target_info &a2)
+{
+    auto *v3 = this->field_8;
+    if ( v3 != nullptr ) {
+        v3->activate(a2);
+    }
+
     this->field_1C = YVEC;
 }
 
@@ -441,8 +466,8 @@ void camera_mode_passive::_frame_advance(
         target.min_look_dist = lerp(target.min_look_dist, this->field_C, slow_mix());
         this->field_C = target.min_look_dist;
 
-        target.field_20 = lerp(target.field_20, this->field_10, slow_mix());
-        this->field_10 = target.field_20;
+        target.max_look_dist = lerp(target.max_look_dist, this->field_10, slow_mix());
+        this->field_10 = target.max_look_dist;
 
         this->field_14 = lerp(v14, this->field_14, slow_mix());
         this->field_18 = lerp(v15, this->field_18, slow_mix());
@@ -480,7 +505,7 @@ void camera_mode_passive::_frame_advance(
             frame.avoid_target(target, target.min_look_dist);
         }
 
-        camera_mode_chase::pull_by_target(frame, target, target.field_20);
+        camera_mode_chase::pull_by_target(frame, target, target.max_look_dist);
         if ( v12 )
         {
             auto v35 = target.pos - frame.eye;
@@ -502,6 +527,86 @@ void camera_mode_passive::_frame_advance(
     }
 }
 
+camera_mode_fixedstatic::camera_mode_fixedstatic(
+        spiderman_camera *a2,
+        camera_mode *a3) : camera_mode(a2, a3)
+{
+    this->m_vtbl = CAST(m_vtbl, 0x00881E74);
+    this->field_C = ZEROVEC;
+    this->field_18 = ZVEC;
+    this->enabled = false;
+}
+
+void camera_mode_fixedstatic::_frame_advance(
+        Float a2,
+        camera_frame &a3,
+        const camera_target_info &a4)
+{
+    if ( this->enabled )
+    {
+        a3.eye = this->field_C;
+        a3.fwd = this->field_18;
+        a3.up = YVEC;
+        a3.include_target(a4.field_C, a4.radius, 0.80000001);
+        auto *v5 = this->slave;
+
+        {
+            v5->field_1C4 = v5->field_1C0;
+            v5->field_1C0 = 0;
+        }
+    }
+    else
+    {
+        auto *v6 = this->field_8;
+        if ( v6 != nullptr ) {
+            v6->frame_advance(a2, a3, a4);
+        }
+    }
+}
+
+void camera_mode_fixedstatic::_set_fixedstatic(
+        const vector3d &a2,
+        const vector3d &a3)
+{
+    auto *v4 = this->field_8;
+    if ( v4 != nullptr ) {
+        v4->set_fixedstatic(this->field_C, a3);
+    }
+
+    this->enabled = true;
+    this->field_C = a2;
+
+    this->field_18 = (a3 - a2).normalized();
+}
+
+void camera_mode_fixedstatic::_clear_fixedstatic()
+{
+    auto *v2 = this->field_8;
+    if ( v2 != nullptr ) {
+        v2->clear_fixedstatic();
+    }
+
+    this->enabled = false;
+}
+
+void camera_mode_combat::_frame_advance(
+        Float a2,
+        camera_frame &a3,
+        const camera_target_info &a4)
+{
+    {
+        static Var<float> flt_882444 {0x00882444};
+        flt_882444() = 0.66000003 * g_camera_min_dist();
+    }
+
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x004B7F90, this, a2, &a3, &a4);
+    }
+}
+
 void camera_mode_patch()
 {
     {
@@ -517,5 +622,10 @@ void camera_mode_patch()
     {
         FUNC_ADDRESS(address, &camera_mode_passive::_frame_advance);
         set_vfunc(0x00882418, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &camera_mode_combat::_frame_advance);
+        set_vfunc(0x00882068, address);
     }
 }

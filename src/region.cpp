@@ -350,12 +350,18 @@ void region::sub_5452D0() {
     }
 }
 
-bool region::is_inside_or_on(const vector3d &a2) {
+bool region::is_inside_or_on(const vector3d &a2) const { 
     return this->obb->point_inside_or_on(a2);
 }
 
-void region::create_proximity_maps() {
-    THISCALL(0x00544F60, this);
+void region::create_proximity_maps()
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x00544F60, this);
+    }
 }
 
 region *region::__nw(uint32_t)

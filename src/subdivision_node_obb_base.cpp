@@ -6,8 +6,10 @@
 
 subdivision_node_obb_base::subdivision_node_obb_base() {}
 
-bool subdivision_node_obb_base::point_inside_or_on(const vector3d &a2) {
-    if constexpr (1) {
+bool subdivision_node_obb_base::point_inside_or_on(const vector3d &a2) const
+{
+    if constexpr (1)
+    {
         vector4d v15, v24, a4, a6;
 
         auto v3 = this->sub_564E80(v15, v24, a4, a6);
@@ -81,8 +83,10 @@ float subdivision_node_obb_base::sub_52CA80() {
     return v2[0] * v2[1] * v2[2] * 8.0f;
 }
 
-bool subdivision_node_obb_base::sub_564E80(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) {
-    if constexpr (0) {
+bool subdivision_node_obb_base::sub_564E80(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const
+{
+    if constexpr (0)
+    {
         bool result;
 
         vector4d v43;
@@ -658,16 +662,14 @@ bool subdivision_node_obb_base::find_closest_point_on_visible_faces(
 
 #endif
 
-    } else {
+    }
+    else
+    {
         return THISCALL(0x005391F0, this, &sweet_spot, &ent_pos, results);
     }
 }
 
-int subdivision_node_obb_base::get_type() {
-    return this->field_0 & 0x7F;
-}
-
-bool subdivision_node_obb_base::is_obb_node() {
+bool subdivision_node_obb_base::is_obb_node() const {
     return this->get_type() == 4 || this->get_type() == 5 || this->get_type() == 6 ||
         this->get_type() == 7 || this->get_type() == 8;
 }

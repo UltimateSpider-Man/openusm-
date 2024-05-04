@@ -7,6 +7,7 @@
 #include "game_data_meat.h"
 #include "variable.h"
 
+struct mString;
 struct resource_key;
 
 struct game_settings {
@@ -105,11 +106,17 @@ struct game_settings {
     //0x00573AA0
     void update_web_fluid_used(Float a2);
 
+    //0x00579CE0
+    bool set_str(const resource_key &a2, const mString &a3);
+
+    //0x00579F40
+    bool get_str(const resource_key &a2, mString &a3) const;
+
     //0x00573AE0
     bool set_num(const resource_key &att, Float a3);
 
     //0x00575930
-    bool get_num(const resource_key &att, float &a3, bool a4);
+    bool get_num(const resource_key &att, float &a3, bool a4) const;
 };
 
 extern void game_settings_patch();

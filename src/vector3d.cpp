@@ -210,7 +210,7 @@ vector3d make_vector3d(const euler_direction &a2) {
     return result;
 }
 
-float vector3d::xz_length2() {
+float vector3d::xz_length2() const {
     return x * x + y * y;
 }
 
@@ -226,7 +226,8 @@ float vector3d::length() const {
     return std::sqrt(this->length2());
 }
 
-vector4d vector3d::sub_48D010() {
+vector4d vector3d::sub_48D010() const
+{
     vector4d result;
     THISCALL(0x0048D010, this, &result);
 

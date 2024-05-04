@@ -18,11 +18,11 @@ struct ConsoleCommand {
         return "No help available.";
     }
 
-    std::string getName();
+    std::string getName() const;
 
     void setName(const std::string &pName);
 
-    bool match(const std::string &a2);
+    bool match(const std::string &a2) const;
 };
 
 extern std::list<ConsoleCommand *> *g_console_cmds;
@@ -105,6 +105,18 @@ struct GameStateCommand : ConsoleCommand {
     }
 };
 
+struct GameInfoCommand : ConsoleCommand {
+    GameInfoCommand() {
+        setName("game_info");
+    }
+
+    bool process_cmd(const std::vector<std::string> &cmds) override;
+
+    const char *helpText() const override {
+        return "get / set game_info nums";
+    }
+};
+
 struct QuitCommand : ConsoleCommand {
     QuitCommand();
 
@@ -145,6 +157,18 @@ struct ListDebugVariablesCommand : ConsoleCommand
     virtual const char *helpText() const override
     {
         return "Lists all available debug variables";
+    } 
+};
+
+struct DebugVarCommand : ConsoleCommand
+{
+    DebugVarCommand();
+
+    virtual bool process_cmd(const std::vector<std::string> &) override;
+
+    virtual const char *helpText() const override
+    {
+        return "dvar <var> <value> -> Set a debug variable\n dvar <var> -> View a debug variable";
     } 
 };
 

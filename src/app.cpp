@@ -144,7 +144,8 @@ app::app()
     unit_tests();
     mem_print_stats("after unit tests");
     g_platform() = NL_PLATFORM_PC;
-    if (link_system::use_link_system()) {
+    if (link_system::use_link_system())
+    {
         /*
         link_system::init();
         link_system::add_recipient(spider_monkey::link_receive);
@@ -265,6 +266,31 @@ void app::tick()
 {
     TRACE("app::tick");
 
+    {
+        float v6 = this->field_34.elapsed();
+        sp_log("%f", v6);
+
+        auto frame_lock = os_developer_options::instance()->get_int(mString {"FRAME_LOCK"});
+        sp_log("frame_lock = %d", frame_lock);
+
+        float time_inc = 0.0f;
+        do
+        {
+            time_inc = this->field_34.elapsed();
+            g_game_ptr()->handle_frame_locking(&time_inc);
+
+            assert(time_inc >= 0 && time_inc < 1e9f);
+
+            const float v4 = 0.066733405f;
+            if ( time_inc > v4 ) {
+                time_inc = v4;
+            }
+        }
+        while ( 0 /* time_inc < 0.0f */ );
+
+        this->field_34.reset();
+    }
+
     if constexpr (0)
     {
         limited_timer_base local_timer;
@@ -305,7 +331,9 @@ void app::tick()
             this->field_4.sub_5B8670();
             actor::swap_all_mesh_buffers();
 
-        } else {
+        }
+        else
+        {
             slab_allocator::process_lists();
             script_memtrack::frame_advance();
             if (!IsWindow(window_manager::instance()->field_4)) {
@@ -339,7 +367,9 @@ void app::tick()
         this->m_game->field_278 = total_timer.elapsed();
         this->m_game->field_280 = 0;
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x005D6FC0, this);
     }
 }

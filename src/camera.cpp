@@ -46,6 +46,12 @@ void camera::sync(camera &a2) {
     }
 }
 
+void camera::set_fov(Float fov)
+{
+    void (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x29C));
+    func(this, nullptr, fov);
+}
+
 float camera::get_fov() {
     float (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x2A0));
     return func(this);

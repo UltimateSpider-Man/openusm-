@@ -565,7 +565,7 @@ void script_handler_helper(debug_menu_entry *a2)
 struct mission_t {
     mString field_0;
     const char *field_C;
-    int field_10;
+    int m_district_id;
     int field_14;
 };
 
@@ -581,34 +581,34 @@ void mission_unload_handler(debug_menu_entry *)
 void mission_select_handler(debug_menu_entry *entry)
 {
     auto v1 = entry->m_id;
-    auto &v7 = menu_missions[v1];
+    const auto &v7 = menu_missions[v1];
     auto v6 = v7.field_C;
     auto v5 = v7.field_14;
     auto *v4 = v7.field_0.c_str();
-    auto v3 = v7.field_10;
+    auto v3 = v7.m_district_id;
     auto *v2 = mission_manager::s_inst();
     v2->force_mission(v3, v4, v5, v6);
     debug_menu::hide();
 }
 
-auto create_menu(const mString &str, debug_menu::sort_mode_t sort_mode) -> debug_menu* {
+auto create_menu(const mString &str, debug_menu::sort_mode_t sort_mode) -> debug_menu * {
     auto *entry = new debug_menu{str, sort_mode};
     return entry;
 }
 
-auto create_menu(const char *str, debug_menu::sort_mode_t sort_mode) -> debug_menu*
+auto create_menu(const char *str, debug_menu::sort_mode_t sort_mode) -> debug_menu *
 {
     auto *v25 = new debug_menu{str, sort_mode};
     return v25;
 }
 
-auto create_menu_entry(const mString &str) -> debug_menu_entry*
+auto create_menu_entry(const mString &str) -> debug_menu_entry *
 {
     auto *entry = new debug_menu_entry{str};
     return entry;
 }
 
-auto create_menu_entry(debug_menu *menu) -> debug_menu_entry*
+auto create_menu_entry(debug_menu *menu) -> debug_menu_entry *
 {
     auto *entry = new debug_menu_entry{menu};
     return entry;
@@ -634,24 +634,22 @@ void populate_missions_menu(debug_menu_entry *entry)
     auto v58 = v2->get_district_table_count();
     for ( auto i = -1; i < v58; ++i )
     {
-        fixedstring<8> v53{};
-        int v52;
+        fixedstring<8> v53 {};
+        int district_id;
         mission_table_container *table = nullptr;
         if ( i == -1 )
         {
             table = v2->get_global_table();
-            fixedstring<8> a1{"global"};
-            v53 = a1;
-            v52 = 0;
+            v53 = fixedstring<8> {"global"};
+            district_id = 0;
         }
         else
         {
             table = v2->get_district_table(i);
             auto *reg = table->get_region();
-            auto &v6 = reg->get_name();
-            v53 = v6;
+            v53 = reg->get_name();
 
-            auto v52 = reg->get_district_id();
+            district_id = reg->get_district_id();
 
             auto *v25 = create_menu(v53.to_string(), debug_menu::sort_mode_t::ascending);
 
@@ -671,15 +669,14 @@ void populate_missions_menu(debug_menu_entry *entry)
         for ( auto &info : script_infos)
         {
             auto v50 = menu_missions.size();
-            mString a2{"pk_"};
-            auto v19 = a2 + info.field_0;
+            const auto v19 = mString {"pk_"} + info.field_0;
             auto *v11 = v19.c_str();
             auto key = create_resource_key_from_path(v11, RESOURCE_KEY_TYPE_PACK);
             if ( resource_manager::get_pack_file_stats(key, nullptr, nullptr, nullptr) )
             {
-                mission_t mission{};
+                mission_t mission {};
                 mission.field_0 = info.field_0;
-                mission.field_10 = v52;
+                mission.m_district_id = district_id;
                 mission.field_14 = info.field_8;
 
                 mission.field_C = info.field_4->get_script_data_name();
@@ -730,7 +727,7 @@ void _populate_missions()
             {
                 mission_t mission{};
                 mission.field_0 = info.field_0;
-                mission.field_10 = district_id;
+                mission.m_district_id = district_id;
                 mission.field_14 = info.field_8;
 
                 mission.field_C = info.field_4->get_script_data_name();
@@ -1395,18 +1392,20 @@ void create_memory_menu(debug_menu *parent)
     slab_allocator::create_slab_debug_menu(memory_menu);
 }
 
-void debug_menu::init() {
+void debug_menu::init()
+{
     assert(root_menu == nullptr);
 
     root_menu = new debug_menu{"Debug Menu", sort_mode_t::undefined};
     active_menu = nullptr;
     create_camera_menu_items(root_menu);
 
-    //sub_6870C9(debug_menu::root_menu);
+    //create_dvar_menu(debug_menu::root_menu);
     create_warp_menu(debug_menu::root_menu);
 
+    create_game_flags_menu(debug_menu::root_menu);
+
     /*
-    j_create_game_flags_menu(debug_menu::root_menu);
     j_create_missions_menu(debug_menu::root_menu);
     */
     

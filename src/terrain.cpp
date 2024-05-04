@@ -363,41 +363,7 @@ void terrain::unload_district_immediate(int a2)
     }
 }
 
-region * terrain::find_innermost_region(const vector3d &a1)
-{
-    if constexpr (0)
-    {
-        assert(region_map != nullptr);
-
-        fixed_vector<region *, 15> a2 {};
-        loaded_regions_cache::get_regions_intersecting_sphere(a1, 0.0f, &a2);
-        if ( a2.size() == 0 ) {
-            return nullptr;
-        }
-
-        if ( a2.m_size == 1 ) {
-            return a2.at(0);
-        }
-
-        for ( int i = 0; i < a2.size(); ++i )
-        {
-            auto *r = a2.at(i);
-            assert(r != nullptr);
-
-            if ( r->is_interior() ) {
-                return r;
-            }
-        }
-
-        return a2.at(0);
-    }
-    else
-    {
-        return (region *) THISCALL(0x00534890, this, &a1);
-    }
-}
-
-region *terrain::find_region(const vector3d &a2, region *a3)
+region *terrain::find_region(const vector3d &a2, region *a3) const
 {
     TRACE("terrain::find_region");
 
@@ -430,7 +396,7 @@ region *terrain::find_region(const vector3d &a2, region *a3)
     return result;
 }
 
-int terrain::get_region_index_by_name(const fixedstring<4> &a2)
+int terrain::get_region_index_by_name(const fixedstring<4> &a2) const
 {
     TRACE("terrain::get_region_index_by_name", a2.to_string());
 
@@ -464,11 +430,40 @@ region *terrain::get_region(int idx)
     return this->regions[idx];
 }
 
-int terrain::unlock_district(int a2) {
-    return THISCALL(0x005148A0, this, a2);
+void terrain::unlock_district(int a2)
+{
+    if constexpr (0)
+    {
+        for ( int i {0}; i < this->total_regions; ++i )
+        {
+            auto &reg = this->regions[i];
+            if ( reg != nullptr && reg->district_id == a2 )
+            {
+                auto func = [](region *self, bool a2) -> void
+                {
+                    assert(!self->is_forced());
+
+                    self->flags = ( a2
+                                    ? self->flags | 1
+                                    : self->flags & ~1
+                                    );
+                };
+
+                func(reg, false);
+
+                this->force_streamer_refresh();
+            }
+        }
+
+    }
+    else
+    {
+        THISCALL(0x005148A0, this, a2);
+    }
 }
 
-int terrain::add_strip(const mString &a2) {
+int terrain::add_strip(const mString &a2)
+{
     auto result = find_strip(a2);
     if (result != -1) {
         return result;
@@ -479,8 +474,10 @@ int terrain::add_strip(const mString &a2) {
     return this->total_strips++;
 }
 
-int terrain::find_strip(const mString &a2) {
-    for (int i = 0; i < this->total_strips; ++i) {
+int terrain::find_strip(const mString &a2) const
+{
+    for (int i = 0; i < this->total_strips; ++i)
+    {
         if (_strcmpi(this->strips[i].field_0, a2.c_str()) == 0) {
             return i;
         }
@@ -700,10 +697,7 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
                         }
 
                         _std::vector<region *> a4 {};
-
-                        for ( auto &v1 : this->field_80 ) {
-                            a4.push_back(v1);
-                        }
+                        std::copy(this->field_80.begin(), this->field_80.end(), std::back_inserter(a4));
 
                         if ( os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"}) )
                         {
@@ -989,14 +983,14 @@ void terrain::start_streaming(void (*callback)(void))
             }
         }
 
-        resource_pack_streamer *streamers[2];
+        resource_pack_streamer *streamers[2] {};
         streamers[0] = strip_streamer;
         streamers[1] = district_streamer;
 
         bool (*callbacks[2])(resource_pack_slot::callback_enum,
                              resource_pack_streamer *,
                              resource_pack_slot *,
-                             limited_timer *);
+                             limited_timer *) {};
         callbacks[0] = nullptr;
         callbacks[1] = terrain::district_load_callback;
 
@@ -1008,7 +1002,8 @@ void terrain::start_streaming(void (*callback)(void))
 
         this->field_24.field_0 = true;
 
-        for (int i = 0; i < this->total_strips; ++i) {
+        for (int i = 0; i < this->total_strips; ++i)
+        {
             auto &strip = this->strips[i];
 
             string_hash hash{strip.field_0};
@@ -1017,7 +1012,7 @@ void terrain::start_streaming(void (*callback)(void))
 
             if (resource_manager::get_pack_file_stats(v24, nullptr, nullptr, nullptr))
 			{
-                eligible_pack_token a4{1, i};
+                eligible_pack_token a4 {1, i};
                 this->field_24.add_eligible_pack(strip.field_0, a4, strip_streamer);
             }
         }
@@ -1144,7 +1139,42 @@ void terrain::set_district_variant(int district_id, int variant, bool a4)
 	}
 }
 
-region *terrain::find_outermost_region(const vector3d &a2)
+region * terrain::find_innermost_region(const vector3d &a1) const
+{
+    if constexpr (0)
+    {
+        assert(region_map != nullptr);
+
+        fixed_vector<region *, 15> a2 {};
+        loaded_regions_cache::get_regions_intersecting_sphere(a1, 0.0f, &a2);
+        if ( a2.size() == 0 ) {
+            return nullptr;
+        }
+
+        if ( a2.m_size == 1 ) {
+            return a2.at(0);
+        }
+
+        for ( int i = 0; i < a2.size(); ++i )
+        {
+            auto *r = a2.at(i);
+            assert(r != nullptr);
+
+            if ( r->is_interior() ) {
+                return r;
+            }
+        }
+
+        return a2.at(0);
+    }
+    else
+    {
+        region * (__fastcall *func)(const void *, void *edx, const vector3d *) = CAST(func, 0x00534890);
+        return func(this, nullptr, &a1);
+    }
+}
+
+region *terrain::find_outermost_region(const vector3d &a2) const
 {
     assert(region_map != nullptr);
 
@@ -1259,7 +1289,7 @@ region *terrain::get_district(int a1) {
     return region_lookup_cache::lookup_by_district_id(a1);
 }
 
-void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions)
+void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions) const
 {
     assert(regions != nullptr);
 
@@ -1290,7 +1320,20 @@ void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions)
     }
 }
 
-region *terrain::find_region(string_hash a2)
+bool terrain::is_district_pack_slot_locked(int slot_idx) const
+{
+    auto *district_partition = resource_manager::get_partition_pointer((resource_partition_enum)6);
+    assert(district_partition != nullptr);
+
+    auto &pack_slots = district_partition->get_pack_slots();
+
+    assert(slot_idx >= 0 && slot_idx < pack_slots.size());
+
+    auto *slot = pack_slots[slot_idx];
+    return this->field_24.is_pack_slot_locked(slot);
+}
+
+region *terrain::find_region(string_hash a2) const
 {
     TRACE("terrain::find_region", a2.to_string());
 
@@ -1354,33 +1397,23 @@ void terrain::frame_advance(Float a2)
 {
     if constexpr (1)
     {
-        entity *ent;
+        vector3d pos;
 
-        IGOZoomOutMap *v3;
+        auto func = [](auto *v3) -> bool {
+            return (v3->field_5C4 || v3->field_5C3);
+        };
 
-        if (!os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"}) ||
-            (v3 = g_femanager().IGO->field_44, v3->field_5C4) || v3->field_5C3)
+        if (!os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"})
+                || func(g_femanager().IGO->field_44) )
         {
-            ent = g_world_ptr()->get_hero_ptr(0);
+            auto *ent = g_world_ptr()->get_hero_ptr(0);
+            pos = ent->get_abs_position();
         }
         else
         {
-            auto *game_ptr = g_game_ptr();
-            auto *v5 = comic_panels::get_current_view_camera(0);
-
-            if (v5 != nullptr) {
-                ent = (actor *) v5;
-            } else {
-                auto *wds = game_ptr->the_world;
-                ent = game_ptr->field_5C;
-
-                if (ent == wds->field_234[0]) {
-                    ent = wds->field_234[0];
-                }
-            }
+            auto *v5 = g_game_ptr()->get_current_view_camera(0);
+            pos = v5->get_abs_position();
         }
-
-        const vector3d pos = ent->get_abs_position();
 
         auto vec1 = pos - this->field_18;
 
@@ -1390,7 +1423,9 @@ void terrain::frame_advance(Float a2)
         }
 
         this->field_24.frame_advance(a2);
-    } else {
+    }
+    else
+    {
         THISCALL(0x00556FF0, this, a2);
     }
 }
@@ -1482,7 +1517,7 @@ void terrain_patch()
 
     {
 
-        region * (terrain::*func)(const vector3d &a2, region *a3) = &terrain::find_region;
+        region * (terrain::*func)(const vector3d &a2, region *a3) const = &terrain::find_region;
         FUNC_ADDRESS(address, func);
         REDIRECT(0x0055CF7F, address);
     }

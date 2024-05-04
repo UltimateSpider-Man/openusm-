@@ -223,11 +223,11 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
         auto v68 = a4;
         auto v66 = (a6 & 1) != 0;
         auto v64 = (a6 & 4) != 0;
-        auto v63 = (a6 & 8) != 0;
+        [[maybe_unused]] auto v63 = (a6 & 8) != 0;
         auto v62 = (a6 & 0x10) != 0;
-        auto v61 = (a6 & 0x80) != 0;
+        [[maybe_unused]] auto v61 = (a6 & 0x80) != 0;
         auto v60 = (a6 & 0x20) != 0;
-        auto v59 = (a6 & 0x20000000) == 0;
+        [[maybe_unused]] auto v59 = (a6 & 0x20000000) == 0;
         uint32_t v65 = 1;
         if ( !g_is_the_packer() )
         {
@@ -275,24 +275,29 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
             }
         }
 
-        auto v13 = (v71 != nullptr);
-        int v70 = 0;
+        bool v13 = (v71 != nullptr);
+        uint32_t v70 = 0;
         if ( v13 )
         {
-            auto v38 = v66 && !v65
-                || (v70 & 0x2000) != 0
-                || v71->is_flagged(0x2000);
+            auto v38 = ( (v66 && !v65)
+                        || (v70 & 0x2000) != 0
+                        || v71->is_flagged(0x2000)
+                        );
             v71->set_flag_recursive(static_cast<entity_flag_t>(0x2000), v38);
+
             v38 = !v65
                 || (v70 & 0x40) != 0
                 || v71->is_flagged(0x40);
             v71->set_flag_recursive(static_cast<entity_flag_t>(0x40), v38);
+
             v38 = v62
                 || (v70 & 0x80) != 0
                 || v71->is_flagged(0x80);
             v71->set_flag_recursive(static_cast<entity_flag_t>(0x80), v38);
+
             v38 = !v64 || (v70 & 0x200) != 0;
             v71->set_flag_recursive(static_cast<entity_flag_t>(0x200), v38);
+
             auto *tmp_e = v71;
             if ( tmp_e->is_an_actor() )
             {
@@ -318,8 +323,17 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
         }
 
         return v71;
-    } else {
-        return (entity *) THISCALL(0x005E0A10, this, a2, a3, &a4, &a5, a6, regions);
+    }
+    else
+    {
+        entity * (__fastcall *func)(void *, void *edx,
+                  string_hash,
+                  string_hash,
+                  const po *,
+                  const mString *,
+                  uint32_t ,
+                  const _std::list<region *> *) = CAST(func, 0x005E0A10);
+        return func(this, nullptr, a2, a3, &a4, &a5, a6, regions);
     }
 }
 

@@ -10,7 +10,7 @@ enum class InputAction {
 
     Pause = 12,
     BackButton = 13,
-
+    DoubleJump = 14,
     CameraCenter = 15,
     Forward = 16,
     Backward = 17,

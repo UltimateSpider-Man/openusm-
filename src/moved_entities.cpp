@@ -17,11 +17,11 @@ void moved_entities::reset_all_moved() {
 
 void moved_entities::add_moved(vhandle_type<entity> e_arg) {
 
-    sp_log("add_moved");
+    TRACE("moved_entities::add_moved");
     
     if constexpr(1)
     {
-        vhandle_type<entity> INVALID_VHANDLE{};
+        static vhandle_type<entity> INVALID_VHANDLE{};
         //assert(e_arg != INVALID_VHANDLE);
 
         auto *e = e_arg.get_volatile_ptr();
@@ -29,15 +29,12 @@ void moved_entities::add_moved(vhandle_type<entity> e_arg) {
 
         assert(e->get_abs_po().is_valid());
 
-        if ( !e->is_conglom_member() )
+        if ( e->is_conglom_member() )
         {
-            goto LABEL_44;
+            e = (entity *) e->get_conglom_owner();
+            assert(e != nullptr && "Failed to obtain conglom owner in add_moved");
         }
 
-        e = (entity *) e->get_conglom_owner();
-        assert(e != nullptr && "Failed to obtain conglom owner in add_moved");
-
-LABEL_44:
         if ( !e->is_flagged_in_the_moved_list() )
         {
             e->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x40), true);

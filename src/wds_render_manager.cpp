@@ -9,6 +9,7 @@
 #include "camera_teleport_update_visitor.h"
 #include "city_lod.h"
 #include "comic_panels.h"
+#include "common.h"
 #include "culling_params.h"
 #include "cut_scene_player.h"
 #include "debug_render.h"
@@ -48,8 +49,6 @@
 #include "vector2di.h"
 #include "vector2d.h"
 #include "wds.h"
-
-#include "common.h"
 
 #include <cassert>
 #include <cmath>

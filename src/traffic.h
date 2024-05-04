@@ -50,6 +50,8 @@ struct traffic : spawnable {
 
     static void initialize_traffic();
 
+    static void terminate_traffic();
+
     static void enable_traffic(bool a1, bool a2);
 
     //0x006D0910

@@ -120,7 +120,7 @@ namespace als {
     }
 }
 
-void animation_logic_sytem_shared_patch()
+void animation_logic_system_shared_patch()
 {
     FUNC_ADDRESS(address, &als::animation_logic_system_shared::destruct_mashed_class);
     REDIRECT(0x005689A9, address);

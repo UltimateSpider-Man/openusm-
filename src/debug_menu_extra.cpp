@@ -1116,6 +1116,10 @@ void create_gamefile_menu(debug_menu *parent)
 
 void game_flags_handler(debug_menu_entry *a1)
 {
+    enum {
+        SLOW_MOTION = 2u,
+    };
+
     switch ( a1->get_id() )
     {
     case 0u:
@@ -1130,7 +1134,7 @@ void game_flags_handler(debug_menu_entry *a1)
         g_game_ptr()->flag.single_step = true;
         break;
     }
-    case 2u:
+    case SLOW_MOTION:
     {
         static int old_frame_lock = 0;
         int v27;

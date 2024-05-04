@@ -5,6 +5,7 @@
 #include "game.h"
 #include "input.h"
 #include "input_device.h"
+#include "keyboard_device.h"
 #include "pc_input_mgr.h"
 #include "pc_joypad_device.h"
 #include "rumble_manager.h"
@@ -84,9 +85,25 @@ BOOL __cdecl GetDeviceChanges([[maybe_unused]] void *a1,
     return false;
 }
 
-void input_mgr::scan_devices() {
-    if constexpr (1) {
-        if (!pc_inserted_devices()) {
+void input_mgr::scan_devices()
+{
+    TRACE("input_mgr::scan_devices");
+
+    if constexpr (1)
+    {
+        if (Input::instance() == nullptr || Input::instance()->m_din == nullptr) {
+            keyboard_device::instance->clear();
+        } else {
+            keyboard_device::instance->initialize(0);
+            this->insert_device(keyboard_device::instance);
+        }
+
+    }
+
+    if constexpr (0)
+    {
+        if (!pc_inserted_devices())
+        {
             pc_inserted_devices() = true;
             for (auto i = 0u; i < 4u; ++i) {
                 if (pc_input_mgr::instance()->pad[i]) {
@@ -110,45 +127,70 @@ void input_mgr::scan_devices() {
                 pc_input_mgr::instance()->pad[j]->poll();
             }
         }
-        if (this->field_58 == -1 || this->field_26) {
-            auto v5 = 0u;
-            while (!pc_input_mgr::instance()->pad[v5]->is_connected()) {
-                if (++v5 >= 4) {
-                    return;
+
+        if (this->field_58 == -1 || this->field_26)
+        {
+            for (auto v5 = 0; v5 < 4u; ++v5)
+            {
+                if (pc_input_mgr::instance()->pad[v5]->is_connected())
+                {
+                    this->field_58 = static_cast<device_id_t>(v5 + 1000000);
+                    if (g_game_ptr() != nullptr) {
+                        g_game_ptr()->setup_inputs();
+                    }
                 }
+
+                return;
             }
 
-            this->field_58 = static_cast<device_id_t>(v5 + 1000000);
-            if (g_game_ptr() != nullptr) {
-                g_game_ptr()->setup_inputs_p();
-            }
         }
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x00599090, this);
     }
+
+    {
+        using map_t = std::decay_t<decltype(this->control_map)>;
+
+        void (__fastcall *find)(
+            const map_t *, void *edx,
+            map_t::iterator *,
+            const int *a3) = CAST(find, 0x005E47A0);
+
+        const int control = 14;
+        map_t::iterator it;
+        find(&this->control_map, nullptr, &it, &control);
+
+        assert(it != this->control_map.end());
+
+        assert(it->second.mapping.size() == 2u);
+
+        assert(it->second.mapping.front().m_device_id == 0x1E8480);
+    }
+
 }
 
 void input_mgr::frame_advance(Float a2) {
     THISCALL(0x005DAB20, this, a2);
 }
 
-float input_mgr::get_control_state(int a2, device_id_t a3) const
+float input_mgr::get_control_state(int control, device_id_t a3) const
 {
     TRACE("input_mgr::get_control_state");
-    sp_log("control = %d", a2);
+    sp_log("control = %d", control);
 
-    if constexpr (1)
+    if constexpr (0)
     {
 #if 0
         auto it = this->control_map.find(a2);
 #else
 
-        auto it = [this, a2]() {
+        auto it = [this, control]() {
             decltype(this->control_map)::iterator it;
 
             void (__fastcall *func)(const decltype(this->control_map) *, void *edx, decltype(it) *, const int *) = CAST(func, 0x005E47A0);
-            func(&this->control_map, nullptr, &it, &a2); 
+            func(&this->control_map, nullptr, &it, &control); 
             assert(it != this->control_map.end());
             return it;
         }();
@@ -177,7 +219,7 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const
 
             v17 = true;
             auto *device = this->get_device_from_map(static_cast<device_id_t>(id));
-            if ( device!= nullptr && device->is_connected() )
+            if ( device != nullptr && device->is_connected() )
             {
                 auto v12 = device->get_axis_state(axis.field_4, axis.field_8);
                 if ( control.type == CT_BOOLEAN )
@@ -207,7 +249,8 @@ float input_mgr::get_control_state(int a2, device_id_t a3) const
     }
     else
     {
-        return (float) THISCALL(0x005D86D0, this, a2, a3);
+        float (__fastcall *func)(const input_mgr *, void *edx, int, device_id_t) = CAST(func, 0x005D86D0);
+        return func(this, nullptr, control, a3);
     }
 }
 
@@ -268,23 +311,22 @@ input_device *input_mgr::get_device_from_map_internal(device_id_t a2) const
     }
 }
 
-void input_mgr::poll_devices() {
-    if constexpr (1) {
-        sp_log("input_mgr::poll_devices(): %d", this->field_8.size());
+void input_mgr::poll_devices()
+{
+    TRACE("input_mgr::poll_devices");
 
-        auto end = this->field_8.end();
-        auto begin = this->field_8.begin();
-        if (begin != end) {
-            do {
-                void (__fastcall *poll)(void *) = CAST(poll, get_vfunc(begin->second->m_vtbl, 0x20));
-                poll(begin->second);
+    sp_log("%d", this->field_8.size());
 
-                ++begin;
+    if constexpr (0)
+    {
 
-            } while (begin != end);
+        for (auto &dev : this->field_8) {
+            dev.second->poll();
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x005D5A60, this);
     }
 }
@@ -417,7 +459,9 @@ input_device *input_mgr::get_device_from_map(device_id_t id) const
 
         return this->get_device_from_map(id);
 
-    } else {
+    }
+    else
+    {
         return (input_device *) THISCALL(0x0055E850, this, id);
     }
 }
@@ -436,8 +480,10 @@ void input_mgr::clear_mapping() {
     }
 }
 
-void input_mgr::map_control(int a2, device_id_t a3, int a4) {
-    if constexpr (1) {
+void input_mgr::map_control(int a2, device_id_t a3, int a4)
+{
+    if constexpr (0)
+    {
         int v4 = a3;
 
         _std::map<device_id_t, input_device *>::iterator it;
@@ -458,13 +504,16 @@ void input_mgr::map_control(int a2, device_id_t a3, int a4) {
             }
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x005D8660, this, a2, a3, a4);
     }
 }
 
 int input_mgr::map_control(int a2, const device_axis &a3) {
-    if constexpr (1) {
+    if constexpr (1)
+    {
         _std::map<int, game_control>::iterator it;
 
         THISCALL(0x005E47A0, &this->control_map, &it, &a2);
@@ -488,8 +537,20 @@ int input_mgr::map_control(int a2, const device_axis &a3) {
 void input_mgr_patch()
 {
     {
+        FUNC_ADDRESS(address, &input_mgr::poll_devices);
+        REDIRECT(0x00557C17, address);
+        REDIRECT(0x005D7085, address);
+        REDIRECT(0x00618D49, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &input_mgr::insert_device);
         REDIRECT(0x005990C0, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &input_mgr::scan_devices);
+        REDIRECT(0x0055D696, address);
     }
 
     {
@@ -499,7 +560,7 @@ void input_mgr_patch()
 
     {
         FUNC_ADDRESS(address, &input_mgr::get_control_state);
-        SET_JUMP(0x005D86D0, address);
+        REDIRECT(0x00528F42, address);
     }
 
     {

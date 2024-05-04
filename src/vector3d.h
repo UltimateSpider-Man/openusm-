@@ -152,11 +152,11 @@ struct vector3d
     //0x004ACE20
     bool is_normal() const;
 
-    float xz_length2();
+    float xz_length2() const;
 
     Float length2() const;
 
-    vector4d sub_48D010();
+    vector4d sub_48D010() const;
 
     //0x00401690
     float length() const;

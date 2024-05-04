@@ -92,6 +92,19 @@ struct mashable_vector {
         return {};
     }
 
+    iterator begin() const {
+        return iterator{&m_data[0]};
+    }
+
+    iterator end() const
+    {
+        if (this->m_data != nullptr) {
+            return iterator{&this->m_data[this->m_size]};
+        }
+
+        return {};
+    }
+
 
     void custom_un_mash(generic_mash_header *header,
                         [[maybe_unused]] void *a3,

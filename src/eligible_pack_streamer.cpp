@@ -140,7 +140,7 @@ eligible_pack *eligible_pack_streamer::find_eligible_pack_by_name(
 	auto **v2 = &this->eligible_packs[0];
 	if ( binary_search_array_cmp<string_hash, eligible_pack *>(&a2, v2, 0, size, &index, compare_name_to_eligible_pack_name) )
 	{
-		assert(index >= 0 && index < eligible_packs.size());
+		assert(index >= 0 && index < (int)eligible_packs.size());
 
 		return this->eligible_packs[index];
 	}
@@ -150,7 +150,8 @@ eligible_pack *eligible_pack_streamer::find_eligible_pack_by_name(
 	}
 }
 
-void eligible_pack_streamer::fixup_eligible_pack_parent_child_relationships() {
+void eligible_pack_streamer::fixup_eligible_pack_parent_child_relationships()
+{
     for (auto &pack : this->eligible_packs) {
         pack->fixup_family(this);
     }
@@ -221,27 +222,41 @@ bool eligible_pack_streamer::is_idle() const
     return true;
 }
 
-eligible_pack *eligible_pack_streamer::find_eligible_pack_by_token(
-        resource_pack_token &a2)
+bool eligible_pack_streamer::is_pack_slot_locked(resource_pack_slot *slot) const
+{
+    for ( auto &v7 : this->field_14 )
+    {
+        auto *streamer = v7->get_streamer();
+        auto *partition = slot->get_partition();
+        if ( streamer == partition->get_streamer() ) {
+            return v7->is_pack_slot_locked(slot);
+        }
+    }
+
+    assert(0);
+    return false;
+}
+
+eligible_pack * eligible_pack_streamer::find_eligible_pack_by_token(
+        resource_pack_token &a2) const
 {
 	auto *ep = bit_cast<eligible_pack *>(a2.field_0);
-	assert(!eligible_packs.empty());
+	assert(!this->eligible_packs.empty());
+
 	return ep;
 }
 
-pack_switch_info_t *eligible_pack_streamer::get_pack_switch_info(
+pack_switch_info_t * eligible_pack_streamer::get_pack_switch_info(
         string_hash a2)
 {
-	auto size = this->field_28.size();
-	if (size != 0)
+	if (!this->field_28.empty())
 	{
-		auto *epack = this->find_eligible_pack_by_name(a2);
-		if ( epack != nullptr )
+		auto *ep = this->find_eligible_pack_by_name(a2);
+		if ( ep != nullptr )
 		{
-			for ( uint32_t i = 0; i < size; ++i )
+			for ( auto &v1 : this->field_28 )
 			{
-				auto &v1 = this->field_28[i];
-				if (v1.field_0 == epack) {
+				if (v1.field_0 == ep) {
 					return (&v1);
 				}
 			}

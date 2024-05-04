@@ -141,7 +141,7 @@ struct region
     void sub_5452D0();
 
     //0x0052E760
-    bool is_inside_or_on(const vector3d &a2);
+    bool is_inside_or_on(const vector3d &a2) const;
 
     //0x00544F60
     void create_proximity_maps();

@@ -10,8 +10,10 @@
 
 VALIDATE_SIZE(game_data_meat, 0x154);
 
-void game_data_meat::init() {
-    if constexpr (1) {
+void game_data_meat::init()
+{
+    if constexpr (1)
+    {
         this->m_hero_points = 0;
         this->field_4 = 0;
         this->m_upg_impact_web_pts = 0;
@@ -117,11 +119,13 @@ void game_data_meat::init() {
             assert(0);
         }
 
-        this->field_114 = fixedstring<8>{v2};
+        this->m_hero_name = fixedstring<8>{v2};
 
-        this->field_134 = fixedstring<8>{"KG"};
+        this->m_district_name = fixedstring<8>{"KG"};
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00579420, this);
     }
 }

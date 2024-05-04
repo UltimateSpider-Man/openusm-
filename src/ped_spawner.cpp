@@ -24,13 +24,16 @@ void ped_spawner::do_spawn(
 {
     TRACE("ped_spawner::do_spawn");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ( this->get_my_actor() != nullptr )
         {
             this->sub_6BBD30(a8);
             this->spawn(a2, a3);
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x006BBDA0, this, a2, a3, a8, a9, a10, a11);
     }
 }
@@ -72,7 +75,8 @@ actor *ped_spawner::create_ped_actor()
         this->field_44 = 1;
     }
 
-    if ( eb != nullptr ) {
+    if ( eb != nullptr )
+    {
         assert(eb->is_an_actor());
 
         eb->set_visible(false, false);

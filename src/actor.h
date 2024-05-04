@@ -213,7 +213,7 @@ struct actor : entity {
     movement_info *get_movement_info();
 
     //virtual
-    double get_colgeom_radius();
+    float get_colgeom_radius() const;
 
     //0x0x004B8FC0
     //virtual
@@ -221,7 +221,10 @@ struct actor : entity {
 
     //0x004B9000
     //virtual
-    po *get_frame_delta();
+    po *get_frame_delta() const;
+
+    //virtual
+    void set_frame_delta(const po &a2, Float a3);
 
     //virtual
     void set_frame_delta_trans(const vector3d &a2, Float a3);
@@ -236,7 +239,7 @@ struct actor : entity {
     ai::ai_core *_get_ai_core();
 
     //virtual
-    vector3d get_colgeom_center();
+    vector3d get_colgeom_center() const;
 
     //virtual
     void radius_changed(bool );

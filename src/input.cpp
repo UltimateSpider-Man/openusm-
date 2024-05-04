@@ -104,8 +104,10 @@ void Input::set_gamepad(const char *gamepadAxis, const char *gamepadPoV, const c
     strcpy(this->m_gamepadBtn, gamepadBtn);
 }
 
-const char *Input::get_string(InputType input_type, unsigned int Dest) {
-    if constexpr (1) {
+const char *Input::get_string(InputType input_type, unsigned int Dest)
+{
+    if constexpr (1)
+    {
         if (Dest == 0xFFFFFFFF || Dest == 0xFFFF) {
             return nullptr;
         }
@@ -122,7 +124,8 @@ const char *Input::get_string(InputType input_type, unsigned int Dest) {
             return byte_987AC0;
         }
 
-        if (input_type == InputType::Mouse) {
+        if (input_type == InputType::Mouse)
+        {
             static char byte_987A70[80]{};
             std::memset(byte_987A70, 0, sizeof(byte_987A70));
             switch (Dest) {
@@ -305,7 +308,8 @@ bool Input::initialize(HWND a2) {
             return false;
         }
 
-        if (this->m_din == nullptr) {
+        if (this->m_din == nullptr)
+        {
             if (p_DirectInput8Create() == nullptr) {
                 return false;
             }
@@ -324,7 +328,8 @@ bool Input::initialize(HWND a2) {
 
             BYTE v11;
             int v6 = (char *) this - (char *) &v11 + 10404;
-            for (uint32_t ScanCode = 0; ScanCode < 256; ++ScanCode) {
+            for (uint32_t ScanCode = 0; ScanCode < 256; ++ScanCode)
+            {
                 const uint32_t VirtualKeyCode = MapVirtualKeyA(ScanCode, MAPVK_VSC_TO_VK);
                 const uint32_t CharCode = MapVirtualKeyA(VirtualKeyCode, MAPVK_VK_TO_CHAR);
                 BYTE v11 = CharCode;
@@ -419,14 +424,17 @@ bool Input::initialize(HWND a2) {
         }
 
         return true;
-    } else {
+    }
+    else
+    {
         bool result = (bool) THISCALL(0x00821800, this, a2);
 
         return result;
     }
 }
 
-int Input::sub_8200C0(const DIJOYSTATE2 *a1, int a2) {
+int Input::sub_8200C0(const DIJOYSTATE2 *a1, int a2)
+{
     int result;
 
     bool v12;
@@ -597,7 +605,8 @@ int Input::sub_820080() {
     return result;
 }
 
-float Input::sub_820370(int a2, int a3) {
+float Input::get_joy_state(int a2, int a3)
+{
     float result;
 
     if (!this->field_4EC[a2]) {
@@ -620,12 +629,15 @@ float Input::sub_820370(int a2, int a3) {
     return result;
 }
 
-float Input::sub_81FE60(InputMouse a2, int mode) {
-    if constexpr (1) {
+float Input::get_mouse_state(InputMouse a2, int mode)
+{
+    if constexpr (1)
+    {
         auto *input_settings = this->field_129D8[mode];
         auto rotation_axis_y = this->m_mouse_state.lY * this->m_sensitivity;
         auto rotation_axis_x = this->m_mouse_state.lX * this->m_sensitivity;
-        if (input_settings != nullptr && input_settings->field_3) {
+        if (input_settings != nullptr && input_settings->field_3)
+        {
             rotation_axis_x = (rotation_axis_x * input_settings->field_14 +
                                input_settings->field_C) *
                 input_settings->field_4;
@@ -730,66 +742,78 @@ float Input::sub_81FE60(InputMouse a2, int mode) {
         }
 
         return 0.0f;
-    } else {
+    }
+    else
+    {
         float (__fastcall *func)(void *, void *, int, int) = CAST(func, 0x0081FE60);
 
         return func(this, nullptr, static_cast<int>(a2), mode);
     }
 }
 
-void Input::sub_8204C0(InputSettings::internal_struct *a2, int mode) {
-    if constexpr (1) {
-        auto v3 = 0.0f;
-        if (a2->field_0) {
-            uint32_t v9 = a2->field_0;
+void Input::sub_8204C0(InputSettings::internal_struct *a2, int mode)
+{
+    if constexpr (1)
+    {
+        float state = 0.0f;
 
-            for (auto i = 0u; i < v9; ++i) {
-                for (auto v6 = 0u; v6 < 6u; ++v6) {
-                    auto &v5 = a2->field_4[i][v6];
+        for (auto i = 0u; i < a2->m_size; ++i)
+        {
+            for (auto v6 = 0u; v6 < 6u; ++v6)
+            {
+                auto action_index = i;
 
-                    auto v7 = v5.m_input_type;
-                    auto value = v5.m_value;
-                    if (v7) {
-                        switch (v7) {
-                        case InputType::Key: {
-                            v3 = (this->m_state_keys[value] != 0);
+                auto &v5 = a2->field_4[action_index][v6];
 
-                            break;
-                        }
-                        case InputType::Mouse: {
-                            v3 = this->sub_81FE60(static_cast<InputMouse>(value), mode);
-                            break;
-                        }
-                        case InputType::Joy:
-                        case InputType::Joy1:
-                        case InputType::Joy2:
-                        case InputType::Joy3:
-                        case InputType::Joy4:
-                        case InputType::Joy5:
-                        case InputType::Joy6:
-                        case InputType::Joy7:
-                        case InputType::Joy8:
-                        case InputType::Joy9: {
-                            v3 = this->sub_820370(v7 - 3, value);
-                            break;
-                        }
-                        default:
-                            break;
-                        }
+                auto v7 = v5.m_input_type;
 
-                        v5.field_8 = v3;
+                auto value = v5.m_value;
+                if (v7 != 0)
+                {
+                    switch (v7) {
+                    case InputType::Key: {
+                        state = (this->m_state_keys[value] != 0);
+
+                        break;
                     }
+                    case InputType::Mouse: {
+                        state = this->get_mouse_state(static_cast<InputMouse>(value), mode);
+                        break;
+                    }
+                    case InputType::Joy:
+                    case InputType::Joy1:
+                    case InputType::Joy2:
+                    case InputType::Joy3:
+                    case InputType::Joy4:
+                    case InputType::Joy5:
+                    case InputType::Joy6:
+                    case InputType::Joy7:
+                    case InputType::Joy8:
+                    case InputType::Joy9: {
+                        state = this->get_joy_state(v7 - 3, value);
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+
+                    v5.field_8 = state;
                 }
             }
         }
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x008204C0, this, a2, mode);
     }
 }
 
-void Input::poll() {
-    if constexpr (1) {
+bool key_pressed = false;
+
+void Input::poll()
+{
+    if constexpr (0)
+    {
         auto *v2 = this->m_di_keyboard;
         auto *diKeys = this->m_state_keys;
         std::memcpy(this->m_old_state_keys, this->m_state_keys, sizeof(this->m_old_state_keys));
@@ -847,23 +871,29 @@ void Input::poll() {
         auto *v12 = &this->field_4F8[0];
         auto *v44 = this->field_14;
 
-        for (auto v47 = 0u; v47 < 10u; ++v47) {
+        for (auto v47 = 0u; v47 < 10u; ++v47)
+        {
             auto v13 = *v44;
-            if (*v44) {
+            if (*v44)
+            {
                 std::memcpy((int *) v12 + 678, v12, 0x110u);
                 if ((*(int(__stdcall **)(int))(*(uint32_t *) v13 + 100))(v13) < 0 &&
                         ((*(int(__stdcall **)(int))(*(uint32_t *) *v44 + 28))(*v44) < 0 ||
                          (*(int(__stdcall **)(int))(*(uint32_t *) *v44 + 100))(*v44) < 0) ||
                     (*(int(__stdcall **)(int, int, void *))(*(uint32_t *) *v44 +
-                                                            36))(*v44, 272, v12) < 0) {
+                                                            36))(*v44, 272, v12) < 0)
+                {
                     std::memset(v12, 0, sizeof(DIJOYSTATE2));
                     v12->rgdwPOV[0] = 0xFFFF;
                     v12->rgdwPOV[1] = 0xFFFF;
                     v12->rgdwPOV[2] = 0xFFFF;
                     v12->rgdwPOV[3] = 0xFFFF;
-                } else {
+                }
+                else
+                {
                     auto v19 = this->field_4;
-                    if (v19 > 0) {
+                    if (v19 > 0)
+                    {
                         if (v12->lX > -v19 && v12->lX < v19) {
                             v12->lX = 0;
                         }
@@ -902,12 +932,14 @@ void Input::poll() {
             ++v44;
         }
 
-        if (this->field_8) {
+        if (this->field_8)
+        {
             auto *v16 = this->field_24EC;
             bool v17 = false;
             int v18 = 256;
             do {
-                if (*v16) {
+                if (*v16)
+                {
                     if (v16[256] == *v16) {
                         v16[256] = 0;
                         v17 = true;
@@ -965,7 +997,8 @@ void Input::poll() {
 
             bool v11;
             do {
-                if (*v29) {
+                if (*v29)
+                {
                     if (*(v30 - 1365) == *v30 && *v30) {
                         *(v30 - 1365) = 0;
                         v17 = 1;
@@ -1063,15 +1096,16 @@ void Input::poll() {
             }
         }
 
-        if (this->field_129D0 != 0) {
-            auto **v43 = &this->field_129D8[0];
-            for (auto i = 0u; i < this->field_129D0; ++i) {
-                if (v43[i] != nullptr) {
-                    this->sub_8204C0(&v43[i]->field_18, i);
-                }
+        auto **v43 = &this->field_129D8[0];
+        for (auto i = 0u; i < this->field_129D0; ++i)
+        {
+            if (v43[i] != nullptr) {
+                this->sub_8204C0(&v43[i]->field_18, i);
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x00820C70, this);
     }
 }
@@ -1261,4 +1295,16 @@ void Input_patch() {
     REDIRECT(0x005A9CF0, address);
     REDIRECT(0x005A9D03, address);
     REDIRECT(0x005A9D21, address);
+
+    {
+        FUNC_ADDRESS(address, &Input::poll);
+        REDIRECT(0x0081D24A, address);
+        REDIRECT(0x005A505E, address);
+        REDIRECT(0x005A9C5E, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &Input::sub_8204C0);
+        REDIRECT(0x008211A3, address);
+    }
 }

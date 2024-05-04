@@ -20,6 +20,12 @@ struct camera_mode {
         void (__fastcall *frame_advance)(camera_mode *, void *,
                 Float , camera_frame *, const camera_target_info *);
         void (__fastcall *request_recenter)(camera_mode *, void *, Float, const camera_target_info *);
+        int enable_lookaround;
+        void (__fastcall *set_fixedstatic)(
+                camera_mode *, void *,
+                const vector3d *,
+                const vector3d *);
+        void (__fastcall *clear_fixedstatic)(camera_mode *);
     } * m_vtbl;
     spiderman_camera *slave;
     camera_mode *field_8;
@@ -36,6 +42,12 @@ struct camera_mode {
     void frame_advance(Float a2, camera_frame &a3, const camera_target_info &a4);
 
     /* virtual */ void request_recenter(Float a2, const camera_target_info &a3);
+
+    void set_fixedstatic(
+        const vector3d &a2,
+        const vector3d &a3);
+
+    void clear_fixedstatic();
 };
 
 struct camera_mode_shake : camera_mode
@@ -78,12 +90,44 @@ struct camera_mode_passive : camera_mode {
             spiderman_camera *a2,
             camera_mode *a3);
 
+    void _activate(camera_target_info &a2);
+
     //0x004B7400
     //virtual
     void _frame_advance(
         Float a2,
         camera_frame &frame,
         camera_target_info &target);
+};
+
+struct camera_mode_fixedstatic : camera_mode {
+
+    vector3d field_C;
+    vector3d field_18;
+    bool enabled;
+
+    camera_mode_fixedstatic(
+        spiderman_camera *a2,
+        camera_mode *a3);
+
+    void _frame_advance(
+        Float a2,
+        camera_frame &a3,
+        const camera_target_info &a4);
+
+    void _set_fixedstatic(
+        const vector3d &a2,
+        const vector3d &a3);
+
+    void _clear_fixedstatic();
+};
+
+struct camera_mode_combat : camera_mode {
+
+    void _frame_advance(
+        Float a2,
+        camera_frame &a3,
+        const camera_target_info &a4);
 };
 
 extern void camera_mode_patch();

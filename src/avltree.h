@@ -19,7 +19,9 @@ struct AvlTree {
 
     void dump(TreeNode<T> *&a2, int a3);
 
-    T * find(T *a2)
+    TreeNode<T> * findHelper(TreeNode<T> *, T *) const;
+
+    T * find(T *a2) const
     {
         auto *v3 = this->findHelper(this->field_0, a2);
         if ( v3 != nullptr ) {

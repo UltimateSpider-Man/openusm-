@@ -72,35 +72,14 @@ public:
         return active;
     }
 
-    bool is_idle() const
-    {
-        auto v1 = (!this->currently_streaming && this->field_6C.empty());
+    bool is_disk_idle() const;
 
-        auto func = [this]() -> bool {
-            if (this->pack_slots == nullptr) {
-                return true;
-            }
-
-            auto &pack_slots = (*this->pack_slots);
-
-            for (auto &slot : pack_slots) {
-                if (!(slot->is_empty() || slot->is_pack_ready())) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-
-        auto v2 = func();
-
-        return v1 && v2;
-    }
+    bool is_idle() const;
 
     //0x00531B70
     void clear();
 
-    bool can_cancel_load(int a2);
+    bool can_cancel_load(int a2) const;
 
     //0x0051EEB0
     void cancel_load(int a2);
@@ -152,7 +131,7 @@ public:
     //0x0050E120
     void set_active(bool a2);
 
-    bool all_slots_idle();
+    bool all_slots_idle() const;
 
     //0x0053E1A0
     void finish_data_read();

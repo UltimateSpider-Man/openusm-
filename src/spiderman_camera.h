@@ -25,6 +25,10 @@ struct spiderman_camera : game_camera {
 
     void operator delete(void *ptr);
 
+    void set_fixedstatic(const vector3d &a2, const vector3d &a3);
+
+    void sub_4B3260(bool a2);
+
     void sub_4B3220(const vector3d &a2);
 
     //0x004B6310
@@ -44,6 +48,10 @@ struct spiderman_camera : game_camera {
     //virtual
     void _frame_advance(Float a2);
 };
+
+extern float g_yaw_mult;
+
+extern float g_pitch_mult;
 
 extern Var<spiderman_camera *> g_spiderman_camera_ptr;
 

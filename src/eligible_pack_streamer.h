@@ -58,8 +58,10 @@ public:
 
     bool is_idle() const;
 
+    bool is_pack_slot_locked(resource_pack_slot *slot) const;
+
 	eligible_pack *find_eligible_pack_by_token(
-        resource_pack_token &a2);
+        resource_pack_token &a2) const;
 
 	pack_switch_info_t *get_pack_switch_info(
         string_hash a2);

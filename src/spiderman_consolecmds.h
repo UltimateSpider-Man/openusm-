@@ -42,3 +42,13 @@ struct SetMaterialFeaturesCommand : ConsoleCommand {
         return "mat [0-3]";
     }
 };
+
+struct SetCameraCommand : ConsoleCommand {
+    SetCameraCommand();
+
+    virtual bool process_cmd(const std::vector<std::string> &a2) override;
+
+    virtual const char *helpText() const override {
+        return "camera [0-2]";
+    }
+};

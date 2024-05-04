@@ -1,18 +1,23 @@
 #pragma once
 
+enum KeyEvent {
+    Release,
+    Press,
+};
+
 enum Key_Axes 
 {
-    KB_A=1,                   
-    KB_B,                   
-    KB_C,                   
-    KB_D,                   
-    KB_E,                   
+    KB_A = 1,                   
+    KB_B = 2,                   
+    KB_C = 3,                   
+    KB_D = 4,                   
+    KB_E = 5,                   
     KB_F,                   
     KB_G,                   
     KB_H,                   
-    KB_I,                   
+    KB_I = 9,                   
     KB_J,                   
-    KB_K,                   
+    KB_K = 11,                   
     KB_L,                   
     KB_M,                   
     KB_N,                   

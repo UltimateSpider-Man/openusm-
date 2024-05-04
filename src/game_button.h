@@ -48,6 +48,10 @@ struct game_button {
 
     void operator delete(void *ptr, size_t size);
 
+    void sub_50B630() {
+        this->m_flags &= 0x20u;
+    }
+
     double sub_55ED50();
 
     double sub_55ED30();

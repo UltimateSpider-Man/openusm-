@@ -37,10 +37,23 @@ struct eligible_pack {
 		return this->field_48;
 	}
 
+    float get_priority() const {
+        return this->field_6C;
+    }
+
 	string_hash get_name_hash()
 	{
 		return this->field_40;
 	}
+
+    bool is_flagged(uint32_t a2) const {
+        return (a2 & this->field_70) != 0;
+    }
+
+    bool is_ideal() const
+    {
+        return this->is_flagged(1);
+    }
 
     //0x00532130
     bool is_loadable();
@@ -50,6 +63,8 @@ struct eligible_pack {
 
     //0x00542FC0
     void fixup_family(eligible_pack_streamer *a2);
+
+    bool sub_5321C0();
 
     //0x0053E5A0
     int add_parent(eligible_pack *a3);

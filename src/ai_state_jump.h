@@ -49,6 +49,8 @@ struct jump_state : enhanced_state {
     //0x00449D10
     jump_state(from_mash_in_place_constructor *a2);
 
+    void apply_jets(Float a1);
+
     //0x00469EF0
     bool process_flying(Float a2);
 

@@ -1,6 +1,7 @@
 #include "spiderman_consolecmds.h"
 
 #include "console.h"
+#include "geometry_manager.h"
 #include "us_lighting.h"
 #include "trace.h"
 #include "wds.h"
@@ -184,4 +185,66 @@ bool SetMaterialFeaturesCommand::process_cmd(const std::vector<std::string> &a2)
 
     return true;
 }
+
+static SetCameraCommand g_SetCameraCommand {};
+
+SetCameraCommand::SetCameraCommand()
+{
+    this->setName("camera");
+}
+
+bool SetCameraCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    TRACE("SetBlendModeCommand::process_cmd");
+    if ( a2.size() == 1 )
+    {
+        auto &v2 = a2.at(0);
+        auto *v6 = v2.c_str();
+        int mode = v6[0] - '0';
+
+        if (mode < 0 || mode > 2)
+        {
+            return true;
+        }
+
+        auto v16 = mode;
+        
+        if ( v16 )
+        {
+            if ( v16 == 1 )
+            {
+                if ( geometry_manager::is_scene_analyzer_enabled() )
+                {
+                    geometry_manager::enable_scene_analyzer(false);
+                }
+
+                g_game_ptr()->enable_user_camera(true);
+
+            }
+            else if ( v16 == 2 )
+            {
+                g_game_ptr()->enable_user_camera(false);
+                geometry_manager::enable_scene_analyzer(true);
+            }
+        }
+        else
+        {
+            if ( geometry_manager::is_scene_analyzer_enabled() )
+            {
+                geometry_manager::enable_scene_analyzer(false);
+            }
+
+            g_game_ptr()->enable_user_camera(false);
+        }
+
+    }
+    else
+    {
+        auto *v3 = this->helpText();
+        g_console->addToLog(v3);
+    }
+
+    return true;
+}
+
 #endif

@@ -98,6 +98,18 @@ void eligible_pack::fixup_family(eligible_pack_streamer *a2) {
     }
 }
 
+bool eligible_pack::sub_5321C0()
+{
+    for ( auto &ep : this->field_60 )
+    {
+        if (ep->get_resource_pack_slot() != nullptr) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int eligible_pack::add_parent(eligible_pack *a3) {
     return THISCALL(0x0053E5A0, this, a3);
 }

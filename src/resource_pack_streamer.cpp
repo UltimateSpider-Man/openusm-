@@ -238,7 +238,7 @@ void resource_pack_streamer::unload(int which_slot_idx)
     }
 }
 
-bool resource_pack_streamer::can_cancel_load(int a2)
+bool resource_pack_streamer::can_cancel_load(int a2) const
 {
     return this->currently_streaming && this->m_slot_index == a2;
 }
@@ -328,18 +328,30 @@ void resource_pack_streamer::clear() {
 
 }
 
-bool resource_pack_streamer::all_slots_idle() {
+bool resource_pack_streamer::all_slots_idle() const
+{
     if (this->pack_slots == nullptr) {
         return true;
     }
 
-    for (auto &slot : (*this->pack_slots)) {
+    auto &slots = (*this->pack_slots);
+    for (auto &slot : slots)
+    {
         if ( !(slot->is_empty() || slot->is_pack_ready()) ) {
             return false;
         }
     }
 
     return true;
+}
+
+bool resource_pack_streamer::is_idle() const {
+    return this->is_disk_idle() && this->all_slots_idle();
+}
+
+bool resource_pack_streamer::is_disk_idle() const
+{
+    return !this->currently_streaming && this->field_6C.empty();
 }
 
 void resource_pack_streamer::flush(void (*a2)(void)) {

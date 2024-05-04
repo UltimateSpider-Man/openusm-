@@ -16,7 +16,10 @@ float spider_monkey::delta_callback(int a1) {
         spider_monkey::m_game_control_state_last_frame()[a1];
 }
 
-void spider_monkey::render() {
+#include "game.h"
+
+void spider_monkey::render()
+{
     CDECL_CALL(0x004B6890);
 }
 
@@ -62,10 +65,13 @@ bool spider_monkey::is_running() {
     return spider_monkey::m_running();
 }
 
-void spider_monkey_patch() {
+void spider_monkey_patch()
+{
     {
         REDIRECT(0x0055D761, spider_monkey::frame_advance);
     }
+
+    REDIRECT(0x0052B4BF, spider_monkey::render);
 
     REDIRECT(0x0052B5DC, spider_monkey::is_running);
 }

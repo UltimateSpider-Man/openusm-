@@ -19,9 +19,11 @@ struct subdivision_node_obb_base {
 
     subdivision_node_obb_base();
 
-    int get_type();
+    int get_type() const {
+        return this->field_0 & 0x7F;
+    }
 
-    bool is_obb_node();
+    bool is_obb_node() const;
 
     //0x0052C580
     void get_extents(vector3d *min_extent, vector3d *max_extent);
@@ -33,7 +35,7 @@ struct subdivision_node_obb_base {
 
     float sub_52CA80();
 
-    bool sub_564E80(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5);
+    bool sub_564E80(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5) const;
 
     //0x0052B880
     bool line_segment_intersection(const vector3d &arg0, const vector3d &arg4);
@@ -54,7 +56,7 @@ struct subdivision_node_obb_base {
     bool sphere_intersection(const vector3d &center, Float radius);
 
     //0x0052BD30
-    bool point_inside_or_on(const vector3d &a2);
+    bool point_inside_or_on(const vector3d &a2) const;
 
     //0x005391F0
     bool find_closest_point_on_visible_faces(const vector3d &sweet_spot,
