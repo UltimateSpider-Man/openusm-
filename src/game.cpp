@@ -2710,8 +2710,9 @@ void game::render_ui()
                 byte_965BF5() = false;
             }
 
-            if (os_developer_options::instance()->get_int(static_cast<os_developer_options::ints_t>(26)) == 2
-                    && (this->field_80.m_flags & 0x20) == 0 && (this->field_80.m_flags & GBFLAG_TRIGGERED) != 0)
+            auto ALLOW_SCREENSHOT = os_developer_options::instance()->get_int(mString {"ALLOW_SCREENSHOT"});
+            if ( ALLOW_SCREENSHOT == 2
+                    && this->field_80.is_triggered() )
             {
                 static Var<bool> capturing{0x00960B47};
 
@@ -2726,8 +2727,9 @@ void game::render_ui()
                 capturing() = !capturing();
             }
         }
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x0052B250, this);
     }
 }

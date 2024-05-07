@@ -71,6 +71,9 @@ struct web_zip_inode : info_node {
     //0x00478A80
     void process_zip(Float a2);
 
+    //0x00481A00
+    void add_swingback(polytube *&a2, entity_base *a3, actor *a4);
+
     //0x00474010
     //virtual
     void unmash(mash_info_struct *a2, void *a3);

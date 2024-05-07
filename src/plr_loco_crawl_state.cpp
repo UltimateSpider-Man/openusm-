@@ -273,20 +273,8 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2)
 
     auto *v12 = this->get_actor()->m_player_controller;
     auto &gb_grab = v12->gb_grab;
-    auto func = [](const game_button &self) -> bool {
-        auto v1 = [](const game_button &self, int a2) {
-             return (a2 & self.m_flags) != 0;
-        }(self, 0x20);
 
-        if (v1) {
-            return false;
-        }
-
-        auto result = ((self.m_flags & GBFLAG_PRESSED) != 0);
-        return result;
-    };
-
-    if (func(gb_grab) && this->field_1C > 0.12f) {
+    if (gb_grab.is_pressed() && this->field_1C > 0.12f) {
         this->m_wallrun_deviation = 1.0;
     }
 

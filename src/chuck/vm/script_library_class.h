@@ -9,7 +9,7 @@
 struct mString;
 struct vm_stack;
 
-#define SLC_NAME_FIELD 0
+#define SLC_NAME_FIELD 1
 #define SLC_FUNC_LIST_FIELD 0 
 
 struct script_library_class {

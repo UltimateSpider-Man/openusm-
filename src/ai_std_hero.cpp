@@ -183,20 +183,13 @@ void hero_inode::_frame_advance(Float a2)
 
         float v17 = 0.0;
         auto *player_controller = this->get_actor()->get_player_controller();
-        auto *gb_swing = &player_controller->get_gb_swing_raw();
-        auto cond = [](game_button *self) -> bool {
-            if ((self->m_flags & 0x20) != 0) {
-                return false;
-            }
+        auto &gb_swing = player_controller->get_gb_swing_raw();
 
-            return self->m_flags & GBFLAG_PRESSED;
-        }(gb_swing);
-
+        auto cond = gb_swing.is_pressed();
         if (cond)
         {
-
-            auto v11 = [](game_button *self) -> float {
-                return ((self->m_flags & 0x20) != 0 ? 0.0f : self->field_1C);
+            auto v11 = [](game_button &self) -> float {
+                return (self.is_flagged(0x20) ? 0.0f : self.field_1C);
             }(gb_swing);
 
             v17 = v11 + 0.050000001f;

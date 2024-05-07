@@ -1,22 +1,27 @@
 #pragma once
 
 using vm_num_t = float;
-typedef const char * vm_str_t;
+using vm_str_t = const char *;
 
 struct vm_thread;
 
 inline constexpr auto UNINITIALIZED_SCRIPT_PARM = 0x7BAD05CF;
 
-struct vm_stack {
+class vm_stack {
     int field_0[96];
+
+public:
     char *buffer;
+
+private:
     char *SP;
     vm_thread *my_thread;
 
+public:
     vm_stack(vm_thread *t);
 
     int capacity() const {
-        return 384;
+        return 96 * 4;
     }
 
     vm_thread *get_thread() {
@@ -32,7 +37,7 @@ struct vm_stack {
     }
 
     vm_str_t& top_str() {
-        return *(vm_str_t*)(SP - sizeof(vm_str_t));
+        return *(vm_str_t *)(SP - sizeof(vm_str_t));
     }
 
     //0x00502AC0
@@ -60,7 +65,7 @@ struct vm_stack {
         this->move_SP(-n);
     }
 
-    void* pop_addr()
+    void * pop_addr()
     {
         this->pop(sizeof(void *));
         return *(void**)SP;

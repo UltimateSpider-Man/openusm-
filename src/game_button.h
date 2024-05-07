@@ -10,7 +10,7 @@ inline constexpr auto GBFLAG_PRESSED = 1;
 inline constexpr auto GBFLAG_TRIGGERED = 2;
 inline constexpr auto GBFLAG_RELEASED = 4;
 
-struct game_button {
+class game_button {
 
     int m_trigger_type;
     device_id_t field_4;
@@ -19,13 +19,23 @@ struct game_button {
     game_button *field_10;
     float field_14;
     float field_18;
+
+public:
     float field_1C;
+
+private:
     float field_20;
     float field_24;
     float field_28;
+
+public:
     float field_2C;
+
+private:
     int16_t field_30;
     int16_t m_flags;
+
+public:
 
     //0x0048D9A0
     game_button();
@@ -48,17 +58,26 @@ struct game_button {
 
     void operator delete(void *ptr, size_t size);
 
-    void sub_50B630() {
+    bool is_flagged(uint32_t a2) const {
+        return (a2 & this->m_flags) != 0;
+    }
+
+    void clear_flags() {
         this->m_flags &= 0x20u;
     }
 
-    double sub_55ED50();
+    void set_flag(uint16_t a2, bool a3)
+    {
+        if ( a3 ) {
+            this->m_flags |= a2;
+        } else {
+            this->m_flags &= ~a2;
+        }
+    }
 
-    double sub_55ED30();
+    float sub_55ED50() const;
 
-    bool sub_48B290();
-
-    bool sub_48B270();
+    float sub_55ED30() const;
 
     //0x0050B640
     void override(Float a2, Float a3, Float a4);
@@ -81,6 +100,10 @@ struct game_button {
 
     //0x0050B610
     void clear();
+
+    bool is_pressed() const;
+
+    bool is_triggered() const;
 };
 
 extern void game_button_patch();

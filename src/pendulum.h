@@ -17,7 +17,7 @@ struct pendulum : entity_base_vhandle {
     rigid_body *pivot_rigid_body;
     int field_2C;
     int field_30;
-    bool field_34;
+    bool m_active;
 
     //0x004BD930
     pendulum();

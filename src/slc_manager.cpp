@@ -13,6 +13,7 @@
 #include "resource_pack_group.h"
 #include "script_manager.h"
 
+#include "script_lib.h"
 #include "script_lib_anim.h"
 #include "script_lib_entity.h"
 
@@ -52,101 +53,6 @@ void destruct_client_script_libs()
     TRACE("destruct_client_script_libs");
 
     CDECL_CALL(0x0058FA50);
-}
-
-struct slf__abs_delay__num__t : script_library_class::function {
-    slf__abs_delay__num__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__abs_delay__num__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663170);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__abs_delay__num__t::slf__abs_delay__num__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089A724);
-    FUNC_ADDRESS(address, &slf__abs_delay__num__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__acos__num__t : script_library_class::function {
-    slf__acos__num__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__acos__num__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663F80);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__acos__num__t::slf__acos__num__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089A91C);
-    FUNC_ADDRESS(address, &slf__acos__num__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__add_2d_debug_str__vector3d__vector3d__num__str__t : script_library_class::function {
-    slf__add_2d_debug_str__vector3d__vector3d__num__str__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__add_2d_debug_str__vector3d__vector3d__num__str__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663360);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__add_2d_debug_str__vector3d__vector3d__num__str__t::slf__add_2d_debug_str__vector3d__vector3d__num__str__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089A860);
-    FUNC_ADDRESS(address, &slf__add_2d_debug_str__vector3d__vector3d__num__str__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t : script_library_class::function {
-    slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663760);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t::slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089A858);
-    FUNC_ADDRESS(address, &slf__add_2d_debug_str__vector3d__vector3d__num__str__num__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__add_3d_debug_str__vector3d__vector3d__num__str__t : script_library_class::function {
-    slf__add_3d_debug_str__vector3d__vector3d__num__str__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00663360);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__add_3d_debug_str__vector3d__vector3d__num__str__t::slf__add_3d_debug_str__vector3d__vector3d__num__str__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089A850);
-    FUNC_ADDRESS(address, &slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
 }
 
 struct slf__add_civilian_info__vector3d__num__num__num__t : script_library_class::function {
@@ -431,25 +337,6 @@ slf__allow_suspend_thread__num__t::slf__allow_suspend_thread__num__t(const char 
 {
     m_vtbl = CAST(m_vtbl, 0x0089A594);
     FUNC_ADDRESS(address, &slf__allow_suspend_thread__num__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__angle_between__vector3d__vector3d__t : script_library_class::function {
-    slf__angle_between__vector3d__vector3d__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__angle_between__vector3d__vector3d__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00672070);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__angle_between__vector3d__vector3d__t::slf__angle_between__vector3d__vector3d__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089BA50);
-    FUNC_ADDRESS(address, &slf__angle_between__vector3d__vector3d__t::operator());
     m_vtbl->__cl = CAST(m_vtbl->__cl, address);
 }
 
@@ -4953,25 +4840,6 @@ slf__is_physics_enabled__t::slf__is_physics_enabled__t(const char *a3) : functio
 {
     m_vtbl = CAST(m_vtbl, 0x0089A6E4);
     FUNC_ADDRESS(address, &slf__is_physics_enabled__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__is_point_inside_glass_house__vector3d__t : script_library_class::function {
-    slf__is_point_inside_glass_house__vector3d__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__is_point_inside_glass_house__vector3d__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00661F70);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__is_point_inside_glass_house__vector3d__t::slf__is_point_inside_glass_house__vector3d__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089A540);
-    FUNC_ADDRESS(address, &slf__is_point_inside_glass_house__vector3d__t::operator());
     m_vtbl->__cl = CAST(m_vtbl->__cl, address);
 }
 
@@ -12512,6 +12380,28 @@ void slc_manager::init()
 
         register_standard_script_libs();
         chuck_register_script_libs();
+
+        if constexpr (1)
+        {
+            printf("[");
+
+            auto &array = *slc_manager_class_array();
+            for ( auto &slc : array )
+            {
+                printf("(\"%s\", [", slc->get_name());
+
+                for ( int i = {0}; i < slc->total_funcs; ++i ) 
+                {
+                    auto *func = slc->get_func(i);
+                    printf("\"%s\",\n", func->get_name());
+                }
+
+                printf("]), \n");
+            }
+
+            printf("]\n");
+        }
+
         construct_client_script_libs();
     }
     else
@@ -12591,8 +12481,10 @@ void slc_manager::kill() {
     }
 }
 
-script_library_class *slc_manager::get_class(int class_index)
+script_library_class * slc_manager::get_class(int class_index)
 {
+    TRACE("slc_manager::get_class", std::to_string(class_index).c_str());
+
     assert(slc_manager_class_array() != nullptr);
 
     assert(class_index >= 0);

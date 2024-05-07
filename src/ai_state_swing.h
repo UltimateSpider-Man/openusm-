@@ -5,6 +5,7 @@
 #include "enhanced_state.h"
 #include "float.hpp"
 #include "local_collision.h"
+#include "mash.h"
 #include "string_hash.h"
 #include "swinger.h"
 #include "variable.h"
@@ -78,6 +79,11 @@ struct swing_state : enhanced_state {
     //0x0045AC60
     swing_state(from_mash_in_place_constructor *a2);
 
+    //virtual
+    ~swing_state();
+
+    void finalize(mash::allocation_scope a2);
+
     //0x0044BAA0
     //virtual
     uint32_t get_virtual_type_enum();
@@ -140,7 +146,7 @@ struct swing_inode : info_node {
     void play_fire_web_sound();
 
     //0x0044C1F0
-    float get_swing_cur_max_anchor_dist();
+    float get_swing_cur_max_anchor_dist() const;
 
     //0x0045AF30
     void clip_web(Float a2);

@@ -23,7 +23,9 @@ struct info_node : mash_virtual_base {
     //0x006D9930
     info_node(from_mash_in_place_constructor *a2);
 
-    actor *get_actor();
+    actor * get_actor() const {
+        return this->field_C;
+    }
 
     ~info_node() = default;
 

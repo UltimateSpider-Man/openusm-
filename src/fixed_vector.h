@@ -9,15 +9,48 @@ struct vector3d;
 struct line_marker_base;
 struct entity_base;
 
-struct Grid;
-
 template<typename T, uint32_t Num>
 struct fixed_vector {
     static constexpr auto N = Num;
 
     T m_data[Num];
-
     uint32_t m_size{0};
+
+    struct iterator {
+        T *m_ptr;
+
+        T & operator*() {
+            return (*m_ptr);
+        }
+
+        bool operator==(const iterator &it) const {
+            return (this->m_ptr == it.m_ptr);
+        }
+
+        bool operator!=(const iterator &it) const {
+            return (this->m_ptr != it.m_ptr);
+        }
+
+        void operator++() {
+            ++this->m_ptr;
+        }
+    };
+
+    auto begin() {
+        return iterator {&m_data[0]};
+    }
+
+    auto begin() const {
+        return iterator {&m_data[0]};
+    }
+
+    auto end() {
+        return iterator {&m_data[this->m_size]};
+    }
+
+    auto end() const {
+        return iterator {&m_data[this->m_size]};
+    }
 
     auto size() {
         return m_size;
@@ -47,12 +80,4 @@ struct fixed_vector {
     void sort();
 
     void resize(int size, const T &a3);
-
-    void emplace_back(Grid *grid,
-                      const vector3d &a3,
-                      const vector3d &a4,
-                      const vector3d &a5,
-                      Float a6,
-                      line_marker_base *a7,
-                      entity_base *a8);
 };

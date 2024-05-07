@@ -96,6 +96,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
 {
     TRACE("vm_executable::link_un_mash", this->fullname.to_string());
 
+    if constexpr (0)
     {
         printf("permanent_string_table: %d\n", a2->permanent_string_table_size);
         for (auto i = 0; i < a2->permanent_string_table_size; ++i) {
@@ -109,327 +110,183 @@ void vm_executable::link_un_mash(const script_executable *a2)
             auto *str = a2->get_system_string(i);
             printf("%s\n", str);
         }
-
         printf("\n");
     }
 
     if constexpr (1)
 	{
-        printf("buffer_len = %d", this->buffer_len);
+        printf("buffer_len = %d\n", this->buffer_len);
         if ( !this->is_linked() )
 		{
             uint16_t *buffer = this->buffer;
             this->flags |= VM_EXECUTABLE_FLAG_LINKED;
             auto *v5 = a2;
-            while ( buffer < &this->buffer[this->buffer_len] ) {
+            while ( buffer < &this->buffer[this->buffer_len] )
+            {
                 auto opword = *buffer++;
+                printf("opword = 0x%X\n", opword);
+
+                [[maybe_unused]] opcode_t op = opcode_t(opword >> 8);
                 [[maybe_unused]] auto dsize = 4u;
                 if ( (opword & OP_DSIZE_FLAG) != 0 ) {
                     dsize = *buffer++;
                 }
 
                 auto argtype = opcode_arg_t(opword & OP_ARGTYPE_MASK);
+
+                printf("op = %d\n", op);
+
+                printf("dsize = %d\n", dsize);
                 printf("argtype = %d %s\n", argtype, opcode_arg_t_str[argtype]);
 
-                if constexpr (1) {
-                    auto get_string = [](vm_executable &ex, const script_executable *,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        uint32_t idx = indices[0];
-                        auto *str = ex.owner->get_parent()->get_permanent_string(idx);
-                        auto addr = uint32_t(str);
-                        return addr;
-                    };
+                printf("\n");
 
-                    auto get_static_data = [](vm_executable &, const script_executable *se,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        auto idx = indices[0];
-                        auto *so = se->find_object(idx);
-                        assert(so != nullptr);
+                switch ( argtype )
+                {
+                case OP_ARG_NULL:
+                    break;
+                case OP_ARG_NUM:
+                case OP_ARG_NUMR:
+                    buffer += 2;
+                    break;
+                case OP_ARG_STR: {
+                    uint32_t idx = *buffer;
+                    auto *str = this->owner->get_parent()->get_permanent_string(idx);
+                    printf("str = %s\n", str);
+                    auto addr = uint32_t(str);
+                    buffer += 2;
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case OP_ARG_WORD:
+                case OP_ARG_PCR:
+                case OP_ARG_SPR:
+                case OP_ARG_POPO:
+                    ++buffer;
+                    break;
+                case OP_ARG_SDR: {
+                    auto idx = *buffer++;
+                    auto *so = v5->find_object(idx);
+                    assert(so != nullptr);
 
-                        auto offset = indices[1];
-                        assert(offset < so->get_static_data_size());
+                    auto offset = *buffer++;
+                    assert(offset < so->get_static_data_size());
 
-                        auto addr = int(so->get_static_data_buffer() + offset);
-                        return addr;
-                    };
+                    auto addr = int(so->get_static_data_buffer() + offset);
 
-                    auto get_static_func = [](vm_executable &, const script_executable *se,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        auto idx = indices[0];
-                        auto func_idx = indices[1];
-                        auto *so = se->find_object(idx);
-                        assert(so != nullptr);
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case OP_ARG_SFR: {
+                    auto idx = *buffer++;
+                    auto func_idx = *buffer++;
+                    auto *so = v5->find_object(idx);
+                    assert(so != nullptr);
 
-                        auto *v8 = so->get_func(func_idx);
-                        v8->link(se);
-                        auto addr = int(v8);
-                        return addr;
-                    };
+                    auto *v8 = so->get_func(func_idx);
+                    v8->link(v5);
+                    auto addr = int(v8);
 
-                    auto get_library_func = [](vm_executable &, const script_executable *,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        auto class_idx = indices[0];
-                        auto *slc = slc_manager::get_class(class_idx);
-                        assert(slc != nullptr);
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case OP_ARG_LFR: {
+                    auto class_idx = *buffer++;
+                    auto *slc = slc_manager::get_class(class_idx);
+                    assert(slc != nullptr);
 
-                        auto func_idx = indices[1];
-                        auto *func = slc->get_func(func_idx);
-                        if (func == nullptr) {
-                            assert(0 &&
-                                  "your scripts are out-of-sync with this executable, try:\n"
-                                  "  - make sure your executable is up-to-date\n"
-                                  "  - force re-compile scripts, pack, build executable");
-                        }
-
-                        auto addr = int(func);
-                        return addr;
-                    };
-                    
-                    auto get_class_value = [](vm_executable &ex, const script_executable *,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        auto idx = indices[0];
-                        auto *slc = slc_manager::get_class(idx);
-                        assert(slc != nullptr);
-
-                        assert(slc->get_size() == 4);
-
-                        auto v10 = indices[1];
-                        auto *ps = ex.owner->get_parent()->get_permanent_string(v10);
-                        mString v17 {ps};
-
-                        auto addr = slc->find_instance(v17);
-                        return addr;
-                    };
-
-                    auto get_signal_value = [](vm_executable &ex, const script_executable *,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        auto idx = indices[0];
-                        auto *v16 = ex.owner->get_parent()->get_permanent_string(idx);
-
-                        mString v18 {v16};
-
-                        assert(resolve_signal_callback() != nullptr);
-
-                        uint32_t addr;
-                        resolve_signal_callback()(v18.c_str(), &addr);
-
-                        return addr;
-                    };
-                    
-                    auto get_var_addr = [](vm_executable &, const script_executable *,
-                            std::array<uint32_t, 2> indices) -> uint32_t {
-                        auto offset = indices[0];
-                        auto v15 = indices[1];
-
-                        auto addr = (v15 == 1
-                                ? (int) script_manager::get_game_var_address(offset)
-                                : (int) script_manager::get_shared_var_address(offset)
-                                );
-
-                        assert(addr != 0 && "make sure you pack after you compile a script");
-                        return addr;
-                    };
-
-                    enum cmd_e {
-                        EMPTY,
-                        SKIP,
-                        PROCESS,
-                        ERROR
-                    };
-
-                    struct {
-                        cmd_e cmd;
-                        uint8_t num_words;
-
-                        using func_t = uint32_t (*)(vm_executable &, const script_executable *, std::array<uint32_t, 2>);
-                        func_t func;
-
-                        void operator()(vm_executable &ex, const script_executable *se, uint16_t *&buffer) {
-                            switch (cmd) {
-                            case EMPTY:
-                                return;
-                            case SKIP:
-                                buffer += num_words;
-                                break;
-                            case PROCESS: {
-                                auto addr = func(ex, se, {buffer[0], buffer[1]});
-                     
-                                buffer += 2;
-                                *(buffer - 2) = addr >> 16;
-                                *(buffer - 1) = addr & 0x0000FFFF;
-                                break;
-                            }
-                            case ERROR: {
-                                assert(0 && "found an unresolved external reference in a script executable!!!");
-                                break;
-                            }
-                            }
-                        }
-                    } funcs_table[] = {
-                        {.cmd = EMPTY}, // OP_ARG_NULL
-                        {.cmd = SKIP, .num_words = 2u},                          // OP_ARG_NUM
-                        {.cmd = SKIP, .num_words = 2u},                          // OP_ARG_NUMR
-                        {.cmd = PROCESS, .func = get_string},                    // OP_ARG_STR
-                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_WORD
-                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_PCR
-                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_SPR
-                        {.cmd = SKIP, .num_words = 1u},                          // OP_ARG_POPO
-                        {.cmd = PROCESS, .func = get_static_data},                        // OP_ARG_SDR
-                        {.cmd = PROCESS, .func = get_static_func},                        // OP_ARG_SFR
-                        {.cmd = PROCESS, .func = get_library_func},                       // OP_ARG_LFR
-                        {.cmd = PROCESS, .func = get_class_value},                        // OP_ARG_CLV
-                        {.cmd = EMPTY},                                  // 12
-                        {.cmd = EMPTY},                                  // 13
-                        {.cmd = EMPTY},                                  // 14
-                        {.cmd = PROCESS, .func = get_signal_value},                       // OP_ARG_SIG
-                        {.cmd = PROCESS, .func = get_signal_value},                       // OP_ARG_PSIG
-                        {.cmd = PROCESS, .func = get_var_addr},                           // 17
-                        {.cmd = ERROR},                                        // 18
-                        {.cmd = ERROR},                                        // 19
-                        {.cmd = ERROR},                                        // 20
-                        {.cmd = ERROR},                                        // 21
-                        {.cmd = ERROR},                                         // 22
-                    };
-
-                    funcs_table[argtype]((*this), v5, buffer);
-                } else {
-                    switch ( argtype )
-                    {
-                    case OP_ARG_NULL:
-                        break;
-                    case OP_ARG_NUM:
-                    case OP_ARG_NUMR:
-                        buffer += 2;
-                        break;
-                    case OP_ARG_STR: {
-                        uint32_t idx = *buffer;
-                        auto *str = this->owner->get_parent()->get_permanent_string(idx);
-                        printf("str = %s\n", str);
-                        auto addr = uint32_t(str);
-                        buffer += 2;
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
+                    auto func_idx = *buffer++;
+                    auto *func = slc->get_func(func_idx);
+                    if (func == nullptr) {
+                        assert(0 &&
+                              "your scripts are out-of-sync with this executable, try:\n"
+                              "  - make sure your executable is up-to-date\n"
+                              "  - force re-compile scripts, pack, build executable");
                     }
-                    case OP_ARG_WORD:
-                    case OP_ARG_PCR:
-                    case OP_ARG_SPR:
-                    case OP_ARG_POPO:
-                        ++buffer;
-                        break;
-                    case OP_ARG_SDR: {
-                        auto idx = *buffer++;
-                        auto *so = v5->find_object(idx);
-                        assert(so != nullptr);
 
-                        auto offset = *buffer++;
-                        assert(offset < so->get_static_data_size());
+                    auto addr = int(func);
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case OP_ARG_CLV: {
+                    auto idx = *buffer++;
+                    auto *slc = slc_manager::get_class(idx);
+                    assert(slc != nullptr);
 
-                        auto addr = int(so->get_static_data_buffer() + offset);
+                    assert(slc->get_size() == 4);
 
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
-                    }
-                    case OP_ARG_SFR: {
-                        auto idx = *buffer++;
-                        auto func_idx = *buffer++;
-                        auto *so = v5->find_object(idx);
-                        assert(so != nullptr);
+                    auto v10 = *buffer++;
+                    auto *ps = this->owner->get_parent()->get_permanent_string(v10);
+                    mString v17 {ps};
 
-                        auto *v8 = so->get_func(func_idx);
-                        v8->link(v5);
-                        auto addr = int(v8);
+                    auto addr = slc->find_instance(v17);
 
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
-                    }
-                    case OP_ARG_LFR: {
-                        auto class_idx = *buffer++;
-                        auto *slc = slc_manager::get_class(class_idx);
-                        assert(slc != nullptr);
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case OP_ARG_SIG:
+                case OP_ARG_PSIG: {
+                    auto idx = *buffer;
+                    auto *v16 = this->owner->get_parent()->get_permanent_string(idx);
 
-                        auto func_idx = *buffer++;
-                        auto *func = slc->get_func(func_idx);
-                        if (func == nullptr) {
-                            assert(0 &&
-                                  "your scripts are out-of-sync with this executable, try:\n"
-                                  "  - make sure your executable is up-to-date\n"
-                                  "  - force re-compile scripts, pack, build executable");
-                        }
+                    buffer += 2;
+                    mString v18 {v16};
 
-                        auto addr = int(func);
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
-                    }
-                    case OP_ARG_CLV: {
-                        auto idx = *buffer++;
-                        auto *slc = slc_manager::get_class(idx);
-                        assert(slc != nullptr);
+                    assert(resolve_signal_callback() != nullptr);
 
-                        assert(slc->get_size() == 4);
+                    uint32_t v7;
+                    resolve_signal_callback()(v18.c_str(), &v7);
 
-                        auto v10 = *buffer++;
-                        auto *ps = this->owner->get_parent()->get_permanent_string(v10);
-                        mString v17 {ps};
+                    auto addr = v7;
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case 17: {
+                    auto offset = *buffer++;
+                    auto v15 = *buffer++;
 
-                        auto addr = slc->find_instance(v17);
+                    auto addr = (v15 == 1
+                            ? (int) script_manager::get_game_var_address(offset)
+                            : (int) script_manager::get_shared_var_address(offset)
+                            );
 
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
-                    }
-                    case OP_ARG_SIG:
-                    case OP_ARG_PSIG: {
-                        auto idx = *buffer;
-                        auto *v16 = this->owner->get_parent()->get_permanent_string(idx);
+                    assert(addr != 0 && "make sure you pack after you compile a script");
 
-                        buffer += 2;
-                        mString v18 {v16};
-
-                        assert(resolve_signal_callback() != nullptr);
-
-                        uint32_t v7;
-                        resolve_signal_callback()(v18.c_str(), &v7);
-
-                        auto addr = v7;
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
-                    }
-                    case 17: {
-                        auto offset = *buffer++;
-                        auto v15 = *buffer++;
-
-                        auto addr = (v15 == 1
-                                ? (int) script_manager::get_game_var_address(offset)
-                                : (int) script_manager::get_shared_var_address(offset)
-                                );
-
-                        assert(addr != 0 && "make sure you pack after you compile a script");
-
-                        *(buffer - 2) = addr >> 16;
-                        *(buffer - 1) = addr & 0x0000FFFF;
-                        break;
-                    }
-                    case 18:
-                    case 19:
-                    case 20:
-                    case 21:
-                    case 22:
-                        assert(0 && "found an unresolved external reference in a script executable!!!");
-                        return;
-                    default:
-                        assert(0 && "unknown arg type");
-                        return;
-                    }
+                    *(buffer - 2) = addr >> 16;
+                    *(buffer - 1) = addr & 0x0000FFFF;
+                    break;
+                }
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                    assert(0 && "found an unresolved external reference in a script executable!!!");
+                    return;
+                default:
+                    assert(0 && "unknown arg type");
+                    return;
                 }
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0059F000, this, a2);
+    }
+
+    if constexpr (0)
+    {
+        if (this->fullname == "_city_arena(num)")
+        {
+            assert(0);
+        }
     }
 }
 

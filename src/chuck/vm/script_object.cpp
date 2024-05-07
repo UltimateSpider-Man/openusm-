@@ -98,14 +98,17 @@ void script_object::destructor_common()
 
 void script_object::destroy()
 {
-    if ( debug_info != nullptr ) {
+    if ( debug_info != nullptr )
+    {
         this->debug_info->~debug_info_t();
         ::operator delete(debug_info);
         this->debug_info = nullptr;
     }
 
-    if ( this->funcs != nullptr ) {
-        for ( auto i = 0; i < this->total_funcs; ++i ) {
+    if ( this->funcs != nullptr )
+    {
+        for ( auto i = 0; i < this->total_funcs; ++i )
+        {
             auto &v5 = this->funcs[i];
             if ( v5 != nullptr ) {
                 v5->~vm_executable();
@@ -170,16 +173,49 @@ simple_list<vm_thread>::iterator script_instance::delete_thread(
 {
     TRACE("script_instance::delete_thread");
 
-    simple_list<vm_thread>::iterator iter{};
-    THISCALL(0x005AAE60, this, &iter, a3);
-    return iter;
+    if constexpr (0)
+    {
+        auto *condemned = &(*a3);
+        assert(condemned != nullptr);
+
+        for ( auto &it : this->threads )
+        {
+            auto *v9 = &it;
+            if ( v9 != condemned && v9->field_14 == condemned ) {
+                v9->field_14 = nullptr;
+            }
+        }
+
+        auto v8 = this->threads.erase(condemned);
+
+        if ( condemned != nullptr ) {
+            delete condemned;
+            condemned = nullptr;
+        }
+
+        return v8;
+
+    }
+    else
+    {
+        using iterator_t = simple_list<vm_thread>::iterator;
+
+        iterator_t it {};
+
+        void (__fastcall *func)(void *, void *edx, iterator_t *, iterator_t) = CAST(func, 0x005AAE60);
+        func(this, nullptr, &it, a3);
+        return it;
+    }
 }
 
-void script_instance::dump_threads_to_file(FILE *a2) {
+void script_instance::dump_threads_to_file(FILE *a2)
+{
     TRACE("script_instance::dump_threads_to_file");
 
-    for ( auto &v7 : this->threads ) {
-        if ( (v7.flags & 1) == 0 ) {
+    for ( auto &v7 : this->threads )
+    {
+        if ( !v7.is_suspended() )
+        {
             auto *exec = v7.get_executable();
             auto &name = exec->get_name();
             auto *v4 = name.to_string();
@@ -191,16 +227,18 @@ void script_instance::dump_threads_to_file(FILE *a2) {
 
 void script_instance::run(bool a2)
 {
-    //TRACE("script_instance::run");
+    TRACE("script_instance::run");
 
     this->flags |= 2u;
     this->build_parameters();
     auto it = this->threads.begin();
     auto end = this->threads.end();
-    while (it != end) {
+    while (it != end)
+    {
         auto *t = it._Ptr;
         assert(t != nullptr);
-        if ( (a2 || (t->flags & 1) == 0) && t->run() ) {
+
+        if ( (a2 || !t->is_suspended()) && t->run() ) {
             it = this->delete_thread(it);
         } else {
             ++it;
@@ -294,7 +332,8 @@ bool script_object::has_threads() const
     return false;
 }
 
-void script_object::dump_threads_to_file(FILE *a2) {
+void script_object::dump_threads_to_file(FILE *a2)
+{
     TRACE("script_object::dump_threads_to_file");
 
     if ( this->instances != nullptr ) {
@@ -442,7 +481,8 @@ void script_object::link(const script_executable *a2) {
     }
 }
 
-void script_object::un_mash(generic_mash_header *header, void *a3, void *a4, generic_mash_data_ptrs *a5) {
+void script_object::un_mash(generic_mash_header *header, void *a3, void *a4, generic_mash_data_ptrs *a5)
+{
     TRACE("script_object::un_mash");
 
     if constexpr (1) {
@@ -454,8 +494,8 @@ void script_object::un_mash(generic_mash_header *header, void *a3, void *a4, gen
         rebase(a5->field_0, 4u);
 
         this->funcs = a5->get<vm_executable *>(this->total_funcs);
-        for ( auto i = 0; i < this->total_funcs; ++i ) {
-
+        for ( auto i = 0; i < this->total_funcs; ++i )
+        {
             rebase(a5->field_0, 4u);
 
             this->funcs[i] = a5->get<vm_executable>();
@@ -817,7 +857,7 @@ bool script_instance::run_single_thread(vm_thread *a2, bool a3)
         assert(entry != nullptr);
 
         script_manager::run_callbacks(static_cast<script_manager_callback_reason>(10), parent, entry->field_8);
-        if ( (a3 || (a2->flags & 1) == 0) && a2->run() )
+        if ( (a3 || !a2->is_suspended()) && a2->run() )
         {
             auto end = this->threads.end();
             for (auto it = this->threads.begin(); it != end; ++it )
@@ -839,10 +879,30 @@ bool script_instance::run_single_thread(vm_thread *a2, bool a3)
     }
 }
 
-int *script_instance::register_callback(
-    void (*p_cb)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *),
-    void *a3) {
-    return (int *) THISCALL(0x005A33F0, this, p_cb, a3);
+void script_instance::register_callback(
+    void (*cb)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *),
+    void *user_data)
+{
+    assert(cb != nullptr);
+
+    if constexpr (0)
+    {
+        this->m_callback = cb;
+
+        decltype(this->field_38)::ret_t ret;
+
+        void (__fastcall *func)(void *, void *edx, decltype(ret) *, void **) = CAST(func, 0x005B50E0);
+
+        func(&this->field_38, nullptr,
+           &ret,
+           &user_data);
+
+        assert(ret.second && "tried to insert user_data more than once!!!");
+    }
+    else
+    {
+        THISCALL(0x005A33F0, this, cb, user_data);
+    }
 }
 
 vm_thread *script_instance::add_thread(const vm_executable *ex, const char *parms)
@@ -865,6 +925,25 @@ void script_instance::add_thread(void *a2, const vm_executable *a3, const char *
 {
     if constexpr (0)
     {
+        auto *nt = new vm_thread {this, a3, a2};
+
+        assert(nt != nullptr);
+
+        this->threads.emplace_back(nt);
+
+        if ( (this->flags & 1) != 0 ) {
+            nt->set_suspended(true);
+        }
+
+        if ( a4 != nullptr )
+        {
+            auto parms_stacksize = a3->get_parms_stacksize();
+            auto &data_stack = nt->get_data_stack();
+
+            data_stack.push(a4, parms_stacksize);
+        }
+
+        nt->PC = a3->get_start();
     }
     else
     {
@@ -992,8 +1071,7 @@ vm_thread *script_instance::add_thread(const vm_executable *a2)
 
     if constexpr (1)
     {
-        auto *mem = vm_thread::pool().allocate_new_block();
-        auto *nt = new (mem) vm_thread {this, a2};
+        auto *nt = new vm_thread {this, a2};
         assert(nt != nullptr);
 
         this->threads.emplace_back(nt);
@@ -1003,14 +1081,18 @@ vm_thread *script_instance::add_thread(const vm_executable *a2)
         }
 
         return nt;
-    } else {
-        return (vm_thread *) THISCALL(0x005AAC20, this, a2);
+    }
+    else
+    {
+        vm_thread * (__fastcall *func)(void *, void *edx, const vm_executable *a2) = CAST(func, 0x005AAC20);
+        return func(this, nullptr, a2);
     }
 }
 
 vm_thread *script_object::add_thread(script_instance *a2, int fidx)
 {
 	assert(fidx < total_funcs);
+
 	auto *thread = a2->add_thread(this->funcs[fidx]);
 	auto &stack = thread->get_data_stack();
 	stack.push((const char *)&a2, 4);
@@ -1024,7 +1106,8 @@ bool script_instance::has_threads() const
     return (this->threads.size() != 0);
 }
 
-void script_instance_patch() {
+void script_instance_patch()
+{
     {
         FUNC_ADDRESS(address, &script_instance::run);
         SET_JUMP(0x005AF660, address);

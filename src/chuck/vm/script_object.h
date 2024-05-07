@@ -238,9 +238,9 @@ struct script_instance {
     void kill_thread(const vm_executable *a2, const vm_thread *a3);
 
     //0x005A33F0
-    int *register_callback(
-        void (*p_cb)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *),
-        void *a3);
+    void register_callback(
+        void (*cb)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *),
+        void *user_data);
 
 };
 

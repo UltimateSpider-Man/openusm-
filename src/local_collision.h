@@ -33,13 +33,15 @@ struct intersection_list_t {
 };
 
 struct query_args_t {
-    int field_0;
+    uint32_t initialized_flags;
     vector3d field_4;
     vector3d field_10;
     vector3d field_1C;
     float field_28;
     entity *field_2C;
     entity *field_30;
+
+    void set_entity(entity *a2);
 };
 
 struct entfilter_base {
@@ -62,6 +64,7 @@ struct obbfilter : obbfilter_base {
     bool accept(subdivision_node_obb_base *a1, const query_args_t &a2);
 };
 
+struct entfilter_BLOCKS_AI_LOS {};
 struct entfilter_ENTITY {};
 struct entfilter_COLLIDE_CAMERA {};
 struct entfilter_LINESEG_TEST {};
@@ -93,9 +96,7 @@ struct primitive_list_t {
     union {
         entity *ent;
         subdivision_node_obb_base *obb;
-    }
-
-    field_4;
+    } field_4;
     void *field_8;
     bool is_ent;
     intraframe_trajectory_t *field_10;
@@ -107,6 +108,8 @@ struct primitive_list_t {
     }
 
     entity *get_entity();
+
+    void * get_obb_node();
 
     static inline Var<fixed_pool> pool{0x00922174};
 };
@@ -171,6 +174,8 @@ inline Var<entfilter_base *> entfilter_sphere_camera_collision {0x00960074};
 inline Var<obbfilter_base *> obbfilter_lineseg_test{0x00960064};
 
 inline Var<obbfilter<obbfilter_OBB_SPHERE_TEST> *> obbfilter_sphere_test{0x00960050};
+
+inline Var<obbfilter_base *> obbfilter_accept_all {0x00960048};
 
 inline Var<entfilter_reject_all_t *> entfilter_reject_all{0x00960054};
 

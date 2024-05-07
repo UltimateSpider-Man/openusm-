@@ -6,6 +6,7 @@
 #include "ai_state_jump.h"
 #include "ai_state_run.h"
 #include "ai_state_swing.h"
+#include "ai_state_web_zip.h"
 #include "ai_std_hero.h"
 #include "ai_tentacle_web_curly.h"
 #include "als_inode.h"
@@ -66,9 +67,9 @@ static constexpr auto minimum_web_length = 5.0f;
 
 static Var<const float> magic_velocity_cancelling_angle_in_degrees{0x0091F764};
 
-static Var<float> min_swing_web_length_squared = (0x0091F420);
-static Var<float> max_swing_web_length_squared = (0x0091F424);
-static Var<float> sweet_cone_angle_cos = (0x00958108);
+static constexpr float min_swing_web_length_squared = 81.180107;
+static constexpr float max_swing_web_length_squared = 5626.5005;
+static constexpr float sweet_cone_angle_cos = std::cos((3.1415927 / 180.0) * 30.01); 
 
 static Var<float> swing_collision_break_length{0x009585BC};
 static Var<float> swing_collision_stick_length{0x0091F468};
@@ -76,7 +77,7 @@ static Var<float> swing_collision_stick_length{0x0091F468};
 Var<swinger_t[2]> swingers = (0x00958188);
 
 static Var<float> no_swing_timer{0x00958034};
-static Var<float> no_swing_lockout_time{0x0091F43C};
+static constexpr float no_swing_lockout_time {0.2f};
 
 Var<something_to_swing_to_data_t> something_to_swing_to_data = {0x00958098};
 
@@ -109,7 +110,8 @@ float find_best_anchor_result_t::get_best_distance_squared() {
     return this->m_best_distance_squared;
 }
 
-void find_best_anchor_result_t::set_best_distance_squared(Float best_distance_squared) {
+void find_best_anchor_result_t::set_best_distance_squared(Float best_distance_squared)
+{
     this->m_best_distance_squared = best_distance_squared;
     this->valid_flags |= BEST_DISTANCE_SQUARED_IS_VALID;
 }
@@ -170,6 +172,52 @@ swing_state::swing_state() : enhanced_state() {
 swing_state::swing_state(from_mash_in_place_constructor *a2) : enhanced_state(a2)
 {
     this->m_vtbl = 0x008774B8;
+}
+
+swing_state::~swing_state()
+{
+    this->finalize(mash::ALLOCATED);
+}
+
+void swing_state::finalize(mash::allocation_scope )
+{
+    if ( this->get_actor() != nullptr )
+    {
+        auto *actor = this->get_actor();
+        if ( actor->has_physical_ifc() )
+        {
+            if ( this->field_C != nullptr )
+            {
+                auto *v4 = this->field_3C;
+                auto *v5 = v4->field_40;
+                auto *v6 = v4->field_3C;
+                if ( !v5->field_54 ) {
+                    v5->play_fire_web_sound();
+                }
+
+                auto *v7 = this->get_actor();
+                v6->add_swingback(swingers()[0].field_90, nullptr, v7);
+
+                auto *v8 = this->get_actor();
+                auto *v9 = v8->physical_ifc();
+                v9->field_C &= ~0x200u;
+
+                swingers()[0].field_0.m_active = false;
+                swingers()[0].field_90->set_visible(false, false);
+                swingers()[0].field_90->set_visible(false, false);
+                swingers()[1].field_90->set_visible(false, false);
+                swingers()[0].field_94->set_visible(
+                        swingers()[0].field_90->is_visible(),
+                        false);
+
+                swingers()[1].field_94->set_visible(
+                        swingers()[1].field_90->is_visible(),
+                        false);
+
+                no_swing_timer() = 0.0;
+            }
+        }
+    }
 }
 
 uint32_t swing_state::get_virtual_type_enum() {
@@ -500,7 +548,7 @@ void swing_inode::update_mode_swinging(Float a2)
 
         for (int i = 0; i < 2; ++i)
         {
-            if (swingers()[i].field_0.field_34)
+            if (swingers()[i].field_0.m_active)
             {
                 auto *v28 = this->get_actor();
 
@@ -683,81 +731,53 @@ vector3d swing_inode::get_desired_up_facing() const
     return YVEC;
 }
 
-bool swing_inode::is_eligible(string_hash a2, Float a3) {
-    if constexpr (1) {
-        auto *v4 = &this->field_8->field_50;
+bool swing_inode::is_eligible(string_hash a2, Float a3)
+{
+    if constexpr (1)
+    {
+        auto &v4 = this->field_8->field_50;
 
-        if (v4->get_pb_int(loco_allow_swing_id) == 0) {
+        if (v4.get_pb_int(loco_allow_swing_id) == 0) {
             return false;
         }
 
-        game_button v30;
-
-        vector3d a3a;
-
-        po v28;
-
-        vector3d a4;
-        vector3d v29;
-
-        auto func = [](const game_button &self) -> bool {
-            if ((0x20 & self.m_flags) == 0) {
-                return (self.m_flags & GBFLAG_PRESSED);
-            }
-
-            return false;
-        };
-
-        bool cond;
-
-        if (!hero_inode::is_a_crawl_state(a2, true)) {
+        if (!hero_inode::is_a_crawl_state(a2, true))
+        {
             auto *hero_inode_ptr = this->field_20;
             auto *physics_inode_ptr = hero_inode_ptr->field_28;
             auto *cntrl_inode_ptr = hero_inode_ptr->field_24;
             no_swing_timer() += a3;
 
-            v29 = physics_inode_ptr->get_abs_position();
-            a4 = physics_inode_ptr->get_abs_po().m[2];
+            const vector3d abs_pos = physics_inode_ptr->get_abs_position();
+            const vector3d dir = physics_inode_ptr->get_abs_po().get_z_facing();
 
-            v28.m[0][0] = 1.0;
-            v28.m[0][1] = 0.0;
-            v28.m[0][2] = 0.0;
-            v28.m[0][3] = 0.0;
-            v28.m[1][0] = 0.0;
-            v28.m[1][1] = 1.0;
-            v28.m[1][2] = 0.0;
-            v28.m[1][3] = 0.0;
-            v28.m[2][0] = 0.0;
-            v28.m[2][1] = 0.0;
-            v28.m[2][2] = 1.0;
-            v28.m[2][3] = 0.0;
-            v28.m[3][0] = 0.0;
-            v28.m[3][1] = 0.0;
-            v28.m[3][2] = 0.0;
-            v28.m[3][3] = 1.0;
+            po v28 {};
             v28.set_rotate_y(0.0);
 
             constexpr float swing_length_mod = 1.0f;
-            auto v24 = this->get_swing_cur_max_anchor_dist() * swing_length_mod * 0.5f;
-            a4 *= v24;
+            const auto v24 = this->get_swing_cur_max_anchor_dist() * swing_length_mod * 0.5f;
+            vector3d a4 = dir * v24;
 
-            a3a = a4;
-            a3a = v28.slow_xform(a3a);
-            this->field_3C = 1;
+            vector3d a3a = v28.slow_xform(a4);
+
+            a3a += abs_pos;
 
             const float a6 = (a2 == run_state::default_id ? 15.f : 10.f);
+
+            this->field_3C = 1;
 
             game_button v31 = cntrl_inode_ptr->get_button(static_cast<controller_inode::eControllerButton>(11));
 
             game_button v30;
-            cond = func(v31) &&
+            bool cond = v31.is_pressed() &&
                 (v30 = cntrl_inode_ptr->get_button(static_cast<controller_inode::eControllerButton>(4)),
-                 !func(v30));
+                 !v30.is_pressed());
 
-            if (cond) {
+            if (cond)
+            {
                 float sweet_spot_ground_level;
 
-                this->find_best_anchor_point(v29, v29, a4, nullptr, a6, &sweet_spot_ground_level);
+                this->find_best_anchor_point(abs_pos, a3a, dir, nullptr, a6, &sweet_spot_ground_level);
                 assert(sweet_spot_ground_level != -1e10f);
 
                 if (something_to_swing_to_data().field_64) {
@@ -780,12 +800,14 @@ bool swing_inode::is_eligible(string_hash a2, Float a3) {
 
         game_button v33;
 
-        cond = func(v32) &&
+        bool cond = v32.is_pressed() &&
             (v33 = v6->get_button(static_cast<controller_inode::eControllerButton>(4)),
-             !func(v33));
+             !v33.is_pressed());
 
         return cond;
-    } else {
+    }
+    else
+    {
         return THISCALL(0x004882C0, this, a2, a3);
     }
 }
@@ -804,18 +826,20 @@ void swing_inode::frame_advance(Float a2)
     }
 }
 
-float swing_inode::get_swing_cur_max_anchor_dist() {
+float swing_inode::get_swing_cur_max_anchor_dist() const
+{
     static constexpr float swing_sweet_upper = 25.f;
-    static Var<const float> swing_sweet_lower{0x009591C0};
+    static Var<const float> swing_sweet_lower {0x009591C0};
     static constexpr float swing_sweet_min_dist = 30.f;
     static constexpr float swing_max_anchor_dist = 72.f;
 
-    auto v3 = this->field_C->get_abs_position()[1];
+    auto v3 = this->get_actor()->get_abs_position()[1];
     if (v3 >= swing_sweet_upper) {
         return swing_max_anchor_dist;
     }
 
-    if (v3 >= swing_sweet_lower()) {
+    if (v3 >= swing_sweet_lower())
+    {
         return (v3 - swing_sweet_lower()) / (swing_sweet_upper - swing_sweet_lower()) *
             (swing_max_anchor_dist - swing_sweet_min_dist) +
             swing_sweet_min_dist;
@@ -824,14 +848,24 @@ float swing_inode::get_swing_cur_max_anchor_dist() {
     return swing_sweet_min_dist;
 }
 
-void swing_inode::init_swingers() {
-    THISCALL(0x004875F0, this);
+void swing_inode::init_swingers()
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x004875F0, this);
+    }
 }
 
-void swing_inode::cleanup_swingers() {
-    if constexpr (0) {
-        if (this->field_1C) {
-            for (auto i = 0u; i < 2; ++i) {
+void swing_inode::cleanup_swingers()
+{
+    if constexpr (0)
+    {
+        if (this->field_1C)
+        {
+            for (auto i = 0u; i < 2; ++i)
+            {
                 if (swingers()[i].field_94 != nullptr) {
                     g_world_ptr()->ent_mgr.destroy_entity(swingers()[i].field_94);
                 }
@@ -860,8 +894,10 @@ void swing_inode::clip_web(Float a2)
     {
         auto *v3 = this->field_20->field_28;
 
-        for (swinger_t &v4 : swingers()) {
-            if (v4.field_0.field_34) {
+        for (swinger_t &v4 : swingers())
+        {
+            if (v4.field_0.m_active)
+            {
                 line_info v19{};
 
                 v19.field_0 = v3->get_abs_position();
@@ -1177,12 +1213,11 @@ void swing_inode::update_pendulums(Float a2)
 
                 game_button v38 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(14));
 
-                uint32_t v39 = ((v38.m_flags & 0x20) != 0 ? 0 : v38.m_flags & 1);
-
+                bool v39 = v38.is_pressed();
                 if (v39)
                 {
                     game_button v46 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(14));
-                    auto v47 = (v46.m_flags & 0x20) != 0 ? 0.0f : v46.field_1C;
+                    auto v47 = (v46.is_flagged(0x20) ? 0.0f : v46.field_1C);
                     auto v48 = v47 < reel_buttons_delay;
 
                     auto v49 = v48 ? triggered_reel_in_factor : reel_in_factor;
@@ -1195,17 +1230,13 @@ void swing_inode::update_pendulums(Float a2)
 
                 game_button v51 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(10));
 
-                static string_hash cat_id_swing_reel_up{int(to_hash("Swing_Reel_Up"))};
+                static string_hash cat_id_swing_reel_up {int(to_hash("Swing_Reel_Up"))};
 
                 bool v53 = false;
-                if ((v51.m_flags & 0x20) == 0)
+                if (v51.is_pressed())
                 {
-                    auto v112 = ((v51.m_flags & GBFLAG_PRESSED) != 0);
-                    if (v112)
-                    {
-                        if (swingers()[0].field_0.get_constraint() > minimum_web_length) {
-                            v53 = true;
-                        }
+                    if (swingers()[0].field_0.get_constraint() > minimum_web_length) {
+                        v53 = true;
                     }
                 }
 
@@ -1215,10 +1246,11 @@ void swing_inode::update_pendulums(Float a2)
 
                     game_button v55 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(10));
 
-                    float v56 = ((v55.m_flags & 0x20) != 0 ? 0.0f : v55.field_1C);
+                    float v56 = (v55.is_flagged(0x20) ? 0.0f : v55.field_1C);
 
                     auto v112 = v56 < reel_buttons_delay;
-                    if (v112) {
+                    if (v112)
+                    {
                         auto v57 = triggered_reel_in_factor * a2;
                         swingers()[0].field_0.m_constraint = swingers()[0].field_0.m_constraint - v57;
                         if (swingers()[0].field_50 > 0.0f) {
@@ -1235,7 +1267,9 @@ void swing_inode::update_pendulums(Float a2)
                             this->field_40 = 3;
                         }
 
-                    } else {
+                    }
+                    else
+                    {
                         auto v58 = 10.0f * a2;
                         swingers()[0].field_0.m_constraint = swingers()[0].field_0.m_constraint- v58;
                         if (swingers()[0].field_50 > 0.0f) {
@@ -1453,11 +1487,8 @@ void swing_inode::update_pendulums(Float a2)
         {
             auto v103 = controller_ptr->get_button(static_cast<controller_inode::eControllerButton>(9));
             bool v104 = false;
-            if ((v103.m_flags & 0x20) == 0)
-            {
-                if ((v103.m_flags & GBFLAG_TRIGGERED) != 0 && boost_cooldown_timer() <= 0.0f) {
-                    v104 = true;
-                }
+            if (v103.is_triggered() && boost_cooldown_timer() <= 0.0f) {
+                v104 = true;
             }
 
             if (v104)
@@ -1877,11 +1908,21 @@ float swing_inode::compute_ground_level_at_sweet_spot_position(const vector3d &a
     }
 }
 
+static constexpr float min_dynamic_sweet_angle = (3.1415927 / 180.0) * 40.009998;
+
+static constexpr float max_dynamic_sweet_angle = (3.1415927 / 180.0) * 50.009998;
+
+static constexpr float min_dynamic_sweet_length = 35.0;
+
+static constexpr float max_dynamic_sweet_length = 55.0;
+
 void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
                                                     float *result_length,
                                                     float *result_ground_level,
-                                                    vector3d *result_direction) {
-    if constexpr (1) {
+                                                    vector3d *result_direction)
+{
+    if constexpr (1)
+    {
         auto *cntrl_inode_ptr = this->field_20->field_24;
         auto *cam_ptr = g_world_ptr()->get_chase_cam_ptr(0);
 
@@ -1891,17 +1932,17 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
         a2.normalize();
 
-        vector3d v60 = cntrl_inode_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(0));
-        if (v60.length() < EPSILON) {
-            v60 = this->get_actor()->get_abs_po().get_z_facing();
+        vector3d dir = cntrl_inode_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(0));
+        if (dir.length() < EPSILON) {
+            dir = this->get_actor()->get_abs_po().get_z_facing();
 
         } else {
-            v60 = cntrl_inode_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(0));
+            dir = cntrl_inode_ptr->get_axis(static_cast<controller_inode::eControllerAxis>(0));
         }
 
-        auto a1 = v60;
+        auto a1 = dir;
         bool v19 = false;
-        auto v20 = v60.length();
+        auto v20 = dir.length();
         if (v20 <= LARGE_EPSILON) {
             v19 = true;
         } else {
@@ -1918,21 +1959,9 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
         float cos_alpha = dot(a1, a2);
         assert(std::abs(cos_alpha) < 1.0f + EPSILON);
 
-        if (cos_alpha >= -1.f) {
-            if (cos_alpha > 1.f)
-                cos_alpha = 1.f;
-        } else {
-            cos_alpha = -1.f;
-        }
+        cos_alpha = std::clamp(cos_alpha, -1.0f, 1.0f);
 
-        auto v55 = cos_alpha;
-        if (cos_alpha < -1.f) {
-            v55 = -1.0;
-        } else if (cos_alpha > 1.f) {
-            v55 = 1.0;
-        }
-
-        float alpha = std::acos(v55);
+        float alpha = bounded_acos(cos_alpha);
         if (alpha > half_PI) {
             alpha = PI - alpha;
         }
@@ -1941,34 +1970,26 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
         assert(alpha > -EPSILON && alpha < 1.0f + EPSILON);
 
-        if (alpha >= 0.0f) {
-            if (alpha > 1.f) {
-                alpha = 1.f;
-            }
-        } else {
-            alpha = 0.0f;
-        }
+        alpha = std::clamp(alpha, 0.0f, 1.0f);
 
         auto v30 = 1.f - (1.f - alpha) * (1.f - alpha);
 
         static constexpr auto sweet_spot_overdrive_velocity = 20.01f;
         assert(sweet_spot_overdrive_velocity > LARGE_EPSILON);
 
-        auto v31 = xz_velocity / sweet_spot_overdrive_velocity;
+        float v31 = xz_velocity / sweet_spot_overdrive_velocity;
         if (v31 > 1.f) {
             v31 = 1.f;
         }
 
         auto v52 = 1.f - v30;
-        auto current_length = ((1.f - v31) * 55.f + 55.f * v31) * v52 + 35.f * v30;
-        auto v58 = v52 * 0.6983062f + 0.87283915f * v30;
+        float current_length = ((1.f - v31) * max_dynamic_sweet_length + 55.f * v31) * v52
+            + min_dynamic_sweet_length * v30;
+        auto angle = v52 * min_dynamic_sweet_angle + max_dynamic_sweet_angle * v30;
 
         assert(vector3d(0.0f, 0.0f, current_length).is_valid());
 
-        double angle;
-        double v42;
-
-        auto clamp_and_asin = [](float a1) -> float {
+        auto saturate_and_asin = [](float a1) -> float {
             if (a1 < -1.f) {
                 a1 = -1.f;
             } else if (a1 > 1.f) {
@@ -1978,134 +1999,92 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
             return asin(a1);
         };
 
-        if (v19) {
+        if (v19)
+        {
             constexpr float sweet_spot_distance = 30.01f;
 
             current_length = sweet_spot_distance;
 
             assert(vector3d(0.0f, 0.0f, current_length).is_valid());
 
-            auto clamp_and_asin = [](float a1) -> double {
-                if (a1 < -1.f) {
-                    a1 = -1.f;
-                }
-
-                if (a1 > 1.f) {
-                    a1 = 1.f;
-                }
-
-                return asin(a1);
-            };
-
             static const float sweet_spot_incline_angle_sin = std::sin(0.6983062238602997f);
 
             assert(sweet_spot_incline_angle_sin >= 0.0f && sweet_spot_incline_angle_sin <= 1.0f);
 
-            v58 = clamp_and_asin(sweet_spot_incline_angle_sin);
-            if (v58 < 0.f) {
-                v58 = 0.0;
+            angle = saturate_and_asin(sweet_spot_incline_angle_sin);
+            if (angle < 0.f) {
+                angle = 0.0;
             }
         }
 
-        auto *v33 = this->field_C;
+        auto *v33 = this->get_actor();
 
-        int i = 0;
         auto v56 = v33->get_abs_position().y + 2.f;
+        for (int i = 0; i < 2; ++i)
+        {
+            assert(vector3d(0.0f, 0.0f, current_length).is_valid());
 
-        swing_anchor_finder anchor_finder{};
-        anchor_finder.field_0 = std::cos(v58);
-        auto v53 = std::sin(v58);
-        while (1) {
-            anchor_finder.field_4 = v53;
-            anchor_finder.sweet_spot_distance = current_length;
-            anchor_finder.field_C = min_swing_web_length_squared();
-            anchor_finder.field_10 = max_swing_web_length_squared();
-            anchor_finder.web_min_length = sqrt(min_swing_web_length_squared());
-            anchor_finder.web_max_length = sqrt(max_swing_web_length_squared());
-            anchor_finder.field_1C = sweet_cone_angle_cos();
-            anchor_finder.field_20 = anchor_finder.web_max_length;
-            auto v61 = v53 * current_length + v56 - current_length;
+            float s, c;
+            fast_sin_cos_approx(angle, &s, &c);
 
-            auto *v35 = this->field_C;
+            swing_anchor_finder anchor_finder {
+                    c,
+                    s,
+                    current_length,
+                    min_swing_web_length_squared,
+                    max_swing_web_length_squared,
+                    sweet_cone_angle_cos
+            };
 
-            auto &v37 = v35->get_abs_po();
+            auto v61 = s * current_length + v56 - current_length;
 
-            sweet_cone_t sweet_cone {anchor_finder,
-                                        v35->get_abs_po().get_position(),
-                                        v37.get_z_facing(),
-                                        v60,
-                                        vector3d{0}};
+            auto *v35 = this->get_actor();
 
-            a1[0] = sweet_cone.sweet_spot[0];
-            a1[1] = sweet_cone.sweet_spot[1];
-            a1[2] = sweet_cone.sweet_spot[2];
-            a1[1] = v56;
+            vector3d sweet_spot {};
+            anchor_finder.find_sweet_spot(v35, dir, ZEROVEC, &sweet_spot);
 
-            auto *v38 = this->field_C;
-            if (v38->get_primary_region() != nullptr) {
-                auto *reg = v38->get_primary_region();
+            sweet_spot.y = v56;
+
+            if (v35->get_primary_region() != nullptr) {
+                auto *reg = v35->get_primary_region();
                 this->compute_ground_level_at_sweet_spot_position(a1, current_length, reg);
             }
 
-            auto v40 = v61 < 1.5f;
             *result_ground_level = 0.0;
-            if (!v40) {
-                angle = v58;
-
-                *result_angle = angle;
-                *result_length = current_length;
-                *result_direction = v60;
-
-                return;
+            if (v61 >= 1.5f) {
+                break;
             }
 
-            if (i) {
+            if (i != 0)
+            {
                 assert(i == 1);
 
                 assert(current_length > LARGE_EPSILON);
 
+                float v42 = (current_length + 1.5f - v56) / current_length;
+
+                v42 = std::clamp(v42, -1.0f, 1.0f);
+
+                angle = saturate_and_asin(v42);
+
+                angle = std::clamp(angle, min_dynamic_sweet_angle, max_dynamic_sweet_angle);
+
                 break;
             }
 
-            auto v41 = (1.5f - v56) / (v53 - 1.f) * 0.69999999f;
-            current_length = v41;
-            if (v41 >= 35.f) {
-                if (current_length > 55.f) {
-                    current_length = 55.f;
-                }
-
-                i = 1;
-            } else {
-                current_length = 35.f;
-                i = 1;
-            }
-        }
-
-        v42 = (current_length + 1.5f - v56) / current_length;
-        if (v42 >= -1.f) {
-            if (v42 > 1.f) {
-                v42 = 1.f;
-            }
-
-        } else {
-            v42 = -1.f;
-        }
-
-        angle = clamp_and_asin(v42);
-
-        if (angle <= 0.87283915f) {
-            if (angle < 0.6983062f) {
-                angle = 0.6983062f;
-            }
-        } else {
-            angle = 0.87283915f;
+            current_length = (1.5f - v56) / (s - 1.f);
+            current_length *= 0.69999999f;
+            current_length = std::clamp(current_length,
+                                min_dynamic_sweet_length,
+                                max_dynamic_sweet_length);
         }
 
         *result_angle = angle;
         *result_length = current_length;
-        *result_direction = v60;
-
-    } else {
+        *result_direction = dir;
+    }
+    else
+    {
         THISCALL(0x0046AB90,
                  this,
                  result_angle,
@@ -2121,7 +2100,7 @@ void swing_inode::setup_new_web()
 
     if constexpr (0)
     {
-        constexpr float max_swing_length_mod = 3.0;
+        static constexpr float max_swing_length_mod = 3.0;
 
         this->field_54 = false;
         this->field_44 = false;
@@ -2136,7 +2115,7 @@ void swing_inode::setup_new_web()
         constexpr bool v6 = (max_swing_length_mod * 0.5 + 0.5 <= swing_length_mod);
 
         this->field_2C = something_to_swing_to_data().m_target_length;
-        physical_interface *v8 = this->field_C->physical_ifc();
+        physical_interface *v8 = this->get_actor()->physical_ifc();
         v8->set_gravity(true);
 
         auto *ent = swingers()[0].field_0.get_volatile_ptr();
@@ -2180,8 +2159,9 @@ void swing_inode::setup_new_web()
         }
 
         swingers()[0].field_0.m_constraint = this->m_constraint;
-        if (swingers()[0].field_0.m_constraint >= 3.0) {
-            swingers()[0].field_0.field_34 = true;
+        if (swingers()[0].field_0.m_constraint >= 3.0)
+        {
+            swingers()[0].field_0.m_active = true;
             something_to_swing_to_data().goal_constraint = swingers()[0].field_0.get_constraint();
             swingers()[0].field_38 = swingers()[0].field_0.get_constraint();
         }
@@ -2189,7 +2169,7 @@ void swing_inode::setup_new_web()
         fast_swing() = v6;
 
         swingers()[0].field_4C = 0;
-        entity_base *v25 = this->field_C;
+        entity_base *v25 = this->get_actor();
 
         auto *_polytube = swingers()[0].field_90;
 
@@ -2212,7 +2192,7 @@ void swing_inode::setup_new_web()
 
         v30->set_max_length(0.0f);
         flt_9581D8() = -1.0;
-        this->field_C->physical_ifc()->m_gravity_multiplier = 5.0f;
+        this->get_actor()->physical_ifc()->m_gravity_multiplier = 5.0f;
 
         vector3d norm_move_dir;
         vector3d up;
@@ -2246,16 +2226,15 @@ void swing_inode::propose_something_to_swing_to(vector3d a1,
                                                 Float a11,
                                                 Float a12,
                                                 vector3d visual_point) {
-    if constexpr (1) {
-        if (something_to_swing_to_data().field_0 <= 0.0f) {
+    if constexpr (1)
+    {
+        if (something_to_swing_to_data().field_0 <= 0.0f)
+        {
             something_to_swing_to_data().field_28 = a1;
 
-            uint32_t a4a;
-            if (a4) {
-                a4a = a4->get_my_handle().field_0;
-            } else {
-                a4a = 0;
-            }
+            uint32_t a4a = (a4 != nullptr
+                            ? a4->get_my_handle().field_0
+                            : 0);
 
             something_to_swing_to_data().field_38 = a5;
             something_to_swing_to_data().field_34 = a4a;
@@ -2263,7 +2242,7 @@ void swing_inode::propose_something_to_swing_to(vector3d a1,
             something_to_swing_to_data().m_visual_point = visual_point;
             something_to_swing_to_data().m_target_length = a12;
             something_to_swing_to_data().m_best_distance = a11;
-            something_to_swing_to_data().field_64 = (no_swing_timer() > no_swing_lockout_time());
+            something_to_swing_to_data().field_64 = (no_swing_timer() > no_swing_lockout_time);
         }
 
     } else {
@@ -2310,8 +2289,7 @@ bool swing_inode::can_go_to(string_hash a2) {
                 if (v12 != 0)
                 {
                     auto v13 = v6->get_button(static_cast<controller_inode::eControllerButton>(11));
-                    auto v14 = v13.sub_48B270();
-                    v13.~game_button();
+                    auto v14 = v13.is_pressed();
                     if (v14) {
                         return false;
                     }
@@ -2375,19 +2353,19 @@ void swing_inode::update_something_to_swing_to(Float a2)
             something_to_swing_to_data().field_18 = something_to_swing_to_data().m_normal;
             if ( v5 < 5.0f )
             {
-                if ( this->field_C->is_in_limbo() || this->field_C->get_primary_region() == nullptr )
+                if ( this->get_actor()->is_in_limbo() || this->get_actor()->get_primary_region() == nullptr )
                 {
                     something_to_swing_to_data().goal_constraint = something_to_swing_to_data().field_C.y;
                 }
                 else
                 {
-                    auto *reg = this->field_C->get_primary_region();
+                    auto *reg = this->get_actor()->get_primary_region();
                     something_to_swing_to_data().goal_constraint = something_to_swing_to_data().field_C.y - reg->get_ground_level();
                 }
 
                 if ( something_to_swing_to_data().goal_constraint < 2.0f )
                 {
-                    auto v8 = something_to_swing_to_data().field_C - this->field_C->get_abs_position();
+                    auto v8 = something_to_swing_to_data().field_C - this->get_actor()->get_abs_position();
                     something_to_swing_to_data().goal_constraint = v8.length();
                 }
             }
@@ -2405,13 +2383,15 @@ void swing_inode::find_best_anchor_point(const vector3d &a1,
                                          [[maybe_unused]] const vector3d &a3,
                                          [[maybe_unused]] const entity_base *a4,
                                          Float length,
-                                         float *sweet_spot_ground_level) {
-    if constexpr (1) {
+                                         float *sweet_spot_ground_level)
+{
+    if constexpr (1)
+    {
         //sp_log("find_best_anchor_point:");
 
         static constexpr float safety_34730 = 3.0;
 
-        entity *v8 = this->field_C;
+        entity *v8 = this->get_actor();
 
         if (v8->get_primary_region()) {
             region *v9 = v8->get_primary_region();
@@ -2430,17 +2410,18 @@ void swing_inode::find_best_anchor_point(const vector3d &a1,
         float s, c;
         fast_sin_cos_approx(angle, &s, &c);
 
-        swing_anchor_finder finder{c,
+        swing_anchor_finder finder {c,
                                    s,
                                    sweet_spot_length,
-                                   min_swing_web_length_squared(),
-                                   max_swing_web_length_squared(),
-                                   sweet_cone_angle_cos()};
+                                   min_swing_web_length_squared,
+                                   max_swing_web_length_squared,
+                                   sweet_cone_angle_cos};
 
         finder.set_max_pull_length(length);
 
         find_best_anchor_result_t anchor_result;
-        if (finder.find_best_anchor(this->field_C, direction, &anchor_result)) {
+        if (finder.find_best_anchor(this->get_actor(), direction, &anchor_result))
+        {
             auto v10 = anchor_result.m_point - a1;
 
             auto target_length = anchor_result.get_target_length();
@@ -2460,7 +2441,9 @@ void swing_inode::find_best_anchor_point(const vector3d &a1,
                                                 target_length,
                                                 anchor_result.m_visual_point);
             //*(float *) v33 = v19;
-        } else {
+        }
+        else
+        {
             if (something_to_swing_to_data().field_0 <= 0.0) {
                 something_to_swing_to_data().field_34 = 0;
                 something_to_swing_to_data().field_8.field_0 = 0;
@@ -2469,7 +2452,9 @@ void swing_inode::find_best_anchor_point(const vector3d &a1,
         }
 
         *sweet_spot_ground_level = ground_level;
-    } else {
+    }
+    else
+    {
         THISCALL(0x00488060, this, &a1, &a2, &a3, a4, length, sweet_spot_ground_level);
     }
 }

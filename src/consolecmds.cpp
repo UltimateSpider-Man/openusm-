@@ -1064,8 +1064,10 @@ DumpThreadsCommand::DumpThreadsCommand() {
     this->setName("dump_threads");
 }
 
-bool DumpThreadsCommand::process_cmd(const std::vector<std::string> &a2) {
-    if ( a2.size() != 0 ) {
+bool DumpThreadsCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    if ( a2.size() != 0 )
+    {
         auto &v2 = a2.at(0);
         if ( v2 != "1" ) {
             return false;

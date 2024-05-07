@@ -19,7 +19,7 @@ struct vm_thread {
         vm_num_t val;
         vm_str_t str;
         short word;
-        char* sdr;
+        char *sdr;
         script_library_class::function *lfr;
         vm_executable *sfr;
         unsigned binary;
@@ -36,7 +36,11 @@ struct vm_thread {
     const vm_executable *ex;
     vm_thread *field_14;
     int field_18;
+
+private:
     int flags;
+
+public:
     vm_stack dstack;
     const uint16_t *PC;
     const uint16_t *field_1B0;
@@ -57,6 +61,10 @@ struct vm_thread {
     //0x005A55E0
     ~vm_thread();
 
+    void * operator new(size_t size);
+
+    void operator delete(void *);
+
     script_instance *get_instance() {
         return inst;
     }
@@ -76,6 +84,10 @@ struct vm_thread {
     void set_flag(flags_t a2, bool a3);
 
     void set_suspended(bool a2);
+
+    bool is_suspended() const {
+        return this->is_flagged( SUSPENDED );
+    }
 
     //0x005996C0
     char *install_temp_string(const char *a1);

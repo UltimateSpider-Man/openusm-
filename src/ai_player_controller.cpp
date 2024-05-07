@@ -177,18 +177,18 @@ void ai_player_controller::clear_controls()
 {
     debug_print_va("-- controls cleared");
     this->remap_controls();
-    this->gb_jump.sub_50B630();
-    this->gb_swing_raw.sub_50B630();
-    this->gb_attack.sub_50B630();
-    this->gb_attack_secondary.sub_50B630();
-    this->gb_grab.sub_50B630();
-    this->gb_range.sub_50B630();
-    this->field_150.sub_50B630();
-    this->field_254.sub_50B630();
-    this->field_288.sub_50B630();
-    this->gb_camera_center.sub_50B630();
-    this->field_1B8.sub_50B630();
-    this->gb_swing.sub_50B630();
+    this->gb_jump.clear_flags();
+    this->gb_swing_raw.clear_flags();
+    this->gb_attack.clear_flags();
+    this->gb_attack_secondary.clear_flags();
+    this->gb_grab.clear_flags();
+    this->gb_range.clear_flags();
+    this->field_150.clear_flags();
+    this->field_254.clear_flags();
+    this->field_288.clear_flags();
+    this->gb_camera_center.clear_flags();
+    this->field_1B8.clear_flags();
+    this->gb_swing.clear_flags();
 }
 
 void ai_player_controller::remap_controls()

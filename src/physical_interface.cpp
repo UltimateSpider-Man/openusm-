@@ -516,7 +516,7 @@ int physical_interface::get_num_active_pendulums() const
     {
         if ( p != nullptr )
         {
-            if ( p->field_34 ) {
+            if ( p->m_active ) {
                 ++v3;
             }
         }

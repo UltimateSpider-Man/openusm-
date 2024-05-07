@@ -10,21 +10,6 @@
 struct mString;
 struct script_instance;
 
-struct slf__is_point_inside_glass_house__vector3d__t {
-    std::intptr_t m_vtbl;
-
-    //0x00661F70
-    bool operator()(vm_stack &a1, script_library_class::function::entry_t);
-};
-
-struct slf__angle_between__vector3d__vector3d__t {
-    std::intptr_t m_vtbl;
-
-    //0x00672070
-    //virtual
-    bool operator()(vm_stack &stack, script_library_class::function::entry_t a2);
-};
-
 struct slf__set_mission_text__num__t : script_library_class::function {
     //0x00672C00
     //virtual

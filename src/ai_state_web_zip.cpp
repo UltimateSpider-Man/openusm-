@@ -147,12 +147,7 @@ bool web_zip_inode::is_eligible(string_hash a2)
         game_button v10 = this->field_DC->field_24->get_button(
             static_cast<controller_inode::eControllerButton>(13));
 
-        auto v5 = [](game_button &v10) -> bool {
-            auto v4 = v10.m_flags;
-            bool v5 = ((v4 & 0x20) == 0 && (v4 & GBFLAG_TRIGGERED) != 0);
-            return v5;
-        }(v10);
-
+        bool v5 = v10.is_triggered();
         //sp_log("%d", v5);
 
         if (!v5) {
@@ -321,6 +316,15 @@ void web_zip_inode::process_zip(Float a2)
 
     } else {
         THISCALL(0x00478A80, this, a2);
+    }
+}
+
+void web_zip_inode::add_swingback(polytube *&a2, entity_base *a3, actor *a4)
+{
+    this->field_A4[this->field_D4].init(a2, a4, a3);
+    ++this->field_D4;
+    if ( this->field_D4 >= 3 ) {
+        this->field_D4 = 0;
     }
 }
 

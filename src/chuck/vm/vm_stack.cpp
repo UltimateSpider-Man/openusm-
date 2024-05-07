@@ -4,12 +4,14 @@
 
 #include <config.h>
 #include <debugutil.h>
+#include "utility.h"
 
 #include <cassert>
 #include <cstring>
 #include <string>
 
-vm_stack::vm_stack(vm_thread *t) {
+vm_stack::vm_stack(vm_thread *t)
+{
     this->my_thread = t;
     this->buffer = (char *)this;
     for (auto i = 0u; i < 96u; ++i) {
@@ -19,12 +21,19 @@ vm_stack::vm_stack(vm_thread *t) {
     this->SP = this->buffer;
 }
 
-void vm_stack::push(const char *a2, int a3)
+void vm_stack::push(const char *a2, int n)
 {
-    //TRACE("vm_stack::push(const char *, int)", std::to_string(a3).c_str());
+    TRACE("vm_stack::push(const char *, int)");
 
-    std::memcpy(this->SP, a2, a3);
-    this->SP += a3;
+    sp_log("0x%X 0x%X %d", this->get_SP(), a2, n);
+    sp_log("%d", this->size());
+
+    assert(size() + n <= capacity());
+
+    std::memcpy(this->SP, a2, n);
+    this->move_SP(n);
+
+    sp_log("%d", this->size());
 }
 
 void vm_stack::push(vm_str_t a2)
@@ -55,7 +64,8 @@ void vm_stack::push(int a2)
     this->move_SP(sizeof(int));
 }
 
-vm_num_t vm_stack::pop_num() {
+vm_num_t vm_stack::pop_num()
+{
     this->pop(sizeof(vm_num_t));
     return *bit_cast<vm_num_t *>(SP);
 }

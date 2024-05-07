@@ -157,7 +157,7 @@ local_collision::primitive_list_t *query_potential_collision_primitives(const ca
     local_collision::query_args_t v20 {};
 
     v20.field_10 = v18.center;
-    v20.field_0 |= 0x3Cu;
+    v20.initialized_flags |= 0x3Cu;
 
     v20.field_28 = v18.radius;
     v20.field_2C = a3;

@@ -118,6 +118,12 @@ VALIDATE_SIZE(query_args_t, 0x34);
 
 VALIDATE_SIZE(intersection_list_t, 0x30);
 
+void local_collision::query_args_t::set_entity(entity *a2)
+{
+    this->field_2C = a2;
+    this->initialized_flags |= 0x10u;
+}
+
 primitive_list_t::primitive_list_t(
         void *a2,
         void *a3)
@@ -131,6 +137,12 @@ entity *primitive_list_t::get_entity() {
     assert(is_ent);
 
     return this->field_4.ent;
+}
+
+void * primitive_list_t::get_obb_node()
+{
+    assert(!is_ent);
+    return this->field_4.obb;
 }
 
 bool test_line_intersection_ex(local_collision::primitive_list_t **a1,

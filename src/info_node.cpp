@@ -23,10 +23,6 @@ info_node::info_node(from_mash_in_place_constructor *a2) {
     THISCALL(0x006D9930, this, a2);
 }
 
-actor *info_node::get_actor() {
-    return this->field_C;
-}
-
 bool info_node::does_need_advance() const
 {
     bool (__fastcall *func)(const void *) = CAST(func, get_vfunc(m_vtbl, 0x18));

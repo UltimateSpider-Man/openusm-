@@ -16,21 +16,21 @@ enum opcode_t {
     OP_DEC = 8,
     OP_DIV = 9,
     OP_DUP = 10,
-    OP_EQ = 11,
-    OP_GE = 12,
-    OP_GT = 13,
+    OP_EQ  = 11,
+    OP_GE  = 12,
+    OP_GT  = 13,
     OP_INC = 14,
     OP_KIL = 15,
-    OP_LE = 16,
+    OP_LE  = 16,
     OP_LNT = 18,
-    OP_LT = 20,
+    OP_LT  = 20,
     OP_MOD = 21,
     OP_MUL = 22,
-    OP_NE = 23,
+    OP_NE  = 23,
     OP_NEG = 24,
     OP_NOP = 25,
     OP_NOT = 26,
-    OP_OR = 27,
+    OP_OR  = 27,
     OP_POP = 28,
     OP_PSH = 29,
     OP_RET = 30,
@@ -45,9 +45,11 @@ enum opcode_t {
     OP_ESB = 44,
     OP_ECO = 45,
     OP_SCO = 46,
+
+    OP_MS2 = 55,
 };
 
-inline const char *opcode_t_str[] = {
+inline const char * opcode_t_str[] = {
     "OP_ADD",
     "OP_AND",
     "OP_BF",
@@ -67,7 +69,7 @@ inline const char *opcode_t_str[] = {
     "OP_LE",
     "",
     "OP_LNT",
-    ""
+    "",
     "OP_LT",
     "OP_MOD",
     "OP_MUL",
@@ -137,4 +139,22 @@ inline const char *opcode_arg_t_str[] = {
     "OP_ARG_UNDEFINED",
     "OP_ARG_UNDEFINED",
     "OP_ARG_UNDEFINED",
+};
+
+inline constexpr uint32_t opcode_arg_t_shift[] = {
+    0, //OP_ARG_NULL
+    2, //OP_ARG_NUM
+    2, //OP_ARG_NUMR
+    2, //OP_ARG_STR
+    1, //OP_ARG_WORD
+    1, //OP_ARG_PCR
+    1, //OP_ARG_SPR
+    1, //OP_ARG_POPO
+    2, //OP_ARG_SDR
+    2, //OP_ARG_SFR
+    2, //OP_ARG_LFR
+    2, //OP_ARG_CLV
+    2, //OP_ARG_SIG
+    2, //OP_ARG_PSIG
+    2, //17
 };

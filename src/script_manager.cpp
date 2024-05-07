@@ -201,11 +201,14 @@ void init_game_var()
     }
 }
 
-void link() {
+void link()
+{
     TRACE("script_manager::link");
 
-    if constexpr (1) {
-        for ( auto &entry : (*script_manager_execs_pending_link_list()) ) {
+    if constexpr (1)
+    {
+        for ( auto &entry : (*script_manager_execs_pending_link_list()) )
+        {
             if ( !entry.exec->is_linked() ) {
                 script_manager::run_callbacks((script_manager_callback_reason)6, entry.exec, entry.field_8);
                 entry.exec->link();
@@ -216,7 +219,9 @@ void link() {
         }
 
         script_manager_execs_pending_link_list()->clear();
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x005A3620);
     }
 }
@@ -344,8 +349,10 @@ script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, con
 
             }
 
-            if ( (a2 & 1) != 0 ) {
-                if ( script_manager_master_script() != nullptr ) {
+            if ( (a2 & 1) != 0 )
+            {
+                if ( script_manager_master_script() != nullptr )
+                {
                     script_manager::run_callbacks(
                         (script_manager_callback_reason)4,
                         nullptr,
@@ -367,9 +374,8 @@ script_executable_entry *load(const resource_key &a1, uint32_t a2, void *a3, con
             }
 
             script_manager_exec_map()->insert({key, entry});
-            auto v28 = script_manager_exec_map()->find(key);
-            auto v8 = script_manager_exec_map()->end();
-            if ( v28 != v8 )
+            auto it = script_manager_exec_map()->find(key);
+            if ( it != script_manager_exec_map()->end() )
             {
                 result = &v28->second;
             }
@@ -489,7 +495,7 @@ void kill() {
     script_manager_initialized() = false;
 }
 
-FILE *sub_65D5CB(const char *a1, char arg4)
+FILE * host_fopen(const char *a1, char arg4)
 {
     char v14[3] {};
     auto v7 = arg4 & 7;
@@ -510,16 +516,11 @@ FILE *sub_65D5CB(const char *a1, char arg4)
     }
 
     auto v8 = arg4 & 0x18;
-    if ( v8 == 8 )
-    {
+    if ( v8 == 8 ) {
         v14[1] = 'b';
-    }
-    else if ( v8 == 16 )
-    {
+    } else if ( v8 == 16 ) {
         v14[1] = 't';
-    }
-    else
-    {
+    } else {
         v14[1] = 'b';
     }
 
@@ -533,9 +534,8 @@ FILE *sub_65D5CB(const char *a1, char arg4)
         }
 #endif
 
-        mString a3 {a1};
-        mString a2 {"C:\\pc_usm\\data\\"};
-        v13 = a2 + a3;
+        mString a2 {"C:\\usm\\pc_usm\\data\\"};
+        v13 = a2 + mString {a1};
     }
 
     auto *v2 = v13.c_str();
@@ -547,10 +547,11 @@ void dump_threads_to_console()
 {
 }
 
-void dump_threads_to_file() {
+void dump_threads_to_file()
+{
     TRACE("script_manager::dump_threads_to_file");
 
-    auto *file = sub_65D5CB("C:\\scriptdump.txt", 2);
+    auto *file = host_fopen("scriptdump.txt", 2);
     fprintf(file, "instance thread time ops\n");
     assert(script_manager_exec_map() != nullptr);
 
@@ -561,13 +562,15 @@ void dump_threads_to_file() {
     fclose(file);
 }
 
-void run(Float a1, bool a2) {
+void run(Float a1, bool a2)
+{
     TRACE("script_manager::run");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         script_manager_time_inc() = a1;
-        if ( !script_manager_execs_pending_first_run()->empty() ) {
-
+        if ( !script_manager_execs_pending_first_run()->empty() )
+        {
             for ( auto &entry : (*script_manager_execs_pending_first_run()) ) {
                 run_callbacks((script_manager_callback_reason)8, entry.exec, entry.field_8);
                 entry.exec->first_run(a1, a2);
@@ -579,24 +582,26 @@ void run(Float a1, bool a2) {
 
         assert(script_manager_exec_map() != nullptr);
 
-        auto v10 = script_manager_exec_map()->begin();
-        while ( 1 )
+        auto it = script_manager_exec_map()->begin();
+        auto end = script_manager_exec_map()->end();
+        for ( ; it != end; ++it )
         {
-            auto v5 = script_manager_exec_map()->end();
-            if ( v10 == v5 || !script_manager_execs_pending_first_run()->empty() ) {
+            if ( !script_manager_execs_pending_first_run()->empty() ) {
                 break;
             }
 
-            auto &exec = v10->second.exec;
-            if ( (exec->flags & 8) == 0 ) {
-                run_callbacks((script_manager_callback_reason)10, exec, v10->second.field_8);
+            auto &exec = it->second.exec;
+            if ( (exec->flags & 8) == 0 )
+            {
+                run_callbacks((script_manager_callback_reason)10, exec, it->second.field_8);
                 exec->run(a1, a2);
-                run_callbacks((script_manager_callback_reason)11, exec, v10->second.field_8);
+                run_callbacks((script_manager_callback_reason)11, exec, it->second.field_8);
             }
-            ++v10;
         }
 
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x005AF9F0, a1, a2);
     }
 }

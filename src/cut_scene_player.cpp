@@ -13,7 +13,8 @@
 
 VALIDATE_SIZE(cut_scene_player, 360u);
 
-cut_scene_player::cut_scene_player() {
+cut_scene_player::cut_scene_player()
+{
     this->field_8 = 0;
     this->field_C = 0;
     this->field_10 = 1;
@@ -47,24 +48,10 @@ cut_scene_player::cut_scene_player() {
     this->field_B8 = 0;
     this->field_D7 = 0;
     this->field_E1 = 0;
-    game_button &v2 = this->field_E4;
-    v2.field_4 = input_mgr::instance()->field_58;
-    v2.field_C = nullptr;
-    v2.field_10 = nullptr;
-    v2.m_flags = 0;
-    v2.m_trigger_type = 4;
-    v2.field_2C = 0.0;
-    this->field_E4.set_control((game_control_t) 96);
-    this->field_E4.clear();
-    game_button &v3 = this->field_118;
-    v3.field_4 = input_mgr::instance()->field_58;
-    v3.field_C = nullptr;
-    v3.field_10 = nullptr;
-    v3.m_flags = 0;
-    v3.m_trigger_type = 4;
-    v3.field_2C = 0.0;
-    this->field_118.set_control((game_control_t) 114);
-    this->field_118.clear();
+
+    this->field_E4 = game_button {(game_control_t) 96};
+    this->field_118 = game_button {(game_control_t) 114};
+
     this->field_14C = -1;
     this->field_154 = -1.0;
     this->field_158 = -1.0;

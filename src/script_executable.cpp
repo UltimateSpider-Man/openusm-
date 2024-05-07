@@ -191,12 +191,9 @@ void script_executable::info_t::un_mash(
 
     if ( this->field_10 == -1 )
     {
-        auto v7 = 4 - (unsigned int)a5->field_0 % 4;
-        if ( v7 < 4 ) {
-            a5->field_0 += v7;
-        }
+        rebase(a5->field_0, 4u);
 
-        this->field_8 = (vm_executable *)a5->field_0;
+        this->field_8 = bit_cast<vm_executable *>(a5->field_0);
         a5->field_0 += sizeof(vm_executable);
 
         assert(((int)header) % 4 == 0);
@@ -208,32 +205,28 @@ void script_executable::info_t::un_mash(
 void script_executable::un_mash(generic_mash_header *header, void *a3, generic_mash_data_ptrs *a4) {
     TRACE("script_executable::un_mash");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         if ( this->is_un_mashed() ) {
             this->quick_un_mash();
         } else {
             assert(script_object_dummy_list == nullptr);
             
-            auto rebase = [](generic_mash_data_ptrs *a1, int a2) {
-                if ( int v6 = a2 - ((uint32_t)a1->field_0 % a2);
-                        v6 < a2 ) {
-                    a1->field_0 += v6;
-                }
-            };
-
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
             static auto *start_debug = a4->field_0;
 
             [this, &a4]() {
-                if constexpr (1) {
+                if constexpr (1)
+                {
                     filespec v98 {mString {this->field_0.to_string()}};
                     v98.m_dir = mString {"scripts\\"};
                     v98.m_ext = mString {".pc"} + "sxl";
 
                     os_file v85 {};
                     v85.open(v98.fullname(), os_file::FILE_READ);
-                    if ( v85.is_open() ) {
+                    if ( v85.is_open() )
+                    {
                         sp_log("found pcsxl file %s", v98.fullname().c_str());
                         this->sx_exe_image_size = v85.get_size();
                         this->sx_exe_image = new uint16_t[this->sx_exe_image_size / 2];
@@ -249,7 +242,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
             a4->field_0 += this->sx_exe_image_size;
 
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
             sp_log("0x%08X", sx_exe_image_size);
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
@@ -257,10 +250,11 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             this->script_objects = a4->get<script_object *>(this->total_script_objects);
 
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
-            for ( auto i = 0; i < this->total_script_objects; ++i ) {
-                rebase(a4, 8u);
+            for ( auto i = 0; i < this->total_script_objects; ++i )
+            {
+                rebase(a4->field_0, 8u);
 
-                rebase(a4, 4u);
+                rebase(a4->field_0, 4u);
                 
                 this->script_objects[i] = a4->get<script_object>();
 
@@ -269,22 +263,23 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 so->un_mash(header, this, so, a4);
             }
 
+
             this->global_script_object = this->script_objects[0];
 
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
             this->script_objects_by_name = a4->get<script_object *>(this->total_script_objects);
             for ( auto i = 0; i < this->total_script_objects; ++i ) {
                 this->script_objects_by_name[i] = this->script_objects[(int)this->script_objects_by_name[i]];
             }
 
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
             this->permanent_string_table = a4->get<char *>(this->permanent_string_table_size);
 
-            for ( auto i = 0; i < this->permanent_string_table_size; ++i ) {
-
-                rebase(a4, 4u);
+            for ( auto i = 0; i < this->permanent_string_table_size; ++i )
+            {
+                rebase(a4->field_0, 4u);
 
                 auto v21 = *a4->get<uint32_t>();
 
@@ -295,15 +290,16 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             this->system_string_table = nullptr;
             this->system_string_table_size = 0;
 
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
             this->field_54 = a4->get<info_t>(this->field_58);
 
-            rebase(a4, 4u);
+            rebase(a4->field_0, 4u);
 
-            for (int i = 0; i < this->field_58; ++i) {
+            for (int i = 0; i < this->field_58; ++i)
+            {
                 assert(((int)header) % 4 == 0);
 
                 if constexpr (1) {
@@ -316,8 +312,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     auto *owner = this->find_object(info->field_18);
                     assert(owner != nullptr);
 
-                    if ( info->field_10 == -1 ) {
-                        rebase(a4, 4u);
+                    if ( info->field_10 == -1 )
+                    {
+                        rebase(a4->field_0, 4u);
 
                         info->field_8 = a4->get<vm_executable>();
 
@@ -330,7 +327,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             this->constructor_common();
             this->flags |= SCRIPT_EXECUTABLE_FLAG_UN_MASHED;
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x005B01F0, this, header, a3, a4);
     }
 }
@@ -857,7 +856,8 @@ uint16_t * script_executable::get_exec_code(unsigned int offset) {
     return sx_exe_image + (offset >> 1);
 };
 
-void script_executable::link() {
+void script_executable::link()
+{
     TRACE("script_executable::link");
 
     assert(( ( flags & SCRIPT_EXECUTABLE_FLAG_LINKED ) == 0 ) && "trying to link the same exec more than once!!!");
@@ -894,10 +894,12 @@ void script_executable::dump_threads_to_file(FILE *a2) {
     }
 }
 
-void script_executable::run(Float a2, bool a3) {
+void script_executable::run(Float a2, bool a3)
+{
     TRACE("script_executable::run");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         for ( auto i = 0; i < this->total_script_objects; ++i ) {
 
             auto &so = this->script_objects[i];
@@ -911,18 +913,24 @@ void script_executable::run(Float a2, bool a3) {
                 so->run(a3);
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x005AF990, this, a2, a3);
     }
 }
 
-void script_executable::first_run(Float a2, bool a3) {
+void script_executable::first_run(Float a2, bool a3)
+{
     TRACE("script_executable::first_run");
 
-    if constexpr (1) {
-        if ( this->is_from_mash() ) {
+    if constexpr (1)
+    {
+        if ( this->is_from_mash() )
+        {
             this->global_script_object->static_data.set_to_zero();
-            for (auto i = 0; i < this->field_58; ++i) {
+            for (auto i = 0; i < this->field_58; ++i)
+            {
                 auto &info = this->field_54[i];
                 assert(info.so_name == string_hash::INVALID_STRING_HASH);
 

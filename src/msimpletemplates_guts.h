@@ -130,9 +130,11 @@ struct simple_list {
                 && (iter->simple_list_vars._sl_list_owner == this);
     }
 
-    T *erase(T *iter, bool a3) {
+    T * erase(T *iter, bool a3)
+    {
         T *result = nullptr;
-        if ( iter != nullptr ) {
+        if ( iter != nullptr )
+        {
             assert(this->contains(iter));
 
             result = (a3
@@ -168,13 +170,20 @@ struct simple_list {
         return result;
     }
 
-    bool common_erase(T *a2) {
+    bool common_erase(T *a2)
+    {
         if ( !this->contains(a2) ) {
             return false;
         }
 
         this->erase(a2, false);
         return true;
+    }
+
+    iterator erase(T *a3)
+    {
+        auto *v3 = this->erase(a3, false);
+        return {v3};
     }
 
 };

@@ -24,7 +24,7 @@ pendulum::pendulum() {
     this->pivot_rigid_body = nullptr;
     this->field_2C = 0;
     this->field_30 = 0;
-    this->field_34 = 0;
+    this->m_active = false;
 }
 
 bool pendulum::has_a_moving_anchor() const
@@ -151,7 +151,7 @@ void pendulum::update_biped_constraint(physical_interface *a2)
 {
     if ( a2 != nullptr && a2->is_biped_physics_running() )
     {
-        if ( this->field_34 )
+        if ( this->m_active )
         {
             if ( this->biped_physics_constraint != nullptr )
             {
