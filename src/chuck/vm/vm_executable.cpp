@@ -75,7 +75,7 @@ void vm_executable::un_mash(
     assert((flags & VM_EXECUTABLE_FLAG_FROM_MASH ) != 0);
 
     auto offset = bit_cast<uint32_t>(this->buffer);
-    auto *se = this->owner->parent;
+    auto *se = this->owner->get_parent();
 
     this->buffer = se->get_exec_code(offset);
     this->flags |= VM_EXECUTABLE_FLAG_UN_MASHED;

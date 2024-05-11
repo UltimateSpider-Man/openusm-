@@ -10,6 +10,8 @@
 #include <cstring>
 #include <string>
 
+static constexpr bool enable_trace = 0;
+
 vm_stack::vm_stack(vm_thread *t)
 {
     this->my_thread = t;
@@ -23,22 +25,25 @@ vm_stack::vm_stack(vm_thread *t)
 
 void vm_stack::push(const char *a2, int n)
 {
+#if enable_trace
     TRACE("vm_stack::push(const char *, int)");
+#endif
 
     sp_log("0x%X 0x%X %d", this->get_SP(), a2, n);
-    sp_log("%d", this->size());
 
     assert(size() + n <= capacity());
 
     std::memcpy(this->SP, a2, n);
     this->move_SP(n);
 
-    sp_log("%d", this->size());
+    sp_log("size = %d", this->size());
 }
 
 void vm_stack::push(vm_str_t a2)
 {
-    //TRACE("vm_stack::push(vm_str_t)", a2);
+#if enable_trace
+    TRACE("vm_stack::push(vm_str_t)", a2);
+#endif
 
     assert(size() + sizeof( vm_str_t ) <= capacity());
     *(vm_str_t *) this->SP = a2;
@@ -47,7 +52,10 @@ void vm_stack::push(vm_str_t a2)
 
 void vm_stack::push(vm_num_t a2)
 {
-    //TRACE("vm_stack::push(vm_num_t)", std::to_string(a2).c_str());
+#if enable_trace
+    TRACE("vm_stack::push(vm_num_t)");
+    printf("%f\n", a2);
+#endif
 
     assert(size() + sizeof( vm_num_t ) <= capacity());
     *(vm_num_t *)this->SP = a2;
@@ -56,8 +64,10 @@ void vm_stack::push(vm_num_t a2)
 
 void vm_stack::push(int a2)
 {
-    //TRACE("vm_stack::push(int)");
-    printf("0x%08X\n", a2);
+#if enable_trace
+    TRACE("vm_stack::push(int)");
+    printf("0x%X\n", a2);
+#endif
 
     assert(size() + sizeof( int ) <= capacity());
     *(int *)this->SP = a2;
@@ -72,6 +82,10 @@ vm_num_t vm_stack::pop_num()
 
 void vm_stack::move_SP(int n)
 {
+#if enable_trace
+    TRACE("vm_stack::move_SP");
+#endif
+
     assert(!(n & 3));
 
     assert(!((unsigned) SP & 3));

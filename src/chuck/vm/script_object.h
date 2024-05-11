@@ -36,8 +36,11 @@ struct vm_symbol {
     void read(chunk_file *file);
 };
 
-struct script_object {
+class script_object {
+public:
     string_hash name;
+
+private:
     script_executable *parent;
     script_instance *global_instance;
 
@@ -61,6 +64,7 @@ struct script_object {
     simple_list<script_instance> *instances;
     uint32_t flags;
 
+public:
     script_object();
 
     //0x005AF6C0
@@ -78,12 +82,23 @@ struct script_object {
         return (this->flags & SCRIPT_OBJECT_FLAG_GLOBAL) != 0;
     }
 
-    auto *get_parent() const
-    {
+    auto *get_parent() const {
         return parent;
     }
 
-    char *get_static_data_buffer() const {
+    void set_parent(script_executable *p) {
+        this->parent = p;
+    }
+
+    auto * get_global_instance() {
+        return this->global_instance;
+    }
+
+    auto & get_static_data() {
+        return this->static_data;
+    }
+
+    char * get_static_data_buffer() const {
         return this->static_data.get_buffer();
     }
 
@@ -147,6 +162,8 @@ struct script_object {
 
     vm_executable *get_func(int);
 
+    int get_size_instances() const;
+
     //0x0058EF80
     int find_func(string_hash a2) const;
 
@@ -169,17 +186,25 @@ struct script_object {
 enum script_instance_callback_reason_t {
 };
 
-struct script_instance {
+class script_instance {
+public:
     simple_list<script_instance>::vars_t simple_list_vars;
+
+private:
     string_hash name;
     so_data_block data;
     simple_list<vm_thread> threads;
+
+public:
     vm_executable *field_28;
+
+private:
     script_object *parent;
     uint32_t flags;
     void (* m_callback)(script_instance_callback_reason_t, script_instance *, vm_thread *, void *);
     _std::set<void *> field_38;
 
+public:
     //0x005AAA40
     script_instance(string_hash a2,
         int size,
@@ -187,18 +212,28 @@ struct script_instance {
 
     ~script_instance();
 
-    auto &get_name() const {
+    void * operator new(size_t size);
+
+    void operator delete(void *, size_t);
+
+    auto & get_name() const {
         return name;
     }
 
-    auto get_parent()
-    {
+    script_object * get_parent() {
         return this->parent;
     }
 
-    char *get_buffer()
-    {
+    void set_parent(script_object *so) {
+        this->parent = so;
+    }
+
+    char * get_buffer() const {
         return this->data.get_buffer();
+    }
+
+    auto get_size() const {
+        return this->data.size();
     }
 
     bool run_single_thread(vm_thread *a2, bool a3);

@@ -69,3 +69,9 @@ struct slf__is_point_inside_glass_house__vector3d__t : script_library_class::fun
     bool operator()(vm_stack &a1, script_library_class::function::entry_t) const;
 };
 
+struct slf__initialize_encounter_object__t : script_library_class::function {
+    slf__initialize_encounter_object__t(const char *a3);
+
+    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const;
+};
+

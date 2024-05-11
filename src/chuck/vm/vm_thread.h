@@ -65,6 +65,8 @@ public:
 
     void operator delete(void *);
 
+    const vm_executable * get_running_executable() const;
+
     script_instance *get_instance() {
         return inst;
     }

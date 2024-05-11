@@ -39,3 +39,9 @@ struct Var {
         return (*pointer);
     }
 };
+
+
+template<typename T>
+inline auto & var(ptrdiff_t &&address) {
+    return *bit_cast<T *>(address);
+}

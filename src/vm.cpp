@@ -16,6 +16,7 @@
 #include "resource_pack_location.h"
 #include "resource_manager.h"
 #include "script_lib.h"
+#include "script_lib_debug_menu.h"
 #include "script_manager.h"
 #include "trace.h"
 #include "utility.h"
@@ -28,7 +29,7 @@ VALIDATE_SIZE(vm_stack, 0x18C);
 
 mString generate_pack_name(const char *a2, vm_stack &stack)
 {
-    mString v6{stack.get_thread()->inst->parent->parent->field_0.to_string()};
+    mString v6{stack.get_thread()->inst->get_parent()->get_parent()->field_0.to_string()};
 
     mString a1a{0, "%s_%s", a2, v6.c_str()};
 
@@ -183,9 +184,17 @@ void vm_patch()
 {
     SET_JUMP(0x00676D70, slf__get_pack_size__str__t__cl);
 
+    script_lib_debug_menu_patch();
+
+
     {
         FUNC_ADDRESS(address, &slf__add_3d_debug_str__vector3d__vector3d__num__str__t::operator());
         set_vfunc(0x0089A854, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &slf__create_debug_menu_entry__str__str__t::operator());
+        set_vfunc(0x0089C708, address);
     }
 
 #if 0

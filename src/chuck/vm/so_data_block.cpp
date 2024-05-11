@@ -18,13 +18,16 @@ so_data_block::~so_data_block() {
     this->destroy();
 }
 
-void so_data_block::operator=(int a2) {
-    clear();
+void so_data_block::operator=(int a2)
+{
+    this->clear();
     this->init(a2);
 }
 
-void so_data_block::set_to_zero() {
-    if ( this->m_size > 0 ) {
+void so_data_block::set_to_zero()
+{
+    if ( this->m_size > 0 )
+    {
         assert(buffer != nullptr);
         memset(this->buffer, 0, this->m_size);
     }
@@ -37,8 +40,9 @@ void so_data_block::init(int a2)
     this->m_size = a2;
     if ( a2 != 0 )
     {
-        this->buffer = (char *)mem_alloc(a2);
+        this->buffer = static_cast<char *>(mem_alloc(a2));
         assert(buffer != nullptr);
+
         memset(this->buffer, 0, a2);
     }
     else
@@ -49,8 +53,10 @@ void so_data_block::init(int a2)
 
 void so_data_block::destroy()
 {
-    if ( !this->is_from_mash() ) {
-        if ( this->buffer != nullptr ) {
+    if ( !this->is_from_mash() )
+    {
+        if ( this->buffer != nullptr )
+        {
             mem_dealloc(this->buffer, this->m_size);
             this->buffer = nullptr;
             this->m_size = 0;
@@ -76,6 +82,8 @@ void so_data_block::un_mash(
         void *,
         generic_mash_data_ptrs *a4)
 {
+    TRACE("so_data_block::un_mash");
+
     rebase(a4->field_0, 4u);
 
     this->buffer = a4->get<char>(this->m_size);

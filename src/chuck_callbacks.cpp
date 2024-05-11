@@ -1,6 +1,9 @@
 #include "chuck_callbacks.h"
 
+#include "func_wrapper.h"
+#include "game.h"
 #include "event_manager.h"
+#include "osassert.h"
 #include "resource_manager.h"
 #include "script_controller.h"
 #include "trace.h"
@@ -19,6 +22,7 @@ void script_manager_callback(script_manager_callback_reason a1, script_executabl
     case 7:
         return;
     case 1:
+        assert(g_game_ptr() != nullptr);
         event_manager::clear_script_callbacks(script_pad()[0].my_handle, a2);
         event_manager::clear_script_callbacks(script_pad()[1].my_handle, a2);
         break;
@@ -26,6 +30,10 @@ void script_manager_callback(script_manager_callback_reason a1, script_executabl
         assert(buffer != nullptr);
         sp_log(buffer);
         assert(0);
+        break;
+    case 5:
+        assert(buffer != nullptr);
+        warning(buffer);
         break;
     case 8:
     case 10:
@@ -43,6 +51,16 @@ void script_manager_callback(script_manager_callback_reason a1, script_executabl
     }
 }
 
-void chuck_callbacks_patch() {
+void register_chuck_callbacks()
+{
+    TRACE("register_chuck_callbacks");
+
+    CDECL_CALL(0x006607E0);
+}
+
+
+void chuck_callbacks_patch()
+{
     SET_JUMP(0x00660760, script_manager_callback);
 }
+

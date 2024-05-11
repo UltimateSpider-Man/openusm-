@@ -49,6 +49,8 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3) : dstack(this
     {
         THISCALL(0x005A5420, this, a2, a3);
     }
+
+    sp_log("%d", this->dstack.size());
 }
 
 vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : dstack(this)
@@ -70,9 +72,13 @@ vm_thread::vm_thread(script_instance *a2, const vm_executable *a3, void *a4) : d
         this->PC_stack.reserve(4u);
         this->field_1B0 = nullptr;
         this->field_1B4 = 0.0;
-    } else {
+    }
+    else
+    {
         THISCALL(0x005A5500, this, a2, a3, a4);
     }
+
+    sp_log("%d", this->dstack.size());
 }
 
 vm_thread::~vm_thread()
@@ -104,6 +110,16 @@ void * vm_thread::operator new(size_t )
 void vm_thread::operator delete(void *ptr)
 {
     pool().remove(ptr);
+}
+
+const vm_executable * vm_thread::get_running_executable() const
+{
+    if ( this->PC != nullptr ) {
+        return script_manager::find_function_by_address(this->PC);
+    }
+
+    assert(this->ex != nullptr);
+    return this->ex;
 }
 
 void vm_thread::set_flag(flags_t a2, bool a3)
@@ -244,7 +260,9 @@ bool vm_thread::run()
             }
 
             op = opcode_t(opword >> 8);
-            //printf("%d %s\n", op, opcode_t_str[op]);
+            if (op < 35) {
+                printf("%d %s\n", op, opcode_t_str[op]);
+            }
 
             argtype = opcode_arg_t(opword & OP_ARGTYPE_MASK);
             printf("%d %s\n", argtype, opcode_arg_t_str[argtype]);
@@ -805,7 +823,8 @@ bool vm_thread::run()
                 switch ( argtype )
                 {
                 case OP_ARG_NUM:
-                    if (arg.binary == UNINITIALIZED_SCRIPT_PARM) {
+                    if (arg.binary == UNINITIALIZED_SCRIPT_PARM)
+                    {
                         auto *ex = this->get_executable();
                         auto &v728 = ex->get_fullname();
                         auto *v186 = v728.to_string();
@@ -825,12 +844,15 @@ bool vm_thread::run()
                     this->dstack.push(this->dstack.get_SP() + arg.word, dsize);
                     break;
                 case OP_ARG_POPO: {
+
                     auto *si = static_cast<script_instance *>(this->dstack.pop_addr());
+
                     if ( (uint32_t)si == 0
                       || (uint32_t)si == 0x7B7B7B7B
                       || (uint32_t)si == 0x7D7D7D7D
                       || (uint32_t)si == 0x7F7F7F7F
-                      || (uint32_t)si == UNINITIALIZED_SCRIPT_PARM ) {
+                      || (uint32_t)si == UNINITIALIZED_SCRIPT_PARM ) 
+                    {
 
                         this->slf_error(mString {"reference to bad or uninitialized script object instance value"});
                     }
@@ -1130,7 +1152,6 @@ bool vm_thread::run()
 
         dword_965F24 = 0;
         return kill_me;
-
     }
     else
     {
@@ -1219,7 +1240,6 @@ bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, c
         }
 
         return false;
-
     }
     else
     {

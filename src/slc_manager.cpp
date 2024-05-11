@@ -5,24 +5,25 @@
 #include "memory.h"
 #include "mission_manager.h"
 #include "mission_stack_manager.h"
-#include "utility.h"
 #include "open_city_neighborhoods.h"
 #include "os_developer_options.h"
 #include "resource_key.h"
 #include "resource_manager.h"
 #include "resource_pack_group.h"
-#include "script_manager.h"
 
 #include "script_lib.h"
 #include "script_lib_anim.h"
+#include "script_lib_debug_menu.h"
 #include "script_lib_entity.h"
 
 #include "script_library_class.h"
+#include "script_manager.h"
 #include "trace.h"
+#include "utility.h"
 #include "variables.h"
-#include "wds.h"
 #include "vm_stack.h"
 #include "vm_thread.h"
+#include "wds.h"
 
 #if !STANDALONE_SYSTEM
 Var<_std::vector<script_library_class *> *> slc_manager_class_array{0x00965EC8};
@@ -964,25 +965,6 @@ slf__create_debug_menu_entry__str__t::slf__create_debug_menu_entry__str__t(const
 {
     m_vtbl = CAST(m_vtbl, 0x0089C704);
     FUNC_ADDRESS(address, &slf__create_debug_menu_entry__str__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__create_debug_menu_entry__str__str__t : script_library_class::function {
-    slf__create_debug_menu_entry__str__str__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__create_debug_menu_entry__str__str__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00678210);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__create_debug_menu_entry__str__str__t::slf__create_debug_menu_entry__str__str__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089C70C);
-    FUNC_ADDRESS(address, &slf__create_debug_menu_entry__str__str__t::operator());
     m_vtbl->__cl = CAST(m_vtbl->__cl, address);
 }
 
@@ -4422,25 +4404,6 @@ slf__hide_controller_gauge__t::slf__hide_controller_gauge__t(const char *a3) : f
 {
     m_vtbl = CAST(m_vtbl, 0x0089BB20);
     FUNC_ADDRESS(address, &slf__hide_controller_gauge__t::operator());
-    m_vtbl->__cl = CAST(m_vtbl->__cl, address);
-}
-
-struct slf__initialize_encounter_object__t : script_library_class::function {
-    slf__initialize_encounter_object__t(const char *a3);
-
-    bool operator()(vm_stack &stack, [[maybe_unused]]script_library_class::function::entry_t entry) const
-    {
-        TRACE("slf__initialize_encounter_object__t::operator()");
-
-        bool (__fastcall *func)(const void *, void *edx, vm_stack *, entry_t) = CAST(func, 0x00664490);
-        return func(this, nullptr, &stack, entry);
-    }
-};
-
-slf__initialize_encounter_object__t::slf__initialize_encounter_object__t(const char *a3) : function(a3)
-{
-    m_vtbl = CAST(m_vtbl, 0x0089AA0C);
-    FUNC_ADDRESS(address, &slf__initialize_encounter_object__t::operator());
     m_vtbl->__cl = CAST(m_vtbl->__cl, address);
 }
 

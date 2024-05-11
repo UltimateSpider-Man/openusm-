@@ -725,7 +725,8 @@ struct slf__entity__get_anchor_point__t : script_library_class::function {
         entity_base_vhandle me;
     };
 
-    bool operator()(vm_stack &stack, script_library_class::function::entry_t) const {
+    bool operator()(vm_stack &stack, script_library_class::function::entry_t) const
+    {
         SLF_PARMS;
 
         vector3d result {0, 0, 0};

@@ -24,7 +24,7 @@ public:
         return 96 * 4;
     }
 
-    vm_thread *get_thread() {
+    vm_thread * get_thread() {
         return my_thread;
     }
 
@@ -49,8 +49,7 @@ public:
 
     void push(int);
 
-    char *get_SP() const
-    {
+    char *get_SP() const {
         return this->SP;
     }
 
@@ -60,8 +59,7 @@ public:
 
     void move_SP(int n);
 
-    void pop(int n)
-    {
+    void pop(int n) {
         this->move_SP(-n);
     }
 

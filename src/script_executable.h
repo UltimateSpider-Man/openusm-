@@ -63,6 +63,10 @@ struct script_executable {
 
     script_executable();
 
+    void * operator new(size_t size);
+
+    void operator delete(void *ptr, size_t size);
+
     static bool compare(const script_executable &, const script_executable &);
 
     //0x005AFC50

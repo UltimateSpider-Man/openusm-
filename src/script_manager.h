@@ -1,7 +1,6 @@
 #pragma once
 
 #include "float.hpp"
-#include "variable.h"
 
 #include <list.hpp>
 #include <map.hpp>
