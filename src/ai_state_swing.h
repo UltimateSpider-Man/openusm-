@@ -3,12 +3,12 @@
 #include "info_node.h"
 
 #include "enhanced_state.h"
+
+#include "entity_base_vhandle.h"
 #include "float.hpp"
 #include "local_collision.h"
 #include "mash.h"
 #include "string_hash.h"
-#include "swinger.h"
-#include "variable.h"
 #include "vector3d.h"
 
 struct entity_base;
@@ -242,10 +242,6 @@ struct something_to_swing_to_data_t {
     float m_target_length;
     bool field_64;
 };
-
-extern Var<something_to_swing_to_data_t> something_to_swing_to_data;
-
-extern Var<swinger_t[2]> swingers;
 
 extern void swing_inode_patch();
 
