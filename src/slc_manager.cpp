@@ -26,12 +26,12 @@
 #include "wds.h"
 
 #if !STANDALONE_SYSTEM
-Var<_std::vector<script_library_class *> *> slc_manager_class_array{0x00965EC8};
+_std::vector<script_library_class *> *& slc_manager_class_array = var<_std::vector<script_library_class *> *>(0x00965EC8);
 #else
 
 static std::vector<script_library_class *> *g_slc_manager_class_array {nullptr};
-Var<std::vector<script_library_class *> *>
-    slc_manager_class_array {(int) &g_slc_manager_class_array};
+std::vector<script_library_class *> *&
+    slc_manager_class_array {g_slc_manager_class_array};
 
 #endif
 
@@ -12336,9 +12336,9 @@ void slc_manager::init()
             slc_manager_classes = new std::set<script_library_class *>{};
         }
 
-        if (slc_manager_class_array() == nullptr) {
-            using slc_manager_class_array_t = std::decay_t<decltype(*slc_manager_class_array())>;
-            slc_manager_class_array() = new slc_manager_class_array_t {};
+        if (slc_manager_class_array == nullptr) {
+            using array_t = std::decay_t<decltype(*slc_manager_class_array)>;
+            slc_manager_class_array = new array_t {};
         }
 
         register_standard_script_libs();
@@ -12348,7 +12348,7 @@ void slc_manager::init()
         {
             printf("[");
 
-            auto &array = *slc_manager_class_array();
+            auto &array = *slc_manager_class_array;
             for ( auto &slc : array )
             {
                 printf("(\"%s\", [", slc->get_name());
@@ -12377,7 +12377,7 @@ void slc_manager::add(script_library_class *slc)
 {
     TRACE("slc_manager::add");
 
-    assert(slc_manager_class_array() != nullptr);
+    assert(slc_manager_class_array != nullptr);
 
     if constexpr (1)
     {
@@ -12391,15 +12391,15 @@ void slc_manager::add(script_library_class *slc)
             assert(0);
         }
 
-        slc_manager_class_array()->push_back(slc);
+        slc_manager_class_array->push_back(slc);
 
 #else
 
-        auto *v1 = slc_manager_class_array();
-        auto size = slc_manager_class_array()->size();
-        if ( size < slc_manager_class_array()->capacity() )
+        auto *v1 = slc_manager_class_array;
+        auto size = slc_manager_class_array->size();
+        if ( size < slc_manager_class_array->capacity() )
         {
-            auto *m_last = slc_manager_class_array()->m_last;
+            auto *m_last = slc_manager_class_array->m_last;
             *m_last = slc;
             v1->m_last = m_last + 1;
         }
@@ -12407,9 +12407,9 @@ void slc_manager::add(script_library_class *slc)
         {
             void (__fastcall *sub_5B4DB0)(void *, void *, script_library_class **Src, int a2, script_library_class **a3) = CAST(sub_5B4DB0, 0x005B4DB0);
             sub_5B4DB0(
-                slc_manager_class_array(),
+                slc_manager_class_array,
                 nullptr,
-                slc_manager_class_array()->m_last,
+                slc_manager_class_array->m_last,
                 1,
                 &slc);
         }
@@ -12421,23 +12421,26 @@ void slc_manager::add(script_library_class *slc)
     }
 }
 
-void slc_manager::kill() {
+void slc_manager::kill()
+{
     TRACE("slc_manager::kill");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         destruct_client_script_libs();
-        if ( slc_manager_class_array() != nullptr ) {
-            for ( auto &slc : (*slc_manager_class_array()) ) {
+        if ( slc_manager_class_array != nullptr )
+        {
+            for ( auto &slc : (*slc_manager_class_array) ) {
                 if ( slc != nullptr ) {
                     delete slc;
                 }
             }
 
-            if ( slc_manager_class_array() != nullptr ) {
-                delete slc_manager_class_array();
+            if ( slc_manager_class_array != nullptr ) {
+                delete slc_manager_class_array;
             }
 
-            slc_manager_class_array() = nullptr;
+            slc_manager_class_array = nullptr;
         }
     } else {
         CDECL_CALL(0x005A5200);
@@ -12448,13 +12451,13 @@ script_library_class * slc_manager::get_class(int class_index)
 {
     TRACE("slc_manager::get_class", std::to_string(class_index).c_str());
 
-    assert(slc_manager_class_array() != nullptr);
+    assert(slc_manager_class_array != nullptr);
 
     assert(class_index >= 0);
 
-    assert(class_index < slc_manager_class_array()->size());
+    assert(class_index < slc_manager_class_array->size());
 
-    return slc_manager_class_array()->at(class_index);
+    return slc_manager_class_array->at(class_index);
 }
 
 script_library_class *slc_manager::get(const char *a1)
@@ -12487,14 +12490,14 @@ void slc_manager::un_mash_all_funcs()
         auto *image = bit_cast<char *>(resource_manager::get_resource(a1, nullptr, nullptr));
         assert(image != nullptr);
 
-        assert(slc_manager_class_array() != nullptr);
+        assert(slc_manager_class_array != nullptr);
 
         auto total_classes = bit_cast<int *>(image)[0];
         auto *buffer = image + 4;
 
-        assert(total_classes == slc_manager_class_array()->size());
+        assert(total_classes == slc_manager_class_array->size());
         
-        for ( auto &slc : (*slc_manager_class_array()) ) {
+        for ( auto &slc : (*slc_manager_class_array) ) {
             slc->total_funcs = bit_cast<int *>(buffer)[0];
             buffer += 4;
             assert(slc->funcs == nullptr);

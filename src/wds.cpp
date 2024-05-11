@@ -1656,11 +1656,10 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
 
     if constexpr (0)
     {
-        void *mem_for_visitor = nullptr;
         update_limbo_list_if_needed();
 
         static constexpr auto n_bytes = 2400u;
-        auto entity_pointers = (entity **)scratchpad_stack::alloc(n_bytes);
+        auto entity_pointers = (entity **) scratchpad_stack::alloc(n_bytes);
         int num_entity_pointers = 0;
 
         for (int v6 = 0; v6 < moved_entities::moved_count; ++v6)
@@ -1706,11 +1705,14 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
         {
             entity_pointers[num_entity_pointers] = entity_pointers[num_entity_pointers - 1];
             entity_pointers[num_entity_pointers + 1] = entity_pointers[num_entity_pointers - 1];
-            mem_for_visitor = scratchpad_stack::alloc(0x44);
-            struct {
+            auto *mem_for_visitor = scratchpad_stack::alloc(0x44);
+            struct vec4_t {
                 vector3d field_0;
                 float field_C;
-            } *vec4_pointers = CAST(vec4_pointers, scratchpad_stack::alloc(16 * (num_entity_pointers + 1)));
+            };
+            VALIDATE_SIZE(vec4_t, 0x10);
+
+            vec4_t *vec4_pointers = CAST(vec4_pointers, scratchpad_stack::alloc(sizeof(vec4_t) * (num_entity_pointers + 1)));
 
             for (int k = 0; k < num_entity_pointers; ++k) 
             {
@@ -1763,7 +1765,8 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
                 }
             }
 
-            for (auto v29 = 0; v29 < num_entity_pointers; ++v29) {
+            for (auto v29 = 0; v29 < num_entity_pointers; ++v29)
+            {
                 auto *v30 = &vec4_pointers[v29];
                 auto *v31 = entity_pointers[v29];
                 bool v51 = false;
@@ -1787,7 +1790,7 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
                 }
             }
 
-            scratchpad_stack::pop(vec4_pointers, 16 * (num_entity_pointers + 1));
+            scratchpad_stack::pop(vec4_pointers, sizeof(vec4_t) * (num_entity_pointers + 1));
             scratchpad_stack::pop(mem_for_visitor, sizeof(region_intersect_visitor));
 
             for (int v35 = 0; v35 < num_entity_pointers; ++v35) {
