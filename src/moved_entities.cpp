@@ -40,13 +40,13 @@ void moved_entities::add_moved(vhandle_type<entity> e_arg) {
             e->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x40), true);
             e->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x800000), true);
 
-            if (moved_count() >= 600)
+            if (moved_count >= 600)
             {
-                if (moved_count() == 600)  
+                if (moved_count == 600)  
                 {
-                    for ( auto i = 0; i < moved_count(); ++i )
+                    for ( auto i = 0; i < moved_count; ++i )
                     {
-                        auto v20 = moved_list()[i];
+                        auto v20 = moved_list[i];
                         if ( v20.get_volatile_ptr() != nullptr )
                         {
                             entity *v2 = v20.get_volatile_ptr();
@@ -68,7 +68,7 @@ void moved_entities::add_moved(vhandle_type<entity> e_arg) {
             }
             else
             {
-                moved_list()[moved_count()++].field_0 = e->my_handle.field_0;
+                moved_list[moved_count++].field_0 = e->my_handle.field_0;
 
                 assert("Cloned conglomerates should not be added to the moved list!" && !(e->is_a_conglomerate() && ((conglomerate *) e)->is_cloned_conglomerate()));
             }

@@ -1663,142 +1663,142 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
         auto entity_pointers = (entity **)scratchpad_stack::alloc(n_bytes);
         int num_entity_pointers = 0;
 
-        if ( moved_entities::moved_count() > 0 )
+        for (int v6 = 0; v6 < moved_entities::moved_count; ++v6)
         {
-            for (int v6 = 0; v6 < moved_entities::moved_count(); ++v6)
+            auto *v7 = &moved_entities::moved_list[v6];
+            auto *ent = v7->get_volatile_ptr();
+            if ( ent != nullptr )
             {
-                auto *v7 = &moved_entities::moved_list()[v6];
-                auto *ent = v7->get_volatile_ptr();
-                if ( ent != nullptr ) {
-                    assert(!(ent->is_a_conglomerate() && ((conglomerate *)ent)->is_cloned_conglomerate()));
+                assert(!(ent->is_a_conglomerate() && ((conglomerate *)ent)->is_cloned_conglomerate()));
 
-                    assert("regions_[ 0 ] can not be NULL when regions_[ 1 ] is not. "
-                            && ( ent->regions[ 1 ] ? ent->regions[ 0 ] != nullptr : 1 ) );
+                assert("regions_[ 0 ] can not be NULL when regions_[ 1 ] is not. "
+                        && ( ent->regions[ 1 ] ? ent->regions[ 0 ] != nullptr : 1 ) );
 
-                    assert("regions_[ 0 ] and regions_[ 1 ] should not be NULL while extended_regions_ is not."
-                            && ent->extended_regions != nullptr ? ent->regions[ 0 ] && ent->regions[ 1 ] : 1);
+                assert("regions_[ 0 ] and regions_[ 1 ] should not be NULL while extended_regions_ is not."
+                        && ent->extended_regions != nullptr ? ent->regions[ 0 ] && ent->regions[ 1 ] : 1);
 
-                    assert(ent->extended_regions != nullptr ? ent->extended_regions->size() > 0 : 1);
+                assert(ent->extended_regions != nullptr ? ent->extended_regions->size() > 0 : 1);
 
-                    auto &abs_po = ent->get_abs_po();
-                    if ( !abs_po.is_valid(true, false) )
-                    {
-                        mString a2a {"Message: "};
-                        auto v23 = a2a + "Entity Assert";
-                        auto v22 = v23 + "\n";
-                        auto v21 = v22 + "File: ";
-                        auto v19 = v21 + " : ";
-                        auto v17 = v19 + "\n";
-                        auto v16 = v17 + "Expression: ";
-                        auto v15 = v16 + "ent->get_abs_po().is_valid()";
-                        auto v14 = v15 + "\n";
-                        entity_report(ent, v14, false);
-                    }
-
-                    assert(ent->get_abs_po().is_valid());
-
-                    entity_pointers[num_entity_pointers++] = ent;
+                auto &abs_po = ent->get_abs_po();
+                if ( !abs_po.is_valid(true, false) )
+                {
+                    mString a2a {"Message: "};
+                    auto v23 = a2a + "Entity Assert";
+                    auto v22 = v23 + "\n";
+                    auto v21 = v22 + "File: ";
+                    auto v19 = v21 + " : ";
+                    auto v17 = v19 + "\n";
+                    auto v16 = v17 + "Expression: ";
+                    auto v15 = v16 + "ent->get_abs_po().is_valid()";
+                    auto v14 = v15 + "\n";
+                    entity_report(ent, v14, false);
                 }
+
+                assert(ent->get_abs_po().is_valid());
+
+                entity_pointers[num_entity_pointers++] = ent;
+            }
+        }
+
+        assert(num_entity_pointers + 2 < moved_entities::MAX_MOVED);
+
+        if ( num_entity_pointers > 0 )
+        {
+            entity_pointers[num_entity_pointers] = entity_pointers[num_entity_pointers - 1];
+            entity_pointers[num_entity_pointers + 1] = entity_pointers[num_entity_pointers - 1];
+            mem_for_visitor = scratchpad_stack::alloc(0x44);
+            struct {
+                vector3d field_0;
+                float field_C;
+            } *vec4_pointers = CAST(vec4_pointers, scratchpad_stack::alloc(16 * (num_entity_pointers + 1)));
+
+            for (int k = 0; k < num_entity_pointers; ++k) 
+            {
+                auto *v1 = &vec4_pointers[k].field_0;
+                auto *v2 = &vec4_pointers[k].field_C;
+                entity_get_max_visual_and_collision_bounding_sphere(entity_pointers[k], v1, v2);
             }
 
-            assert(num_entity_pointers + 2 < moved_entities::MAX_MOVED);
-
-            if ( num_entity_pointers > 0 )
+            for (int m = 0; m < num_entity_pointers; ++m) 
             {
-                entity_pointers[num_entity_pointers] = entity_pointers[num_entity_pointers - 1];
-                entity_pointers[num_entity_pointers + 1] = entity_pointers[num_entity_pointers - 1];
-                mem_for_visitor = scratchpad_stack::alloc(0x44);
-                struct {
-                    vector3d field_0;
-                    float field_C;
-                } *vec4_pointers = CAST(vec4_pointers, scratchpad_stack::alloc(16 * (num_entity_pointers + 1)));
+                auto *ent = entity_pointers[m];
+                region *reg = nullptr;
+                if ( ent->has_region_idx() ) {
+                    assert(ent->has_region_idx() && ( ent->get_region_idx() < the_terrain->get_num_regions() ));
 
-                for (int k = 0; k < num_entity_pointers; ++k) 
-                {
-                    auto *v1 = &vec4_pointers[k].field_0;
-                    auto *v2 = &vec4_pointers[k].field_C;
-                    entity_get_max_visual_and_collision_bounding_sphere(entity_pointers[k], v1, v2);
+                    auto reg_idx = ent->get_region_idx();
+                    reg = this->the_terrain->get_region(reg_idx);
+                    assert(reg != nullptr);
                 }
 
-                for (int m = 0; m < num_entity_pointers; ++m) 
+                auto *visitor = new (mem_for_visitor) region_intersect_visitor {reg};
+
+                fixed_vector<region *, 15> a2a {};
+                auto *v60 = &vec4_pointers[m];
+                loaded_regions_cache::get_regions_intersecting_sphere(v60->field_0, v60->field_C, &a2a);
+                for (int n = 0; n < a2a.size(); ++n)
                 {
-                    auto *ent = entity_pointers[m];
-                    region *reg = nullptr;
-                    if ( ent->has_region_idx() ) {
-                        assert(ent->has_region_idx() && ( ent->get_region_idx() < the_terrain->get_num_regions() ));
+                    auto *v25 = a2a.m_data[n];
+                    [](region_intersect_visitor *self, region *r) -> int {
+                        assert(r != nullptr);
 
-                        auto reg_idx = ent->get_region_idx();
-                        reg = this->the_terrain->get_region(reg_idx);
-                        assert(reg != nullptr);
-                    }
-
-                    auto *visitor = new (mem_for_visitor) region_intersect_visitor {reg};
-
-                    fixed_vector<region *, 15> a2a {};
-                    auto *v60 = &vec4_pointers[m];
-                    loaded_regions_cache::get_regions_intersecting_sphere(v60->field_0, v60->field_C, &a2a);
-                    for (int n = 0; n < a2a.size(); ++n)
-                    {
-                        auto *v25 = a2a.m_data[n];
-                        [](region_intersect_visitor *self, region *r) -> int {
-                            assert(r != nullptr);
-
-                            for ( auto i = 0; i < self->field_4; ++i ) {
-                                if ( r == self->field_8[i] ) {
-                                    return 0;
-                                }
-                            }
-
-                            if ( self->field_4 < 15 ) {
-                                self->field_8[self->field_4++] = r;
-                            }
-
-                            return 0;
-                        }(visitor, v25);
-                    }
-
-                    if ( visitor->field_4 != 0 ) {
-                        ent->update_regions(visitor->field_8, visitor->field_4);
-                    } else if ( ent->regions[0] != nullptr ) {
-                        ent->remove_from_regions();
-                    }
-                }
-
-                for (auto v29 = 0; v29 < num_entity_pointers; ++v29) {
-                    auto *v30 = &vec4_pointers[v29];
-                    auto *v31 = entity_pointers[v29];
-                    bool v51 = false;
-                    if ( auto *primary_region = v31->get_primary_region();
-                            primary_region != nullptr )
-                    {
-                        if ( !primary_region->is_interior() ) {
-                            if (limbo_area::sphere_intersects_unsafe_area(v30->field_0, v30->field_C)) {
-                                v51 = true;
+                        for ( auto i = 0; i < self->field_4; ++i ) {
+                            if ( r == self->field_8[i] ) {
+                                return 0;
                             }
                         }
 
-                    } else {
-                        v51 = true;
-                    }
+                        if ( self->field_4 < 15 ) {
+                            self->field_8[self->field_4++] = r;
+                        }
 
-                    if (v51) {
-                        entity_pointers[v29]->enter_limbo();
-                    } else {
-                        entity_pointers[v29]->exit_limbo();
-                    }
+                        return 0;
+                    }(visitor, v25);
                 }
 
-                scratchpad_stack::pop(vec4_pointers, 16 * (num_entity_pointers + 1));
-                scratchpad_stack::pop(mem_for_visitor, 0x44);
-
-                for (int v35 = 0; v35 < num_entity_pointers; ++v35) {
-                    entity_pointers[v35]->update_proximity_maps();
+                if ( visitor->field_4 != 0 ) {
+                    ent->update_regions(visitor->field_8, visitor->field_4);
+                } else if ( ent->regions[0] != nullptr ) {
+                    ent->remove_from_regions();
                 }
+            }
+
+            for (auto v29 = 0; v29 < num_entity_pointers; ++v29) {
+                auto *v30 = &vec4_pointers[v29];
+                auto *v31 = entity_pointers[v29];
+                bool v51 = false;
+                if ( auto *primary_region = v31->get_primary_region();
+                        primary_region != nullptr )
+                {
+                    if ( !primary_region->is_interior() ) {
+                        if (limbo_area::sphere_intersects_unsafe_area(v30->field_0, v30->field_C)) {
+                            v51 = true;
+                        }
+                    }
+
+                } else {
+                    v51 = true;
+                }
+
+                if (v51) {
+                    entity_pointers[v29]->enter_limbo();
+                } else {
+                    entity_pointers[v29]->exit_limbo();
+                }
+            }
+
+            scratchpad_stack::pop(vec4_pointers, 16 * (num_entity_pointers + 1));
+            scratchpad_stack::pop(mem_for_visitor, sizeof(region_intersect_visitor));
+
+            for (int v35 = 0; v35 < num_entity_pointers; ++v35) {
+                entity_pointers[v35]->update_proximity_maps();
             }
         }
 
         scratchpad_stack::pop(entity_pointers, n_bytes);
-    } else {
+    }
+    else
+    {
         THISCALL(0x00530100, this, a1);
     }
 }
@@ -1809,9 +1809,9 @@ void world_dynamics_system::update_collision_proximity_maps_for_moved_entities(F
 
     if constexpr (0)
     {
-        for (int i = 0; i < moved_entities::moved_count(); ++i)
+        for (int i = 0; i < moved_entities::moved_count; ++i)
         {
-            auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
+            auto *ent = moved_entities::moved_list[i].get_volatile_ptr();
             if ( ent != nullptr )
             {
                 assert("regions[ 0 ] can not be NULL when regions[ 1 ] is not."
@@ -1847,9 +1847,9 @@ void world_dynamics_system::update_light_proximity_maps_for_moved_entities(Float
 
     if constexpr (0)
     {
-        for (int i = 0; i < moved_entities::moved_count(); ++i)
+        for (int i = 0; i < moved_entities::moved_count; ++i)
         {
-            auto *ent = moved_entities::moved_list()[i].get_volatile_ptr();
+            auto *ent = moved_entities::moved_list[i].get_volatile_ptr();
             if ( ent != nullptr )
             {
                 if ( ent->is_a_conglomerate() )

@@ -21,11 +21,11 @@ namespace moved_entities {
     intraframe_trajectory_t *get_all_trajectories(
         Float a1, const trajectory_filter_t &filter);
 
-    inline Var<int> moved_count{0x0095C890};
+    inline auto & moved_count = var<int>(0x0095C890);
 
     inline constexpr auto MAX_MOVED = 600;
 
-    inline Var<vhandle_type<entity>[MAX_MOVED]> moved_list{0x0095EFC8};
+    inline auto & moved_list = var<vhandle_type<entity>[MAX_MOVED]>(0x0095EFC8);
 };
 
 extern void moved_entities_patch();
