@@ -805,23 +805,20 @@ void debug_menu_entry::set_submenu(debug_menu *submenu)
 
 bool debug_menu_entry::set_script_handler(script_instance *inst, const mString &a3)
 {
-    auto *v14 = this;
-
     assert(inst != nullptr);
 
     auto *v3 = a3.c_str();
     string_hash v8{v3};
 
-    auto *v5 = inst->get_parent();
-    auto v9 = v5->find_func(v8);
-    auto v13 = v9;
+    auto *so= inst->get_parent();
+    int func = so->find_func(v8);
 
     bool result;
-    if ( v9 >= 0 )
+    if ( func >= 0 )
     {
-        v14->field_14 = inst;
-        v14->field_18 = v13;
-        v14->m_game_flags_handler = script_handler_helper;
+        this->field_14 = inst;
+        this->field_18 = func;
+        this->m_game_flags_handler = script_handler_helper;
         result = true;
     }
     else
