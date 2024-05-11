@@ -156,12 +156,16 @@ void resource_pack_standalone::unload() {
     }
 }
 
-void sub_732D60(bool a1) {
-    if constexpr (1) {
-        if (!resource_manager::using_amalga() || a1) {
+void sub_732D60(bool a1)
+{
+    if constexpr (1)
+    {
+        if (!resource_manager::using_amalga || a1) {
             cut_scene::stream_anim_pack().unload();
         }
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x00732D60, a1);
     }
 }

@@ -81,7 +81,7 @@ void eligible_pack::fixup_family(eligible_pack_streamer *a2) {
         {
             for (auto i = 0; i < v12.prerequisite_count; ++i )
             {
-                auto v11 = resource_manager::amalgapak_prerequisite_table()[i + v12.prerequisite_offset].m_hash;
+                auto v11 = resource_manager::amalgapak_prerequisite_table[i + v12.prerequisite_offset].m_hash;
                 auto *v8 = a2->find_eligible_pack_by_packfile_name_hash(v11);
 
                 if ( v8 != nullptr )

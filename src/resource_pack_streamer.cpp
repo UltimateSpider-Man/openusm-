@@ -142,7 +142,7 @@ void resource_pack_streamer::load_internal(const char *a2,
         this->field_78 = nullptr;
 
         auto v12 = (resource_manager::using_amalgapak()
-                ? resource_manager::amalgapak_id()
+                ? resource_manager::amalgapak_id
                 : resource_manager::open_pack(a2));
 
         this->curr_file_id = v12;
@@ -736,12 +736,13 @@ void resource_pack_streamer::finish_data_read()
 
         this->curr_slot->set_resource_directory(directory);
 
-        if (!resource_manager::using_amalga())
-        {
+        if (!resource_manager::using_amalga) {
             nflCloseFile(this->curr_file_id);
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x0053E1A0, this);
     }
 }

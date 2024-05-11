@@ -20,15 +20,19 @@ Var<resource_pack_standalone> cut_scene::stream_anim_pack = (0x0096FB90);
 
 Var<mString> cut_scene::scene_anim_packfile_id = (0x0096FB80);
 
-cut_scene::cut_scene(from_mash_in_place_constructor *a2) : field_0(a2), segments(a2) {
-    if constexpr (1) {
-        if (resource_manager::resource_context_stack().size()) {
-            this->field_50 = resource_manager::resource_context_stack().back();
+cut_scene::cut_scene(from_mash_in_place_constructor *a2) : field_0(a2), segments(a2)
+{
+    if constexpr (1)
+    {
+        if (resource_manager::resource_context_stack.size()) {
+            this->field_50 = resource_manager::resource_context_stack.back();
         } else {
             this->field_50 = nullptr;
         }
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00742890, this, a2);
     }
 }
