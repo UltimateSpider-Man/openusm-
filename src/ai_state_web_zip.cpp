@@ -211,7 +211,7 @@ bool web_zip_inode::can_go_to(string_hash a2)
     }
 }
 
-static Var<string_hash> loco_allow_web_zip_id{0x00958E64};
+static const string_hash loco_allow_web_zip_id {int(to_hash("loco_allow_web_zip"))};
 
 bool web_zip_inode::is_eligible(string_hash a2)
 {
@@ -221,7 +221,7 @@ bool web_zip_inode::is_eligible(string_hash a2)
     {
         auto *v3 = &this->field_8->field_50;
 
-        if (v3->get_pb_int(loco_allow_web_zip_id()) == 0) {
+        if (v3->get_pb_int(loco_allow_web_zip_id) == 0) {
             return false;
         }
 
@@ -311,11 +311,11 @@ void web_zip_inode::process_zip(Float a2)
     {
         auto *v3 = this->field_DC->field_28;
 
-        static Var<string_hash> has_tentacle_zip_id{0x009591A4};
+        static const string_hash has_tentacle_zip_id {int(to_hash("has_tentacle_zip"))};
 
         auto *v4 = &this->field_8->field_50;
 
-        if (!v4->get_pb_int(has_tentacle_zip_id()))
+        if (!v4->get_pb_int(has_tentacle_zip_id))
         {
             if (this->field_7C == 0)
             {
@@ -339,10 +339,11 @@ void web_zip_inode::process_zip(Float a2)
                 }
             }
 
-            if (this->field_7C == 1) {
-                static Var<string_hash> bip01_r_hand{0x0095AA3C};
+            if (this->field_7C == 1)
+            {
+                static const string_hash bip01_r_hand {int(to_hash("BIP01 R HAND"))};
 
-                auto *bone = bit_cast<conglomerate *>(this->field_C)->get_bone(bip01_r_hand(), true);
+                auto *bone = bit_cast<conglomerate *>(this->field_C)->get_bone(bip01_r_hand, true);
 
                 vector3d a3 = bone->get_abs_position();
 
