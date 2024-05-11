@@ -82,49 +82,51 @@ struct Struct_984498
 };
 
 
-#define make_var(type, name) \
-    static type g_##name {}; \
-    Var<type> name {(int) &g_##name}
-
 #if !STANDALONE_SYSTEM
 
-static Var<nflInitParams> nfl_initParams {0x00949730};
+static auto & nfl_initParams = var<nflInitParams>(0x00949730);
 
-static Var<const Struct_94983C> stru_94983C {0x0094983C};
+static auto & stru_94983C = var<const Struct_94983C>(0x0094983C);
 
-static Var<txSlotPool> nfl_filePool {0x009844F4};
+static auto & nfl_filePool = var<txSlotPool>(0x009844F4);
 
-static Var<nflFile *> dword_98452C {0x0098452C};
+static auto & dword_98452C = var<nflFile *>(0x0098452C);
 
-static Var<nflStream *> dword_984528 {0x00984528};
+static auto & dword_984528 = var<nflStream *>(0x00984528);
 
-static Var<txSlotPool> nfl_streamPool {0x009844CC};
+static txSlotPool & nfl_streamPool = var<txSlotPool>(0x009844CC);
 
-static Var<char *> dword_984530 {0x00984530};
+static char *& dword_984530 = var<char *>(0x00984530);
 
-static Var<txSlotPool> nfl_requestPool {0x009844A4};
+static txSlotPool & nfl_requestPool = var<txSlotPool>(0x009844A4);
 
-static Var<Struct_984524 *> dword_984524 {0x00984524};
+static Struct_984524 *& dword_984524 = var<Struct_984524 *>(0x00984524);
 
-static Var<nflRequest *> dword_98451C {0x0098451C};
+static nflRequest *& dword_98451C = var<nflRequest *>(0x0098451C);
 
-static Var<HANDLE> hMutex {0x00984490};
+static auto & hMutex = var<HANDLE>(0x00984490);
 
-static Var<int> dword_984534 {0x00984534};
+static int & dword_984534 = var<int>(0x00984534);
 
-static Var<HANDLE> hHandle = {0x00984494};
-static Var<HANDLE> dword_98448C = {0x0098448C};
+static HANDLE & hHandle = var<HANDLE>(0x00984494);
 
-static Var<nflStreamID> nfs_defaultStreamID {0x0094972C};
+static HANDLE & dword_98448C = var<HANDLE>(0x0098448C);
 
-static Var<int> nfs_callRequestsCount {0x00984520};
+static nflStreamID & nfs_defaultStreamID = var<nflStreamID>(0x0094972C);
 
-static Var<Struct_984498> dword_984498{0x00984498};
+static int & nfs_callRequestsCount = var<int>(0x00984520);
+
+static Struct_984498 & dword_984498 = var<Struct_984498>(0x00984498);
 
 #else
 
+#define make_var(type, name) \
+    static type g_##name {}; \
+    type & name {g_##name}
+
+
 static nflInitParams g_nfl_initParams {0x40, 0x10, 0x100, 3, 0};
-static Var<nflInitParams> nfl_initParams {(int) &g_nfl_initParams};
+static nflInitParams & nfl_initParams {g_nfl_initParams};
 
 make_var(Struct_94983C, stru_94983C);
 
@@ -158,14 +160,15 @@ make_var(int, nfs_callRequestsCount);
 
 make_var(Struct_984498, dword_984498);
 
+#undef make_var
+
 #endif
 
-#undef make_var
 
 
 nflStreamID sub_79F2C0(nflPriority *a1)
 {
-    nflStreamID v1 = txSlotNew(&nfl_streamPool());
+    nflStreamID v1 = txSlotNew(&nfl_streamPool);
     nflSetStreamPriority(v1, *a1);
     return v1;
 }
@@ -194,16 +197,14 @@ nflMediaID sub_79DA70(nflFileID a1)
 
 auto sub_79DB10(nflStreamID a1)
 {
-    if ( a1 == 0 )
-    {
-        a1 = nfs_defaultStreamID();
+    if ( a1 == 0 ) {
+        a1 = nfs_defaultStreamID;
     }
 
     nflStream *result = nullptr;
-    auto v1 = txSlotIndex(&nfl_streamPool(), a1.field_0);
-    if ( v1 != -1 )
-    {
-        result = &dword_984528()[v1];
+    auto v1 = txSlotIndex(&nfl_streamPool, a1.field_0);
+    if ( v1 != -1 ) {
+        result = &dword_984528[v1];
     }
 
     return result;
@@ -213,10 +214,9 @@ auto sub_79DB10(nflStreamID a1)
 nflRequest *nflGetRequest(nflRequestID a1)
 {
     nflRequest *result = nullptr;
-    auto v1 = txSlotIndex(&nfl_requestPool(), a1);
-    if ( v1 != -1 )
-    {
-        result = &dword_98451C()[v1];
+    auto v1 = txSlotIndex(&nfl_requestPool, a1);
+    if ( v1 != -1 ) {
+        result = &dword_98451C[v1];
     }
     
     return result;
@@ -256,7 +256,7 @@ void sub_79EC10(nflRequest *a1, int a2)
 {
     if ( a2 != 0 || a1->m_callback != nullptr )
     {
-        auto *v3 = &dword_984524()[nfs_callRequestsCount()++];
+        auto *v3 = &dword_984524[nfs_callRequestsCount++];
         v3->field_0 = (nflRequestState) sub_79DB70(a1->m_state);
 
         auto *v4 = a1;
@@ -272,20 +272,20 @@ void nflUpdate() {
 
     if constexpr (1)
     {
-        nfs_callRequestsCount() = 0;
-        if (nfl_initParams().field_0[4] == 1) {
-            WaitForSingleObject(hMutex(), 0xFFFFFFFF);
+        nfs_callRequestsCount = 0;
+        if (nfl_initParams.field_0[4] == 1) {
+            WaitForSingleObject(hMutex, 0xFFFFFFFF);
         }
 
-        int v0 = txSlotFirst(&nfl_requestPool());
+        int v0 = txSlotFirst(&nfl_requestPool);
 
-        auto *v4 = dword_984524();
+        auto *v4 = dword_984524;
 
         while (v0 != -1) {
             auto *request = nflGetRequest(v0);
             assert(request != nullptr);
 
-            v0 = txSlotNext(&nfl_requestPool(), v0);
+            v0 = txSlotNext(&nfl_requestPool, v0);
             uint32_t v3 = request->m_state;
             switch (v3) {
             case NFS_REQUEST_STATE_WAITING:
@@ -306,14 +306,17 @@ void nflUpdate() {
             }
         }
 
-        if (nfs_callRequestsCount()) {
-            if (nfl_initParams().field_0[4] == 1) {
-                ReleaseMutex(hMutex());
-                v4 = CAST(v4, dword_984524());
+        if (nfs_callRequestsCount != 0)
+        {
+            if (nfl_initParams.field_0[4] == 1) {
+                ReleaseMutex(hMutex);
+                v4 = CAST(v4, dword_984524);
             }
 
-            if (nfs_callRequestsCount() > 0) {
-                for (int i = 0; i < nfs_callRequestsCount(); ++i) {
+            if (nfs_callRequestsCount > 0)
+            {
+                for (int i = 0; i < nfs_callRequestsCount; ++i)
+                {
                     auto v12 = v4[i].m_callback;
                     if (v12 != nullptr) {
                         //assert(v12 == &resource_pack_streamer::stream_request_callback);
@@ -326,29 +329,31 @@ void nflUpdate() {
                 }
             }
 
-            if (nfl_initParams().field_0[4] == 1) {
-                WaitForSingleObject(hMutex(), 0xFFFFFFFF);
+            if (nfl_initParams.field_0[4] == 1) {
+                WaitForSingleObject(hMutex, 0xFFFFFFFF);
             }
         }
 
-        if (nfs_callRequestsCount() > 0) {
-            for (int i = 0; i < nfs_callRequestsCount(); ++i) {
+        if (nfs_callRequestsCount > 0)
+        {
+            for (int i = 0; i < nfs_callRequestsCount; ++i) {
                 if (v4[i].field_10) {
-                    txSlotFree(&nfl_requestPool(), v4[i].field_8.field_0);
+                    txSlotFree(&nfl_requestPool, v4[i].field_8.field_0);
                 }
             }
         }
 
-        nfs_callRequestsCount() = 0;
-        if (nfl_initParams().field_0[4] == 1) {
-            ReleaseMutex(hMutex());
+        nfs_callRequestsCount = 0;
+        if (nfl_initParams.field_0[4] == 1) {
+            ReleaseMutex(hMutex);
         }
 
-        if (!nfl_initParams().field_0[4]) {
+        if (!nfl_initParams.field_0[4]) {
             sub_79EC60();
         }
     }
-    else {
+    else
+    {
         CDECL_CALL(0x0079EE00);
     }
 }
@@ -382,38 +387,42 @@ int nfsGetNativeFileID(nflFileID a1)
     return (int) file->as.subfile.parent;
 }
 
-HANDLE *nflGetNativeFileID(nflFileID a1) {
+HANDLE * nflGetNativeFileID(nflFileID a1)
+{
     TRACE("nflGetNativeFileID");
 
     auto v3 = nfsGetNativeFileID(a1);
-    int v4 = txSlotIndex(&nfl_filePool(), v3);
+    int v4 = txSlotIndex(&nfl_filePool, v3);
     if (v4 == -1) {
         return nullptr;
     }
 
-    HANDLE *result = CAST(result, &dword_984530()[v4 * dword_984534()]);
+    HANDLE *result = CAST(result, &dword_984530[v4 * dword_984534]);
 
     return result;
 }
 
-void nflSetStreamPriority(nflStreamID a1, nflPriority a2) {
+void nflSetStreamPriority(nflStreamID a1, nflPriority a2)
+{
     TRACE("nflSetStreamPriority");
 
     if constexpr (1)
     {
         auto *v4 = sub_79DB10(a1);
-        if (v4 != nullptr) {
-            if (nfl_initParams()[4] == 1) {
-                WaitForSingleObject(hMutex(), 0xFFFFFFFF);
+        if (v4 != nullptr)
+        {
+            if (nfl_initParams[4] == 1) {
+                WaitForSingleObject(hMutex, 0xFFFFFFFF);
             }
 
             v4->field_C = a2.field_0;
 
-            int v5 = txSlotFirst(&nfl_requestPool());
+            int v5 = txSlotFirst(&nfl_requestPool);
 
-            while (v5 != -1) {
+            while (v5 != -1)
+            {
                 auto v6 = v5;
-                v5 = txSlotNext(&nfl_requestPool(), v5);
+                v5 = txSlotNext(&nfl_requestPool, v5);
                 auto *request = nflGetRequest(v6);
                 assert(request != nullptr);
 
@@ -422,8 +431,8 @@ void nflSetStreamPriority(nflStreamID a1, nflPriority a2) {
                 }
             }
 
-            if (nfl_initParams()[4] == 1) {
-                ReleaseMutex(hMutex());
+            if (nfl_initParams[4] == 1) {
+                ReleaseMutex(hMutex);
             }
         }
     }
@@ -434,24 +443,25 @@ void nflSetStreamPriority(nflStreamID a1, nflPriority a2) {
 }
 
 void __stdcall sub_79ED80([[maybe_unused]] LPVOID lpThreadParameter) {
-    while (1) {
-        WaitForSingleObject(hHandle(), 0xFFFFFFFF);
-        if (nfl_initParams()[4] == 1) {
-            WaitForSingleObject(hMutex(), 0xFFFFFFFF);
+    while (1)
+    {
+        WaitForSingleObject(hHandle, 0xFFFFFFFF);
+        if (nfl_initParams[4] == 1) {
+            WaitForSingleObject(hMutex, 0xFFFFFFFF);
         }
 
         int v1 = sub_79EC60();
 
-        if (nfl_initParams()[4] == 1) {
-            ReleaseMutex(hMutex());
+        if (nfl_initParams[4] == 1) {
+            ReleaseMutex(hMutex);
         }
 
         if (v1) {
             Sleep(30u);
             //SwitchToThread();
 
-            if (nfl_initParams()[4] == 1) {
-                SetEvent(hHandle());
+            if (nfl_initParams[4] == 1) {
+                SetEvent(hHandle);
             }
         }
     }
@@ -491,16 +501,16 @@ size_t nflSystem::init(void *a1)
     if constexpr (1)
     {
         uint32_t v3 = 1;
-        dword_984498().field_0 = bit_cast<uint32_t>(a1);
-        dword_984498().free = ((a1 != nullptr) ? dword_984498().used : 0);
-        dword_984498().used = 0;
+        dword_984498.field_0 = bit_cast<uint32_t>(a1);
+        dword_984498.free = ((a1 != nullptr) ? dword_984498.used : 0);
+        dword_984498.used = 0;
         int v40 = 0;
         uint32_t v33 = 1;
 
         void *v42[32];
 
-        for (int i = 0; i < stru_94983C().field_0; ++i) {
-            auto *driver = stru_94983C().field_4[i];
+        for (int i = 0; i < stru_94983C.field_0; ++i) {
+            auto *driver = stru_94983C.field_4[i];
             auto *v6 = driver->field_C;
             if (v33 < v6->field_0) {
                 v33 = v6->field_0;
@@ -521,7 +531,7 @@ size_t nflSystem::init(void *a1)
                         v10 = v9->field_4;
                     }
 
-                    v42[i] = nfsPreAllocate(v9->field_C, v10, dword_984498());
+                    v42[i] = nfsPreAllocate(v9->field_C, v10, dword_984498);
                     v40 |= (v42[i] == nullptr) << i;
                 }
             }
@@ -530,29 +540,30 @@ size_t nflSystem::init(void *a1)
         uint32_t v34 = v3 * ((v3 + v33 - 1) / v3);
 
 #if 1
-        assert(nfl_initParams()[1] == 32 && nfl_initParams()[2] == 32);
+        assert(nfl_initParams[1] == 32 && nfl_initParams[2] == 32);
 #endif
 
         nflRequest *v36 =
-            static_cast<decltype(v36)>(nfsPreAllocate(sizeof(nflRequest) * nfl_initParams()[2], 64, dword_984498()));
-        Struct_984524 *v38 = static_cast<decltype(v38)>(nfsPreAllocate(sizeof(Struct_984524) * nfl_initParams()[2], 4, dword_984498()));
-        nflStream *v19 = static_cast<decltype(v19)>(nfsPreAllocate(sizeof(nflStream) * nfl_initParams()[1], 64, dword_984498()));
+            static_cast<decltype(v36)>(nfsPreAllocate(sizeof(nflRequest) * nfl_initParams[2], 64, dword_984498));
+        Struct_984524 *v38 = static_cast<decltype(v38)>(nfsPreAllocate(sizeof(Struct_984524) * nfl_initParams[2], 4, dword_984498));
+        nflStream *v19 = static_cast<decltype(v19)>(nfsPreAllocate(sizeof(nflStream) * nfl_initParams[1], 64, dword_984498));
         nflFile *v22 =
-            static_cast<decltype(v22)>(nfsPreAllocate(sizeof(nflFile) * nfl_initParams()[0], 64, dword_984498()));
+            static_cast<decltype(v22)>(nfsPreAllocate(sizeof(nflFile) * nfl_initParams[0], 64, dword_984498));
 
-        //sp_log("nfsPreAllocate: size = %d * %d, align = %d, %d", v34, nfl_initParams()[0], v3, v2);
-        auto *v26 = nfsPreAllocate(v34 * nfl_initParams()[0], v3, dword_984498());
+        //sp_log("nfsPreAllocate: size = %d * %d, align = %d, %d", v34, nfl_initParams[0], v3, v2);
+        auto *v26 = nfsPreAllocate(v34 * nfl_initParams[0], v3, dword_984498);
 
         if (a1 != nullptr && v36 != nullptr && v19 != nullptr && v22 != nullptr && v26 != nullptr && v40 == 0) {
-            dword_984530() = CAST(dword_984530(), v26);
-            dword_98451C() = v36;
-            dword_984524() = v38;
-            dword_984534() = v34;
-            dword_984528() = v19;
-            dword_98452C() = v22;
+            dword_984530 = CAST(dword_984530, v26);
+            dword_98451C = v36;
+            dword_984524 = v38;
+            dword_984534 = v34;
+            dword_984528 = v19;
+            dword_98452C = v22;
 
-            for (int i = 0; i < stru_94983C().field_0; ++i) {
-                auto *driver = stru_94983C().field_4[i];
+            for (int i = 0; i < stru_94983C.field_0; ++i)
+            {
+                auto *driver = stru_94983C.field_4[i];
                 int v30 = driver->init->field_0;
                 if (v30 == 2 || v30 == 3 || v30 == 4) {
                     auto *v31 = driver->buffer;
@@ -563,7 +574,7 @@ size_t nflSystem::init(void *a1)
             }
         }
 
-        return dword_984498().used;
+        return dword_984498.used;
     }
     else {
         __asm("mov esi, %[_a1]\n" ::[_a1] "m"(a1));
@@ -575,13 +586,14 @@ size_t nflSystem::init(void *a1)
 void nflCancelFileRequests(nflFileID a1) {
     TRACE("nflCancelFileRequests");
 
-    int v1 = txSlotFirst(&nfl_requestPool());
-    while (v1 != -1) {
+    int v1 = txSlotFirst(&nfl_requestPool);
+    while (v1 != -1)
+    {
         int v2 = v1;
         nflRequest *request = nflGetRequest(v1);
         assert(request != nullptr);
 
-        v1 = txSlotNext(&nfl_requestPool(), v1);
+        v1 = txSlotNext(&nfl_requestPool, v1);
         if (request->field_C == a1) {
             nflCancelRequest(v2);
         }
@@ -590,14 +602,16 @@ void nflCancelFileRequests(nflFileID a1) {
 
 namespace nflSystem
 {
-    void cancelRequest(nflRequestID a1) {
-        if (nfl_initParams()[4] == 1) {
-            WaitForSingleObject(hMutex(), 0xFFFFFFFF);
+    void cancelRequest(nflRequestID a1)
+    {
+        if (nfl_initParams[4] == 1) {
+            WaitForSingleObject(hMutex, 0xFFFFFFFF);
         }
 
-        int v1 = txSlotIndex(&nfl_requestPool(), a1);
-        if (v1 != -1) {
-            nflRequest *request = &(dword_98451C()[v1]);
+        int v1 = txSlotIndex(&nfl_requestPool, a1);
+        if (v1 != -1)
+        {
+            nflRequest *request = &(dword_98451C[v1]);
             if (request != nullptr) {
                 int v3 = request->m_state;
                 if (v3 == NFS_REQUEST_STATE_WORKING) {
@@ -608,8 +622,8 @@ namespace nflSystem
             }
         }
 
-        if (nfl_initParams()[4] == 1) {
-            ReleaseMutex(hMutex());
+        if (nfl_initParams[4] == 1) {
+            ReleaseMutex(hMutex);
         }
     }
 
@@ -658,7 +672,7 @@ void nflSystem::closeFile(nflFileID a1) {
                 nflDriver *v6 = CAST(v6, file->as.subfile.parent);
                 HANDLE *v7 = nflGetNativeFileID(a1);
                 v6->field_C->field_C(v7);
-                txSlotFree(&nfl_filePool(), a1.field_0);
+                txSlotFree(&nfl_filePool, a1.field_0);
             }
         }
     }
@@ -670,24 +684,26 @@ void nflStart(void *work) {
     if constexpr (1)
     {
 
-        if (work != nullptr) {
+        if (work != nullptr)
+        {
             nflSystem::init(work);
 
-            assert(txSlotPoolInit(&nfl_requestPool(), &dword_98451C()->field_38, nfl_initParams()[2], sizeof(nflRequest)));
-            assert(txSlotPoolInit(&nfl_streamPool(), dword_984528(), nfl_initParams()[1], sizeof(nflStream)));
-            assert(txSlotPoolInit(&nfl_filePool(),
-                           &dword_98452C()->field_14,
-                           nfl_initParams()[0],
+            assert(txSlotPoolInit(&nfl_requestPool, &dword_98451C->field_38, nfl_initParams[2], sizeof(nflRequest)));
+            assert(txSlotPoolInit(&nfl_streamPool, dword_984528, nfl_initParams[1], sizeof(nflStream)));
+            assert(txSlotPoolInit(&nfl_filePool,
+                           &dword_98452C->field_14,
+                           nfl_initParams[0],
                            sizeof(nflFile)));
 
             nflPriority a1 = 2;
-            nfs_defaultStreamID() = sub_79F2C0(&a1);
-            assert(nfs_defaultStreamID() != NFL_STREAM_ID_INVALID);
+            nfs_defaultStreamID = sub_79F2C0(&a1);
+            assert(nfs_defaultStreamID != NFL_STREAM_ID_INVALID);
 
-            if (nfl_initParams()[4] == 1) {
-                hMutex() = CreateMutexA(nullptr, 0, nullptr);
-                hHandle() = CreateEventA(nullptr, 0, 0, nullptr);
-                dword_98448C() = CreateThread(nullptr,
+            if (nfl_initParams[4] == 1)
+            {
+                hMutex = CreateMutexA(nullptr, 0, nullptr);
+                hHandle = CreateEventA(nullptr, 0, 0, nullptr);
+                dword_98448C = CreateThread(nullptr,
                                               8192u,
                                               bit_cast<LPTHREAD_START_ROUTINE>(&sub_79ED80),
                                               nullptr,
@@ -786,15 +802,16 @@ int nflAddRequest(const nflRequestParams *a1) {
                 return -1;
             }
 
-            if (nfl_initParams().field_0[4] == 1) {
-                WaitForSingleObject(hMutex(), 0xFFFFFFFF);
+            if (nfl_initParams.field_0[4] == 1) {
+                WaitForSingleObject(hMutex, 0xFFFFFFFF);
             }
 
-            auto v6 = txSlotNew(&nfl_requestPool());
+            auto v6 = txSlotNew(&nfl_requestPool);
 
-            if (v6 == -1) {
-                if (nfl_initParams().field_0[4] == 1) {
-                    ReleaseMutex(hMutex());
+            if (v6 == -1)
+            {
+                if (nfl_initParams.field_0[4] == 1) {
+                    ReleaseMutex(hMutex);
                 }
 
                 sp_log("out of request slots. Please increase the request numbers in the nflInitParams "
@@ -827,10 +844,10 @@ int nflAddRequest(const nflRequestParams *a1) {
                 request->field_28 = a1->dataSize;
                 request->field_0 = (int) a1->field_14;
                 request->bytesCompleted = 0;
-                if (nfl_initParams().field_0[4] == 1) {
-                    ReleaseMutex(hMutex());
-                    if (nfl_initParams().field_0[4] == 1) {
-                        SetEvent(hHandle());
+                if (nfl_initParams.field_0[4] == 1) {
+                    ReleaseMutex(hMutex);
+                    if (nfl_initParams.field_0[4] == 1) {
+                        SetEvent(hHandle);
                     }
                 }
 
@@ -850,16 +867,16 @@ size_t nflInit(const nflInitParams *a1) {
     TRACE("nflInit");
 
     if (a1 != nullptr) {
-        nfl_initParams() = *a1;
+        nfl_initParams = *a1;
     }
 
-    for (int i = 0; i < stru_94983C().field_0; ++i) {
-        auto *driver = stru_94983C().field_4[i];
+    for (int i = 0; i < stru_94983C.field_0; ++i) {
+        auto *driver = stru_94983C.field_4[i];
 
         assert(driver != nullptr && driver->init != nullptr);
 
-        if (nfl_initParams()[3] != -1) {
-            driver->init->field_0 = nfl_initParams()[3];
+        if (nfl_initParams[3] != -1) {
+            driver->init->field_0 = nfl_initParams[3];
         }
 
         if (driver->init->field_4 != nullptr) {
@@ -870,16 +887,15 @@ size_t nflInit(const nflInitParams *a1) {
     return nflSystem::init(nullptr);
 }
 
-nflFile *nflGetFile(nflFileID a2)
+nflFile * nflGetFile(nflFileID a2)
 {
     TRACE("nflGetFile");
     //TRACE(std::to_string(a2.field_0).c_str());
 
     nflFile *file = nullptr;
-    auto v3 = txSlotIndex(&nfl_filePool(), a2.field_0);
-    if ( v3 != -1 )
-    {
-        file = &dword_98452C()[v3];
+    auto v3 = txSlotIndex(&nfl_filePool, a2.field_0);
+    if ( v3 != -1 ) {
+        file = &dword_98452C[v3];
     }
 
     return file;
@@ -960,11 +976,11 @@ nflDriver::nflDriver()
 //0x0079D940
 int nfsGetMediaIndex(int a1)
 {
-    for ( auto i = 0; i < stru_94983C().field_0; ++i )
+    for ( auto i = 0; i < stru_94983C.field_0; ++i )
     {
-        if ( stru_94983C().field_4[i] != nullptr
-            && stru_94983C().field_4[i]->field_8 != nullptr
-            && (a1 & stru_94983C().field_4[i]->field_8->field_0) != 0 )
+        if ( stru_94983C.field_4[i] != nullptr
+            && stru_94983C.field_4[i]->field_8 != nullptr
+            && (a1 & stru_94983C.field_4[i]->field_8->field_0) != 0 )
         {
             return i;
         }
@@ -983,7 +999,7 @@ nflDriver *nfsGetMediaDriver(int a1)
     if ( v1 != -1 )
     {
         assert(v1 == 0);
-        result = stru_94983C().field_4[v1];
+        result = stru_94983C.field_4[v1];
     }
 
     return result;
@@ -1047,14 +1063,14 @@ nflFileID nflSystem::openFile(nflMediaID a1, const char *a2, nfdFileFlags Flags,
                 }
 
                 {
-                    if (nfl_initParams().field_0[4] == 1) {
-                        WaitForSingleObject(hMutex(), 0xffffffff);
+                    if (nfl_initParams.field_0[4] == 1) {
+                        WaitForSingleObject(hMutex, 0xffffffff);
                     }
 
-                    nflFileID v5 = txSlotNew(&nfl_filePool());
+                    nflFileID v5 = txSlotNew(&nfl_filePool);
                     if (v5 == NFL_FILE_ID_INVALID) {
-                        if (nfl_initParams().field_0[4] == 1) {
-                            ReleaseMutex(hMutex());
+                        if (nfl_initParams.field_0[4] == 1) {
+                            ReleaseMutex(hMutex);
                         }
 
                         sp_log("Out of file handles");
@@ -1095,11 +1111,11 @@ nflFileID nflSystem::openFile(nflMediaID a1, const char *a2, nfdFileFlags Flags,
                             != 0)
                     {
 
-                        if (nfl_initParams().field_0[4] == 1) {
-                            ReleaseMutex(hMutex());
+                        if (nfl_initParams.field_0[4] == 1) {
+                            ReleaseMutex(hMutex);
                         }
 
-                        txSlotFree(&nfl_filePool(), v5.field_0);
+                        txSlotFree(&nfl_filePool, v5.field_0);
                         auto *flags = [](int a1) -> const char *
                         {
                             static char byte_15FE810[258];
@@ -1134,8 +1150,8 @@ nflFileID nflSystem::openFile(nflMediaID a1, const char *a2, nfdFileFlags Flags,
 
                     file->m_fileSize = fileInfo.m_fileSize;
 
-                    if (nfl_initParams().field_0[4] == 1) {
-                        ReleaseMutex(hMutex());
+                    if (nfl_initParams.field_0[4] == 1) {
+                        ReleaseMutex(hMutex);
                     }
 
                     return v5;
@@ -1355,8 +1371,9 @@ int nflExecuteRequest(nflDriver *driver, nflRequestID a2)
     assert(ioCommand.fileHandle != nullptr);
 
     ioCommand.field_0 = file->m_fileSize;
-    if (file->fileType == nflFile::NFS_FILE_TYPE_SUBFILE) {
-        txSlotIndex(&nfl_filePool(), (int) file->as.subfile.parent);
+    if (file->fileType == nflFile::NFS_FILE_TYPE_SUBFILE)
+    {
+        txSlotIndex(&nfl_filePool, (int) file->as.subfile.parent);
         int v9 = file->as.subfile.field_4;
         int v10 = file->as.subfile.childCount;
         if (!v9 && !v10) {
@@ -1443,13 +1460,13 @@ int nflScheduleRequest(int a1) {
         int v14 = -1;
         uint32_t v16 = 0;
         int v15 = -1;
-        auto v1 = txSlotFirst(&nfl_requestPool());
+        auto v1 = txSlotFirst(&nfl_requestPool);
         while (v1 != -1) {
             auto v2 = v1;
             nflRequest *request = nflGetRequest(v1);
             assert(request != nullptr);
 
-            v1 = txSlotNext(&nfl_requestPool(), v1);
+            v1 = txSlotNext(&nfl_requestPool, v1);
 
             auto func = [](nflFileID id) -> int
             {
@@ -1497,8 +1514,8 @@ int sub_79EC60()
 {
     if constexpr (1)
     {
-        const int v0 = stru_94983C().field_0;
-        auto **v1 = stru_94983C().field_4;
+        const int v0 = stru_94983C.field_0;
+        auto **v1 = stru_94983C.field_4;
 
         int v6[32];
         for (int i = 0; i < v0; ++i) {
