@@ -77,7 +77,7 @@ uint8_t *resource_pack_slot::get_resource(const resource_key &resource_id,
                                           int *a3,
                                           resource_pack_slot **a4)
 {
-    TRACE("resource_pack_slot::get_resource", resource_id.get_platform_string(g_platform()).c_str());
+    TRACE("resource_pack_slot::get_resource", resource_id.get_platform_string(g_platform).c_str());
 
     auto &res_dir = this->get_resource_directory();
     return res_dir.get_resource(resource_id, a3, a4);

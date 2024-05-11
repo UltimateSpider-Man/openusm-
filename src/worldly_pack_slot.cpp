@@ -163,7 +163,7 @@ worldly_pack_slot::~worldly_pack_slot()
 
 bool worldly_pack_slot::_on_load(limited_timer *a2)
 {
-    TRACE("worldly_pack_slot::on_load", this->get_name_key().get_platform_string(g_platform()).c_str());
+    TRACE("worldly_pack_slot::on_load", this->get_name_key().get_platform_string(g_platform).c_str());
 
     if constexpr (1)
     {

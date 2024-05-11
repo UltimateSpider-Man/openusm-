@@ -285,7 +285,7 @@ int register_allocated_stuff_callback(
 
 script_executable_entry * load(const resource_key &a1, uint32_t a2, void *a3, const resource_key &a4)
 {
-    TRACE("script_manager::load", a1.get_platform_string(g_platform()).c_str());
+    TRACE("script_manager::load", a1.get_platform_string(g_platform).c_str());
 
     assert(script_manager_exec_map != nullptr);
 

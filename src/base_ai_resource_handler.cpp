@@ -31,7 +31,7 @@ bool base_ai_resource_handler::_handle(worldly_resource_handler::eBehavior a2, l
 bool base_ai_resource_handler::_handle_resource(worldly_resource_handler::eBehavior behavior,
                                                resource_location *a3)
 {
-    TRACE("base_ai_resource_handler::handle_resource", a3->field_0.get_platform_string(g_platform()).c_str());
+    TRACE("base_ai_resource_handler::handle_resource", a3->field_0.get_platform_string(g_platform).c_str());
 
     if constexpr (1)
     {

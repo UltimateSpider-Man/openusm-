@@ -281,7 +281,7 @@ void resource_directory::constructor_common(resource_pack_slot *a2, uint8_t *a3,
             for (auto i = 0u; i < this->resource_locations.size(); ++i) {
                 auto &loc = this->resource_locations.at(i);
                 sp_log("%d %s %d", i,
-                        loc.field_0.get_platform_string(g_platform()).c_str(),
+                        loc.field_0.get_platform_string(g_platform).c_str(),
                         loc.m_size);
             }
         }
@@ -336,7 +336,7 @@ void resource_directory::add_parent(resource_directory *new_dir)
 }
 
 int compare_resource_key_resource_location_just_hash(const resource_key &a1, resource_location &a2) {
-    //sp_log("%s", a2->field_0.get_platform_string(g_platform()).c_str());
+    //sp_log("%s", a2->field_0.get_platform_string(g_platform).c_str());
     return CDECL_CALL(0x0055F7E0, &a1, &a2);
 }
 
@@ -351,7 +351,7 @@ bool resource_directory::find_resource(const resource_key &a2,
                                        resource_directory **out_dir,
                                        resource_location **out_loc)
 {
-    TRACE("resource_directory::find_resource", a2.get_platform_string(g_platform()).c_str());
+    TRACE("resource_directory::find_resource", a2.get_platform_string(g_platform).c_str());
     if constexpr (1)
     {
         assert(out_dir != nullptr && out_loc != nullptr);
@@ -383,7 +383,7 @@ bool resource_directory::find_resource(const resource_key &a2,
                 {
                     auto &v6 = this->pack_slot->get_name_key();
                     auto v27 = v6.m_hash;
-                    auto v24 = a2.get_platform_string(g_platform());
+                    auto v24 = a2.get_platform_string(g_platform);
                     auto *v20 = v27.to_string();
                     auto *v7 = v24.c_str();
                     debug_print_va("found resource %s in %s", v7, v20);
@@ -420,7 +420,7 @@ bool resource_directory::find_resource(const resource_key &a2,
                         auto v28 = the_parent->pack_slot->get_name_key().m_hash;
                         auto v25 = this->pack_slot->get_name_key().m_hash;
 
-                        auto v23 = a2.get_platform_string(g_platform());
+                        auto v23 = a2.get_platform_string(g_platform);
                         auto *v21 = v28.to_string();
                         auto *v19 = v25.to_string();
                         auto *v13 = v23.c_str();
@@ -457,7 +457,7 @@ void resource_directory::debug_print() const {
     int i = 0;
     for ( i = 0; i < this->resource_locations.size(); ++i )
     {
-        auto v39 = g_platform();
+        auto v39 = g_platform;
         auto &v4 = this->resource_locations.at(i);
         auto str = v4.field_0.get_platform_string(v39);
         auto *v5 = str.c_str();

@@ -49,7 +49,7 @@ extern Var<bool> g_generating_vtables;
 
 extern Var<bool> byte_965C20;
 
-inline Var<_nlPlatformEnum> g_platform{0x0095C1E4};
+inline auto & g_platform = var<_nlPlatformEnum>(0x0095C1E4);
 
 extern Var<bool> g_distance_clipping_enabled;
 

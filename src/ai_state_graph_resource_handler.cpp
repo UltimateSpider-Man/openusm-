@@ -33,7 +33,7 @@ bool ai_state_graph_resource_handler::_handle(worldly_resource_handler::eBehavio
 bool ai_state_graph_resource_handler::_handle_resource(worldly_resource_handler::eBehavior a2,
                                                       resource_location *a3)
 {
-    TRACE("ai_state_graph_resource_handler::handle_resource", a3->field_0.get_platform_string(g_platform()).c_str());
+    TRACE("ai_state_graph_resource_handler::handle_resource", a3->field_0.get_platform_string(g_platform).c_str());
 
     if constexpr (1)
     {

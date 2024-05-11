@@ -43,7 +43,7 @@ void cut_scene::init_stream_scene_anims() {
             stream_anim_pack().get_nfl_file_handle() == NFL_FILE_ID_INVALID) {
             mString v2 = mString{scene_anim_packfile_id().c_str()};
 
-            mString v3 = mString::get_standalone_filename(v2, g_platform());
+            mString v3 = mString::get_standalone_filename(v2, g_platform);
 
             mString v1;
             v1 += v3;

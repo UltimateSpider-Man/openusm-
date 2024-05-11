@@ -148,7 +148,7 @@ void load_amalgapak()
         os_file file;
 
         {
-            amalgapak_name = get_amalgapak_filename(g_platform());
+            amalgapak_name = get_amalgapak_filename(g_platform);
             sp_log("Loading amalgapak...");
 
             mString a1 {amalgapak_name.c_str()};
@@ -250,7 +250,7 @@ void load_amalgapak()
                         auto &key = pack_loc.loc.field_0;
                         {
                             printf("%s %s 0x%08X %d\n",
-                                    key.get_platform_name(g_platform()).c_str(),
+                                    key.get_platform_name(g_platform).c_str(),
                                     pack_loc.m_name,
                                     pack_loc.loc.m_offset,
                                     pack_loc.loc.m_size);
@@ -567,7 +567,7 @@ void frame_advance(Float a2)
 
 bool get_pack_file_stats(const resource_key &a1, resource_pack_location *a2, mString *a3, int *a4)
 {
-    TRACE("resource_manager::get_pack_file_stats", a1.get_platform_string(g_platform()).c_str());
+    TRACE("resource_manager::get_pack_file_stats", a1.get_platform_string(g_platform).c_str());
 
     if constexpr (1)
     {
@@ -1018,7 +1018,7 @@ resource_partition *get_partition_pointer(resource_partition_enum which_type)
 
 nflFileID open_pack(const char *name) {
     TRACE("resource_manager::open_pack", name);
-    const char *ext = packfile_ext()[g_platform()];
+    const char *ext = packfile_ext()[g_platform];
 
     //sp_log("open pack %s%s", name, ext);
     if constexpr (1)
@@ -1028,7 +1028,7 @@ nflFileID open_pack(const char *name) {
 
         mString v11{"data\\"};
 
-        const char *dir = packfile_dir()[g_platform()];
+        const char *dir = packfile_dir()[g_platform];
 
         mString a1 = v11 + dir;
 
@@ -1086,7 +1086,7 @@ bool get_resource_if_exists(const resource_key &resource_id,
 
 uint8_t *get_resource(const resource_key &resource_id, int *mash_data_size, resource_pack_slot **a3)
 {
-    TRACE("resource_manager::get_resource", resource_id.get_platform_string(g_platform()).c_str());
+    TRACE("resource_manager::get_resource", resource_id.get_platform_string(g_platform).c_str());
     
     if constexpr (0)
     {

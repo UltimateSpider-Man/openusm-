@@ -143,7 +143,7 @@ app::app()
 
     unit_tests();
     mem_print_stats("after unit tests");
-    g_platform() = NL_PLATFORM_PC;
+    g_platform = NL_PLATFORM_PC;
     if (link_system::use_link_system())
     {
         /*

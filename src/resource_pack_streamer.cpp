@@ -676,7 +676,7 @@ void resource_pack_streamer::unload_internal(int which_slot_idx)
 void resource_pack_streamer::finish_data_read()
 {
     TRACE("resource_pack_streamer::finish_data_read",
-                this->field_8.get_platform_string(g_platform()).c_str());
+                this->field_8.get_platform_string(g_platform).c_str());
 
     if constexpr (1)
     {
