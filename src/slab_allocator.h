@@ -1,7 +1,6 @@
 #pragma once
 
 #include <config.h>
-#include <variable.h>
 
 struct debug_menu;
 
@@ -86,16 +85,6 @@ namespace slab_allocator {
 
     void dump_debug_info();
 
-    //0x00965F34
-    extern Var<char *> static_slab_arena;
-
-    //0x00965F38
-    extern Var<slab_t *> static_slab_headers;
-
-    extern Var<bool> initialized;
-
-    extern Var<bool> g_dump_slab_info;
-
     constexpr auto SLAB_SIZE = 4096;
 
     extern int allocated_object_count[44];
@@ -159,12 +148,6 @@ namespace slab_allocator {
         int field_0;
         slab_list_t field_4[44];
     };
-
-    extern Var<slab_list_t *> slab_partial_list;
-
-    extern Var<slab_list_t *> slab_full_list;
-
-    extern Var<slab_list_t *> slab_free_list;
 
 } // namespace slab_allocator
 

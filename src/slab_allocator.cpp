@@ -9,6 +9,7 @@
 #include "os_developer_options.h"
 #include "trace.h"
 #include "utility.h"
+#include "variable.h"
 
 #include <cassert>
 #include <windows.h>
@@ -48,23 +49,24 @@ int total_slab_count{};
 
 #if !STANDALONE_SYSTEM
 
-Var<bool> initialized{0x00965F33};
+static auto & initialized = var<bool>(0x00965F33);
 
-Var<bool> g_dump_slab_info{0x00965F40};
+static auto & g_dump_slab_info = var<bool>(0x00965F40);
 
-Var<char *> static_slab_arena = {0x00965F34};
-Var<slab_t *> static_slab_headers = {0x00965F38};
+static auto & static_slab_arena = var<char *>(0x00965F34);
 
-Var<slab_list_t *> slab_partial_list{0x00965984};
+static auto & static_slab_headers = var<slab_t *>(0x00965F38);
 
-Var<slab_list_t *> slab_full_list{0x00965980};
+static auto & slab_partial_list = var<slab_list_t *>(0x00965984);
 
-Var<slab_list_t *> slab_free_list{0x0096597C};
+static auto & slab_full_list = var<slab_list_t *>(0x00965980);
+
+static auto & slab_free_list = var<slab_list_t *>(0x0096597C);
 #else
 
 #define make_var(type, name) \
     static type g_##name {}; \
-    Var<type> name {(int) &g_##name}
+    type & name {g_##name}
 
 make_var(bool, initialized);
 
@@ -115,19 +117,22 @@ bool slab_allocator::slab_t::iterator::operator==(const slab_t::iterator &a2) {
     return !(this->_ptr != a2._ptr);
 }
 
-void slab_allocator::initialize() {
-    assert(!initialized());
+void slab_allocator::initialize()
+{
+    assert(!initialized);
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         slab_list_t *v1 = nullptr;
         auto *v0 = (slab_partial_list_t *) operator new(0x214u);
-        if (v0 != nullptr) {
+        if (v0 != nullptr)
+        {
             v1 = v0->field_4;
             v0->field_0 = 44;
             new (v0->field_4) slab_list_t[44];
         }
 
-        slab_partial_list() = v1;
+        slab_partial_list = v1;
 
         slab_list_t *v3 = nullptr;
         auto *v2 = (slab_partial_list_t *) operator new(0x214u);
@@ -137,7 +142,7 @@ void slab_allocator::initialize() {
             new (v3) slab_list_t[44];
         }
 
-        slab_full_list() = v3;
+        slab_full_list = v3;
 
         auto *v4 = (slab_list_t *) operator new(12u);
         if (v4 != nullptr) {
@@ -148,23 +153,26 @@ void slab_allocator::initialize() {
             v4 = nullptr;
         }
 
-        slab_free_list() = v4;
-        static_slab_arena() = static_cast<char *>(arch_memalign(4096u, 4096 * 1024u));
-        static_slab_headers() = static_cast<slab_t *>(arch_malloc(sizeof(slab_t) * 1024u));
-        auto *arena = static_slab_arena();
-        auto *headers = static_slab_headers();
-        for (auto i = 0u; i < 1024u; ++i) {
+        slab_free_list = v4;
+        static_slab_arena = static_cast<char *>(arch_memalign(4096u, 4096 * 1024u));
+        static_slab_headers = static_cast<slab_t *>(arch_malloc(sizeof(slab_t) * 1024u));
+        auto *arena = static_slab_arena;
+        auto *headers = static_slab_headers;
+        for (auto i = 0u; i < 1024u; ++i)
+        {
             new (headers) slab_t {arena};
             headers->set(20);
 
-            slab_free_list()->push_back(headers++);
+            slab_free_list->push_back(headers++);
 
             arena += 4096u;
         }
 
-        initialized() = true;
+        initialized = true;
 
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x0059F5A0);
     }
 }
@@ -252,7 +260,7 @@ void *slab_allocator::allocate(int size, slab_allocator::slab_t **a2) {
     assert(size >= 0);
     assert(size <= MAX_OBJECT_SIZE);
 
-    if (!initialized()) {
+    if (!initialized) {
         initialize();
     }
 
@@ -261,7 +269,7 @@ void *slab_allocator::allocate(int size, slab_allocator::slab_t **a2) {
         index = (size + 3) / 4 - 1;
     }
 
-    auto *slab = slab_partial_list()[index].front();
+    auto *slab = slab_partial_list[index].front();
     if (slab == nullptr) {
         slab = create_slab(size);
     }
@@ -282,9 +290,9 @@ void *slab_allocator::allocate(int size, slab_allocator::slab_t **a2) {
     if (!slab->get_free_object_count()) {
         slab->unset(SLAB_ON_PARTIAL_LIST);
 
-        assert(slab_partial_list()[index].front() == slab);
+        assert(slab_partial_list[index].front() == slab);
 
-        auto *v8 = slab_partial_list()[index]._first_element;
+        auto *v8 = slab_partial_list[index]._first_element;
         if (v8 != nullptr) {
             auto *v9 = v8->simple_list_vars._sl_prev_element;
             auto *v10 = v8->simple_list_vars._sl_next_element;
@@ -307,7 +315,7 @@ void *slab_allocator::allocate(int size, slab_allocator::slab_t **a2) {
             v8->simple_list_vars = {};
         }
 
-        slab_full_list()[index].push_back(slab);
+        slab_full_list[index].push_back(slab);
 
         slab->set(SLAB_ON_FULL_LIST);
         --partial_slab_count[index];
@@ -425,17 +433,17 @@ slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj)
 {
     if constexpr (0)
     {
-        if (obj == nullptr || !initialized()) {
+        if (obj == nullptr || !initialized) {
             return nullptr;
         }
 
 #if 0
         sp_log("find_slab_for_object: obj = 0x%08X, static_slab_arena = 0x%08X",
                obj,
-               static_slab_arena());
+               static_slab_arena);
 #endif
 
-        if ((obj < static_slab_arena()) || (obj >= static_slab_arena() + 0x100000))
+        if ((obj < static_slab_arena) || (obj >= static_slab_arena + 0x100000))
         {
             uint32_t uVar3 = bit_cast<uint32_t>(obj) & 0xfffff000;
             auto *slab = (slab_t *) (uVar3 + SLAB_SIZE);
@@ -468,19 +476,21 @@ slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj)
                 sp_log("find_slab_for_object: 0");
             }
 
-        } else {
-            auto index = (uint32_t) ((char *) obj - (char *) static_slab_arena()) >> 12;
+        }
+        else
+        {
+            auto index = (uint32_t) ((char *) obj - (char *) static_slab_arena) >> 12;
 
             constexpr auto NUM_STATIC_SLABS = 256;
             assert(index < NUM_STATIC_SLABS);
 
-            auto *slab = &static_slab_headers()[index];
+            auto *slab = &static_slab_headers[index];
 
             assert(slab->begin_sentry == SLAB_HEADER_BEGIN_SENTRY);
             assert(slab->end_sentry == SLAB_HEADER_END_SENTRY);
             assert(slab->contains((uint32_t) obj));
 
-            assert(slab->arena == &bit_cast<char *>(static_slab_arena())[SLAB_SIZE * index]);
+            assert(slab->arena == &bit_cast<char *>(static_slab_arena)[SLAB_SIZE * index]);
             assert(slab->is_set(SLAB_FROM_STATIC));
 
             return slab;
@@ -495,11 +505,13 @@ slab_allocator::slab_t *slab_allocator::find_slab_for_object(void *obj)
     }
 }
 
-slab_allocator::slab_t *slab_allocator::create_slab(int size) {
-    if constexpr (1) {
-        assert(initialized());
+slab_allocator::slab_t *slab_allocator::create_slab(int size)
+{
+    if constexpr (1)
+    {
+        assert(initialized);
 
-        auto *slab = slab_free_list()->front();
+        auto *slab = slab_free_list->front();
         if (slab == nullptr) {
             goto LABEL_9;
         } else {
@@ -553,7 +565,7 @@ slab_allocator::slab_t *slab_allocator::create_slab(int size) {
 
         slab->set(SLAB_ON_PARTIAL_LIST);
 
-        slab_allocator::slab_partial_list()[index].add_slab(slab);
+        slab_allocator::slab_partial_list[index].add_slab(slab);
 
         --free_slab_count;
         free_object_count[index] += slab->get_total_object_count();
@@ -627,7 +639,7 @@ void slab_allocator::deallocate(void *a1, slab_t *slab)
 {
     if constexpr (1)
     {
-        assert(initialized());
+        assert(initialized);
 
         if (a1 != nullptr)
         {
@@ -652,9 +664,9 @@ void slab_allocator::deallocate(void *a1, slab_t *slab)
 
                 slab->unset(SLAB_ON_FULL_LIST);
 
-                slab_full_list()[index].remove_slab(slab);
+                slab_full_list[index].remove_slab(slab);
 
-                slab_partial_list()[index].add_slab(slab);
+                slab_partial_list[index].add_slab(slab);
 
                 slab->set(SLAB_ON_PARTIAL_LIST);
                 --full_slab_count[index];
@@ -662,7 +674,8 @@ void slab_allocator::deallocate(void *a1, slab_t *slab)
             } else {
                 assert(slab->is_set(SLAB_ON_PARTIAL_LIST));
 
-                if (slab->get_alloc_object_count()) {
+                if (slab->get_alloc_object_count())
+                {
                     auto *v11 = slab;
                     auto *v12 = slab->simple_list_vars._sl_next_element;
 
@@ -684,9 +697,11 @@ void slab_allocator::deallocate(void *a1, slab_t *slab)
                         v13._ptr = iter._ptr->simple_list_vars._sl_next_element;
                     }
 
-                } else {
+                }
+                else
+                {
                     slab->unset(SLAB_ON_PARTIAL_LIST);
-                    slab_partial_list()[index].remove_slab(slab);
+                    slab_partial_list[index].remove_slab(slab);
 
                     free_object_count[index] -= slab->get_total_object_count();
                     --partial_slab_count[index];
@@ -702,7 +717,7 @@ void slab_allocator::deallocate(void *a1, slab_t *slab)
 
                         assert(slab->is_set(SLAB_FROM_STATIC | SLAB_FROM_AUX));
 
-                        slab_free_list()->add_slab(slab);
+                        slab_free_list->add_slab(slab);
                         slab->set(SLAB_ON_FREE_LIST);
                     }
                 }
@@ -765,57 +780,63 @@ void swap(slab_allocator::slab_t::iterator &a, slab_allocator::slab_t::iterator 
     std::swap(a._ptr, b._ptr);
 }
 
-void slab_allocator::dump_debug_info() {
-    assert(initialized());
+void slab_allocator::dump_debug_info()
+{
+    assert(initialized);
+
     debug_print_va("Dumping slab info");
 
-    int v59 = 0;
-    int v58 = 0;
-    int v57 = 0;
-    for (int i = 0; i < 44; ++i) {
-        int v56 = 0;
-        int v54 = 0;
+    int num_heap_slabs = 0;
+    int num_static_slabs = 0;
+    int num_aux_slabs = 0;
+
+    for (int i = 0; i < 44; ++i)
+    {
+        int num_full_slabs = 0;
+
         debug_print_va("Object Size: %d", 4 * i + 4);
 
-        for ( auto v2 : (*slab_full_list()) ) {
-            ++v56;
+        for ( auto v2 : (*slab_full_list) )
+        {
+            ++num_full_slabs;
             if (v2->is_set(SLAB_FROM_HEAP)) {
-                ++v59;
+                ++num_heap_slabs;
+            } else if (v2->is_set(SLAB_FROM_AUX)) {
+                ++num_aux_slabs;
             } else {
-                if (v2->is_set(SLAB_FROM_AUX)) {
-                    ++v57;
-                } else {
-                    assert(v2->is_set(SLAB_FROM_STATIC));
-                    ++v58;
-                }
+                assert(v2->is_set(SLAB_FROM_STATIC));
+                ++num_static_slabs;
             }
         }
 
-        debug_print_va("  Full slabs: %d", v56);
+        debug_print_va("  Full slabs: %d", num_full_slabs);
 
-        for ( auto v7 : (*slab_partial_list()) ) {
-            ++v54;
+        int num_partial_slabs = 0;
+
+        for ( auto v7 : (*slab_partial_list) )
+        {
+            ++num_partial_slabs;
             if (v7->is_set(SLAB_FROM_HEAP)) {
-                ++v59;
+                ++num_heap_slabs;
+            } else if (v7->is_set(SLAB_FROM_AUX)) {
+                ++num_aux_slabs;
             } else {
-                if (v7->is_set(SLAB_FROM_AUX)) {
-                    ++v57;
-                } else {
-                    assert(v7->is_set(SLAB_FROM_STATIC));
-                    ++v58;
-                }
+                assert(v7->is_set(SLAB_FROM_STATIC));
+                ++num_static_slabs;
             }
         }
 
-        debug_print_va("  Partial slabs: %d", v54);
-        auto *slab = *slab_partial_list()[i].begin();
+        debug_print_va("  Partial slabs: %d", num_partial_slabs);
+        auto *slab = *slab_partial_list[i].begin();
 
-        if (slab != nullptr) {
+        if (slab != nullptr)
+        {
             int v53 = 0;
             int v52 = 0;
             auto v51 = slab->get_total_object_count();
             int v50 = 0;
-            for ( auto *v49 : (*slab_partial_list()) ) {
+            for ( auto *v49 : (*slab_partial_list) )
+            {
                 float v31 = v49->get_alloc_object_count() * 100.0f;
                 float v28 = v31 / (double) v49->get_total_object_count();
                 auto v27 = v49->get_free_object_count();
@@ -839,15 +860,15 @@ void slab_allocator::dump_debug_info() {
                 }
             }
 
-            int v48 = v52 + v56 * slab->get_total_object_count();
-            int v47 = v54 * slab->get_total_object_count() - v52;
+            int v48 = v52 + num_full_slabs * slab->get_total_object_count();
+            int v47 = num_partial_slabs * slab->get_total_object_count() - v52;
             float v32 = v48 * 100.0f;
 
-            float v29 = v32 / (double) ((v56 + v54) * slab->get_total_object_count());
+            float v29 = v32 / (double) ((num_full_slabs + num_partial_slabs) * slab->get_total_object_count());
             float v30 = v52 * 100.0f;
 
             debug_print_va("  Average Utilization: %02.02f ( Including full blocks: %02.02f )",
-                   v30 / (double) (v54 * slab->get_total_object_count()),
+                   v30 / (double) (num_partial_slabs * slab->get_total_object_count()),
                    v29);
 
             debug_print_va("  Total Allocated: %d ( %dbytes )", v48, v48 * slab->m_size);
@@ -856,15 +877,16 @@ void slab_allocator::dump_debug_info() {
         }
     }
 
-    debug_print_va("Slabs in use: %d", v57 + v59 + v58);
-    debug_print_va("  Heap:       %d", v59);
-    debug_print_va("  Static:     %d", v58);
-    debug_print_va("  Aux:        %d", v57);
+    debug_print_va("Slabs in use: %d", num_aux_slabs + num_heap_slabs + num_static_slabs);
+    debug_print_va("  Heap:       %d", num_heap_slabs);
+    debug_print_va("  Static:     %d", num_static_slabs);
+    debug_print_va("  Aux:        %d", num_aux_slabs);
 
     int v46 = 0;
     int v45 = 0;
 
-    for ( auto v25 : (*slab_free_list()) ) {
+    for ( auto v25 : (*slab_free_list) )
+    {
         if (v25->is_set(SLAB_FROM_HEAP)) {
             ++v46;
         } else {
@@ -878,14 +900,16 @@ void slab_allocator::dump_debug_info() {
     debug_print_va("  Static:   %d", v45);
 }
 
-void slab_allocator::process_lists() {
+void slab_allocator::process_lists()
+{
     TRACE("slab_allocator::process_lists");
 
     dump_debug_info();
-    if (g_dump_slab_info()) {
+    if (g_dump_slab_info)
+    {
         dump_debug_info();
 
-        g_dump_slab_info() = false;
+        g_dump_slab_info = false;
     }
 }
 
