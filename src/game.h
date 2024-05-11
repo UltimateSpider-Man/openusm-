@@ -355,9 +355,6 @@ extern Var<game *> g_game_ptr;
 //0x00581B40
 extern void system_idle();
 
-//0x006607E0
-extern void register_chuck_callbacks();
-
 //0x0054F6D0
 extern void game_packs_modified_callback(_std::vector<resource_key> &a1);
 

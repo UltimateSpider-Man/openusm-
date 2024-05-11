@@ -2,17 +2,21 @@
 
 #include "actor.h"
 #include "base_ai_core.h"
+#include "collide.h"
 #include "console.h"
 #include "consolevars.h"
+#include "damage_interface.h"
 #include "debug_render.h"
 #include "dvar.h"
 #include "entity_handle_manager.h"
 #include "filespec.h"
 #include "game.h"
 #include "game_settings.h"
+#include "local_collision.h"
 #include "mstring.h"
 #include "nal_anim.h"
 #include "nal_system.h"
+#include "oldmath_po.h"
 #include "script_library_class.h"
 #include "script_manager.h"
 #include "mission_table_container.h"
@@ -1083,6 +1087,308 @@ bool DumpThreadsCommand::process_cmd(const std::vector<std::string> &a2)
     }
     
     return true; 
+}
+
+entity_base * sub_65F164(std::string arg0, string_hash a1, po &a3)
+{
+    filespec v25 {arg0.c_str()};
+    if ( v25.m_ext.length() <= 0 ) {
+        v25.m_ext = ".ent";
+    }
+
+    if ( v25.m_dir.length() <= 0 ) {
+        v25.m_dir = "characters\\" + v25.m_name + "\\";
+    }
+
+    mString a7 {};
+    string_hash v11 = a1;
+    string_hash v10 {v25.m_name.c_str()};
+    auto *v26 = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+            v10,
+            v11,
+            a3,
+            a7,
+            129,
+            nullptr);
+
+    if ( v26 != nullptr )
+    {
+        auto v17 = v26->get_flavor();
+        if ( v17 == ENTITY_ITEM )
+        {
+            a3 = {identity_matrix};
+            auto &abs_pos = v26->get_abs_position();
+            a3.set_position(abs_pos);
+
+            v26->set_abs_po(a3);
+        }
+
+        v26->set_visible(true, false);
+        //sub_6959DA(&v26);
+        //sub_65A632(g_selection_mgr, v26, (selection_slot)0);
+        auto *the_terrain = g_world_ptr()->get_the_terrain();
+        v26->compute_sector(the_terrain, 0, v26);
+
+        if ( v26->has_damage_ifc() )
+        {
+            auto *v7 = v26->damage_ifc();
+            auto v13 = v7->field_1FC.field_0[2];
+            auto *v8 = v26->damage_ifc();
+            v8->field_1FC.sub_48BFB0(v13);
+        }
+    }
+
+    return v26;
+}
+
+static SpawnCommand g_SpawnCommand{};
+
+bool SpawnCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    if ( a2.size() != 0 )
+    {
+        auto &v5 = a2.at(0);
+        mString v70 {v5.c_str()};
+        v70.to_lower();
+
+        mString v69 = v70;
+        if ( a2.size() <= 1 )
+        {
+            g_console->addToLog("Need to pass an entity ID");
+        }
+        else
+        {
+            auto &v6 = a2.at(1);
+            mString entity_id {v6.c_str()};
+            entity_id.to_upper();
+
+            auto *v7 = entity_id.c_str();
+            auto *ent = g_world_ptr()->ent_mgr.get_entity(string_hash {v7});
+            if ( ent == nullptr )
+            {
+                auto *v9 = entity_id.c_str();
+                string_hash id {v9};
+                vector3d v67 = ZEROVEC;
+
+                if ( a2.size() <= 4 )
+                {
+                    if ( a2.size() > 2 )
+                    {
+                        auto &v16 = a2.at(2);
+                        auto *v17 = v16.c_str();
+                        v67[2] = atof(v17);
+                    }
+                }
+                else
+                {
+                    auto &v10 = a2.at(2);
+                    auto *v11 = v10.c_str();
+                    v67[0] = atof(v11);
+
+                    auto &v12 = a2.at(3);
+                    auto *v13 = v12.c_str();
+                    v67[1] = atof(v13);
+
+                    auto &v14 = a2.at(4);
+                    auto *v15 = v14.c_str();
+                    v67[2] = atof(v15);
+                }
+
+                po v66 {identity_matrix};
+                auto *v19 = g_world_ptr()->get_hero_ptr(0);
+                v66 = v19->get_abs_po();
+
+                auto *v22 = g_world_ptr()->get_hero_ptr(0);
+                auto &v23 = v22->get_abs_po();
+                vector3d v43 = v23.non_affine_slow_xform(v67);
+                auto *v25 = g_world_ptr()->get_hero_ptr(0);
+                auto abs_pos = v25->get_abs_position();
+                vector3d v27 = abs_pos + v43;
+                v66.set_position(v27);
+
+                vector3d v65 {};
+                vector3d v64 {};
+
+                vector3d pos = v66.get_position();
+                bool v30 = find_sphere_intersection(
+                            pos,
+                            0.5f,
+                            *local_collision::entfilter_accept_all(),
+                            *local_collision::obbfilter_sphere_test(),
+                            &v65,
+                            &v64,
+                            nullptr,
+                            nullptr);
+
+                if ( v30 )
+                {
+                    vector3d v43 {0.0, 0.1, 0.0};
+                    auto *v32 = g_world_ptr()->get_hero_ptr(0);
+                    vector3d v33 = v32->get_abs_position();
+                    vector3d v34 = v33 + v43;
+                    v66.set_position(v34);
+                }
+
+                std::string v41 {v69.c_str()};
+                auto *v46 = sub_65F164(v41, id, v66);
+                if ( v46 != nullptr )
+                {
+                    auto *v35 = id.to_string();
+                    g_console->addToLog("Spawned entity '%s'", v35);
+                }
+                else
+                {
+                    auto *v36 = id.to_string();
+                    g_console->addToLog("Failed to spawn entity '%s'. Try a different entity file/type", v36);
+                }
+            }
+            else
+            {
+                auto &v37 = a2.at(1);
+                auto *v38 = v37.c_str();
+                g_console->addToLog("Entity ID '%s' is already in use", v38);
+            }
+        }
+    }
+    else
+    {
+        g_console->addToLog("Need to pass an entity type and entity ID or a command");
+    }
+
+    return true;
+}
+
+static SpawnXCommand g_SpawnXCommand{};
+
+bool SpawnXCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    TRACE("SpawnXCommand::process_cmd");
+
+    if ( a2.size() != 0 )
+    {
+        auto &v5 = a2.at(0);
+        mString v75 {v5.c_str()};
+        v75.to_lower();
+
+        const mString v74 = v75;
+
+        vector3d v73 = ZEROVEC;
+        if ( a2.size() <= 3 )
+        {
+            if ( a2.size() > 1 )
+            {
+                auto &v12 = a2.at(1);
+                auto *v13 = v12.c_str();
+                v73[2] = atof(v13);
+            }
+        }
+        else
+        {
+            auto &v6 = a2.at(1);
+            auto *v7 = v6.c_str();
+            v73[0] = atof(v7);
+
+            auto &v8 = a2.at(2);
+            auto *v9 = v8.c_str();
+            v73[1] = atof(v9);
+
+            auto &v10 = a2.at(3);
+            auto *v11 = v10.c_str();
+            v73[2] = atof(v11);
+        }
+
+        po v72 {identity_matrix};
+        auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
+
+        v72 = hero_ptr->get_abs_po();
+        auto &v19 = hero_ptr->get_abs_po();
+        auto v46 = v19.non_affine_slow_xform(v73);
+        auto &abs_pos = hero_ptr->get_abs_position();
+        auto v23 = abs_pos + v46;
+        v72.set_position(v23);
+
+        vector3d impact_pos {};
+        vector3d impact_normal {};
+        vector3d pos = v72.get_position();
+        if ( find_sphere_intersection(
+                pos,
+                0.5,
+                *local_collision::entfilter_accept_all(),
+                *local_collision::obbfilter_sphere_test(),
+                &impact_pos,
+                &impact_normal,
+                nullptr,
+                nullptr) )
+        {
+            vector3d v46 {0.0, 0.1, 0.0};
+            auto *v26 = g_world_ptr()->get_hero_ptr(0);
+            vector3d v27 = v26->get_abs_position();
+            auto v28 = v27 + v46;
+            v72.set_position(v28);
+        }
+
+        filespec v68 {v74};
+        if ( v68.m_ext.length() <= 0 ) {
+            v68.m_ext = ".ent";
+        }
+
+        if ( v68.m_dir.length() <= 0 ) {
+            v68.m_dir = "characters\\" + v68.m_name + "\\";
+        }
+
+        sp_log("%s", v68.fullname().c_str());
+
+        mString v63 {};
+        auto v42 = make_unique_entity_id();
+        string_hash v41 {v68.m_name.c_str()};
+        auto *new_ent = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+                v41,
+                v42,
+                v72,
+                v63,
+                1,
+                nullptr);
+        if ( new_ent != nullptr )
+        {
+            if ( auto v51 = new_ent->get_flavor();
+                    v51 == ENTITY_ITEM )
+            {
+                v72 = {identity_matrix};
+                auto &v31 = new_ent->get_abs_position();
+                v72.set_position(v31);
+                new_ent->set_abs_po(v72);
+            }
+
+            new_ent->set_visible(true, false);
+            if ( new_ent->has_damage_ifc() )
+            {
+                auto *v33 = new_ent->damage_ifc();
+
+                auto v13 = v33->field_1FC.field_0[2];
+                v33->field_1FC.sub_48BFB0(v13);
+            }
+
+            //v79 = 0;
+            //v35 = sub_694A7B(&v69);
+            //sub_65A632(g_selection_mgr, &v35->base.base, (selection_slot)v79);
+
+            auto id = new_ent->get_id();
+            auto *v79 = id.to_string();
+            auto *v38 = v74.c_str();
+            g_console->addToLog("Spawned entity '%s' (ent_id = '%s')", v38, v79);
+        }
+        else
+        {
+            auto *v39 = v74.c_str();
+            g_console->addToLog("Failed to spawn entity '%s'. Try a different entity file/type", v39);
+        }
+    }
+    else
+    {
+        g_console->addToLog("Need to pass an entity type");
+    }
+
+    return true;
 }
 
 static SetPBFloatCommand g_SetPBFloatCommand {};

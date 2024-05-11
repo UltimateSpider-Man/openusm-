@@ -228,6 +228,30 @@ struct DumpThreadsCommand : ConsoleCommand {
     }
 };
 
+struct SpawnCommand : ConsoleCommand {
+    SpawnCommand() {
+        this->setName("spawn");
+    }
+
+    virtual bool process_cmd(const std::vector<std::string> &) override;
+
+    virtual const char *helpText() const override {
+        return "Spawns an object at hero position: spawn <object name> <entity ID> [distance]";
+    }
+};
+
+struct SpawnXCommand : ConsoleCommand {
+    SpawnXCommand() {
+        this->setName("spawnx");
+    }
+
+    virtual bool process_cmd(const std::vector<std::string> &) override;
+
+    virtual const char *helpText() const override {
+        return "Spawns an object at hero position (with pickup abilities): spawnx <object name> [distance]";
+    }
+};
+
 struct SetPBFloatCommand : ConsoleCommand {
     SetPBFloatCommand();
 

@@ -18,6 +18,10 @@ struct entity_base_vhandle {
         return (this->field_0 < a1.field_0);
     }
 
+    bool operator>(const entity_base_vhandle &a1) const {
+        return (this->field_0 > a1.field_0);
+    }
+
     bool operator==(const entity_base_vhandle &a1) const
     {
         return (this->field_0 == a1.field_0);

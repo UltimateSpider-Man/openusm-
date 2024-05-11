@@ -6,6 +6,7 @@
 #include "log.h"
 #include "return_address.h"
 #include "string_hash_dictionary.h"
+#include "trace.h"
 #include "utility.h"
 
 #include <stdio.h>
@@ -104,21 +105,35 @@ bool sub_54C220(uint32_t a1) {
     return (bool) CDECL_CALL(0x0054C220, a1);
 }
 
-string_hash make_unique_entity_id() {
-    static Var<int> s_unique_entity_id_idx{0x0095A6C8};
+string_hash make_unique_entity_id()
+{
+    TRACE("make_unique_entity_id");
 
-    char Dest[32]; // [esp+4h] [ebp-20h]
+    if constexpr (0)
+    {
+        static Var<int> s_unique_entity_id_idx{0x0095A6C8};
 
-    uint32_t hash;
-    do {
-        int v1 = s_unique_entity_id_idx()++;
-        std::snprintf(Dest, 0x20u, "%s%u", "_ENTID_", v1);
-        hash = to_hash(Dest);
-    } while (sub_54C220(hash));
+        char Dest[32]; // [esp+4h] [ebp-20h]
 
-    string_hash result{Dest};
+        uint32_t hash;
+        do {
+            int v1 = s_unique_entity_id_idx()++;
+            std::snprintf(Dest, 0x20u, "%s%u", "_ENTID_", v1);
+            hash = to_hash(Dest);
+        } while (sub_54C220(hash));
 
-    return result;
+        string_hash result{Dest};
+
+        return result;
+    }
+    else
+    {
+        void (*func)(string_hash *out) = CAST(func, 0x004BFD50);
+
+        string_hash result;
+        func(&result);
+        return result;
+    }
 }
 
 static_assert(is_alpha('a'));

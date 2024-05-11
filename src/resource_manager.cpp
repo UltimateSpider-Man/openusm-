@@ -1064,7 +1064,7 @@ uint8_t *get_resource(const resource_key &resource_id, int *mash_data_size, reso
 {
     TRACE("resource_manager::get_resource", resource_id.get_platform_string(g_platform()).c_str());
     
-    if constexpr (1)
+    if constexpr (0)
     {
         assert(!g_is_the_packer() && "Don't call this function while packing!");
         assert(resource_id.is_set());

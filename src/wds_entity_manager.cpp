@@ -207,7 +207,7 @@ entity_base *wds_entity_manager::get_entity(string_hash a1) {
     return entity_handle_manager::find_entity(a1, entity_flavor_t::IGNORE_FLAVOR, true);
 }
 
-entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
+entity * wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
                                                           string_hash a3,
                                                           const po &a4,
                                                           const mString &a5,
@@ -216,7 +216,7 @@ entity *wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
 {
     TRACE("wds_entity_manager::create_and_add_entity_or_subclass");
 
-    if constexpr (1)
+    if constexpr (0)
     {
         entity *v71 = nullptr;
 

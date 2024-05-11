@@ -50,6 +50,7 @@
 #include "vtbl.h"
 #include "wds.h"
 #include "web_polytube.h"
+#include "web_sounds.h"
 
 #include <cassert>
 #include <cmath>
@@ -323,8 +324,9 @@ void swing_state::_activate(ai_state_machine *a2,
 
         v21->setup_for_swing();
         v15->setup_new_web();
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x0047DA60, this, a2, arg4, a4, a5, a6);
     }
 }
@@ -398,9 +400,11 @@ ai::state_trans_messages swing_state::_frame_advance(Float a2)
         }
 
         return TRANS_TOTAL_MSGS;
-
-    } else {
-        return static_cast<state_trans_messages>(THISCALL(0x0047DDD0, this, a2));
+    }
+    else
+    {
+        ai::state_trans_messages (__fastcall *func)(void *, void *edx, Float a2) = CAST(func, 0x0047DDD0);
+        return func(this, nullptr, a2);
     }
 }
 
@@ -686,8 +690,9 @@ void swing_inode::update_mode_swinging(Float a2)
         }
 
         this->field_88 = this->field_8C;
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x004779B0, this, a2);
     }
 }
@@ -808,19 +813,34 @@ bool swing_inode::is_eligible(string_hash a2, Float a3)
     }
     else
     {
-        return THISCALL(0x004882C0, this, a2, a3);
+
+        bool (__fastcall *func)(void *, void *edx, string_hash a2, Float a3) = CAST(func, 0x004882C0);
+        return func(this, nullptr, a2, a3);
     }
 }
 
-void swing_inode::play_fire_web_sound() {
-    THISCALL(0x0045C7B0, this);
+void swing_inode::play_fire_web_sound()
+{
+    if constexpr (0)
+    {
+        static const string_hash swing_hash {int(to_hash("SWING"))};
+
+        if ( this->field_C->has_sound_and_pfx_ifc() )
+        {
+            web_sounds_manager::add_web_sound(this->field_C, something_to_swing_to_data().field_C, swing_hash);
+        }
+    }
+    else
+    {
+        THISCALL(0x0045C7B0, this);
+    }
 }
 
 void swing_inode::frame_advance(Float a2)
 {
-    auto v2 = this->field_1C;
     this->m_swing_time += a2;
-    if (!v2) {
+    if (!this->field_1C)
+    {
         this->field_1C = true;
         this->init_swingers();
     }
@@ -985,7 +1005,9 @@ void swing_inode::fire_new_web(bool is_play_fire_web_sound)
                      something_to_swing_to_data().field_18,
                      *local_collision::entfilter_reject_all());
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00478820, this, is_play_fire_web_sound);
     }
 }

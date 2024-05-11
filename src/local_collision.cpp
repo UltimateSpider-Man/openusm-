@@ -118,6 +118,17 @@ VALIDATE_SIZE(query_args_t, 0x34);
 
 VALIDATE_SIZE(intersection_list_t, 0x30);
 
+intersection_list_t::intersection_list_t()
+{
+    std::memset(this, 0, sizeof(intersection_list_t));
+}
+
+query_args_t::query_args_t()
+{
+    std::memset(this, 0, sizeof(query_args_t));
+    this->initialized_flags = 0;
+}
+
 void local_collision::query_args_t::set_entity(entity *a2)
 {
     this->field_2C = a2;
@@ -195,8 +206,16 @@ primitive_list_t *query_sphere(const vector3d &a1,
                                Float a2,
                                const entfilter_base &a3,
                                const obbfilter_base &a4,
-                               query_args_t query_args) {
-    return (primitive_list_t *) CDECL_CALL(0x005333C0, &a1, a2, &a3, &a4, query_args);
+                               query_args_t query_args)
+{
+    TRACE("local_collision::query_sphere");
+
+    if constexpr (0)
+    {}
+    else
+    {
+        return (primitive_list_t *) CDECL_CALL(0x005333C0, &a1, a2, &a3, &a4, query_args);
+    }
 }
 
 bool get_closest_sphere_intersection(primitive_list_t *a1,
@@ -204,50 +223,52 @@ bool get_closest_sphere_intersection(primitive_list_t *a1,
                                      Float a3,
                                      vector3d *a4,
                                      vector3d *a5,
-                                     intersection_list_t *best_intersection_record) {
-    if constexpr (1) {
-        auto *v6 = a1;
+                                     intersection_list_t *best_intersection_record)
+{
+    TRACE("local_collision::get_closest_sphere_intersection");
+
+    if constexpr (1)
+    {
         local_collision::primitive_list_t *v7 = nullptr;
         float v20 = 3.4028235e38;
-        local_collision::primitive_list_t *v19 = nullptr;
-        if (a1 == nullptr) {
-            return false;
-        }
 
-        vector3d point, normal;
+        vector3d point {};
+        vector3d normal {};
 
-        while (v6 != nullptr) {
+        for (auto *it = a1; it != nullptr; it = it->field_0)
+        {
             bool v9 = false;
             float arg10 = 0.0f;
-            vector3d arg8, argC;
+            vector3d arg8 {};
+            vector3d argC {};
 
-            if (v6->is_entity()) {
-                auto *ent = v6->field_4.ent;
+            if (it->is_entity())
+            {
+                auto *ent = it->field_4.ent;
 
                 auto &v25 = ent->get_abs_po();
 
                 v9 = collide_sphere_entity(a2, a3, ent, &arg8, &argC, &v25);
-                v7 = v19;
 
                 arg10 = dot((a2 - arg8), argC) - a3;
 
-            } else {
-                auto *obb = v6->field_4.obb;
+            }
+            else
+            {
+                auto *obb = it->field_4.obb;
 
                 assert(obb->is_obb_node());
 
                 v9 = obb->sphere_intersection(a2, a3, &arg8, &argC, &arg10);
             }
 
-            if (v9 && arg10 < v20) {
+            if (v9 && arg10 < v20)
+            {
                 v20 = arg10;
                 point = arg8;
                 normal = argC;
-                v19 = v6;
-                v7 = v6;
+                v7 = it;
             }
-
-            v6 = v6->field_0;
         }
 
         if (v7 == nullptr) {
@@ -255,14 +276,14 @@ bool get_closest_sphere_intersection(primitive_list_t *a1,
         }
 
         *a4 = point;
-
         *a5 = normal;
 
-        if (best_intersection_record != nullptr) {
+        if (best_intersection_record != nullptr)
+        {
             best_intersection_record->field_0 = 0;
             best_intersection_record->field_20 = 0;
             best_intersection_record->field_1C = (point - a2).length();
-            best_intersection_record->is_ent = v7->is_ent;
+            best_intersection_record->is_ent = v7->is_entity();
             best_intersection_record->point = point;
             best_intersection_record->normal = normal;
 
@@ -272,21 +293,30 @@ bool get_closest_sphere_intersection(primitive_list_t *a1,
             assert(best_intersection_record->normal.is_valid() &&
                    "get_closest_sphere_intersection failed internally");
 
-            if (v7->is_ent) {
+            if (v7->is_entity())
+            {
                 best_intersection_record->is_ent = true;
-                best_intersection_record->intersection_node = v7->field_4.ent;
+                best_intersection_record->intersection_node = v7->get_entity();
                 best_intersection_record->field_2C = v7->field_8;
-                return true;
             }
-
-            best_intersection_record->is_ent = false;
-            best_intersection_record->intersection_node = v7->field_4.obb;
+            else
+            {
+                best_intersection_record->is_ent = false;
+                best_intersection_record->intersection_node = v7->get_obb_node();
+            }
         }
 
         return true;
-
-    } else {
-        return (bool) CDECL_CALL(0x00533660, a1, &a2, a3, a4, a5, best_intersection_record);
+    }
+    else
+    {
+        bool (*func)(primitive_list_t *a1,
+                     const vector3d *a2,
+                     Float a3,
+                     vector3d *a4,
+                     vector3d *a5,
+                     intersection_list_t *) = CAST(func, 0x00533660);
+        return func(a1, &a2, a3, a4, a5, best_intersection_record);
     }
 }
 

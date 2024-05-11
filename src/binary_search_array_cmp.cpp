@@ -1,18 +1,22 @@
 #include "binary_search_array_cmp.h"
 
+#include "entity_base_vhandle.h"
 #include "enum_anim_key.h"
+#include "event_recipient_entry.h"
+#include "event_type.h"
 #include "func_wrapper.h"
 #include "log.h"
 #include "resource_pack_location.h"
 
-int compare_resource_key(const resource_key *a1, const resource_key *a2) {
+int compare_resource_key(const resource_key &a1, const resource_key &a2)
+{
     if constexpr (1)
     {
-        if (*a1 >= *a2) {
+        if (a1 >= a2) {
             return 1;
         }
 
-        if (*a1 <= *a2) {
+        if (a1 <= a2) {
             return -1;
         }
 
@@ -24,9 +28,31 @@ int compare_resource_key(const resource_key *a1, const resource_key *a2) {
     }
 }
 
-int compare_resource_key_resource_pack_location(const resource_key *a1,
-                                                const resource_pack_location *a2) {
-    return compare_resource_key(a1, &a2->loc.field_0);
+int compare_resource_key_resource_pack_location(const resource_key &a1,
+                                                const resource_pack_location &a2) {
+    return compare_resource_key(a1, a2.loc.field_0);
+}
+
+template<>
+int compare_deref(
+        entity_base_vhandle &a1,
+        event_recipient_entry *&a2)
+{
+    if ( a1 < a2->field_0 )
+        return -1;
+    else
+        return (a1 > a2->field_0);
+}
+
+template<>
+int compare_deref(string_hash &a1, event_type *&a2)
+{
+    auto source_hash_code = a2->field_0.source_hash_code;
+    if ( source_hash_code <= a1.source_hash_code ) {
+        return source_hash_code < a1.source_hash_code;
+    } else {
+        return -1;
+    }
 }
 
 #if 0

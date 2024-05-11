@@ -32,6 +32,8 @@ struct cached_special_effect {
     //0x005020D0
     cached_special_effect();
 
+    void initialize();
+
     //0x004EFC00
     void spawn(bool a1,
                const vector3d &a2,

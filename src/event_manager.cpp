@@ -3,6 +3,7 @@
 #include "binary_search_array_cmp.h"
 #include "event.h"
 #include "event_type.h"
+#include "event_recipient_entry.h"
 #include "func_wrapper.h"
 #include "memory.h"
 #include "slab_allocator.h"
@@ -11,8 +12,30 @@
 
 #include <cassert>
 
-void event_manager::clear() {
-    CDECL_CALL(0x004EE7A0);
+void event_manager::clear()
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        CDECL_CALL(0x004EE7A0);
+    }
+}
+
+bool event_manager::callback_exists(int id)
+{
+    if ( id == 0 ) {
+        return false;
+    }
+
+    for ( auto &v1 : event_types()  )
+    {
+        if (v1->callback_exists(id) )  {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void event_manager::delete_inst() {
@@ -523,22 +546,22 @@ void event_manager::garbage_collect() {
     CDECL_CALL(0x004E1B00);
 }
 
-event_type *event_manager::get_event_type(string_hash a1) {
-    if constexpr (1) {
+event_type *event_manager::get_event_type(string_hash a1)
+{
+    if constexpr (1)
+    {
         auto index = -1;
 
         auto size = event_types().size();
 
-        int (*compare)(const string_hash *a1, event_type **a2) = CAST(compare, 0x005034B0);
-
         event_type *result = nullptr;
 
-        if (binary_search_array_cmp<const string_hash, event_type *>(&a1,
+        if (binary_search_array_cmp<string_hash, event_type *>(&a1,
                                                                         &event_types().front(),
                                                                         0,
                                                                         size,
                                                                         &index,
-                                                                        compare)) {
+                                                                        compare_deref<string_hash, event_type *>)) {
             result = event_types().at(index);
         }
 
@@ -587,6 +610,35 @@ void event_manager::clear_script_callbacks(entity_base_vhandle a1, const script_
 {
     CDECL_CALL(0x004D4380, a1, a2);
 }
+
+event_recipient_entry * event_manager::create_event_recipient(string_hash arg0, entity_base_vhandle a2)
+{
+    auto *v2 = event_manager::register_event_type(arg0, 0);
+    if ( v2 != nullptr )
+        return v2->create_recipient_entry(a2);
+    else
+        return nullptr;
+}
+
+int event_manager::add_callback(
+        string_hash a1,
+        entity_base_vhandle a2,
+        void (*cb)(event *, entity_base_vhandle, void *),
+        void *a4,
+        bool a5)
+{
+    auto *entry = create_event_recipient(a1, a2);
+    if (entry != nullptr)
+    {
+        return entry->add_callback(cb, a4, a5);
+    }
+    else
+    {
+        assert(0 && "this might be indicative of an error-condition.");
+        return 0;
+    }
+}
+
 
 void event_manager_patch()
 {

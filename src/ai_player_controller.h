@@ -17,6 +17,7 @@ enum eHeroLocoMode {
     CRAWLING = 2,
     SWINGING = 3,
     FALLING = 5,
+    WEB_ZIP = 9,
 };
 
 struct ai_player_controller {

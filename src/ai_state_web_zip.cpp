@@ -21,8 +21,10 @@
 #include "physics_inode.h"
 #include "polytube.h"
 #include "state_machine.h"
+#include "tentacle_interface.h"
 #include "utility.h"
 #include "vector2d.h"
+#include "web_sounds.h"
 #include "wds.h"
 
 #include <cassert>
@@ -49,8 +51,87 @@ state_trans_messages web_zip_state::frame_advance(Float a2)
     }
 }
 
-void web_zip_state::deactivate(const mashed_state *a1) {
-    THISCALL(0x0044C6E0, this, a1);
+void web_zip_state::activate(
+        ai::ai_state_machine *a2,
+        const ai::mashed_state *a3,
+        const ai::mashed_state *a4,
+        string_hash a5,
+        ai::base_state::activate_flag_e a6)
+{
+    if constexpr (0)
+    {
+        this->activate(a2, a3, a4, a5, a6);
+        auto *core = this->get_core();
+        auto *info_node = (ai::hero_inode *) core->get_info_node(ai::hero_inode::default_id, true);
+        this->field_3C = info_node;
+        auto *v10 = info_node->field_20;
+        auto *v11 = info_node->field_3C;
+
+        const string_hash v28 {"Web_Zip"};
+        v10->request_category_transition(v28, static_cast<als::layer_types>(0), true, false, true);
+        auto &v12 = g_world_ptr()->field_1B0;
+        if ( v12.field_8.is_set() )
+        {
+            auto *the_controller = bit_cast<actor *>(g_world_ptr()->get_hero_ptr(0))->get_player_controller();
+            if ( the_controller->m_hero_type == SPIDEY || the_controller->m_hero_type == PARKER )
+                g_world_ptr()->activate_web_splats();
+        }
+
+        auto *v15 = bit_cast<conglomerate *>(this->get_actor());
+        if ( v15->is_a_conglomerate()
+            && v15->has_tentacle_ifc() )
+        {
+            auto *v17 = v15->tentacle_ifc();
+            v17->begin_zip(v11->field_1C.hit_pos);
+        }
+
+        auto *v18 = this->get_actor()->m_player_controller;
+        v18->set_spidey_loco_mode(eHeroLocoMode::WEB_ZIP);
+
+        v11->field_7C = 0;
+        if ( v11->m_zip_type == 1 )
+        {
+            this->field_3C->field_28->setup_for_crawl_zip();
+
+            static string_hash web_zip_speed_id {int(to_hash("web_zip_speed"))};
+            auto *v21 = this->get_core();
+            auto pb_float = v21->get_param_block()->get_pb_float(web_zip_speed_id);
+
+            als::param_list v50 {};
+            v50.add_param(0x27u, v11->field_1C.hit_pos);
+            v50.add_param(0x18u, v11->field_1C.hit_norm);
+            v50.add_param(als::param {0, pb_float});
+            v10->set_desired_params(v50, static_cast<als::layer_types>(0));
+        }
+
+        auto *v24 = this->get_actor();
+        this->field_30 = v24->get_abs_position();
+        v11->field_80 = false;
+
+        static const string_hash zip_hash {int(to_hash("ZIP"))};
+
+        auto *v26 = this->get_actor();
+        if ( v26->has_sound_and_pfx_ifc() )
+        {
+            auto *v27 = this->get_actor();
+            web_sounds_manager::add_web_sound(v27, v11->field_1C.hit_pos, zip_hash);
+        }
+    }
+    else
+    {
+        THISCALL(0x0045D340, this, a2, a3, a4, a5, a6);
+    }
+}
+
+void web_zip_state::deactivate(const mashed_state *a1)
+{
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        THISCALL(0x0044C6E0, this, a1);
+    }
 }
 
 web_zip_inode::web_zip_inode(from_mash_in_place_constructor *a2) {

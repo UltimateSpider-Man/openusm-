@@ -13,6 +13,7 @@
 #include "ngl_math.h"
 #include "oldmath_po.h"
 #include "subdivision_node_obb_base.h"
+#include "trace.h"
 #include "vector3d.h"
 
 #include <cassert>
@@ -22,44 +23,59 @@ bool find_sphere_intersection(const vector3d &a1,
                               Float a2,
                               const local_collision::entfilter_base &a3,
                               const local_collision::obbfilter_base &a4,
-                              vector3d *arg10,
                               vector3d *a5,
+                              vector3d *a6,
                               entity **a7,
-                              subdivision_node_obb_base **a8) {
-    if constexpr (1) {
+                              subdivision_node_obb_base **a8)
+{
+    TRACE("find_sphere_intersection");
+
+    if constexpr (1)
+    {
         local_collision::intersection_list_t best_isect{};
 
-        local_collision::query_args_t v15{};
+        local_collision::query_args_t v15 {};
 
         auto *v8 = local_collision::query_sphere(a1, a2, a3, a4, v15);
-        auto result =
-            local_collision::get_closest_sphere_intersection(v8, a1, a2, arg10, a5, &best_isect);
-        auto *v10 = v8;
-        if (v8 != nullptr) {
-            auto *v11 = local_collision::primitive_list_t::pool().field_4;
+        bool result =
+            local_collision::get_closest_sphere_intersection(v8, a1, a2, a5, a6, &best_isect);
 
-            bool v13;
-            do {
-                auto *v12 = v10->field_0;
-                v13 = (v10->field_0 == nullptr);
-                v10->field_0 = static_cast<local_collision::primitive_list_t *>(v11);
-                v11 = v10;
-                local_collision::primitive_list_t::pool().field_4 = v10;
-                v10 = v12;
-            } while (!v13);
+        local_collision::primitive_list_t *v12 = nullptr;
+        for (auto *it = v8; it != nullptr; it = v12)
+        {
+            v12 = it->field_0;
+            local_collision::primitive_list_t::pool().remove(it);
         }
 
-        if (result && best_isect.is_ent) {
-            *a7 = static_cast<entity *>(best_isect.intersection_node);
-        } else if (result) {
+        if (result && best_isect.is_ent)
+        {
+            if (a7 != nullptr) {
+                *a7 = static_cast<entity *>(best_isect.intersection_node);
+            }
+        }
+        else if (result)
+        {
             assert(static_cast<subdivision_node_obb_base *>(best_isect.intersection_node)
                        ->is_obb_node());
+
+            if (a8 != nullptr) {
+                *a8 = static_cast<subdivision_node_obb_base *>(best_isect.intersection_node);
+            }
         }
 
         return result;
-
-    } else {
-        return (bool) CDECL_CALL(0x005B9F30, &a1, a2, &a3, &a4, arg10, a5, a7, a8);
+    }
+    else
+    {
+        bool (*func)(const vector3d *a1,
+                              Float a2,
+                              const local_collision::entfilter_base *a3,
+                              const local_collision::obbfilter_base *a4,
+                              vector3d *,
+                              vector3d *,
+                              entity **,
+                              subdivision_node_obb_base **) = CAST(func, 0x005B9F30);
+        return func(&a1, a2, &a3, &a4, a5, a6, a7, a8);
     }
 }
 

@@ -10,6 +10,7 @@
 #include "game_settings.h"
 #include "oldmath_po.h"
 #include "utility.h"
+#include "vector3d.h"
 #include "vtbl.h"
 
 namespace ai {
@@ -36,8 +37,26 @@ vector3d &physics_inode::get_z_facing() {
     return v1.get_z_facing();
 }
 
-void physics_inode::setup_for_jump(const vector3d &a2) {
-    if constexpr (1) {
+void physics_inode::setup_for_crawl_zip()
+{
+    this->field_1C->field_C &= ~0x400u;
+    this->field_C->invalidate_frame_delta();
+    this->field_1C->set_control_parent(nullptr);
+    this->field_1C->suspend(true);
+    this->field_1C->enable(false);
+    this->set_collisions_active(true, true);
+    this->field_1C->field_C &= ~0x200u;
+    this->set_gravity(false);
+    auto *v2 = this->field_C->physical_ifc();
+
+    static const auto v3 = -YVEC;
+    v2->set_current_gravity_vector(v3);
+}
+
+void physics_inode::setup_for_jump(const vector3d &a2)
+{
+    if constexpr (1)
+    {
         this->field_C->set_collisions_active(true, true);
         this->field_1C->field_C &= 0xFFFFFBFF;
         this->field_1C->field_C &= 0xFFFFFDFF;
@@ -249,8 +268,10 @@ void physics_inode::set_collisions_active(bool a1, bool a2) {
     this->field_C->set_collisions_active(a1, a2);
 }
 
-void physics_inode::setup_for_swing() {
-    if constexpr (0) {
+void physics_inode::setup_for_swing()
+{
+    if constexpr (0)
+    {
         this->set_collisions_active(true, true);
         this->set_always_standing(false);
         this->set_adv_standing(false);

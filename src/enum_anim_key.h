@@ -20,7 +20,7 @@ struct anim_key : mash_virtual_base {
 
     int get_mash_sizeof();
 
-    static int compare(anim_key **a1, anim_record **a2);
+    static int compare(anim_key *&a1, anim_record *&a2);
 };
 #endif
 

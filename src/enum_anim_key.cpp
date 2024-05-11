@@ -30,6 +30,6 @@ int anim_key::get_mash_sizeof()
     return func(this);
 }
 
-int anim_key::compare(anim_key **a1, anim_record **a2) {
-    return (*a1)->get_compare_value((*a2)->my_key);
+int anim_key::compare(anim_key *&a1, anim_record *&a2) {
+    return a1->get_compare_value(a2->my_key);
 }

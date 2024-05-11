@@ -335,9 +335,9 @@ void resource_directory::add_parent(resource_directory *new_dir)
     error("too many parents added to resource_directory");
 }
 
-int compare_resource_key_resource_location_just_hash(const resource_key *a1, resource_location *a2) {
+int compare_resource_key_resource_location_just_hash(const resource_key &a1, resource_location &a2) {
     //sp_log("%s", a2->field_0.get_platform_string(g_platform()).c_str());
-    return CDECL_CALL(0x0055F7E0, a1, a2);
+    return CDECL_CALL(0x0055F7E0, &a1, &a2);
 }
 
 int resource_directory::get_type_start_idxs(resource_key_type type) {

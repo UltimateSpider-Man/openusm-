@@ -32,6 +32,9 @@ struct physics_inode : info_node {
 
     vector3d &get_z_facing();
 
+    //0x00695190
+    void setup_for_crawl_zip();
+
     //0x00695030
     void setup_for_bounce();
 

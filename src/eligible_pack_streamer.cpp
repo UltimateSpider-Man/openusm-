@@ -68,8 +68,14 @@ void eligible_pack_streamer::clear() {
     THISCALL(0x00547BA0, this);
 }
 
-int compare_eligible_pack_names(const void *a1, const void *a2) {
-    return CDECL_CALL(0x0050EC30, a1, a2);
+int compare_eligible_pack_names(const void *a1, const void *a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        return CDECL_CALL(0x0050EC30, a1, a2);
+    }
 }
 
 void eligible_pack_streamer::unlock_pack_slot(resource_pack_slot *slot)
@@ -107,10 +113,10 @@ eligible_pack *eligible_pack_streamer::find_eligible_pack_by_packfile_name_hash(
 
 }
 
-int compare_name_to_eligible_pack_name(string_hash *a1, eligible_pack **a2)
+int compare_name_to_eligible_pack_name(string_hash &a1, eligible_pack *&a2)
 {
-	string_hash v13 = *a1;
-	auto *v12 = *a2;
+	string_hash v13 = a1;
+	auto *v12 = a2;
 	auto name_hash = v12->get_name_hash();
 	auto v5 = (v13 > name_hash);
 	if ( v5 )

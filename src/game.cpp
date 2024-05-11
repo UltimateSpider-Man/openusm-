@@ -11,6 +11,7 @@
 #include "color32.h"
 #include "comic_panels.h"
 #include "common.h"
+#include "chuck_callbacks.h"
 #include "chunk_file.h"
 #include "console.h"
 #include "custom_math.h"
@@ -1718,12 +1719,6 @@ void game::init_motion_blur()
 
 void glow_init() {
     ;
-}
-
-void register_chuck_callbacks() {
-    TRACE("register_chuck_callbacks");
-
-    CDECL_CALL(0x006607E0);
 }
 
 void game::freeze_hero(bool a2) {

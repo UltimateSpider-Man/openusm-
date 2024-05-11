@@ -14,11 +14,16 @@ cached_special_effect::cached_special_effect()
 
     this->field_10 = vector3d {1.0f, 0.0f, 0.0f};
     this->field_8.set_type(RESOURCE_KEY_TYPE_ENTITY);
+    this->field_28 = nullptr;
     this->field_2C = -1.0f;
+    this->field_30 = nullptr;
     this->field_3C = false;
     this->field_3D = false;
     this->field_38 = 5;
 }
+
+void cached_special_effect::initialize()
+{}
 
 void cached_special_effect::frame_advance(Float a2)
 {

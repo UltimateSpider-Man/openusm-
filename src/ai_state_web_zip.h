@@ -29,6 +29,15 @@ struct web_zip_state : enhanced_state {
     //virtual
     state_trans_messages frame_advance(Float a2);
 
+    //0x0045D340
+    //virtual
+    void activate(
+        ai_state_machine *a2,
+        const mashed_state *a3,
+        const mashed_state *a4,
+        string_hash a5,
+        base_state::activate_flag_e a6);
+
     //0x0044C6E0
     //virtual
     void deactivate(const mashed_state *a1);
@@ -44,7 +53,8 @@ struct web_zip_inode : info_node {
     line_info field_1C;
     int m_zip_type;
     int field_7C;
-    int field_80[9];
+    bool field_80;
+    int field_84[8];
     SpidermanLocoSwingBack field_A4[3];
     int field_D4;
     polytube *field_D8;

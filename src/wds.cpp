@@ -1703,7 +1703,8 @@ void world_dynamics_system::update_ai_and_visibility_proximity_maps_for_moved_en
 
             assert(num_entity_pointers + 2 < moved_entities::MAX_MOVED);
 
-            if ( num_entity_pointers > 0 ) {
+            if ( num_entity_pointers > 0 )
+            {
                 entity_pointers[num_entity_pointers] = entity_pointers[num_entity_pointers - 1];
                 entity_pointers[num_entity_pointers + 1] = entity_pointers[num_entity_pointers - 1];
                 mem_for_visitor = scratchpad_stack::alloc(0x44);

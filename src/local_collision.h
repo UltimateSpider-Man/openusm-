@@ -30,6 +30,8 @@ struct intersection_list_t {
     bool is_ent;
     void *intersection_node;
     void *field_2C;
+
+    intersection_list_t();
 };
 
 struct query_args_t {
@@ -40,6 +42,8 @@ struct query_args_t {
     float field_28;
     entity *field_2C;
     entity *field_30;
+
+    query_args_t();
 
     void set_entity(entity *a2);
 };
@@ -173,7 +177,7 @@ inline Var<entfilter_base *> entfilter_sphere_camera_collision {0x00960074};
 
 inline Var<obbfilter_base *> obbfilter_lineseg_test{0x00960064};
 
-inline Var<obbfilter<obbfilter_OBB_SPHERE_TEST> *> obbfilter_sphere_test{0x00960050};
+inline Var<obbfilter<obbfilter_OBB_SPHERE_TEST> *> obbfilter_sphere_test {0x00960050};
 
 inline Var<obbfilter_base *> obbfilter_accept_all {0x00960048};
 
