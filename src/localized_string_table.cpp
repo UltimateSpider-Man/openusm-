@@ -17,7 +17,7 @@ void localized_string_table::load_localizer() {
     TRACE("localized_string_table::load_localizer");
 
     if constexpr (1) {
-        [[maybe_unused]] auto a3 = os_developer_options::instance()->get_string(os_developer_options::strings_t::SKU);
+        [[maybe_unused]] auto a3 = os_developer_options::instance->get_string(os_developer_options::strings_t::SKU);
         globalTextLanguage() = 0;
 
         switch (g_settings()->sub_81D010("Settings\\Language", 0)) {

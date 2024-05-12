@@ -379,7 +379,7 @@ bool resource_directory::find_resource(const resource_key &a2,
         {
             if ( this->pack_slot != nullptr )
             {
-                if ( os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"}) )
+                if ( os_developer_options::instance->get_flag(mString{"SHOW_RESOURCE_SPAM"}) )
                 {
                     auto &v6 = this->pack_slot->get_name_key();
                     auto v27 = v6.m_hash;
@@ -415,7 +415,7 @@ bool resource_directory::find_resource(const resource_key &a2,
                     }
 
                     if ( this->pack_slot != nullptr
-                            && os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"}))
+                            && os_developer_options::instance->get_flag(mString{"SHOW_RESOURCE_SPAM"}))
                     {
                         auto v28 = the_parent->pack_slot->get_name_key().m_hash;
                         auto v25 = this->pack_slot->get_name_key().m_hash;
@@ -627,7 +627,7 @@ char *resource_directory::get_tlresource(const tlFixedString &a1, tlresource_typ
     auto v3 = a1.m_hash;
     auto *v6 = this->get_tlresource(v3, a2);
 
-    bool SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
+    bool SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"});
     if ( v6 == nullptr && SHOW_RESOURCE_SPAM )
     {
         auto *v4 = a1.to_string();
@@ -782,7 +782,7 @@ bool resource_directory::find_tlresource(uint32_t a1,
 
         assert(array != nullptr);
 
-        auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
+        auto SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"});
 
         bool result = false;
 

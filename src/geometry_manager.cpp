@@ -131,7 +131,7 @@ void geometry_manager::reset() {
     viewport_rect().field_0[1][0] = 1.0;
     viewport_rect().field_0[1][1] = 1.0;
 
-    PROJ_FAR_PLANE_D() = os_developer_options::instance()->get_int(mString{"FAR_CLIP_PLANE"});
+    PROJ_FAR_PLANE_D() = os_developer_options::instance->get_int(mString{"FAR_CLIP_PLANE"});
     FAR_CLIP_PLANE() = PROJ_FAR_PLANE_D();
 
     rebuild_view_frame();

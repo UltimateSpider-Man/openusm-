@@ -567,7 +567,7 @@ static color32 stru_1589F90[] = {color32{0, 255, 0, 128},
 
 void render_billboard(const vector3d &arg0, color32 a2, float a5, const char *a4)
 {
-    if ( os_developer_options::instance()->get_flag(mString {"SHOW_DEBUG_TEXT"}) )
+    if ( os_developer_options::instance->get_flag(mString {"SHOW_DEBUG_TEXT"}) )
     {
         auto *Font = g_femanager().GetFont(0);
 

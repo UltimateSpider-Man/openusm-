@@ -380,7 +380,8 @@ void Console::exec_frame_advance(Float a2) {
     if (!s_exec_tok_stack.empty()) {
         s_exec_tick += a2;
 
-        if (s_exec_tick >= os_developer_options::instance()->get_int(mString{"EXEC_DELAY"})) {
+        if (s_exec_tick >= os_developer_options::instance->get_int(mString{"EXEC_DELAY"}))
+        {
             s_exec_tick = 0.0;
             auto &v4 = s_exec_tok_stack.top();
             auto *v3 = v4->get_token();

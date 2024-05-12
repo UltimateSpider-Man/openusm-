@@ -19,7 +19,7 @@ void warning(const char *arg0, ...)
 
         char a1[2048];
         vsnprintf(a1, 2048, arg0, va);
-        if ( os_developer_options::instance()->get_flag(mString {"ASSERT_ON_WARNING"}) ) {
+        if ( os_developer_options::instance->get_flag(mString {"ASSERT_ON_WARNING"}) ) {
             assert(a1);
         } else {
             debug_print_va(a1);

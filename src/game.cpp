@@ -190,29 +190,29 @@ game::game()
         this->field_2B4 = false;
         this->field_1 = false;
         this->field_BC = false;
-        float fov = os_developer_options::instance()->get_int(mString{"CAMERA_FOV"}) * 0.017453292;
+        float fov = os_developer_options::instance->get_int(mString{"CAMERA_FOV"}) * 0.017453292;
 
         geometry_manager::set_field_of_view(fov);
 
         g_debug().field_0 |= 0x80u;
-        if (os_developer_options::instance()->get_flag(mString{"OUTPUT_WARNING_DISABLE"})) {
+        if (os_developer_options::instance->get_flag(mString{"OUTPUT_WARNING_DISABLE"})) {
             g_debug().field_0 &= 0x7Fu;
         }
 
         g_debug().field_1 |= 4u;
-        if (os_developer_options::instance()->get_flag(mString{"OUTPUT_ASSERT_DISABLE"})) {
+        if (os_developer_options::instance->get_flag(mString{"OUTPUT_ASSERT_DISABLE"})) {
             g_debug().field_1 &= 0xFBu;
         }
 
-        if (os_developer_options::instance()->get_flag(mString{"SMOKE_TEST"})) {
-            float a3 = os_developer_options::instance()->get_int(mString{"SOAK_SMOKE"});
+        if (os_developer_options::instance->get_flag(mString{"SMOKE_TEST"})) {
+            float a3 = os_developer_options::instance->get_int(mString{"SOAK_SMOKE"});
             if (equal(a3, 0.0f)) {
                 a3 = 2.0;
             }
 
             static Var<char *[2]> smoke_test_levels { 0x00921DB0 };
 
-            if (os_developer_options::instance()->get_flag(mString{"SMOKE_TEST_LEVEL"})) {
+            if (os_developer_options::instance->get_flag(mString{"SMOKE_TEST_LEVEL"})) {
                 g_smoke_test() = new smoke_test(bit_cast<const char **>(&g_scene_name()), a3);
             } else {
                 g_smoke_test() = new smoke_test(bit_cast<const char **>(&smoke_test_levels()[0]),
@@ -220,8 +220,8 @@ game::game()
 
                 strcpy(g_scene_name(), smoke_test_levels()[0]);
             }
-        } else if (!os_developer_options::instance()->get_flag(mString{"SMOKE_TEST_LEVEL"})) {
-            auto v23 = os_developer_options::instance()->get_string(os_developer_options::strings_t::SCENE_NAME);
+        } else if (!os_developer_options::instance->get_flag(mString{"SMOKE_TEST_LEVEL"})) {
+            auto v23 = os_developer_options::instance->get_string(os_developer_options::strings_t::SCENE_NAME);
 
             if (v23)
             {
@@ -313,7 +313,7 @@ game::game()
         occlusion::init();
         init_subdivision();
 
-        g_debug_mem_dump_frame() = os_developer_options::instance()->get_int(mString {"MEM_DUMP_FRAME"});
+        g_debug_mem_dump_frame() = os_developer_options::instance->get_int(mString {"MEM_DUMP_FRAME"});
 
     }
     else
@@ -566,7 +566,7 @@ void game::render_world()
                     dword_92255C() = g_TOD();
                 }
 
-                auto fpf = DEG_TO_RAD(os_developer_options::instance()->get_int(mString {"CAMERA_FOV"}));
+                auto fpf = DEG_TO_RAD(os_developer_options::instance->get_int(mString {"CAMERA_FOV"}));
                 if (fov == fpf) {
                     g_tan_half_fov_ratio() = 1.0f;
                 } else {
@@ -723,7 +723,7 @@ void game::advance_state_legal(Float a2)
 
 void game::handle_frame_locking(float *a1)
 {
-    auto frame_lock = os_developer_options::instance()->get_int(mString {"FRAME_LOCK"});
+    auto frame_lock = os_developer_options::instance->get_int(mString {"FRAME_LOCK"});
     if ( frame_lock > 0 ) {
         *a1 = 1.0 / frame_lock;
     }
@@ -983,7 +983,7 @@ static Var<float> waiting_time{0x00960B60};
 void game::advance_state_wait_link(Float a2) {
     if constexpr (1) {
         if (!link_system::use_link_system() ||
-            !os_developer_options().get_flag(mString{"WAIT_FOR_LINK"})) {
+            !os_developer_options::instance->get_flag(mString{"WAIT_FOR_LINK"})) {
             ++this->process_stack.back().index;
         }
 
@@ -1039,7 +1039,7 @@ camera * get_scene_analyzer_cam()
 
 void sub_5975C0(const char *Format, bool a2, bool a3)
 {
-    if ( os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(128)) && OpenClipboard(0) )
+    if ( os_developer_options::instance->get_flag(static_cast<os_developer_options::flags_t>(128)) && OpenClipboard(0) )
     {
         char Dest[4096] {};
         if ( a2 )
@@ -1093,7 +1093,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
     }
 
     sp_log("%d %d", this->is_user_camera_enabled(),
-            os_developer_options::instance()->get_int(static_cast<os_developer_options::ints_t>(2)));
+            os_developer_options::instance->get_int(static_cast<os_developer_options::ints_t>(2)));
 
     if constexpr (0)
     {
@@ -1101,7 +1101,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             return;
         }
 
-        auto CAMERA_STATE = os_developer_options::instance()->get_int(mString {"CAMERA_STATE"});
+        auto CAMERA_STATE = os_developer_options::instance->get_int(mString {"CAMERA_STATE"});
         if ( this->is_user_camera_enabled() && CAMERA_STATE != 1 ) {
             this->set_camera(1);
         }
@@ -1120,7 +1120,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                 USER_CAM = 1,
             };
 
-            auto CAMERA_STATE = os_developer_options::instance()->get_int(mString {"CAMERA_STATE"});
+            auto CAMERA_STATE = os_developer_options::instance->get_int(mString {"CAMERA_STATE"});
             if ( CAMERA_STATE != 0 )
             {
                 if ( CAMERA_STATE == USER_CAM )
@@ -1139,7 +1139,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
         }
 
         if ( AXIS_MAX == a2->get_control_delta(GRAVITY_TOGGLE, INVALID_DEVICE_ID) ) {
-            os_developer_options::instance()->toggle_flag(static_cast<os_developer_options::flags_t>(23u));
+            os_developer_options::instance->toggle_flag(static_cast<os_developer_options::flags_t>(23u));
         }
 
         if ( AXIS_MAX == a2->get_control_delta(STOP_PHYSICS, INVALID_DEVICE_ID) ) {
@@ -1175,7 +1175,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
         }
 
         if ( AXIS_MAX == a2->get_control_delta(SHOW_DEBUG_INFO, INVALID_DEVICE_ID) ) {
-            os_developer_options::instance()->toggle_flag(static_cast<os_developer_options::flags_t>(20));
+            os_developer_options::instance->toggle_flag(static_cast<os_developer_options::flags_t>(20));
         }
 
         if ( AXIS_MAX == a2->get_control_delta(USERCAM_EQUALS_CHASECAM, INVALID_DEVICE_ID)
@@ -1328,7 +1328,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             GetAsyncKeyState(VK_MENU);
         }
 
-        if ( os_developer_options::instance()->get_flag(mString {"CAMERA_EDITOR"})
+        if ( os_developer_options::instance->get_flag(mString {"CAMERA_EDITOR"})
             && AXIS_MAX == a2->get_control_delta(49, INVALID_DEVICE_ID) )
         {
             chunk_file file {};
@@ -1410,7 +1410,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
             ++dword_95C8E8();
         }
 
-        if ( os_developer_options::instance()->get_flag(mString {"CAMERA_EDITOR"}) )
+        if ( os_developer_options::instance->get_flag(mString {"CAMERA_EDITOR"}) )
         {
             if ( AXIS_MAX == a2->get_control_delta(47, INVALID_DEVICE_ID) )
             {
@@ -1628,7 +1628,7 @@ void game::set_camera(int a2)
             USER_CAM = 1,
         };
 
-        os_developer_options::instance()->set_int(mString{"CAMERA_STATE"}, a2);
+        os_developer_options::instance->set_int(mString{"CAMERA_STATE"}, a2);
         if (a2 == USER_CAM)
         {
             auto *cam = bit_cast<game_camera *>(
@@ -1900,7 +1900,7 @@ void game::load_this_level()
 
             v86 = marker_hero_start->get_abs_po();
 
-            auto v73 = os_developer_options::instance()->get_string(os_developer_options::HERO_START_DISTRICT);
+            auto v73 = os_developer_options::instance->get_string(os_developer_options::HERO_START_DISTRICT);
             if (v73)
 			{
                 auto *ter = g_world_ptr()->get_the_terrain();
@@ -1919,9 +1919,9 @@ void game::load_this_level()
                 }
             }
 
-            auto hero_start_x = os_developer_options::instance()->get_int(mString{"HERO_START_X"}); 
-            auto hero_start_y = os_developer_options::instance()->get_int(mString{"HERO_START_Y"});
-            auto hero_start_z = os_developer_options::instance()->get_int(mString{"HERO_START_Z"});
+            auto hero_start_x = os_developer_options::instance->get_int(mString{"HERO_START_X"}); 
+            auto hero_start_y = os_developer_options::instance->get_int(mString{"HERO_START_Y"});
+            auto hero_start_z = os_developer_options::instance->get_int(mString{"HERO_START_Z"});
 
             if (hero_start_x != 0 || hero_start_y != 0 || hero_start_z != 0) {
                 v86.set_position(
@@ -2140,7 +2140,7 @@ void game::level_load_stuff::construct_loading_widgets() {
     assert(!load_widgets_created);
     load_widgets_created = true;
 
-    if (!os_developer_options::instance()->get_flag(mString{"NO_LOAD_SCREEN"})) {
+    if (!os_developer_options::instance->get_flag(mString{"NO_LOAD_SCREEN"})) {
         g_femanager().LoadFrontEnd();
     }
 }
@@ -2276,7 +2276,7 @@ void game::advance_state_load_level(Float a2)
             this->level.destroy_loading_widgets();
             sub_405CC0();
 
-            int TOD = os_developer_options::instance()->get_int(mString {"TIME_OF_DAY"});
+            int TOD = os_developer_options::instance->get_int(mString {"TIME_OF_DAY"});
             if (TOD == -1) {
                 TOD= g_TOD();
             }
@@ -2359,12 +2359,12 @@ void game::render_interface()
             spider_monkey::render();
             this->mb->render();
 
-            if (os_developer_options::instance()->get_flag(mString{"SHOW_DEBUG_INFO"}))
+            if (os_developer_options::instance->get_flag(mString{"SHOW_DEBUG_INFO"}))
             {
                 this->show_debug_info();
             }
 
-            if (os_developer_options::instance()->get_flag(mString{"SHOW_WATERMARK_VELOCITY"}))
+            if (os_developer_options::instance->get_flag(mString{"SHOW_WATERMARK_VELOCITY"}))
             { 
                 this->show_max_velocity();
             }
@@ -2528,7 +2528,7 @@ void game::show_debug_info()
 {
     TRACE("game::show_debug_info");
 
-    auto DEBUG_INFO_FONT_PCT = os_developer_options::instance()->get_int(mString{"DEBUG_INFO_FONT_PCT"});
+    auto DEBUG_INFO_FONT_PCT = os_developer_options::instance->get_int(mString{"DEBUG_INFO_FONT_PCT"});
     auto v15 = (float)DEBUG_INFO_FONT_PCT / 100.0;
     auto a1 = this->get_hero_info();
 
@@ -2590,7 +2590,7 @@ void game::render_ui()
         static Var<bool> g_disable_interface {0x0095C879};
 
         if ( g_disable_interface() || !this->flag.level_is_loaded ||
-            os_developer_options::instance()->get_flag(mString {"INTERFACE_DISABLE"}) )
+            os_developer_options::instance->get_flag(mString {"INTERFACE_DISABLE"}) )
         {
             if ( this->flag.level_is_loaded )
             {
@@ -2663,7 +2663,7 @@ void game::render_ui()
             render_interface();
         }
 
-        if (os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(107)))
+        if (os_developer_options::instance->get_flag(static_cast<os_developer_options::flags_t>(107)))
         {
             auto v2 = g_game_ptr()->get_script_game_clock_timer();
 
@@ -2686,7 +2686,7 @@ void game::render_ui()
         nglListEndScene();
         if (!spider_monkey::is_running())
         {
-            if (os_developer_options::instance()->get_int(static_cast<os_developer_options::ints_t>(26)) == 1 && byte_965BF5())
+            if (os_developer_options::instance->get_int(static_cast<os_developer_options::ints_t>(26)) == 1 && byte_965BF5())
             {
                 SYSTEMTIME SystemTime;
                 GetLocalTime(&SystemTime);
@@ -2705,7 +2705,7 @@ void game::render_ui()
                 byte_965BF5() = false;
             }
 
-            auto ALLOW_SCREENSHOT = os_developer_options::instance()->get_int(mString {"ALLOW_SCREENSHOT"});
+            auto ALLOW_SCREENSHOT = os_developer_options::instance->get_int(mString {"ALLOW_SCREENSHOT"});
             if ( ALLOW_SCREENSHOT == 2
                     && this->field_80.is_triggered() )
             {
@@ -2732,7 +2732,7 @@ void game::render_ui()
 void hook_nglListEndScene()
 {
     {
-        if (os_developer_options::instance()->get_flag(mString{"SHOW_DEBUG_INFO"}))
+        if (os_developer_options::instance->get_flag(mString{"SHOW_DEBUG_INFO"}))
         {
             g_game_ptr()->show_debug_info();
         }
@@ -2751,7 +2751,7 @@ void game::advance_state_running(Float a2)
     {
         if (!this->field_162
                 && !this->field_161
-                && os_developer_options::instance()->get_int(mString{"FORCE_WIN"}) == 0)
+                && os_developer_options::instance->get_int(mString{"FORCE_WIN"}) == 0)
         {
             if (this->field_164) {
                 this->unload_current_level();
@@ -2794,7 +2794,7 @@ void game::advance_state_running(Float a2)
                 if (!console_exec_completed) {
                     console_exec_completed = true;
 
-                    [[maybe_unused]] auto a3 = os_developer_options::instance()
+                    [[maybe_unused]] auto a3 = os_developer_options::instance
                         ->get_string(os_developer_options::strings_t::CONSOLE_EXEC);
                 }
 
@@ -3165,7 +3165,7 @@ void game::sub_559F50(Float *a1)
 {
     script_sound_manager::frame_advance(*a1);
 
-    if ( !os_developer_options::instance()->get_flag(mString {"DISABLE_AUDIO_BOXES"}) ) {
+    if ( !os_developer_options::instance->get_flag(mString {"DISABLE_AUDIO_BOXES"}) ) {
         audio_box_manager::frame_advance(*a1);
     }
 

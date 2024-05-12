@@ -202,15 +202,15 @@ void ini_parser::parse(const char *ini_filename, os_developer_options *a2) {
                         const char **names = nullptr;
                         switch (v9) {
                         case 1:
-                            names = flag_names();
+                            names = flag_names;
                             num_names = 150;
                             break;
                         case 2:
-                            names = int_names();
+                            names = int_names;
                             num_names = 76;
                             break;
                         case 3:
-                            names = string_names();
+                            names = string_names;
                             num_names = 14;
                             break;
                         default:

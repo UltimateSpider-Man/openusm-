@@ -228,11 +228,11 @@ RenderFramerateVariable::RenderFramerateVariable() {
 
 void RenderFramerateVariable::setValue(const std::string &a1) {
     auto *v1 = a1.c_str();
-    os_developer_options::instance()->set_flag(mString{"SHOW_FPS"}, get_boolean_value(v1));
+    os_developer_options::instance->set_flag(mString{"SHOW_FPS"}, get_boolean_value(v1));
 }
 
 std::string RenderFramerateVariable::getValue() {
-    auto show_fps = os_developer_options::instance()->get_flag(mString{"SHOW_FPS"});
+    auto show_fps = os_developer_options::instance->get_flag(mString{"SHOW_FPS"});
 
     return (show_fps ? "on" : "off");
 }
@@ -246,12 +246,12 @@ RenderInterfaceVariable::RenderInterfaceVariable() {
 void RenderInterfaceVariable::setValue(const std::string &a1)
 {
     auto *v1 = a1.c_str();
-    os_developer_options::instance()->set_flag(mString{"INTERFACE_DISABLE"}, !get_boolean_value(v1));
+    os_developer_options::instance->set_flag(mString{"INTERFACE_DISABLE"}, !get_boolean_value(v1));
 }
 
 std::string RenderInterfaceVariable::getValue()
 {
-    auto show_fps = !os_developer_options::instance()->get_flag(mString{"SHOW_FPS"});
+    auto show_fps = !os_developer_options::instance->get_flag(mString{"SHOW_FPS"});
 
     return (show_fps ? "on" : "off");
 }

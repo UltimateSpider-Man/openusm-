@@ -302,7 +302,7 @@ void plr_loco_crawl_state::update_wallrun([[maybe_unused]] Float a2)
 
     v6->set_desired_params(list, static_cast<als::layer_types>(0));
 
-    if ( os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
+    if ( os_developer_options::instance->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
     {
         mString v25 {0, "wallrun dev %.2f %.2f", this->m_wallrun_deviation, a2};
         color32 v20 {255, 255, 255, 255};

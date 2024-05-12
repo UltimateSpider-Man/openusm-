@@ -1140,7 +1140,7 @@ void game_flags_handler(debug_menu_entry *a1)
         int v27;
         if ( a1->get_bval() )
         {
-            old_frame_lock = os_developer_options::instance()->get_int(mString{"FRAME_LOCK"});
+            old_frame_lock = os_developer_options::instance->get_int(mString{"FRAME_LOCK"});
             v27 = 120;
         }
         else
@@ -1148,7 +1148,7 @@ void game_flags_handler(debug_menu_entry *a1)
             v27 = old_frame_lock;
         }
 
-        os_developer_options::instance()->set_int(mString{"FRAME_LOCK"}, v27);
+        os_developer_options::instance->set_int(mString{"FRAME_LOCK"}, v27);
         debug_menu::hide();
         break;
     }
@@ -1196,11 +1196,11 @@ void game_flags_handler(debug_menu_entry *a1)
     case 6u: //Show Districts
     {
         debug_menu::hide();
-        os_developer_options::instance()->set_flag(mString{"SHOW_STREAMER_INFO"}, a1->get_bval());
+        os_developer_options::instance->set_flag(mString{"SHOW_STREAMER_INFO"}, a1->get_bval());
 
         if ( a1->get_bval() )
         {
-            os_developer_options::instance()->set_flag(mString{"SHOW_DEBUG_TEXT"}, true);
+            os_developer_options::instance->set_flag(mString{"SHOW_DEBUG_TEXT"}, true);
         }
 
         //TODO
@@ -1210,13 +1210,13 @@ void game_flags_handler(debug_menu_entry *a1)
     case 7u:
     {
         debug_menu::hide();
-        os_developer_options::instance()->set_flag(mString{"SHOW_DEBUG_INFO"}, a1->get_bval());
+        os_developer_options::instance->set_flag(mString{"SHOW_DEBUG_INFO"}, a1->get_bval());
         break;
     }
     case 8u:
     {
         debug_menu::hide();
-        os_developer_options::instance()->set_flag(mString{"SHOW_FPS"}, a1->get_bval());
+        os_developer_options::instance->set_flag(mString{"SHOW_FPS"}, a1->get_bval());
         break;
     }
     case 9u:
@@ -1229,7 +1229,7 @@ void game_flags_handler(debug_menu_entry *a1)
         }
 
 
-        os_developer_options::instance()->set_flag(mString{"USERCAM_ON_CONTROLLER2"}, v24);
+        os_developer_options::instance->set_flag(mString{"USERCAM_ON_CONTROLLER2"}, v24);
         auto *v6 = input_mgr::instance();
         [[maybe_unused]] auto *v23 = v6->field_30[1];
 
@@ -1272,8 +1272,8 @@ void game_flags_handler(debug_menu_entry *a1)
     case 11u:
     {
         debug_menu::hide();
-        auto a2 = os_developer_options::instance()->get_int(mString{"HIRES_SCREENSHOT_X"});
-        auto a3 = os_developer_options::instance()->get_int(mString{"HIRES_SCREENSHOT_Y"});
+        auto a2 = os_developer_options::instance->get_int(mString{"HIRES_SCREENSHOT_X"});
+        auto a3 = os_developer_options::instance->get_int(mString{"HIRES_SCREENSHOT_Y"});
         g_game_ptr()->begin_hires_screenshot(a2, a3);
         break;
     }
@@ -1433,7 +1433,7 @@ void create_game_flags_menu(debug_menu *parent)
     v92->add_entry(v89);
 
     v89 = create_menu_entry(mString{"God Mode"});
-    v89->set_ival(os_developer_options::instance()->get_int(mString{"GOD_MODE"}));
+    v89->set_ival(os_developer_options::instance->get_int(mString{"GOD_MODE"}));
 
     const float v2[4] = {0, 5, 1, 1};
     v89->set_fl_values(v2);
@@ -1442,25 +1442,25 @@ void create_game_flags_menu(debug_menu *parent)
     v92->add_entry(v89);
 
     v89 = create_menu_entry(mString{"Show Districts"});
-    v89->set_bval(os_developer_options::instance()->get_flag(mString{"SHOW_STREAMER_INFO"}));
+    v89->set_bval(os_developer_options::instance->get_flag(mString{"SHOW_STREAMER_INFO"}));
     v89->set_game_flags_handler(game_flags_handler);
     v89->set_id(6);
     v92->add_entry(v89);
 
     v89 = create_menu_entry(mString{"Show Hero Position"});
-    v89->set_bval(os_developer_options::instance()->get_flag(mString{"SHOW_DEBUG_INFO"}));
+    v89->set_bval(os_developer_options::instance->get_flag(mString{"SHOW_DEBUG_INFO"}));
     v89->set_game_flags_handler(game_flags_handler);
     v89->set_id(7);
     v92->add_entry(v89);
 
     v89 = create_menu_entry(mString{"Show FPS"});
-    v89->set_bval(os_developer_options::instance()->get_flag(mString{"SHOW_FPS"}));
+    v89->set_bval(os_developer_options::instance->get_flag(mString{"SHOW_FPS"}));
     v89->set_game_flags_handler(game_flags_handler);
     v89->set_id(8);
     v92->add_entry(v89);
 
     v89 = create_menu_entry(mString{"User Camera on Controller 2"});
-    v89->set_bval(os_developer_options::instance()->get_flag(mString{"USERCAM_ON_CONTROLLER2"}));
+    v89->set_bval(os_developer_options::instance->get_flag(mString{"USERCAM_ON_CONTROLLER2"}));
     v89->set_game_flags_handler(game_flags_handler);
     v89->set_id(9);
     v92->add_entry(v89);

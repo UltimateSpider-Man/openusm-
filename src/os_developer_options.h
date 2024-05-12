@@ -95,15 +95,19 @@ struct os_developer_options : singleton {
     //0x005B23E0
     static void os_developer_init();
 
-    static Var<os_developer_options *> instance;
+    static os_developer_options *& instance;
 };
 
-extern Var<const char *[76]> int_names;
+using int_names_t = const char *[76];
+extern int_names_t & int_names;
 
-extern Var<const char *[150]> flag_names;
+using flag_names_t = const char *[150];
+extern flag_names_t & flag_names;
 
-extern Var<const char *[14]> string_names;
+using string_names_t = const char *[14];
+extern string_names_t & string_names;
 
-inline Var<BOOL[150]> flag_defaults{0x00936678};
+using flag_defaults_t = BOOL[150];
+inline flag_defaults_t & flag_defaults = var<flag_defaults_t>(0x00936678);
 
 extern void os_developer_options_patch();

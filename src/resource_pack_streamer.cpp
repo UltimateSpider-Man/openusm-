@@ -196,7 +196,7 @@ void resource_pack_streamer::load_internal(const char *a2,
         this->curr_slot->notify_load_started(this->field_8, this->m_data_size, cb, token);
         this->currently_streaming = true;
 
-        if (os_developer_options::instance()->get_flag(mString {"SHOW_STREAMER_SPAM"}))
+        if (os_developer_options::instance->get_flag(mString {"SHOW_STREAMER_SPAM"}))
         {
             auto *str = this->field_8.m_hash.to_string();
 
@@ -590,7 +590,7 @@ void resource_pack_streamer::frame_advance_streaming(Float a2)
             this->field_88 == NFL_REQUEST_ID_INVALID) {
             this->curr_slot->notify_load_finished();
 
-            if (os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"})) {
+            if (os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"})) {
                 auto &res_dir = this->curr_slot->get_resource_directory();
                 res_dir.debug_print();
             }
@@ -661,7 +661,7 @@ void resource_pack_streamer::unload_internal(int which_slot_idx)
 
         which_slot->notify_unload_started();
 
-        if (os_developer_options::instance()->get_flag(mString {"SHOW_STREAMER_SPAM"}))
+        if (os_developer_options::instance->get_flag(mString {"SHOW_STREAMER_SPAM"}))
         {
             auto *str = which_slot->get_name_key().m_hash.to_string();
 

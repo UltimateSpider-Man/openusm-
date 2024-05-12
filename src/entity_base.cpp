@@ -1164,7 +1164,7 @@ void entity_set_abs_po(entity_base *ent, const po &the_po) {
 
         assert(the_po.get_position().length2() < MAX_ALLOWED_POSITION_LENGTH_SQUARED);
 
-        auto ENABLE_LONG_MALOR_ASSERTS = os_developer_options::instance()->get_int(
+        auto ENABLE_LONG_MALOR_ASSERTS = os_developer_options::instance->get_int(
             mString{"ENABLE_LONG_MALOR_ASSERTS"});
 
         if (ENABLE_LONG_MALOR_ASSERTS > 0 && !ent->is_flagged(0x800) && ent->is_an_actor() &&
@@ -1545,8 +1545,9 @@ void entity_set_abs_position(entity_base *ent, const vector3d &pos)
     assert(ent != nullptr && "No Entity passed in");
     assert(pos.length2() < MAX_ALLOWED_POSITION_LENGTH_SQUARED);
 
-    if constexpr (1) {
-        auto ENABLE_LONG_MALOR_ASSERTS = os_developer_options::instance()->get_int(
+    if constexpr (1)
+    {
+        auto ENABLE_LONG_MALOR_ASSERTS = os_developer_options::instance->get_int(
             mString{"ENABLE_LONG_MALOR_ASSERTS"});
         if (ENABLE_LONG_MALOR_ASSERTS > 0 && !ent->is_flagged(0x800) && ent->is_an_actor() &&
             !bit_cast<actor *>(ent)->get_allow_tunnelling_into_next_frame()) {

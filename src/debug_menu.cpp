@@ -91,7 +91,7 @@ void debug_menu::frame_advance(Float a1)
                 hide();
             }
             else if ( spider_monkey::is_running() ||
-                    !os_developer_options::instance()->get_flag("ENABLE_ZOOM_MAP") ||
+                    !os_developer_options::instance->get_flag("ENABLE_ZOOM_MAP") ||
                     g_game_ptr()->is_physics_enabled() )
             {
                 show();

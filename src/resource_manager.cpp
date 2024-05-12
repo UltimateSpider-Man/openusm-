@@ -515,7 +515,7 @@ resource_pack_slot *get_best_context(resource_partition_enum a1)
 void frame_advance(Float a2)
 {
     auto v8 =
-        os_developer_options::instance()->get_int(mString {"AMALGA_REFRESH_INTERVAL"});
+        os_developer_options::instance->get_int(mString {"AMALGA_REFRESH_INTERVAL"});
 
     static float amalga_refresh_timer {0};
     amalga_refresh_timer += a2;

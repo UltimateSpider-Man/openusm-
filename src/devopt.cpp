@@ -11,8 +11,8 @@ game_option_t *get_option(int idx)
 
     static game_option_t option{};
 
-    auto &name = flag_names()[idx];
-    BOOL *flag = &flag_defaults()[idx];
+    auto &name = flag_names[idx];
+    BOOL *flag = &flag_defaults[idx];
 
     option.m_name = name;
     option.m_type = game_option_t::INT_OPTION;

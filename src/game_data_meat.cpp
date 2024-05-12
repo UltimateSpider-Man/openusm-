@@ -47,11 +47,11 @@ void game_data_meat::init()
         this->field_50 = 1;
         this->field_51 = 1;
         this->field_52 = 1;
-        this->m_difficulty = os_developer_options::instance()->get_int(mString{"DIFFICULTY"});
+        this->m_difficulty = os_developer_options::instance->get_int(mString{"DIFFICULTY"});
         this->m_run_sensitivity = 0.89999998f;
         this->field_5C = 0;
         this->field_5D = 0;
-        this->m_show_style_points = os_developer_options::instance()->get_flag(
+        this->m_show_style_points = os_developer_options::instance->get_flag(
             mString{"SHOW_STYLE_POINTS"});
         this->m_hero_health = 200.0;
         this->m_hero_type = 1;
@@ -112,7 +112,7 @@ void game_data_meat::init()
         this->field_108 = 84;
         this->field_10C = 84;
         this->field_110 = 84;
-        auto *v2 = os_developer_options::instance()->get_hero_name()->c_str();
+        auto *v2 = os_developer_options::instance->get_hero_name()->c_str();
 
         if (strlen(v2) > 32) {
             sp_log("String too big for fixed size, str is '%s'", v2);

@@ -26,7 +26,7 @@ double sub_48B710(const float *a1, bool a2)
 
 bool sub_66024E(const line_info &a1)
 {
-    if ( os_developer_options::instance()->get_flag(mString {"FORCE_TIGHTCRAWL"}) ) {
+    if ( os_developer_options::instance->get_flag(mString {"FORCE_TIGHTCRAWL"}) ) {
         return true;
     }
 

@@ -241,7 +241,7 @@ void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
 
         matrix4x4 a3 {};
         a3.make_rotate(XVEC, v64);
-        float MINI_MAP_ZOOM = os_developer_options::instance()->get_int(mString {"MINI_MAP_ZOOM"}); 
+        float MINI_MAP_ZOOM = os_developer_options::instance->get_int(mString {"MINI_MAP_ZOOM"}); 
         if ( MINI_MAP_ZOOM >= 50.0f )
         {
             if ( MINI_MAP_ZOOM > 1000.0f ) {

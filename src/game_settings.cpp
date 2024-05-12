@@ -54,7 +54,7 @@ game_settings::game_settings() : field_4{""}
 
         MemoryUnitManager::Initialize(0);
 
-        [[maybe_unused]] auto v4 = os_developer_options::instance()->get_string(os_developer_options::strings_t::SKU);
+        [[maybe_unused]] auto v4 = os_developer_options::instance->get_string(os_developer_options::strings_t::SKU);
 
         MemoryUnitManager::RegisterObserver(bit_cast<MemoryUnitManager::Observer *>(this));
 

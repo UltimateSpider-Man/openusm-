@@ -300,7 +300,7 @@ void swing_state::_activate(ai_state_machine *a2,
 
         v32->set_desired_params(v29, static_cast<als::layer_types>(0));
 
-        if ( os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
+        if ( os_developer_options::instance->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
         {
             line_info v56;
 
@@ -365,7 +365,7 @@ ai::state_trans_messages swing_state::_frame_advance(Float a2)
 
         if (swing_inode_ptr->field_24)
         {
-            if (os_developer_options::instance()->get_int(mString{"SWING_DEBUG_TRAILS"}) >
+            if (os_developer_options::instance->get_int(mString{"SWING_DEBUG_TRAILS"}) >
                 0)
             {
                 color32 v15 {128, 255, 255, 64};
@@ -517,7 +517,7 @@ void swing_inode::update_mode_swinging(Float a2)
 
         vel.y = 0.0;
         auto lateral = vel.length();
-        if (os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}))
+        if (os_developer_options::instance->get_flag(mString {"SHOW_LOCOMOTION_INFO"}))
         {
             insertDebugString(7, mString{0, "speed   %.2f", speed}, color32{255, 255, 255, 255});
 
@@ -527,7 +527,7 @@ void swing_inode::update_mode_swinging(Float a2)
         this->clip_web(a2);
         this->update_pendulums(a2);
 
-        if (os_developer_options::instance()->get_int(mString {"SWING_DEBUG_TRAILS"}) > 1)
+        if (os_developer_options::instance->get_int(mString {"SWING_DEBUG_TRAILS"}) > 1)
         {
             auto *v21 = this->get_actor();
             auto abs_pos = v21->get_abs_position();
@@ -1108,7 +1108,7 @@ void swing_inode::update_pendulums(Float a2)
                 auto v113 = sub_444A60(v18, v131);
                 v113.normalize();
 
-                if ( os_developer_options::instance()->get_int(mString {"SWING_DEBUG_TRAILS"}) > 0 )
+                if ( os_developer_options::instance->get_int(mString {"SWING_DEBUG_TRAILS"}) > 0 )
                 {
                     auto v76 = v16 * (this->field_2C / this->m_constraint);
                     auto v9 = swingers[i].field_0.get_pivot_abs_pos();
@@ -1872,7 +1872,7 @@ void swing_inode::compute_forward_and_up_directions(vector3d &forward, vector3d 
         forward = sub_444A60(forward, up);
         forward.normalize();
 
-        if ( os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
+        if ( os_developer_options::instance->get_flag(mString {"SHOW_LOCOMOTION_INFO"}) )
         {
             auto v46 = forward * 2.0f;
             auto *v35 = this->get_actor();
@@ -1883,7 +1883,7 @@ void swing_inode::compute_forward_and_up_directions(vector3d &forward, vector3d 
             v75.render(25, false);
         }
 
-        if (os_developer_options::instance()->get_flag(mString {"SHOW_LOCOMOTION_INFO"}))
+        if (os_developer_options::instance->get_flag(mString {"SHOW_LOCOMOTION_INFO"}))
         {
             mString v47 {0, "slerp %.2f", slerp};
 

@@ -95,10 +95,10 @@ spiderman_camera::spiderman_camera(const string_hash &a2, entity *a3) : game_cam
     if constexpr (0)
     {
         //g_camera_mouse_mode() = DEBUG_CAMERA_MOUSE_MODE;
-        //g_pitch_mult() =    os_developer_options::instance()->get_int(mString {"DEBUG_CAMERA_PITCH_MULTIPLIER"}) * 0.1;
-        g_yaw_mult =      os_developer_options::instance()->get_int(mString {"DEBUG_CAMERA_YAW_MULTIPLIER"}) * 0.1;
-        g_move_mult() =     os_developer_options::instance()->get_int(mString {"DEBUG_CAMERA_MOVE_MULTIPLIER"}) * 0.1;
-        g_strafe_mult() =   os_developer_options::instance()->get_int(mString {"DEBUG_CAMERA_STRAFE_MULTIPLIER"}) * 0.1;
+        //g_pitch_mult() =    os_developer_options::instance->get_int(mString {"DEBUG_CAMERA_PITCH_MULTIPLIER"}) * 0.1;
+        g_yaw_mult =      os_developer_options::instance->get_int(mString {"DEBUG_CAMERA_YAW_MULTIPLIER"}) * 0.1;
+        g_move_mult() =     os_developer_options::instance->get_int(mString {"DEBUG_CAMERA_MOVE_MULTIPLIER"}) * 0.1;
+        g_strafe_mult() =   os_developer_options::instance->get_int(mString {"DEBUG_CAMERA_STRAFE_MULTIPLIER"}) * 0.1;
 
         this->field_1D0.set_id(input_mgr::instance()->field_58);
         this->field_1D0.set_control(static_cast<game_control_t>(102));
@@ -259,11 +259,11 @@ void spiderman_camera::_frame_advance(Float a2)
     {
         if ( g_game_ptr()->level_is_loaded()
             && !g_game_ptr()->is_paused()
-            && !os_developer_options::instance()->get_flag(mString {"SHOW_PROFILE_INFO"}) )
+            && !os_developer_options::instance->get_flag(mString {"SHOW_PROFILE_INFO"}) )
         {
             static Var<int> old_devopt_fov {0x00959E54};
             this->field_1D0.update(a2);
-            auto CAMERA_FOV = os_developer_options::instance()->get_int(mString {"CAMERA_FOV"});
+            auto CAMERA_FOV = os_developer_options::instance->get_int(mString {"CAMERA_FOV"});
             if ( CAMERA_FOV != old_devopt_fov() )
             {
                 old_devopt_fov() = CAMERA_FOV;

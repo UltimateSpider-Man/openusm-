@@ -19,7 +19,6 @@ smoke_test::smoke_test(const char **a2, Float a3) {
 
     if constexpr (1)
     {
-
         auto *v4 = &this->field_10;
         this->field_0 = false;
         this->field_10 = {};
@@ -70,7 +69,7 @@ void smoke_test::sub_57B610()
     {
         auto *v2 = app::instance()->m_game;
         if ( strstr(this->field_20[this->field_18].field_0->c_str(), "M0_Arena") != nullptr
-            || os_developer_options::instance()->get_int(mString{"SOAK_SMOKE"}) != 0 )
+            || os_developer_options::instance->get_int(mString{"SOAK_SMOKE"}) != 0 )
         {
             if ( !cheat_heroes()[this->field_14] )
             {
@@ -79,7 +78,7 @@ void smoke_test::sub_57B610()
 
             ++this->field_14;
             mString v5{cheat_heroes()[this->field_14]};
-            os_developer_options::instance()->set_string(os_developer_options::strings_t::HERO_NAME, v5);
+            os_developer_options::instance->set_string(os_developer_options::strings_t::HERO_NAME, v5);
         }
 
         if ( v2 != nullptr )

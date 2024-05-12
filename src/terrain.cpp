@@ -610,7 +610,7 @@ void terrain::show_obbs()
             std::for_each(this->regions, this->regions + this->total_regions,
             [&v14, &v15](auto *reg)
             {
-                if ((debug_render_get_ival(OBBS) >= 2 || os_developer_options::instance()->get_flag(mString{"SHOW_OBBS"})) &&
+                if ((debug_render_get_ival(OBBS) >= 2 || os_developer_options::instance->get_flag(mString{"SHOW_OBBS"})) &&
                     reg->field_98 != nullptr) {
                     if (v14 >= 9) {
                         v14 = 0;
@@ -699,7 +699,7 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
                         _std::vector<region *> a4 {};
                         std::copy(this->field_80.begin(), this->field_80.end(), std::back_inserter(a4));
 
-                        if ( os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"}) )
+                        if ( os_developer_options::instance->get_flag(mString {"CAMERA_CENTRIC_STREAMER"}) )
                         {
                             if ( hero_reg != nullptr ) {
                                 a4.push_back(hero_reg);
@@ -1403,7 +1403,7 @@ void terrain::frame_advance(Float a2)
             return (v3->field_5C4 || v3->field_5C3);
         };
 
-        if (!os_developer_options::instance()->get_flag(mString {"CAMERA_CENTRIC_STREAMER"})
+        if (!os_developer_options::instance->get_flag(mString {"CAMERA_CENTRIC_STREAMER"})
                 || func(g_femanager().IGO->field_44) )
         {
             auto *ent = g_world_ptr()->get_hero_ptr(0);

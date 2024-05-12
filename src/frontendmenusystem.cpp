@@ -102,7 +102,7 @@ void FrontEndMenuSystem::sub_60C240() {
 
 bool FrontEndMenuSystem::WaitForMemCheck() {
     return this->field_30 != 10 &&
-        !os_developer_options::instance()->os_developer_options::get_flag(static_cast<os_developer_options::flags_t>(66));
+        !os_developer_options::instance->os_developer_options::get_flag(static_cast<os_developer_options::flags_t>(66));
 }
 
 bool FrontEndMenuSystem::sub_60C230() {
@@ -143,7 +143,7 @@ void FrontEndMenuSystem::MakeActive(int a2) {
 
 void FrontEndMenuSystem::RenderLoadMeter(bool a1) {
     if constexpr (1) {
-        if (!os_developer_options::instance()->get_flag(mString{"NO_LOAD_SCREEN"})) {
+        if (!os_developer_options::instance->get_flag(mString{"NO_LOAD_SCREEN"})) {
             this->sub_619030(a1);
         }
     } else {

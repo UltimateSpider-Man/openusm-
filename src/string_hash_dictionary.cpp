@@ -57,10 +57,10 @@ void string_hash_dictionary::create_inst()
     {
         sp_log("g_is_the_packer = %d, LOAD_STRING_HASH_DICTIONARY = %d",
                g_is_the_packer(),
-               os_developer_options::instance()->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"}));
+               os_developer_options::instance->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"}));
 
         if (g_is_the_packer() ||
-            os_developer_options::instance()->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"}))
+            os_developer_options::instance->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"}))
         {
             string_hash_dictionary::load_dictionary(nullptr);
         }
@@ -269,7 +269,7 @@ void string_hash_dictionary::delete_inst() {
     TRACE("string_hash_dictionary::delete_inst():");
 
     string_hash_dictionary::is_setup() = false;
-    if (g_is_the_packer() || os_developer_options::instance()->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"})) {
+    if (g_is_the_packer() || os_developer_options::instance->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"})) {
         string_hash_dictionary::save_dictionary(nullptr);
     }
 
@@ -404,7 +404,7 @@ string_hash string_hash_dictionary::register_string(const char *str) {
     a1 = a3;
 
     if (!g_is_the_packer()) {
-        if (string_hash_dictionary::is_setup() && os_developer_options::instance()->get_flag(14)) {
+        if (string_hash_dictionary::is_setup() && os_developer_options::instance->get_flag(14)) {
             string_hash_dictionary::hard_log_string(str, a3);
         }
         a1 = a3;

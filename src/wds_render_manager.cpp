@@ -139,12 +139,12 @@ void wds_render_manager::debug_render()
 
     if constexpr (0)
     {
-        if (os_developer_options::instance()->get_flag(mString{"SHOW_TERRAIN_INFO"}))
+        if (os_developer_options::instance->get_flag(mString{"SHOW_TERRAIN_INFO"}))
         {
             show_terrain_info();
         }
 
-        if ( debug_render_get_ival((debug_render_items_e)20) || os_developer_options::instance()->get_flag(mString {"SHOW_GLASS_HOUSE"}))
+        if ( debug_render_get_ival((debug_render_items_e)20) || os_developer_options::instance->get_flag(mString {"SHOW_GLASS_HOUSE"}))
         {
             //glass_house_manager::show_glass_houses();
         }
@@ -202,7 +202,7 @@ void wds_render_manager::create_colorvol_scene()
 
 void wds_render_manager::render_lowlods(camera &)
 {
-    if ( os_developer_options::instance()->get_flag(mString{"RENDER_LOWLODS"}) ) {
+    if ( os_developer_options::instance->get_flag(mString{"RENDER_LOWLODS"}) ) {
         this->field_94->render();
     }
 }

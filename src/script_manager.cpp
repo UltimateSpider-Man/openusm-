@@ -138,7 +138,7 @@ char *get_shared_var_address(int a1)
 }
 
 bool using_chuck_old_fashioned() {
-    return os_developer_options::instance()->get_flag(mString {"CHUCK_OLD_FASHIONED"});
+    return os_developer_options::instance->get_flag(mString {"CHUCK_OLD_FASHIONED"});
 }
 
 int get_total_loaded()

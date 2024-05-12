@@ -43,7 +43,7 @@ void spider_monkey::start()
         m_runtime() = 0.0;
         m_runtime_text() = 0;
         m_runtime_monkey_text() = 0;
-        os_developer_options::instance()->set_int(9, 1); //MONKEY_MODE
+        os_developer_options::instance->set_int(9, 1); //MONKEY_MODE
     } else {
         CDECL_CALL(0x004B6690);
     }

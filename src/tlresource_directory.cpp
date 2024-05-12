@@ -104,7 +104,7 @@ nglMeshFile *tlresource_directory<nglMeshFile, tlFixedString>::Find(const tlFixe
         if ( v5 == nullptr && system_dir != nullptr )
         {
             v5 = system_dir->Find(a2);
-            bool SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
+            bool SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             if ( v5 != nullptr )
             {
                 if ( SHOW_RESOURCE_SPAM )
@@ -150,7 +150,7 @@ nglMesh *tlresource_directory<nglMesh,tlHashString>::Find(const tlHashString &a2
         {
             v5 = system_dir->Find(a2);
 
-            bool SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
+            bool SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             if ( v5 != nullptr )
             {
                 if ( SHOW_RESOURCE_SPAM )
@@ -204,7 +204,7 @@ nalBaseSkeleton *tlresource_directory<nalBaseSkeleton, tlFixedString>::Find(cons
         {
             v5 = system_dir->Find(a1);
 
-            auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
+            auto SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             if ( v5 != nullptr )
             {
                 if ( SHOW_RESOURCE_SPAM )
@@ -248,7 +248,7 @@ nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedS
 
         if ( v5 == nullptr && system_dir != nullptr )
         {
-            auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
+            auto SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             v5 = system_dir->Find(a1);
             if ( v5 != nullptr )
             {
@@ -290,7 +290,7 @@ nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2
 
     if ( v3 == nullptr && system_dir != nullptr )
     {
-        auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
+        auto SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString{"SHOW_RESOURCE_SPAM"});
 
         nglTexture * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir->m_vtbl, 0x8));
         v3 = find(system_dir, nullptr, a2);
@@ -332,7 +332,7 @@ nalAnimClass<nalAnyPose> *tlresource_directory<nalAnimClass<nalAnyPose>, tlFixed
             nalAnimClass<nalAnyPose> * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir->m_vtbl, 0x8));
             tlresource  = find(system_dir, nullptr, a2);
 
-            auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
+            auto SHOW_RESOURCE_SPAM = os_developer_options::instance->get_flag(mString{"SHOW_RESOURCE_SPAM"});
 
             if ( tlresource != nullptr )
             {
