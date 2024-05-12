@@ -116,7 +116,7 @@ void nalInit(nalHeap *a1) {
 
     if constexpr (1) {
         tlStackRangeInit();
-        if (tlScratchPadRefCount()++ == 0) {
+        if (tlScratchPadRefCount++ == 0) {
             dword_970D64() = tlMemAlloc(0x4000, 16, 0x2000000u);
         }
 

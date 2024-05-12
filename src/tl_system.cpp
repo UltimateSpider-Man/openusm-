@@ -27,23 +27,23 @@ VALIDATE_SIZE(tldir_t::SkipListIterator, 0xC);
 VALIDATE_SIZE(tldir_t::Impl, 0x10);
 VALIDATE_SIZE(tldir_t::Node, 0x8);
 
-Var<int> tlScratchPadRefCount{0x00970D5C};
+int & tlScratchPadRefCount = var<int>(0x00970D5C);
 
-Var<char[256]> tlHostPrefix{0x00970D88};
+auto & tlHostPrefix = var<char[256]>(0x00970D88);
 
-Var<tlInstanceBank> nglShaderBank = (0x00972840);
+tlInstanceBank & nglShaderBank = var<tlInstanceBank>(0x00972840);
 
 #if !STANDALONE_SYSTEM
 
-Var<int> tlMemAllocCounter = (0x00970D58);
+int & tlMemAllocCounter = var<int>(0x00970D58);
 
-Var<tlSystemCallbacks> tlCurSystemCallbacks = (0x00970D6C);
+tlSystemCallbacks & tlCurSystemCallbacks = var<tlSystemCallbacks>(0x00970D6C);
 
 #else
 
 #define make_var(type, name) \
     static type g_##name {}; \
-    Var<type> name {(int) &g_##name}
+    type & name {g_##name}
 
 make_var(int, tlMemAllocCounter);
 
@@ -281,15 +281,16 @@ nglFont *tlInstanceBankResourceDirectory<nglFont, tlFixedString>::Find(const tlF
     }
 }
 
-void tlReleaseFile(tlFileBuf *File) {
-    if (tlCurSystemCallbacks().ReleaseFile != nullptr) {
-        tlCurSystemCallbacks().ReleaseFile(File);
+void tlReleaseFile(tlFileBuf *File)
+{
+    if (tlCurSystemCallbacks.ReleaseFile != nullptr) {
+        tlCurSystemCallbacks.ReleaseFile(File);
     } else {
         char *fileBuf = File->Buf;
 
-        --tlMemAllocCounter();
-        if (tlCurSystemCallbacks().MemFree != nullptr) {
-            tlCurSystemCallbacks().MemFree(fileBuf);
+        --tlMemAllocCounter;
+        if (tlCurSystemCallbacks.MemFree != nullptr) {
+            tlCurSystemCallbacks.MemFree(fileBuf);
         } else {
             _aligned_free(fileBuf);
         }
@@ -300,12 +301,12 @@ void tlReleaseFile(tlFileBuf *File) {
     }
 }
 
-static Var<int> tlStackBegin{0x00970E88};
-static Var<int> tlStackEnd{0x00970E8C};
+static int & tlStackBegin = var<int>(0x00970E88);
+static int & tlStackEnd = var<int>(0x00970E8C);
 
 void tlStackRangeInit() {
-    tlStackBegin() = 0;
-    tlStackEnd() = 0;
+    tlStackBegin = 0;
+    tlStackEnd = 0;
 }
 
 bool tlIsPow2(int a1) {
@@ -313,10 +314,10 @@ bool tlIsPow2(int a1) {
 }
 
 void tlMemFree(void *Ptr) {
-    --tlMemAllocCounter();
+    --tlMemAllocCounter;
 
-    if (tlCurSystemCallbacks().MemFree != nullptr) {
-        tlCurSystemCallbacks().MemFree(Ptr);
+    if (tlCurSystemCallbacks.MemFree != nullptr) {
+        tlCurSystemCallbacks.MemFree(Ptr);
     } else {
         _aligned_free(Ptr);
     }
@@ -341,10 +342,10 @@ void *tlMemAlloc(uint32_t Size, uint32_t Alignment, uint32_t Flags) {
         }
     }
 
-    ++tlMemAllocCounter();
+    ++tlMemAllocCounter;
 
-    if (tlCurSystemCallbacks().MemAlloc != nullptr) {
-        memPtr = tlCurSystemCallbacks().MemAlloc(Size, alignChk, Flags);
+    if (tlCurSystemCallbacks.MemAlloc != nullptr) {
+        memPtr = tlCurSystemCallbacks.MemAlloc(Size, alignChk, Flags);
     } else {
         memPtr = _aligned_malloc(Size, alignChk);
     }
@@ -367,17 +368,17 @@ bool tlReadFile(const char *FileName, tlFileBuf *File, unsigned int Align, unsig
         char Work[512] = {0};
 
         unsigned int alignment = Align;
-        if (tlCurSystemCallbacks().ReadFile != nullptr) {
-            return tlCurSystemCallbacks().ReadFile(FileName, File, Align, Flags);
+        if (tlCurSystemCallbacks.ReadFile != nullptr) {
+            return tlCurSystemCallbacks.ReadFile(FileName, File, Align, Flags);
         }
 
-        if (strncmp(FileName, tlHostPrefix(), strlen(tlHostPrefix())) == 0) {
+        if (strncmp(FileName, tlHostPrefix, strlen(tlHostPrefix)) == 0) {
             Work[0] = 0;
         } else {
             int fileLoc = 0;
             char fileRead = '\0';
             do {
-                fileRead = tlHostPrefix()[fileLoc];
+                fileRead = tlHostPrefix[fileLoc];
                 Work[fileLoc++] = fileRead;
             } while (fileRead);
         }
@@ -406,9 +407,9 @@ bool tlReadFile(const char *FileName, tlFileBuf *File, unsigned int Align, unsig
             alignment = 0;
         }
 
-        ++tlMemAllocCounter();
-        if (tlCurSystemCallbacks().MemAlloc != nullptr) {
-            allocLoc = static_cast<char *>(tlCurSystemCallbacks().MemAlloc(fileSize, alignment, Flags));
+        ++tlMemAllocCounter;
+        if (tlCurSystemCallbacks.MemAlloc != nullptr) {
+            allocLoc = static_cast<char *>(tlCurSystemCallbacks.MemAlloc(fileSize, alignment, Flags));
         } else {
             allocLoc = static_cast<char *>(_aligned_malloc(fileSize, alignment));
         }
@@ -432,16 +433,16 @@ bool tlReadFile(const char *FileName, tlFileBuf *File, unsigned int Align, unsig
 }
 
 void tlSetSystemCallbacks(const tlSystemCallbacks &a1) {
-    tlCurSystemCallbacks() = a1;
+    tlCurSystemCallbacks = a1;
 }
 
 void tlGetSystemCallbacks(tlSystemCallbacks *a1) {
-    a1->ReadFile = tlCurSystemCallbacks().ReadFile;
-    a1->ReleaseFile = tlCurSystemCallbacks().ReleaseFile;
-    a1->field_8 = tlCurSystemCallbacks().field_8;
-    a1->field_C = tlCurSystemCallbacks().field_C;
-    a1->MemAlloc = tlCurSystemCallbacks().MemAlloc;
-    a1->MemFree = tlCurSystemCallbacks().MemFree;
+    a1->ReadFile = tlCurSystemCallbacks.ReadFile;
+    a1->ReleaseFile = tlCurSystemCallbacks.ReleaseFile;
+    a1->field_8 = tlCurSystemCallbacks.field_8;
+    a1->field_C = tlCurSystemCallbacks.field_C;
+    a1->MemAlloc = tlCurSystemCallbacks.MemAlloc;
+    a1->MemFree = tlCurSystemCallbacks.MemFree;
 }
 
 void set_tl_system_directories() {
@@ -834,15 +835,16 @@ nglMesh *tlInstanceBankResourceDirectory<nglMesh, tlHashString>::Find(const tlHa
 }
 
 struct tlInitList {
-    static inline Var<void *> head{0x00970D4C};
+    static inline auto & head = var<void *>(0x00970D4C);
 };
 
 void tlInitListInit()
 {
     TRACE("tlInitListInit");
 
-    if constexpr (1) {
-        for (auto *shader = static_cast<nglShader *>(tlInitList::head());
+    if constexpr (1)
+    {
+        for (auto *shader = static_cast<nglShader *>(tlInitList::head);
                 shader != nullptr;
                 shader = shader->field_4) {
             void (__fastcall *Register)(void *) = CAST(Register, get_vfunc(shader->m_vtbl, 0x0));

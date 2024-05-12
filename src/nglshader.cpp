@@ -32,7 +32,7 @@ void nglShader::Register()
     auto *v2 = v1.to_string();
     sp_log("Registering shader %s, ID: %d\n", v2, v4);
 
-    nglShaderBank().Insert(v1, this);
+    nglShaderBank.Insert(v1, this);
 }
 
 tlFixedString nglShader::GetName() {

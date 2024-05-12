@@ -85,11 +85,11 @@ struct tlSystemCallbacks {
 
 struct tlInstanceBank;
 
-extern Var<tlInstanceBank> nglShaderBank;
+extern tlInstanceBank & nglShaderBank;
 
-extern Var<int> tlScratchPadRefCount;
+extern int & tlScratchPadRefCount;
 
-extern Var<tlSystemCallbacks> tlCurSystemCallbacks;
+extern tlSystemCallbacks & tlCurSystemCallbacks;
 
 //0x00749FD0
 extern void tlInitListInit();

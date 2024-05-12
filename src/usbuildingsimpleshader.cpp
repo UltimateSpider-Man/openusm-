@@ -27,7 +27,7 @@ int USBuildingSimpleShader::Register() {
 
         static Var<USBuildingSimpleShader> gUSBuildingSimpleShader{0x0091E448};
 
-        nglShaderBank().Insert(v2, &gUSBuildingSimpleShader());
+        nglShaderBank.Insert(v2, &gUSBuildingSimpleShader());
 
         static Var<IDirect3DVertexDeclaration9 *> dword_9738F8{0x009738F8};
         static Var<D3DVERTEXELEMENT9> stru_939480{0x00939480};

@@ -2464,7 +2464,7 @@ bool nglLoadMeshFileInternal(const tlFixedString &FileName, nglMeshFile *MeshFil
                     tlHashString a2 = v17->m_hash;
                     sp_log("0x%08X", v17->m_hash);
 
-                    auto *v18 = nglShaderBank().Search(a2);
+                    auto *v18 = nglShaderBank.Search(a2);
                     if (v18 != nullptr)
                     {
                         auto *shader = static_cast<nglShader *>(v18->field_20);
