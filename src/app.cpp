@@ -51,13 +51,13 @@ VALIDATE_SIZE(app, 0x3Cu);
 
 VALIDATE_OFFSET(app, m_game, 0x30);
 
-Var<app *> app::instance{0x009685D4};
+app *& app::instance = var<app *>(0x009685D4);
 
-Var<nglTexture *> g_shadow_target_blurred{0x00966EF4};
+nglTexture *& g_shadow_target_blurred = var<nglTexture *>(0x00966EF4);
 
-Var<int> dword_966F8C{0x00966F8C};
+int & dword_966F8C = var<int>(0x00966F8C);
 
-Var<nglTexture *> g_shadow_target_unblurred{0x00965F48};
+nglTexture *& g_shadow_target_unblurred = var<nglTexture *>(0x00965F48);
 
 void sub_592E40()
 {
@@ -68,8 +68,8 @@ void sub_592E40()
         }
     }
 
-    if (g_shadow_target_unblurred() != nullptr) {
-        nglDestroyTexture(g_shadow_target_unblurred());
+    if (g_shadow_target_unblurred != nullptr) {
+        nglDestroyTexture(g_shadow_target_unblurred);
     }
 }
 
@@ -92,36 +92,37 @@ void init_shadow_targets()
         s.field_44->field_60 = v1;
     }
 
-    g_shadow_target_unblurred() = nglCreateTexture(4609u, 256, 256, 0, 1);
+    g_shadow_target_unblurred = nglCreateTexture(4609u, 256, 256, 0, 1);
 
-    g_shadow_target_unblurred()->field_60 = tlFixedString{"unblurred shadow"};
+    g_shadow_target_unblurred->field_60 = tlFixedString {"unblurred shadow"};
 }
 
-void set_god_mode(int a1) {
-    Var<bool> god_mode_cheat{0x0095A6A8};
-    Var<bool> ultra_god_mode_cheat{0x0095A6A9};
-    Var<bool> mega_god_mode_cheat{0x0095A6AA};
+void set_god_mode(int a1)
+{
+    bool & god_mode_cheat = var<bool>(0x0095A6A8);
+    bool & ultra_god_mode_cheat = var<bool>(0x0095A6A9);
+    bool & mega_god_mode_cheat = var<bool>(0x0095A6AA);
 
-    god_mode_cheat() = false;
-    ultra_god_mode_cheat() = false;
-    mega_god_mode_cheat() = false;
+    god_mode_cheat = false;
+    ultra_god_mode_cheat = false;
+    mega_god_mode_cheat = false;
     switch (a1) {
     case 1:
-        god_mode_cheat() = true;
+        god_mode_cheat = true;
         return;
     case 2:
-        god_mode_cheat() = true;
-        ultra_god_mode_cheat() = true;
+        god_mode_cheat = true;
+        ultra_god_mode_cheat = true;
         break;
     case 3:
-        god_mode_cheat() = true;
-        mega_god_mode_cheat() = true;
+        god_mode_cheat = true;
+        mega_god_mode_cheat = true;
         break;
     case 4:
-        ultra_god_mode_cheat() = true;
+        ultra_god_mode_cheat = true;
         break;
     case 5:
-        mega_god_mode_cheat() = true;
+        mega_god_mode_cheat = true;
         break;
     }
 }
@@ -309,11 +310,11 @@ void app::tick()
             Sleep(0);
         }
 
-        static Var<bool> byte_9682F0{0x009682F0};
+        static bool & byte_9682F0 = var<bool>(0x009682F0);
 
         if (time_inc <= 0.0f)
         {
-            byte_9682F0() = true;
+            byte_9682F0 = true;
 
             if (g_smoke_test() != nullptr) {
                 g_smoke_test()->frame_advance();
@@ -345,16 +346,16 @@ void app::tick()
 
             assert(time_inc >= 0 && time_inc < 10.0f);
 
-            static Var<float> dword_9682D0{0x009682D0};
-            static Var<float> dword_9680A8{0x009680A8};
+            static float & dword_9682D0 = var<float>(0x009682D0);
+            static float & dword_9680A8 = var<float>(0x009680A8);
 
-            dword_9682D0() = time_inc;
-            dword_9680A8() = time_inc;
+            dword_9682D0 = time_inc;
+            dword_9680A8 = time_inc;
             nflUpdate();
             resource_manager::frame_advance(time_inc);
             link_system::frame_advance(time_inc);
             this->m_game->frame_advance(time_inc);
-            byte_9682F0() = false;
+            byte_9682F0 = false;
         }
 
         if (os_developer_options::instance->get_int(mString{"FRAME_LIMIT"}))
@@ -378,10 +379,10 @@ void app::create_inst()
 {
     TRACE("app::create_inst");
 
-    assert(instance() == nullptr);
+    assert(instance == nullptr);
 
     if constexpr (1) {
-        instance() = new app {};
+        instance = new app {};
     } else {
         CDECL_CALL(0x005B2450);
     }

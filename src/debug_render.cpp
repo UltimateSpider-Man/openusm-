@@ -574,7 +574,7 @@ void render_billboard(const vector3d &arg0, color32 a2, float a5, const char *a4
         uint32_t v39, v38;
         nglGetStringDimensions(Font, &v39, &v38, "M");
         auto v37 = (float)v38;
-        auto *v5 = app::instance();
+        auto *v5 = app::instance;
         auto *v6 = v5->m_game;
         auto *v7 = v6->get_current_view_camera(0);
         auto &v8 = v7->get_abs_po();

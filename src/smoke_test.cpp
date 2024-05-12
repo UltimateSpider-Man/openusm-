@@ -65,9 +65,9 @@ void smoke_test::sub_57B610()
     this->field_C = 0.0;
     this->field_4 = 0.0;
     this->field_8 = 0.0;
-    if ( app::instance() != nullptr )
+    if ( app::instance != nullptr )
     {
-        auto *v2 = app::instance()->m_game;
+        auto *v2 = app::instance->m_game;
         if ( strstr(this->field_20[this->field_18].field_0->c_str(), "M0_Arena") != nullptr
             || os_developer_options::instance->get_int(mString{"SOAK_SMOKE"}) != 0 )
         {

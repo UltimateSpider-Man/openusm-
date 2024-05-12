@@ -1745,7 +1745,7 @@ void game::load_this_level()
         this->field_160 = false;
         this->flag.game_paused = false;
         this->clear_screen();
-        app::instance()->field_38 += 10;
+        app::instance->field_38 += 10;
         mem_print_stats("at beginning of load_this_level()");
 
         g_mem_checkpoint_level() = 0; // mem_set_checkpoint()
@@ -2289,7 +2289,7 @@ void game::advance_state_load_level(Float a2)
             }
 
             us_lighting_switch_time_of_day(TOD);
-            app::instance()->field_38 += 2;
+            app::instance->field_38 += 2;
             this->flag.level_is_loaded = true;
             this->field_167 = false;
             loading_a_level() = false;
@@ -2719,11 +2719,11 @@ void game::render_ui()
                 static Var<bool> capturing{0x00960B47};
 
                 if (capturing()) {
-                    app::instance()->field_4.end_screen_recording();
+                    app::instance->field_4.end_screen_recording();
                 } else {
-                    mString v7{"L3ScreenShot"};
+                    mString v7 {"L3ScreenShot"};
 
-                    app::instance()->field_4.begin_screen_recording(v7, 30);
+                    app::instance->field_4.begin_screen_recording(v7, 30);
                 }
 
                 capturing() = !capturing();

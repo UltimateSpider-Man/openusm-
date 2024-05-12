@@ -33,7 +33,7 @@ void beam::_render(Float a1)
     {
         if ( this->field_A8 > 0.0f && this->field_78 < this->field_A8 )
         {
-            auto *the_game = app::instance()->m_game;
+            auto *the_game = app::instance->m_game;
             auto *cam = the_game->get_current_view_camera(0);
 
             vector3d abs_position = this->get_abs_position();

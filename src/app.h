@@ -59,7 +59,7 @@ struct app : singleton {
     //0x005D9430
     static void cleanup();
 
-    static Var<app *> instance;
+    static app *& instance;
 
     //0x005E99D0 + 0x005DBC10
     //virtual

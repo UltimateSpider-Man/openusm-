@@ -64,7 +64,7 @@ void occlusion::debug_render_occluders()
     for ( auto i = 0; i < num_active_shadow_volumes(); ++i )
     {
         auto *v12 = &active_shadow_volumes()[i];
-        auto *v1 = app::instance();
+        auto *v1 = app::instance;
         auto *v2 = v1->m_game;
         auto *v4 = v2->get_current_view_camera(0);
         auto &v5 = v4->get_abs_po();

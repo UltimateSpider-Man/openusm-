@@ -1682,9 +1682,9 @@ int __stdcall myWinMain(HINSTANCE hInstance,
                     auto v160 = (double) (v159 - v163);
                     v163 = v159;
                     v165 = v165 - v160 * 0.001;
-                    app::instance()->tick();
+                    app::instance->tick();
                     DWORD v168 = timeGetTime() - v158;
-                    app::instance()->m_game->field_278 = v168 * 0.001f;
+                    app::instance->m_game->field_278 = v168 * 0.001f;
 
                     if (g_inputSettingsInGame()->field_18.get_state(InputAction::ScreenShot) <=
                         0.0)
@@ -1733,14 +1733,14 @@ int __stdcall myWinMain(HINSTANCE hInstance,
     }
 LABEL_94:
 
-    if (app::instance() != nullptr) {
-        auto *vtbl = bit_cast<int(*)[1]>(app::instance()->m_vtbl);
+    if (app::instance != nullptr) {
+        auto *vtbl = bit_cast<int(*)[1]>(app::instance->m_vtbl);
 
         assert((*vtbl)[0] == 0x005E99D0);
 
-        delete app::instance();
+        delete app::instance;
 
-        app::instance() = nullptr;
+        app::instance = nullptr;
     }
 
     entity_handle_manager::delete_inst();
