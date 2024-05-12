@@ -463,12 +463,12 @@ void parse_cmd(const char *str)
                        strnicmp(i, "runlevel", strlen(i)) == 0) {
                 strcpy(g_scene_name(), strtok(nullptr, " "));
                 if (strnicmp(i, "smokelevel", strlen(i)) == 0) {
-                    os_developer_options::instance()->set_flag(75, true);
+                    os_developer_options::instance->set_flag(75, true);
                 }
 
-                os_developer_options::instance()->set_flag(76, true);
+                os_developer_options::instance->set_flag(76, true);
             } else if (strnicmp(i, "smoketest", strlen(i)) == 0) {
-                os_developer_options::instance()->set_flag(75, true);
+                os_developer_options::instance->set_flag(75, true);
             } else if (strnicmp(i, "-entityids", strlen(i))) {
                 if (strlen(i) > 2 && strnicmp(i, "-f", 2u) == 0) {
                     mString v13{i};
@@ -482,9 +482,9 @@ void parse_cmd(const char *str)
 
                         if (v16.size() && v17.size() == 1) {
                             if (*v17.c_str() == '1') {
-                                os_developer_options::instance()->set_flag(v16, true);
+                                os_developer_options::instance->set_flag(v16, true);
                             } else if (*v17.c_str() == '0') {
-                                os_developer_options::instance()->set_flag(v16, false);
+                                os_developer_options::instance->set_flag(v16, false);
                             }
                         }
                     }
@@ -500,7 +500,7 @@ void parse_cmd(const char *str)
 
                         if (v20.size() && v21.size()) {
                             auto v7 = atoi(v21.c_str());
-                            os_developer_options::instance()->set_int(v20, v7);
+                            os_developer_options::instance->set_int(v20, v7);
                         }
                     }
 
@@ -520,7 +520,7 @@ void parse_cmd(const char *str)
                         mString v18 = v14.slice(v8 + 1, v14.size());
 
                         if (v19.size() && v18.size()) {
-                            os_developer_options::instance()->set_string(v19, v18);
+                            os_developer_options::instance->set_string(v19, v18);
                         }
                     }
                 }
@@ -619,8 +619,8 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                     }
 
                     byte_965BF9() = (wParam != 0);
-                    if (os_developer_options::instance() != nullptr &&
-                        os_developer_options::instance()->get_flag(static_cast<os_developer_options::flags_t>(117))) {
+                    if (os_developer_options::instance != nullptr &&
+                        os_developer_options::instance->get_flag(static_cast<os_developer_options::flags_t>(117))) {
                         byte_965BF9() = true;
                     }
 
@@ -1231,7 +1231,7 @@ int __stdcall myWinMain(HINSTANCE hInstance,
     create_window_handle();
 
     os_developer_options::os_developer_init();
-    ini_parser::parse("game.ini", os_developer_options::instance());
+    ini_parser::parse("game.ini", os_developer_options::instance);
 
     sub_5C9EA0();
 
@@ -1278,19 +1278,19 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
     create_sound_ifc(g_appHwnd());
     ShowCursor(0);
-    os_developer_options::instance()->set_int(mString {"ALLOW_SCREENSHOT"}, 1);
+    os_developer_options::instance->set_int(mString {"ALLOW_SCREENSHOT"}, 1);
 
     window_manager::instance()->field_4 = g_appHwnd();
 
     parse_cmd(lpCmdLine);
 
-    if (os_developer_options::instance()->get_flag(mString {"HALT_ON_ASSERTS"})) {
+    if (os_developer_options::instance->get_flag(mString {"HALT_ON_ASSERTS"})) {
         g_debug().field_1 |= 1;
     } else {
         g_debug().field_1 &= 0xFE;
     }
 
-    if (g_is_the_packer() || !os_developer_options::instance()->get_flag(mString {"SCREEN_ASSERTS"})) {
+    if (g_is_the_packer() || !os_developer_options::instance->get_flag(mString {"SCREEN_ASSERTS"})) {
         g_debug().field_1 &= 0xFD;
     } else {
         g_debug().field_1 |= 2;
@@ -1314,7 +1314,7 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
     nflStart(dword_965C00());
 
-    int v17 = os_developer_options::instance()->get_int(mString {"RANDOM_SEED"});
+    int v17 = os_developer_options::instance->get_int(mString {"RANDOM_SEED"});
     if (v17) {
         srand(v17);
     } else {
@@ -1571,11 +1571,11 @@ int __stdcall myWinMain(HINSTANCE hInstance,
         0.1;
     Settings::MusicVolume() = g_settings()->sub_81D010("Settings\\MusicVolume", 10) * 0.1f;
 
-    if (os_developer_options::instance()->get_flag(mString {"EXCEPTION_HANDLER"})) {
+    if (os_developer_options::instance->get_flag(mString {"EXCEPTION_HANDLER"})) {
         SetUnhandledExceptionFilter(TopLevelExceptionFilter);
     }
 
-    ALLOW_ERROR_POPUPS() = os_developer_options::instance()->get_flag(mString {"ALLOW_ERROR_POPUPS"});
+    ALLOW_ERROR_POPUPS() = os_developer_options::instance->get_flag(mString {"ALLOW_ERROR_POPUPS"});
     if (!ALLOW_ERROR_POPUPS()) {
         SetErrorMode(2u);
     }
@@ -1603,13 +1603,13 @@ int __stdcall myWinMain(HINSTANCE hInstance,
     static Var<nglFrameLockType> g_frame_lock{0x00922920};
     nglSetFrameLock(g_frame_lock());
 
-    auto list_buffer = os_developer_options::instance()->get_int(mString{"PCLISTBUFFER"});
+    auto list_buffer = os_developer_options::instance->get_int(mString{"PCLISTBUFFER"});
     nglSetBufferSize(static_cast<nglBufferType>(0), list_buffer << 10, true);
-    auto scratch_buffer = os_developer_options::instance()->get_int(mString{"PCSCRATCHBUFFER"});
+    auto scratch_buffer = os_developer_options::instance->get_int(mString{"PCSCRATCHBUFFER"});
     nglSetBufferSize(static_cast<nglBufferType>(1), scratch_buffer << 10, true);
-    auto v154 = os_developer_options::instance()->get_int(mString{"PCSCRATCHINDEXBUFFER"});
+    auto v154 = os_developer_options::instance->get_int(mString{"PCSCRATCHINDEXBUFFER"});
     nglSetBufferSize(static_cast<nglBufferType>(2), 2 * v154, true);
-    auto v155 = os_developer_options::instance()->get_int(mString{"PCSCRATCHVERTEXBUFFER"});
+    auto v155 = os_developer_options::instance->get_int(mString{"PCSCRATCHVERTEXBUFFER"});
     nglSetBufferSize(static_cast<nglBufferType>(3), v155 << 10, true);
 
     aeps::Init();
@@ -1630,8 +1630,8 @@ int __stdcall myWinMain(HINSTANCE hInstance,
         }
 
         auto v163 = timeGetTime();
-        auto v165 = (double) os_developer_options::instance()->get_int(mString{"RUN_LENGTH"});
-        auto v164 = (os_developer_options::instance()->get_int(mString{"RUN_LENGTH"}) != -1);
+        auto v165 = (double) os_developer_options::instance->get_int(mString{"RUN_LENGTH"});
+        auto v164 = (os_developer_options::instance->get_int(mString{"RUN_LENGTH"}) != -1);
 
         g_timer()->sub_582180();
 
@@ -1789,9 +1789,9 @@ LABEL_94:
         window_manager::instance() = nullptr;
     }
 
-    if (os_developer_options::instance() != nullptr) {
-        delete os_developer_options::instance();
-        os_developer_options::instance() = nullptr;
+    if (os_developer_options::instance != nullptr) {
+        delete os_developer_options::instance;
+        os_developer_options::instance = nullptr;
     }
 
     sub_79DFF0();
@@ -2495,7 +2495,7 @@ BOOL install_redirects()
         nfl_system_patch();
     }
 
-    if constexpr (1)
+    if constexpr (0)
     {
         vm_patch();
 
@@ -2598,7 +2598,7 @@ BOOL install_redirects()
         sound_interface_patch();
     }
 
-    if constexpr (1)
+    if constexpr (0)
     {
         script_executable_patch();
 

@@ -180,24 +180,25 @@ terrain::~terrain()
             this->strips = nullptr;
         }
 
-        if ( terrain::regions_for_point() != nullptr )
+        if ( regions_for_point != nullptr )
         {
             for ( auto j = 0; j < this->total_regions; ++j ) {
-                regions_for_point()->clear();
+                regions_for_point->clear();
             }
 
-            if (regions_for_point() != nullptr) {
-                delete regions_for_point();
+            if (regions_for_point != nullptr) {
+                delete regions_for_point;
             }
 
-            terrain::regions_for_point() = nullptr;
+            regions_for_point = nullptr;
         }
 
-        if ( terrain::region_change_callbacks() != nullptr ) {
-            delete terrain::region_change_callbacks();
+        if ( region_change_callbacks != nullptr ) {
+            delete region_change_callbacks;
         }
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x0054E990, this);
     }
 }
@@ -562,12 +563,12 @@ void terrain::register_region_change_callback(void (*a3)(bool, region *)) {
     TRACE("terrain::register_region_change_callback");
 
     if constexpr (0) {
-        auto *v2 = region_change_callbacks();
-        if (region_change_callbacks() == nullptr) {
-            region_change_callbacks() = new _std::list<void (*)(bool, region *)>{};
+        auto *v2 = region_change_callbacks;
+        if (region_change_callbacks == nullptr) {
+            region_change_callbacks = new _std::list<void (*)(bool, region *)>{};
         }
 
-        assert(region_change_callbacks() != nullptr);
+        assert(region_change_callbacks != nullptr);
 
         auto *v4 = v2->m_head;
         auto *v5 = v2;
@@ -670,7 +671,7 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
 
     if constexpr (0)
     {
-        static Var<bool> byte_960C00 {0x00960C00};
+        static bool & byte_960C00 = var<bool>(0x00960C00);
         if ( g_world_ptr() != nullptr )
         {
             auto *v3 = g_world_ptr()->get_hero_ptr(0);
@@ -688,7 +689,7 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
                     if ( hero_reg != nullptr
                             || spider_monkey::is_running() )
                     {
-                        byte_960C00() = false;
+                        byte_960C00 = false;
                         auto *current_view_camera = g_game_ptr()->get_current_view_camera(0);
                         auto camera_abs_pos = current_view_camera->get_abs_position();
                         auto *cam_reg = this->find_region(camera_abs_pos, nullptr);
@@ -718,9 +719,9 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
 
                         this->field_68 = hero_reg;
                     }
-                    else if ( !byte_960C00() )
+                    else if ( !byte_960C00 )
                     {
-                        byte_960C00() = true;
+                        byte_960C00 = true;
 
                         auto v11 = g_world_ptr()->get_hero_ptr(0)->get_my_handle();
                         g_world_ptr()->entity_sinks({v11});
@@ -857,7 +858,7 @@ void terrain::find_ideal_terrain_packs_internal(const vector3d &a2,
                                 v70 = sub_53A7A0(a2, neighbor);
                             }
 
-                            if ( terrain::MAX_STREAMING_DISTANCE() > v70 )
+                            if ( terrain::MAX_STREAMING_DISTANCE > v70 )
                             {
                                 auto &v21 = region_priorities.at(neighbor);
                                 v21 = v70;
@@ -953,7 +954,7 @@ void terrain::start_streaming(void (*callback)(void))
 
     if constexpr (0)
     {
-        load_complete_callback() = callback;
+        load_complete_callback = callback;
         auto *district_partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_DISTRICT);
         assert(district_partition != nullptr);
 
@@ -1356,23 +1357,23 @@ region *terrain::find_region(string_hash a2) const
     }
 }
 
-_std::vector<region *> *terrain::get_region_info_for_point(vector3d a2)
+_std::vector<region *> * terrain::get_region_info_for_point(vector3d a2)
 {
-    if (regions_for_point() != nullptr) {
-        regions_for_point()->clear();
+    if (regions_for_point != nullptr) {
+        regions_for_point->clear();
     } else {
-        regions_for_point() = new _std::vector<region *>{};
+        regions_for_point = new _std::vector<region *>{};
     }
 
     for (int i = 0; i < this->total_regions; ++i)
     {
         auto *reg = this->regions[i];
         if (reg->is_inside_or_on(a2)) {
-            regions_for_point()->push_back(reg);
+            regions_for_point->push_back(reg);
         }
     }
 
-    return terrain::regions_for_point();
+    return regions_for_point;
 }
 
 void terrain::unlock_district_pack_slot(int slot_idx)

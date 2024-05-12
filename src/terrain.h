@@ -175,13 +175,13 @@ struct terrain {
 
     static inline constexpr auto STREAMING_BUBBLE_RADIUS2 = 16.0f;
 
-    static inline Var<_std::vector<region *> *> regions_for_point{0x0095C8D0};
+    static inline auto & regions_for_point = var<_std::vector<region *> *>(0x0095C8D0);
 
-    static inline Var<void (*)(void)> load_complete_callback{0x0095C8C8};
+    static inline auto & load_complete_callback = var<void (*)(void)>(0x0095C8C8);
 
-    static inline Var<_std::list<void (*)(bool, region *)> *> region_change_callbacks{0x0095C8CC};
+    static inline auto & region_change_callbacks = var<_std::list<void (*)(bool, region *)> *>(0x0095C8CC);
 
-    static inline Var<float> MAX_STREAMING_DISTANCE {0x00921DA4};
+    static inline float & MAX_STREAMING_DISTANCE = var<float>(0x00921DA4);
 };
 
 //0x
