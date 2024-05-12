@@ -717,21 +717,21 @@ void set_active_resource_context(resource_pack_slot *a1)
         }
         else
         {
-            nglSetTextureDirectory(tlresource_directory<nglTexture, tlFixedString>::system_dir());
-            nglSetMeshFileDirectory(tlresource_directory<nglMeshFile, tlFixedString>::system_dir());
-            nglSetMeshDirectory(tlresource_directory<nglMesh, tlHashString>::system_dir());
-            nglSetMorphDirectory(tlresource_directory<nglMorphSet, tlHashString>::system_dir());
+            nglSetTextureDirectory(tlresource_directory<nglTexture, tlFixedString>::system_dir);
+            nglSetMeshFileDirectory(tlresource_directory<nglMeshFile, tlFixedString>::system_dir);
+            nglSetMeshDirectory(tlresource_directory<nglMesh, tlHashString>::system_dir);
+            nglSetMorphDirectory(tlresource_directory<nglMorphSet, tlHashString>::system_dir);
             nglSetMaterialFileDirectory(
-                tlresource_directory<nglMaterialFile, tlFixedString>::system_dir());
+                tlresource_directory<nglMaterialFile, tlFixedString>::system_dir);
             nglSetMaterialDirectory(
-                tlresource_directory<nglMaterialBase, tlHashString>::system_dir());
-            nalSetAnimFileDirectory(tlresource_directory<nalAnimFile, tlFixedString>::system_dir());
+                tlresource_directory<nglMaterialBase, tlHashString>::system_dir);
+            nalSetAnimFileDirectory(tlresource_directory<nalAnimFile, tlFixedString>::system_dir);
             nalSetSkeletonDirectory(
-                tlresource_directory<nalBaseSkeleton, tlFixedString>::system_dir());
+                tlresource_directory<nalBaseSkeleton, tlFixedString>::system_dir);
             nalSetAnimDirectory(
-                tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::system_dir());
+                tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::system_dir);
             nalSetSceneAnimDirectory(
-                tlresource_directory<nalSceneAnim, tlFixedString>::system_dir());
+                tlresource_directory<nalSceneAnim, tlFixedString>::system_dir);
         }
 
     } else {

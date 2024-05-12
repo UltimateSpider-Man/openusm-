@@ -24,32 +24,29 @@ tlInstanceBank & nalTypeInstanceBank = var<tlInstanceBank>(0x009770E8);
 
 tlInstanceBank & nalComponentInstanceBank = var<tlInstanceBank>(0x00977100);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nalAnimFile, tlFixedString> *>
-    tlresource_directory<nalAnimFile, tlFixedString>::system_dir{0x009609F4};
+#define make_var(T0, T1, address) \
+template<> \
+tlInstanceBankResourceDirectory<T0, T1> *& \
+    tlresource_directory<T0, T1>::system_dir = var<tlInstanceBankResourceDirectory<T0, T1> *>(address)
 
-template<>
-Var<tlInstanceBankResourceDirectory<nalBaseSkeleton, tlFixedString> *>
-    tlresource_directory<nalBaseSkeleton, tlFixedString>::system_dir{0x009609E8};
+make_var(nalAnimFile, tlFixedString, 0x009609F4);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *>
-    tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::system_dir{0x009609F0};
+make_var(nalBaseSkeleton, tlFixedString, 0x009609E8);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *>
-    tlresource_directory<nalSceneAnim, tlFixedString>::system_dir{0x009609EC};
+make_var(nalAnimClass<nalAnyPose>, tlFixedString, 0x009609F0);
 
-Var<tlInstanceBankResourceDirectory<nalBaseSkeleton, tlFixedString> *> nalSkeletonDirectory =
-    (0x00977178);
+make_var(nalSceneAnim, tlFixedString, 0x009609EC);
 
-Var<tlInstanceBankResourceDirectory<nalAnimFile, tlFixedString> *> nalAnimFileDirectory{0x0097716C};
+#undef make_var
 
-Var<tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *> nalAnimDirectory{
-    0x00977170};
+tlInstanceBankResourceDirectory<nalBaseSkeleton, tlFixedString> *& nalSkeletonDirectory =
+    var<tlInstanceBankResourceDirectory<nalBaseSkeleton, tlFixedString> *>(0x00977178);
 
-Var<tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *> nalSceneAnimDirectory{
-    0x00977168};
+tlInstanceBankResourceDirectory<nalAnimFile, tlFixedString> *& nalAnimFileDirectory = var<tlInstanceBankResourceDirectory<nalAnimFile, tlFixedString> *>(0x0097716C);
+
+tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *& nalAnimDirectory = var<tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *>(0x00977170);
+
+tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *& nalSceneAnimDirectory = var<tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *>(0x00977168);
 
 int *& PanelComponentMgr::comp_list = var<int *>(0x0096F7DC);
 
@@ -82,9 +79,9 @@ char *nalComponentStringBase::GetType() {
 }
 
 nalBaseSkeleton *nalGetSkeleton(const tlFixedString &a1) {
-    nalBaseSkeleton * (__fastcall *Find)(void *, void *, const tlFixedString *) = CAST(Find, get_vfunc(nalSkeletonDirectory()->m_vtbl, 0xC));
+    nalBaseSkeleton * (__fastcall *Find)(void *, void *, const tlFixedString *) = CAST(Find, get_vfunc(nalSkeletonDirectory->m_vtbl, 0xC));
 
-    return Find(nalSkeletonDirectory(), nullptr, &a1);
+    return Find(nalSkeletonDirectory, nullptr, &a1);
 }
 
 struct nalHeap {
@@ -124,19 +121,19 @@ void nalInit(nalHeap *a1) {
         nalSkeletonPath[0] = 0;
         auto *mem = tlMemAlloc(20, 8, 0x2000000u);
 
-        nalAnimFileDirectory() = new (mem)
+        nalAnimFileDirectory = new (mem)
             tlInstanceBankResourceDirectory<nalAnimFile, tlFixedString>{};
 
         mem = tlMemAlloc(0x14, 8, 0x2000000u);
-        nalAnimDirectory() = new (mem)
+        nalAnimDirectory = new (mem)
             tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString>{};
 
         mem = tlMemAlloc(0x14, 8, 0x2000000u);
-        nalSceneAnimDirectory() = new (mem)
+        nalSceneAnimDirectory = new (mem)
             tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString>{};
 
         mem = tlMemAlloc(0x14, 8, 0x2000000u);
-        nalSkeletonDirectory() = new (mem)
+        nalSkeletonDirectory = new (mem)
             tlInstanceBankResourceDirectory<nalBaseSkeleton, tlFixedString>{};
 
         nalTypeInstanceBank.Init();
@@ -193,9 +190,9 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
 
         for (auto i = 0; i < anim_file->num_skeletons; ++i)
         {
-            nalBaseSkeleton * (__fastcall *Find)(void *, void *, const tlFixedString *) = CAST(Find, get_vfunc(nalSkeletonDirectory()->m_vtbl, 0xC));
+            nalBaseSkeleton * (__fastcall *Find)(void *, void *, const tlFixedString *) = CAST(Find, get_vfunc(nalSkeletonDirectory->m_vtbl, 0xC));
 
-            skeletons[i] = Find(nalSkeletonDirectory(), nullptr, &v1[i]);
+            skeletons[i] = Find(nalSkeletonDirectory, nullptr, &v1[i]);
             if (skeletons[i] == nullptr)
             {
                 auto v8 = anim_file->field_10.to_string();
@@ -246,8 +243,8 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
             void (__fastcall *Process)(void *) = CAST(Process, get_vfunc(anim_class->m_vtbl, 0x4));
             Process(anim_class);
 
-            bool (__fastcall *Add)(void *, void *, nalAnimClass<nalAnyPose> *) = CAST(Add, get_vfunc(nalAnimDirectory()->m_vtbl, 0x10));
-            if (Add(nalAnimDirectory(), nullptr, anim_class)) {
+            bool (__fastcall *Add)(void *, void *, nalAnimClass<nalAnyPose> *) = CAST(Add, get_vfunc(nalAnimDirectory->m_vtbl, 0x10));
+            if (Add(nalAnimDirectory, nullptr, anim_class)) {
                 auto *v6 = anim_class->field_8.to_string();
                 sp_log("Duplicate anim %s found.\n", v6);
             }
@@ -262,24 +259,24 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
 }
 
 void nalSetSkeletonDirectory(tlResourceDirectory<nalBaseSkeleton, tlFixedString> *a1) {
-    nalSkeletonDirectory() = CAST(nalSkeletonDirectory(), a1);
+    nalSkeletonDirectory = CAST(nalSkeletonDirectory, a1);
 }
 
 void nalSetAnimFileDirectory(tlResourceDirectory<nalAnimFile, tlFixedString> *a1) {
-    nalAnimFileDirectory() = CAST(nalAnimFileDirectory(), a1);
+    nalAnimFileDirectory = CAST(nalAnimFileDirectory, a1);
 }
 
 void nalSetAnimDirectory(tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *a1) {
-    nalAnimDirectory() = CAST(nalAnimDirectory(), a1);
+    nalAnimDirectory = CAST(nalAnimDirectory, a1);
 }
 
 tlResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *nalGetAnimDirectory()
 {
-    return nalAnimDirectory();
+    return nalAnimDirectory;
 }
 
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim, tlFixedString> *a1) {
-    nalSceneAnimDirectory() = CAST(nalSceneAnimDirectory(), a1);
+    nalSceneAnimDirectory = CAST(nalSceneAnimDirectory, a1);
 }
 
 void nalStreamInstance_patch()

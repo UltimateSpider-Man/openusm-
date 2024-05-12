@@ -1817,7 +1817,7 @@ void nglSetTextureDirectory(tlResourceDirectory<nglTexture, tlFixedString> *a1)
     TRACE("nglSetTextureDirectory");
 
     sp_log("0x%08X", a1->m_vtbl);
-    sp_log("0x%08x", tlresource_directory<nglTexture,tlFixedString>::system_dir()->m_vtbl);
+    sp_log("0x%08x", tlresource_directory<nglTexture,tlFixedString>::system_dir->m_vtbl);
 
     if constexpr (1) {
         nglTextureDirectory() = CAST(nglTextureDirectory(), a1);

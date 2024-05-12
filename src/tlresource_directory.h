@@ -1,7 +1,6 @@
 #pragma once
 
 #include "tlresourcedirectory.h"
-#include "variable.h"
 
 struct resource_directory;
 
@@ -18,9 +17,9 @@ struct tlresource_directory : tlResourceDirectory<T0, T1> {
 
     void Add(T0 *);
 
-    static Var<tlInstanceBankResourceDirectory<T0, T1> *> system_dir;
+    static tlInstanceBankResourceDirectory<T0, T1> *& system_dir;
 
-    static Var<T0 *> default_tlres;
+    static T0 *& default_tlres;
 
     static int tlres_type;
 };

@@ -17,84 +17,73 @@
 #include <cassert>
 
 #ifndef TEST_CASE
-template<>
-Var<tlInstanceBankResourceDirectory<nglTexture, tlFixedString> *>
-    tlresource_directory<nglTexture, tlFixedString>::system_dir{0x00960A10};
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMesh, tlHashString> *>
-    tlresource_directory<nglMesh, tlHashString>::system_dir = {0x00960A08};
+#define make_var(T0, T1, address) \
+template<> \
+tlInstanceBankResourceDirectory<T0, T1> *& \
+    tlresource_directory<T0, T1>::system_dir = \
+    var<tlInstanceBankResourceDirectory<T0, T1> *>(address)
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMeshFile, tlFixedString> *>
-    tlresource_directory<nglMeshFile, tlFixedString>::system_dir = {0x00960A0C};
+make_var(nglTexture, tlFixedString, 0x00960A10);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMorphSet, tlHashString> *>
-    tlresource_directory<nglMorphSet, tlHashString>::system_dir{0x00960A00};
+make_var(nglMesh, tlHashString, 0x00960A08);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMaterialFile, tlFixedString> *>
-    tlresource_directory<nglMaterialFile, tlFixedString>::system_dir{0x009609FC};
+make_var(nglMeshFile, tlFixedString, 0x00960A0C);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMaterialBase, tlHashString> *>
-    tlresource_directory<nglMaterialBase, tlHashString>::system_dir{0x009609F8};
+make_var(nglMorphSet, tlHashString, 0x00960A00);
+
+make_var(nglMaterialFile, tlFixedString, 0x009609FC);
+
+make_var(nglMaterialBase, tlHashString, 0x009609F8);
+
+#undef make_var
 
 #else
 
 template<typename T0, typename T1>
-static auto make_system_dir() -> decltype(auto) {
+static auto & make_system_dir()
+{
     static tlInstanceBankResourceDirectory<T0, T1> *g_system_dir;
-    return &g_system_dir;
+    return g_system_dir;
 }
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglTexture, tlFixedString> *>
-    tlresource_directory<nglTexture, tlFixedString>::system_dir{
-        make_system_dir<nglTexture, tlFixedString>()};
+#define make_var(T0, T1) \
+template<> \
+tlInstanceBankResourceDirectory<T0, T1> *& \
+    tlresource_directory<T0, T1>::system_dir { \
+        make_system_dir<T0, T1>()}
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMesh, tlHashString> *>
-    tlresource_directory<nglMesh, tlHashString>::system_dir{
-        make_system_dir<nglMesh, tlHashString>()};
+make_var(nglTexture, tlFixedString);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMeshFile, tlFixedString> *>
-    tlresource_directory<nglMeshFile, tlFixedString>::system_dir{
-        make_system_dir<nglMeshFile, tlFixedString>()};
+make_var(nglMesh, tlHashString);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMorphSet, tlHashString> *>
-    tlresource_directory<nglMorphSet, tlHashString>::system_dir{
-        make_system_dir<nglMorphSet, tlHashString>()};
+make_var(nglMeshFile, tlFixedString);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMaterialFile, tlFixedString> *>
-    tlresource_directory<nglMaterialFile, tlFixedString>::system_dir{
-        make_system_dir<nglMaterialFile, tlFixedString>()};
+make_var(nglMorphSet, tlHashString);
 
-template<>
-Var<tlInstanceBankResourceDirectory<nglMaterialBase, tlHashString> *>
-    tlresource_directory<nglMaterialBase, tlHashString>::system_dir{
-        make_system_dir<nglMaterialBase, tlHashString>()};
+make_var(nglMaterialFile, tlFixedString);
+
+make_var(nglMaterialBase, tlHashString);
+
+#undef make_var
 
 #endif
 
-template<>
-Var<nglMesh *> tlresource_directory<nglMesh, tlHashString>::default_tlres = {0x009609DC};
+#define make_var(T0, T1, address) \
+template<> \
+T0 *& tlresource_directory<T0, T1>::default_tlres = var<T0 *>(address);
 
-template<>
-Var<nalBaseSkeleton *> tlresource_directory<nalBaseSkeleton,tlFixedString>::default_tlres {0x009609BC};
+make_var(nglMesh, tlHashString, 0x009609DC);
 
-template<>
-Var<nglMeshFile *> tlresource_directory<nglMeshFile, tlFixedString>::default_tlres = {0x009609E0};
+make_var(nalBaseSkeleton, tlFixedString, 0x009609BC);
 
-template<>
-Var<nglTexture *> tlresource_directory<nglTexture, tlFixedString>::default_tlres {0x009609E4};
+make_var(nglMeshFile, tlFixedString, 0x009609E0);
 
-template<>
-Var<nalAnimClass<nalAnyPose> *> tlresource_directory<nalAnimClass<nalAnyPose>, tlFixedString>::default_tlres {0x009609C4};
+make_var(nglTexture, tlFixedString, 0x009609E4);
+
+make_var(nalAnimClass<nalAnyPose>, tlFixedString, 0x009609C4);
+
+#undef make_var
 
 template<>
 int tlresource_directory<nglMesh, tlHashString>::tlres_type = 3;
@@ -112,9 +101,9 @@ nglMeshFile *tlresource_directory<nglMeshFile, tlFixedString>::Find(const tlFixe
             v5 = CAST(v5, this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_MESH_FILE));
         }
 
-        if ( v5 == nullptr && system_dir() != nullptr )
+        if ( v5 == nullptr && system_dir != nullptr )
         {
-            v5 = system_dir()->Find(a2);
+            v5 = system_dir->Find(a2);
             bool SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             if ( v5 != nullptr )
             {
@@ -133,7 +122,7 @@ nglMeshFile *tlresource_directory<nglMeshFile, tlFixedString>::Find(const tlFixe
 
         if ( v5 == nullptr )
         {
-            v5 = (nglMeshFile *) default_tlres();
+            v5 = (nglMeshFile *) default_tlres;
         }
 
         return v5;
@@ -157,9 +146,9 @@ nglMesh *tlresource_directory<nglMesh,tlHashString>::Find(const tlHashString &a2
             v5 = (nglMesh *) this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_MESH);
         }
 
-        if ( v5 == nullptr && system_dir() != nullptr )
+        if ( v5 == nullptr && system_dir != nullptr )
         {
-            v5 = system_dir()->Find(a2);
+            v5 = system_dir->Find(a2);
 
             bool SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             if ( v5 != nullptr )
@@ -177,9 +166,8 @@ nglMesh *tlresource_directory<nglMesh,tlHashString>::Find(const tlHashString &a2
             }
         }
 
-        if ( v5 == nullptr )
-        {
-            v5 = default_tlres();
+        if ( v5 == nullptr ) {
+            v5 = default_tlres;
         }
 
         return v5;
@@ -212,9 +200,9 @@ nalBaseSkeleton *tlresource_directory<nalBaseSkeleton, tlFixedString>::Find(cons
             v5 = (nalBaseSkeleton *) this->field_4->get_tlresource(a1, TLRESOURCE_TYPE_SKELETON);
         }
 
-        if ( v5 == nullptr && system_dir() != nullptr )
+        if ( v5 == nullptr && system_dir != nullptr )
         {
-            v5 = system_dir()->Find(a1);
+            v5 = system_dir->Find(a1);
 
             auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
             if ( v5 != nullptr )
@@ -232,9 +220,8 @@ nalBaseSkeleton *tlresource_directory<nalBaseSkeleton, tlFixedString>::Find(cons
             }
         }
 
-        if ( v5 == nullptr )
-        {
-            v5 = default_tlres();
+        if ( v5 == nullptr ) {
+            v5 = default_tlres;
         }
 
         return v5;
@@ -259,10 +246,10 @@ nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedS
             v5 = (nglTexture *) this->field_4->get_tlresource(a1, TLRESOURCE_TYPE_TEXTURE);
         }
 
-        if ( v5 == nullptr && system_dir() != nullptr )
+        if ( v5 == nullptr && system_dir != nullptr )
         {
             auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString {"SHOW_RESOURCE_SPAM"});
-            v5 = system_dir()->Find(a1);
+            v5 = system_dir->Find(a1);
             if ( v5 != nullptr )
             {
                 if ( SHOW_RESOURCE_SPAM )
@@ -278,16 +265,16 @@ nglTexture *tlresource_directory<nglTexture, tlFixedString>::Find(const tlFixedS
             }
         }
 
-        if ( v5 == nullptr )
-        {
-            v5 = default_tlres();
+        if ( v5 == nullptr ) {
+            v5 = default_tlres;
         }
 
         return v5;
     }
     else
     {
-        return (nglTexture *) THISCALL(0x005691B0, this, &a1);
+        nglTexture * (__fastcall *func)(void *, void *edx, const tlFixedString *a1) = CAST(func, 0x005691B0);
+        return func(this, nullptr, &a1);
     }
 }
 
@@ -297,17 +284,16 @@ nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2
     TRACE("tlresource_directory<nglTexture,tlFixedString>::Find(uint32_t )", string_hash {int(a2)}.to_string());
 
     nglTexture *v3 = nullptr;
-    if ( this->field_4 != nullptr )
-    {
+    if ( this->field_4 != nullptr ) {
         v3 = (nglTexture *) this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_TEXTURE);
     }
 
-    if ( v3 == nullptr && system_dir() != nullptr )
+    if ( v3 == nullptr && system_dir != nullptr )
     {
         auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
 
-        nglTexture * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
-        v3 = find(system_dir(), nullptr, a2);
+        nglTexture * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir->m_vtbl, 0x8));
+        v3 = find(system_dir, nullptr, a2);
         if ( v3 != nullptr )
         {
             if ( SHOW_RESOURCE_SPAM )
@@ -321,9 +307,8 @@ nglTexture *tlresource_directory<nglTexture,tlFixedString>::Find(unsigned int a2
         }
     }
 
-    if ( v3 == nullptr )
-    {
-        v3 = default_tlres();
+    if ( v3 == nullptr ) {
+        v3 = default_tlres;
     }
 
     return v3;
@@ -342,10 +327,10 @@ nalAnimClass<nalAnyPose> *tlresource_directory<nalAnimClass<nalAnyPose>, tlFixed
             tlresource = CAST(tlresource, this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_ANIM));
         }
 
-        if ( tlresource == nullptr && system_dir() != nullptr )
+        if ( tlresource == nullptr && system_dir != nullptr )
         {
-            nalAnimClass<nalAnyPose> * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir()->m_vtbl, 0x8));
-            tlresource  = find(system_dir(), nullptr, a2);
+            nalAnimClass<nalAnyPose> * (__fastcall *find)(void *, void *, uint32_t) = CAST(find, get_vfunc(system_dir->m_vtbl, 0x8));
+            tlresource  = find(system_dir, nullptr, a2);
 
             auto SHOW_RESOURCE_SPAM = os_developer_options::instance()->get_flag(mString{"SHOW_RESOURCE_SPAM"});
 
@@ -362,7 +347,7 @@ nalAnimClass<nalAnyPose> *tlresource_directory<nalAnimClass<nalAnyPose>, tlFixed
         }
 
         if ( tlresource == nullptr ) {
-            return default_tlres();
+            return default_tlres;
         }
 
         return tlresource;
@@ -387,9 +372,9 @@ nglMesh *tlresource_directory<nglMesh, tlHashString>::Find(uint32_t a2)
             v3 = (nglMesh *) this->field_4->get_tlresource(a2, TLRESOURCE_TYPE_MESH);
         }
 
-        if (v3 == nullptr && system_dir() != nullptr) {
-            nglMesh * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(system_dir()->m_vtbl, 0x8));
-            auto *v3 = Find(system_dir(), nullptr, a2);
+        if (v3 == nullptr && system_dir != nullptr) {
+            nglMesh * (__fastcall *Find)(void *, void *, uint32_t) = CAST(Find, get_vfunc(system_dir->m_vtbl, 0x8));
+            auto *v3 = Find(system_dir, nullptr, a2);
             if (v3 != nullptr) {
                 //if (byte_15B2C1A)
                 sp_log("found tlresource %08x in system directory", a2);
@@ -401,7 +386,7 @@ nglMesh *tlresource_directory<nglMesh, tlHashString>::Find(uint32_t a2)
         }
 
         if (v3 == nullptr) {
-            v3 = default_tlres();
+            v3 = default_tlres;
         }
         return v3;
     }
