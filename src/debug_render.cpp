@@ -52,7 +52,7 @@ void sub_CB4800(const vector3d &a1,
         auto v42 = v44 / a3a;
 
         auto sub_CB4BE0 = []() -> vector3d {
-            auto *v1 = g_game_ptr()->get_current_view_camera(0);
+            auto *v1 = g_game_ptr->get_current_view_camera(0);
             auto v2 = v1->get_abs_position();
 
             return v2;

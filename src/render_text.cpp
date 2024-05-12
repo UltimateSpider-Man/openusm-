@@ -8,7 +8,7 @@ void render_text(const mString &a1, const vector2di &a2, color32 a3, Float a4, F
     //if ()
     {
         FEText fe_text{font_index{0},
-                       global_text_enum{0},
+                       static_cast<global_text_enum>(0),
                        (float) a2.x,
                        (float) a2.y,
                        (int) a4,

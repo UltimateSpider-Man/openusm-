@@ -317,7 +317,7 @@ void pc_joypad_device::_poll()
 
             Var<BOOL> dword_9363E4{0x009363E4};
 
-            if (g_game_ptr() != nullptr) {
+            if (g_game_ptr != nullptr) {
                 if (dword_9363E4()) {
                     if (this->m_axis_state.m_black_button > 50u) {
                         dword_9363E4() = false;

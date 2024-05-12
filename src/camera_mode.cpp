@@ -296,7 +296,7 @@ void camera_mode_lookaround::_frame_advance(
 
                 vector3d a3a = v29 + v7->eye;
                 a3a = lerp(v84, a3a, slow_mix());
-                auto *gamefile = g_game_ptr()->gamefile;
+                auto *gamefile = g_game_ptr->gamefile;
                 auto invert_camera_vert = gamefile->field_340.m_invert_camera_vert;
                 v84 = v7->eye - a3a;
 

@@ -111,7 +111,7 @@ void alternate_costumes::onActivate() {
         v3->field_28 = 0;
         this->field_34->AddButtons(menu_nav_bar::button_type{15},
                                    menu_nav_bar::button_type{17},
-                                   global_text_enum{3});
+                                   static_cast<global_text_enum>(3));
         auto *v4 = this->field_34;
         auto *v5 = v4->field_4.c_str();
 
@@ -134,7 +134,7 @@ void alternate_costumes::onActivate() {
         if (v7 != nullptr) {
             this->field_158 = v7->get_abs_position();
         } else {
-            auto *v8 = g_game_ptr()->get_current_view_camera(0);
+            auto *v8 = g_game_ptr->get_current_view_camera(0);
 
             this->field_158 = v8->get_abs_position();
         }
@@ -172,13 +172,14 @@ void alternate_costumes::onActivate() {
         v16->set_loc(v31);
         v16->field_68 = true;
 
-        if (!g_world_ptr()->field_28.field_48) {
-            g_game_ptr()->enable_marky_cam(true, true, -1000.0, 0.0);
+        if (!g_world_ptr()->field_28.field_48)
+        {
+            g_game_ptr->enable_marky_cam(true, true, -1000.0, 0.0);
             auto *v18 = g_world_ptr()->field_28.field_44;
             auto *vtbl = bit_cast<fastcall_call(*)[1]>(v18->m_vtbl);
             void (__fastcall *sync)(void *, void *, void *) = CAST(sync, (*vtbl)[165]);
 
-            auto *v20 = g_game_ptr()->get_current_view_camera(0);
+            auto *v20 = g_game_ptr->get_current_view_camera(0);
             sync(v18, nullptr, v20);
         }
 

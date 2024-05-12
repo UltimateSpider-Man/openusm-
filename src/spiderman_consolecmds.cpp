@@ -141,7 +141,7 @@ bool SetMaterialFeaturesCommand::process_cmd(const std::vector<std::string> &a2)
                 Material->field_44 = !Material->field_44;
             }
 
-            auto *v5 = g_game_ptr()->mb;
+            auto *v5 = g_game_ptr->mb;
             constexpr float v9 = 2.0;
             color32 v10 {255, 255, 255, 255};
             mString v1 {"Changed lightParam"};
@@ -170,7 +170,7 @@ bool SetMaterialFeaturesCommand::process_cmd(const std::vector<std::string> &a2)
             Material->field_40 = std::get<1>(arr[mode]);
         }
 
-        auto *v5 = g_game_ptr()->mb;
+        auto *v5 = g_game_ptr->mb;
         constexpr float v9 = 2.0;
         color32 v10 {255, 255, 255, 255};
         mString v1 {std::get<2>(arr[mode])};
@@ -218,12 +218,12 @@ bool SetCameraCommand::process_cmd(const std::vector<std::string> &a2)
                     geometry_manager::enable_scene_analyzer(false);
                 }
 
-                g_game_ptr()->enable_user_camera(true);
+                g_game_ptr->enable_user_camera(true);
 
             }
             else if ( v16 == 2 )
             {
-                g_game_ptr()->enable_user_camera(false);
+                g_game_ptr->enable_user_camera(false);
                 geometry_manager::enable_scene_analyzer(true);
             }
         }
@@ -234,7 +234,7 @@ bool SetCameraCommand::process_cmd(const std::vector<std::string> &a2)
                 geometry_manager::enable_scene_analyzer(false);
             }
 
-            g_game_ptr()->enable_user_camera(false);
+            g_game_ptr->enable_user_camera(false);
         }
 
     }

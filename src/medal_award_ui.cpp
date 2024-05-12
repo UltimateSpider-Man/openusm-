@@ -37,8 +37,8 @@ void medal_award_ui::Init() {
         this->field_34 = this->field_0->GetTextPointer("medal_text_PRESS");
 
         this->field_30 = this->field_0->GetTextPointer("medal_text_MEDAL");
-        this->field_2C->SetText(global_text_enum{419});
-        this->field_34->SetText(global_text_enum{420});
+        this->field_2C->SetText(static_cast<global_text_enum>(419));
+        this->field_34->SetText(static_cast<global_text_enum>(420));
         this->field_30->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});
         this->field_2C->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});
         this->field_34->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});

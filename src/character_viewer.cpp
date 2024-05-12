@@ -259,7 +259,7 @@ void character_viewer::OnActivate() {
         v3->field_28 = 0;
         this->field_34->AddButtons(menu_nav_bar::button_type{15},
                                    menu_nav_bar::button_type{17},
-                                   global_text_enum{3});
+                                   static_cast<global_text_enum>(3));
         auto *v4 = this->field_34;
 
         {
@@ -296,7 +296,7 @@ void character_viewer::OnActivate() {
             this->field_2E0[2] = v8[1];
             this->field_2E0[3] = v8[2];
         } else {
-            auto *v9 = g_game_ptr()->get_current_view_camera(0);
+            auto *v9 = g_game_ptr->get_current_view_camera(0);
 
             auto &v11 = v9->get_abs_position();
             this->field_2E0[1] = v11[0];
@@ -341,10 +341,10 @@ void character_viewer::OnActivate() {
         this->field_2D8->field_68 = 1;
         if (!g_world_ptr()->field_28.field_48)
 		{
-            g_game_ptr()->enable_marky_cam(true, true, -1000.0, 0.0);
+            g_game_ptr->enable_marky_cam(true, true, -1000.0, 0.0);
             auto *v20 = g_world_ptr()->field_28.field_44;
 
-            auto *v22 = g_game_ptr()->get_current_view_camera(0);
+            auto *v22 = g_game_ptr->get_current_view_camera(0);
 
             auto *vtbl = bit_cast<fastcall_call(*)[1]>(v20->m_vtbl);
             void (__fastcall *func)(void *, void *, void *) = CAST(func, (*vtbl)[165]);

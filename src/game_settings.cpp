@@ -195,7 +195,7 @@ void game_settings::soft_load(uint32_t soft_save_type) {
             std::memcpy(this->field_494[0], this->field_494[1], this->field_4B4);
         }
 
-        g_game_ptr()->field_15D = false;
+        g_game_ptr->field_15D = false;
         this->field_4C0 = false;
         this->export_game_settings();
         script_manager::load_game_var_buffer(this->field_494[soft_save_type]);
@@ -272,7 +272,7 @@ void game_settings::load_game(int slot_num)
 
                 this->field_4B8 = slot_num;
                 auto *v4 = g_world_ptr()->get_chase_cam_ptr(0);
-                g_game_ptr()->set_current_camera(v4, true);
+                g_game_ptr->set_current_camera(v4, true);
             }
         }
         else
@@ -424,7 +424,7 @@ void game_settings::save(int slot_num)
                     this->field_4B4);
 
         if (!MemoryUnitManager::SaveGame(this->field_4)) {
-            g_game_ptr()->field_15D = false;
+            g_game_ptr->field_15D = false;
         }
 
         this->field_4B8 = slot_num;

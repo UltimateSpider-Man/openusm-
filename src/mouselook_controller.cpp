@@ -63,7 +63,7 @@ void mouselook_controller::_frame_advance(Float time_inc)
 
     if constexpr (0)
     {
-        if ( !g_game_ptr()->is_user_camera_enabled() ) {
+        if ( !g_game_ptr->is_user_camera_enabled() ) {
             return;
         }
 

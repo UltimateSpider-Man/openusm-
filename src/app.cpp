@@ -185,7 +185,7 @@ app::app()
     physics_system_init();
 
     this->m_game = new game{};
-    g_game_ptr() = this->m_game;
+    g_game_ptr = this->m_game;
 
     resource_manager::create_inst();
     if (os_developer_options::instance->get_int(mString {"MONKEY_MODE"}) > 0) {
@@ -208,7 +208,7 @@ app::~app()
         delete this->m_game;
     }
 
-    g_game_ptr() = nullptr;
+    g_game_ptr = nullptr;
     this->m_game = nullptr;
 
     this->cleanup();
@@ -277,7 +277,7 @@ void app::tick()
         do
         {
             time_inc = this->field_34.elapsed();
-            g_game_ptr()->handle_frame_locking(&time_inc);
+            g_game_ptr->handle_frame_locking(&time_inc);
 
             assert(time_inc >= 0 && time_inc < 1e9f);
 
@@ -319,7 +319,7 @@ void app::tick()
                 g_smoke_test()->frame_advance();
             }
 
-            if ( (g_game_ptr()->flag.level_is_loaded && !g_game_ptr()->field_165) ||
+            if ( (g_game_ptr->flag.level_is_loaded && !g_game_ptr->field_165) ||
                     g_femanager.m_fe_menu_system != nullptr
                     && g_femanager.m_fe_menu_system->sub_60C230()
                     && g_cut_scene_player()->is_playing()) {

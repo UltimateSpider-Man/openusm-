@@ -369,7 +369,7 @@ void Console::hide() {
     input_mgr::instance()->field_20 &= 0xFFFFFFFE;
 #endif
 
-    g_game_ptr()->unpause();
+    g_game_ptr->unpause();
 }
 
 float Console::getHeight() {
@@ -678,7 +678,7 @@ void Console::show()
     input_mgr::instance()->field_20 |= 1u;
 #endif
 
-    g_game_ptr()->pause();
+    g_game_ptr->pause();
 }
 
 void Console::setRenderCursor(bool a2) {
@@ -751,9 +751,10 @@ void Console::render()
     }
 }
 
-void render_console_text(const mString &a1, vector2di a2, const color32 &a4) {
-    FEText v7{font_index{0},
-              global_text_enum{0},
+void render_console_text(const mString &a1, vector2di a2, const color32 &a4)
+{
+    FEText v7 {font_index{0},
+              static_cast<global_text_enum>(0),
               (float) a2.x,
               (float) a2.y,
               1,

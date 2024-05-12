@@ -36,10 +36,10 @@ void IGOZoomOutMap::UpdateInScene()
 }
 
 void IGOZoomOutMap::DoneZoomingBack() {
-    g_game_ptr()->enable_marky_cam(false, false, -1000.0, 0.0);
+    g_game_ptr->enable_marky_cam(false, false, -1000.0, 0.0);
     g_world_ptr()->field_28.field_44->set_affixed_x_facing(false);
-    g_game_ptr()->unpause();
-    g_game_ptr()->field_15E = false;
+    g_game_ptr->unpause();
+    g_game_ptr->field_15E = false;
 }
 
 bool IGOZoomOutMap::sub_55F320() {

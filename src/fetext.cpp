@@ -113,13 +113,17 @@ void FEText::Update(Float a2) {
     func(this, nullptr, a2);
 }
 
-void FEText::SetText(global_text_enum a2) {
-    if constexpr (0) {
+void FEText::SetText(global_text_enum a2)
+{
+    if constexpr (0)
+    {
         void (__fastcall *func)(FEText *, void *, global_text_enum) = CAST(func, get_vfunc(m_vtbl, 0x88));
         func(this, nullptr, a2);
-
-    } else {
-        mString v3{g_game_ptr()->field_7C->field_0->field_0[a2.field_0]};
+    }
+    else
+    {
+        auto *table = g_game_ptr->field_7C;
+        mString v3 {table->lookup_localized_string(a2)};
         this->SetTextNoLocalize(*bit_cast<FEText::string *>(&v3));
     }
 }

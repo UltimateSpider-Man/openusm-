@@ -115,7 +115,7 @@ void pause_menu_status::_Load() {
         float a5 = v26 - 45.f;
         float a4 = v27;
         auto *v15 = new (v14) FEText {(font_index)1,
-                global_text_enum {292},
+                static_cast<global_text_enum>(292),
                 a4,
                 a5,
                 5,

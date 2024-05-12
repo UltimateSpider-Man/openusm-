@@ -135,8 +135,8 @@ void input_mgr::scan_devices()
                 if (pc_input_mgr::instance()->pad[v5]->is_connected())
                 {
                     this->field_58 = static_cast<device_id_t>(v5 + 1000000);
-                    if (g_game_ptr() != nullptr) {
-                        g_game_ptr()->setup_inputs();
+                    if (g_game_ptr != nullptr) {
+                        g_game_ptr->setup_inputs();
                     }
                 }
 

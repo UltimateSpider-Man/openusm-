@@ -123,7 +123,7 @@ static game_process start_process{"start", start_flow, 5};
 static int pause_flow[] = {7, 14};
 static game_process pause_process{"pause", pause_flow, 2};
 
-Var<game *> g_game_ptr = (0x009682E0);
+game *& g_game_ptr = var<game *>(0x009682E0);
 
 static Var<int> g_debug_mem_dump_frame{0x00921DCC};
 
@@ -464,7 +464,7 @@ void game::soft_reset_process() {
 }
 
 void game::load_complete() {
-    g_game_ptr()->level.load_completed = true;
+    g_game_ptr->level.load_completed = true;
 }
 
 static Var<game_process> lores_game_process{0x00922074};
@@ -1132,12 +1132,12 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                         geometry_manager::enable_scene_analyzer(false);
                     }
 
-                    g_game_ptr()->enable_user_camera(false);
+                    g_game_ptr->enable_user_camera(false);
                 }
             }
             else
             {
-                g_game_ptr()->enable_user_camera(true);
+                g_game_ptr->enable_user_camera(true);
             }
         }
 
@@ -1895,7 +1895,7 @@ void game::load_this_level()
 
         po v86;
 
-        if ( g_game_ptr()->m_hero_start_enabled )
+        if ( g_game_ptr->m_hero_start_enabled )
 		{
             auto *marker_hero_start = find_marker(string_hash{"HERO_START"});
 
@@ -1929,7 +1929,7 @@ void game::load_this_level()
                     vector3d{(float) hero_start_x, (float) hero_start_y, (float) hero_start_z});
             }
         } else {
-            v86.set_position(g_game_ptr()->level.field_24);
+            v86.set_position(g_game_ptr->level.field_24);
         }
 
         auto *the_terrain = g_world_ptr()->the_terrain;
@@ -2351,7 +2351,7 @@ void sub_5BC870()
 {
     CDECL_CALL(0x005BC870);
 
-    g_game_ptr()->mb->render();
+    g_game_ptr->mb->render();
 }
 
 void game::render_interface()
@@ -2672,7 +2672,7 @@ void game::render_ui()
 
         if (os_developer_options::instance->get_flag(static_cast<os_developer_options::flags_t>(107)))
         {
-            auto v2 = g_game_ptr()->get_script_game_clock_timer();
+            auto v2 = g_game_ptr->get_script_game_clock_timer();
 
             mString v8{0, "%d:%.02d", (int) v2 / 3600, (int) v2 / 60 % 60};
             auto *v3 = v8.c_str();
@@ -2741,7 +2741,7 @@ void hook_nglListEndScene()
     {
         if (os_developer_options::instance->get_flag(mString{"SHOW_DEBUG_INFO"}))
         {
-            g_game_ptr()->show_debug_info();
+            g_game_ptr->show_debug_info();
         }
     }
 

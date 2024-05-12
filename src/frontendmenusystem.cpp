@@ -178,7 +178,7 @@ void FrontEndMenuSystem::GoNextState() {
         case 6: {
             switch (this->field_4[this->m_index][5].field_28) {
             case 0: {
-                g_game_ptr()->gamefile->load_most_recent_game();
+                g_game_ptr->gamefile->load_most_recent_game();
                 this->BringUpDialogBox(10, fe_state{10}, fe_state{10});
                 goto LABEL_27;
             }

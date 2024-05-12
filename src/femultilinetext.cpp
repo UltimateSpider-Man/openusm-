@@ -129,7 +129,7 @@ void FEMultiLineText::SetButtonScale(Float a2) {
 }
 
 void FEMultiLineText::SetTextBox(global_text_enum a2, int a3, Float a4) {
-    //sp_log("FEMultiLineText::SetTextBox: %s", g_game_ptr()->field_7C->field_0->field_0[a2.field_0]);
+    //sp_log("FEMultiLineText::SetTextBox: %s", g_game_ptr->field_7C->field_0->field_0[a2]);
 
     THISCALL(0x00618070, this, a2, a3, a4);
 }
@@ -340,7 +340,7 @@ void FEMultiLineText::SetTextAlloc(global_text_enum a2) {
 }
 
 void FEMultiLineText::SetText(global_text_enum a2) {
-    sp_log("FEMultiLineText::SetText: %s", g_game_ptr()->field_7C->field_0->field_0[a2.field_0]);
+    sp_log("FEMultiLineText::SetText: %s", g_game_ptr->field_7C->lookup_localized_string(a2));
 
     THISCALL(0x00618030, this, a2);
 }

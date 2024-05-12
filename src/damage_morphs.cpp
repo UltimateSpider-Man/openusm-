@@ -99,8 +99,9 @@ bool damage_morphs::intercepting_allocations() {
     return allocations_intercept_reference_count() > 0;
 }
 
-bool damage_morphs::is_subject_off_screen(actor *a1) {
-    auto *v2 = g_game_ptr()->get_current_view_camera(0);
+bool damage_morphs::is_subject_off_screen(actor *a1)
+{
+    auto *v2 = g_game_ptr->get_current_view_camera(0);
     if (v2 == nullptr) {
         return false;
     }

@@ -13,10 +13,12 @@
 
 #include <cassert>
 
-void localized_string_table::load_localizer() {
+void localized_string_table::load_localizer()
+{
     TRACE("localized_string_table::load_localizer");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         [[maybe_unused]] auto a3 = os_developer_options::instance->get_string(os_developer_options::strings_t::SKU);
         globalTextLanguage() = 0;
 
@@ -72,8 +74,10 @@ void localized_string_table::load_localizer() {
         assert(string_localizer != nullptr);
 
         string_localizer->sub_60BD30();
-        g_game_ptr()->field_7C = string_localizer;
-    } else {
+        g_game_ptr->field_7C = string_localizer;
+    }
+    else
+    {
         CDECL_CALL(0x0062EF10);
     }
 }
@@ -125,13 +129,14 @@ const char *localized_string_table::lookup_scripttext_string(int num) {
     return result;
 }
 
-const char *localized_string_table::lookup_localized_string(global_text_enum num) {
+const char *localized_string_table::lookup_localized_string(global_text_enum num)
+{
     static constexpr auto GT_LAST = 478;
 
-    assert(num.field_0 >= 0);
-    assert(num.field_0 < GT_LAST);
+    assert(num >= 0);
+    assert(num < GT_LAST);
 
-    auto *result = this->field_0->field_0[num.field_0];
+    auto *result = this->field_0->field_0[num];
 
     return result;
 }

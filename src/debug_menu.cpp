@@ -92,7 +92,7 @@ void debug_menu::frame_advance(Float a1)
             }
             else if ( spider_monkey::is_running() ||
                     !os_developer_options::instance->get_flag("ENABLE_ZOOM_MAP") ||
-                    g_game_ptr()->is_physics_enabled() )
+                    g_game_ptr->is_physics_enabled() )
             {
                 show();
             }
@@ -1438,14 +1438,14 @@ void debug_menu::show()
 
 void debug_menu::grab_focus()
 {
-    physics_state_on_exit = !g_game_ptr()->is_physics_enabled();
-    g_game_ptr()->enable_physics(false);
+    physics_state_on_exit = !g_game_ptr->is_physics_enabled();
+    g_game_ptr->enable_physics(false);
     has_focus = true;
 }
 
 void debug_menu::release_focus()
 {
-    g_game_ptr()->enable_physics(physics_state_on_exit);
+    g_game_ptr->enable_physics(physics_state_on_exit);
     has_focus = false;
 }
 

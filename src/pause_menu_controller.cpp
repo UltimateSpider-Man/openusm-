@@ -74,10 +74,10 @@ void pause_menu_controller::OnActivate() {
     auto *v2 = this->field_214->field_30;
     v2->field_4 = {};
     v2->field_28 = 0;
-    v2->AddButtons(menu_nav_bar::button_type{2}, menu_nav_bar::button_type{17}, global_text_enum{8});
+    v2->AddButtons(menu_nav_bar::button_type{2}, menu_nav_bar::button_type{17}, static_cast<global_text_enum>(8));
     v2->AddButtons(menu_nav_bar::button_type{15},
                    menu_nav_bar::button_type{17},
-                   global_text_enum{3});
+                   static_cast<global_text_enum>(3));
     v2->Reformat();
     sub_579030();
 }

@@ -15,16 +15,17 @@ void race_announcer::Init() {
         this->field_10 = this->field_0->GetTextPointer("ra_text_SET");
 
         this->field_14 = this->field_0->GetTextPointer("ra_text_GO");
-        this->field_C->SetText(global_text_enum{421});
-        this->field_10->SetText(global_text_enum{422});
-        this->field_14->SetText(global_text_enum{423});
+        this->field_C->SetText(static_cast<global_text_enum>(421));
+        this->field_10->SetText(static_cast<global_text_enum>(422));
+        this->field_14->SetText(static_cast<global_text_enum>(423));
         this->field_C->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});
         this->field_10->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});
         this->field_14->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});
         this->field_4 = *this->field_0->field_28.m_data;
     }
 
-    if (this->field_0 != nullptr) {
+    if (this->field_0 != nullptr)
+    {
         this->field_8->TurnOn(false);
         auto **v2 = &this->field_C;
         auto v3 = 3;

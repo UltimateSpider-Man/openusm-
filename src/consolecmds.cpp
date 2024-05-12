@@ -174,7 +174,7 @@ bool LoadLevelCommand::process_cmd(const std::vector<std::string> &a1) {
     auto *v3 = v2.c_str();
     g_console->addToLog("Now loading level %s", v3);
     auto &v4 = a1[0];
-    g_game_ptr()->load_new_level(v4.c_str(), -1);
+    g_game_ptr->load_new_level(v4.c_str(), -1);
     return true;
 }
 
@@ -331,7 +331,7 @@ bool GameInfoCommand::process_cmd(const std::vector<std::string> &a2)
         if ( a2.size() <= 1 )
         {
             float a3 = 0.0;
-            auto *v11 = g_game_ptr()->get_game_settings();
+            auto *v11 = g_game_ptr->get_game_settings();
             v11->get_num(a2a, a3, true);
 
             auto &v8 = a2.at(0);
@@ -343,7 +343,7 @@ bool GameInfoCommand::process_cmd(const std::vector<std::string> &a2)
             auto &v4 = a2.at(1);
             auto *v5 = v4.c_str();
             auto num = atof(v5);
-            auto *v6 = g_game_ptr()->get_game_settings();
+            auto *v6 = g_game_ptr->get_game_settings();
             v6->set_num(a2a, num);
         }
     }
@@ -354,7 +354,7 @@ bool GameInfoCommand::process_cmd(const std::vector<std::string> &a2)
         auto func = [](const char *str) -> void {
             resource_key key {string_hash {str}, RESOURCE_KEY_TYPE_IFC_ATTRIBUTE};
             float num = 0.0;
-            auto *v11 = g_game_ptr()->get_game_settings();
+            auto *v11 = g_game_ptr->get_game_settings();
             if ( v11->get_num(key, num, true) ) {
                 g_console->addToLog("%s = %.2f", str, num);
             }
@@ -564,8 +564,9 @@ QuitCommand::QuitCommand() {
     setName("quit");
 }
 
-bool QuitCommand::process_cmd(const std::vector<std::string> &) {
-    g_game_ptr()->field_164 = true;
+bool QuitCommand::process_cmd(const std::vector<std::string> &)
+{
+    g_game_ptr->field_164 = true;
     return true;
 }
 

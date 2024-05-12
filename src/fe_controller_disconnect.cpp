@@ -41,7 +41,7 @@ void fe_controller_disconnect::draw()
 
         if (dialog_up()) {
             if (currently_plugged_in()) {
-                text_box()->SetText(global_text_enum{472});
+                text_box()->SetText(static_cast<global_text_enum>(472));
             } else {
                 auto v8 = input_mgr::instance()->field_58;
                 int v9 = 1;
@@ -50,7 +50,7 @@ void fe_controller_disconnect::draw()
                 }
 
                 char Dest[256]{};
-                sprintf(Dest, g_game_ptr()->field_7C->field_0->field_0[455], v9);
+                sprintf(Dest, g_game_ptr->field_7C->field_0->field_0[455], v9);
                 auto *v10 = back_ground_quad();
                 auto v11 = v10->GetMin();
                 auto v12 = v11[0] - v10->GetMax()[0];

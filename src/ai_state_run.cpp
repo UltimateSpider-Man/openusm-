@@ -93,9 +93,9 @@ ai::state_trans_messages run_state::_frame_advance(Float a2)
             assert(lateral_distance >= 0.0f);
 
             if (hero_inode::get_hero_type() == 2) {
-                g_game_ptr()->gamefile->update_miles_run_venom(lateral_distance);
+                g_game_ptr->gamefile->update_miles_run_venom(lateral_distance);
             } else {
-                g_game_ptr()->gamefile->update_miles_run_spidey(lateral_distance);
+                g_game_ptr->gamefile->update_miles_run_spidey(lateral_distance);
             }
         }
 
@@ -281,7 +281,7 @@ ai::state_trans_messages run_state::_frame_advance(Float a2)
             assert(norm_stick_dir.is_normal());
             assert(norm_stick_dir.is_valid());
 
-            cam_ptr = g_game_ptr()->get_current_view_camera(0);
+            cam_ptr = g_game_ptr->get_current_view_camera(0);
 
             v92 = cam_ptr->get_abs_po().m[2];
 

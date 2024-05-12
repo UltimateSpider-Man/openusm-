@@ -76,11 +76,12 @@ void main_menu_options::Update(Float a3) {
     }
 }
 
-void main_menu_options::OnActivate() {
+void main_menu_options::OnActivate()
+{
     {
-        auto &table = g_game_ptr()->field_7C;
+        auto &table = g_game_ptr->field_7C;
 
-        sp_log("%s", table->lookup_localized_string(global_text_enum{259}));
+        sp_log("%s", table->lookup_localized_string(static_cast<global_text_enum>(259)));
         //assert(0);
     }
 

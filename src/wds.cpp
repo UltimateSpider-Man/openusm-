@@ -1337,7 +1337,7 @@ int world_dynamics_system::add_player(const mString &a2)
             if ( this->num_players == 0 )
             {
                 auto *v3 = a2.c_str();
-                g_game_ptr()->load_hero_packfile(v3, false);
+                g_game_ptr->load_hero_packfile(v3, false);
             }
 
             auto *marker = this->field_230[0];
@@ -1617,14 +1617,15 @@ int world_dynamics_system::remove_player(int player_num)
     bit_cast<actor *>(this->field_230[this->num_players])->destroy_player_controller();
     g_world_ptr()->ent_mgr.destroy_entity(this->field_230[this->num_players]);
     this->field_230[this->num_players] = nullptr;
-    if (this->num_players == 0) {
-        g_game_ptr()->unload_hero_packfile();
+    if (this->num_players == 0)
+    {
+        g_game_ptr->unload_hero_packfile();
         this->field_234[0] = CAST(this->field_234[0], this->field_28.field_44);
         g_spiderman_camera_ptr() = nullptr;
     }
 
     auto *v6 = this->get_chase_cam_ptr(0);
-    g_game_ptr()->set_current_camera(v6, true);
+    g_game_ptr->set_current_camera(v6, true);
     this->deactivate_web_splats();
     this->deactivate_corner_web_splats();
     return this->num_players;

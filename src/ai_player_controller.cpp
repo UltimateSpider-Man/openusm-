@@ -307,7 +307,7 @@ vector3d ai_player_controller::compute_left_stick_from_camera()
 
     if constexpr (1)
     {
-        auto *cam = g_game_ptr()->get_current_view_camera(0);
+        auto *cam = g_game_ptr->get_current_view_camera(0);
         if (cam != nullptr)
         {
             auto v8 = this->field_2BC[1].field_10;
@@ -384,7 +384,7 @@ void ai_player_controller::frame_advance(Float a2)
     TRACE("ai_player_controller::frame_advance");
 
     if (this->field_4[0] == nullptr) {
-        this->field_4[0] = CAST(this->field_4[0], g_game_ptr()->current_game_camera);
+        this->field_4[0] = CAST(this->field_4[0], g_game_ptr->current_game_camera);
 
         auto *hero_camera = this->field_4[0];
         assert(hero_camera != nullptr);

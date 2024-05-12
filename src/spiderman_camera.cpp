@@ -183,7 +183,7 @@ void spiderman_camera::adjust_geometry_pipe(bool a1)
             auto &pos = abs_po->get_position();
 
             geometry_manager::set_view(pos, eye, up);
-        } else if (g_game_ptr() != nullptr && !g_game_ptr()->m_user_camera_enabled) {
+        } else if (g_game_ptr != nullptr && !g_game_ptr->m_user_camera_enabled) {
             auto &pos = abs_po->get_position();
             geometry_manager::set_view(pos, eye, up);
         }
@@ -257,16 +257,16 @@ void spiderman_camera::_frame_advance(Float a2)
 
     if constexpr (0)
     {
-        if ( g_game_ptr()->level_is_loaded()
-            && !g_game_ptr()->is_paused()
+        if ( g_game_ptr->level_is_loaded()
+            && !g_game_ptr->is_paused()
             && !os_developer_options::instance->get_flag(mString {"SHOW_PROFILE_INFO"}) )
         {
-            static Var<int> old_devopt_fov {0x00959E54};
+            static int & old_devopt_fov = var<int>(0x00959E54);
             this->field_1D0.update(a2);
             auto CAMERA_FOV = os_developer_options::instance->get_int(mString {"CAMERA_FOV"});
-            if ( CAMERA_FOV != old_devopt_fov() )
+            if ( CAMERA_FOV != old_devopt_fov )
             {
-                old_devopt_fov() = CAMERA_FOV;
+                old_devopt_fov = CAMERA_FOV;
                 auto fov = CAMERA_FOV * 0.017453292f;
                 this->set_fov(fov);
             }

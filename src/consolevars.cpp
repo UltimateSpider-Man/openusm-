@@ -149,7 +149,7 @@ void HealthVariable::setValue(const std::string &arg0, const std::string &a1) {
 
                         mString v13 = v32;
 
-                        auto *v10 = g_game_ptr()->mb;
+                        auto *v10 = g_game_ptr->mb;
 
                         v10->post(*bit_cast<message_board::string *>(&v13), v14, (color32) v15);
                         v36 = true;
@@ -172,7 +172,7 @@ void HealthVariable::setValue(const std::string &arg0, const std::string &a1) {
 
                     mString v13 = v31;
 
-                    auto *v12 = g_game_ptr()->mb;
+                    auto *v12 = g_game_ptr->mb;
 
                     v12->post(*bit_cast<message_board::string *>(&v13), v14, v15);
                 }
@@ -298,13 +298,14 @@ void DifficultyVariable::setValue(const std::string &a2) {
         g_console->addToLog("%s must be an integer between 0 and 3", v4);
 
     } else {
-        auto *v4 = g_game_ptr()->get_game_settings();
+        auto *v4 = g_game_ptr->get_game_settings();
         v4->field_340.m_difficulty = v7;
     }
 }
 
-std::string DifficultyVariable::getValue() {
-    auto *v1 = g_game_ptr()->get_game_settings();
+std::string DifficultyVariable::getValue()
+{
+    auto *v1 = g_game_ptr->get_game_settings();
     float v2 = v1->field_340.m_difficulty;
     return std::to_string(v2);
 }

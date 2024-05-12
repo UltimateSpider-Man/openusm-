@@ -215,9 +215,9 @@ void mission_manager::frame_advance(Float a2)
     TRACE("mission_manager::frame_advance");
     if constexpr (0)
     {
-        if ( (!g_game_ptr()->flag.physics_enabled || g_game_ptr()->flag.single_step)
-            && g_game_ptr()->level.load_completed
-            && g_game_ptr()->flag.level_is_loaded )
+        if ( (!g_game_ptr->flag.physics_enabled || g_game_ptr->flag.single_step)
+            && g_game_ptr->level.load_completed
+            && g_game_ptr->flag.level_is_loaded )
         {
             auto v4 = this->field_FC;
             if ( v4 == 4 || v4 == 3 )
@@ -235,7 +235,7 @@ void mission_manager::frame_advance(Float a2)
                 if ( v6 )
                 {
                     this->field_FC = 0;
-                    g_game_ptr()->field_166 = 0;
+                    g_game_ptr->field_166 = 0;
                 }
             }
 
@@ -289,7 +289,7 @@ void mission_manager::frame_advance(Float a2)
                 this->field_78 = (float *)script_manager::get_game_var_address(v22, nullptr, nullptr);
             }
 
-            if ( !g_game_ptr()->flag.game_paused || s_freeze_game_time() )
+            if ( !g_game_ptr->flag.game_paused || s_freeze_game_time() )
             {
                 auto v10 = (double)this->field_74;
                 if ( this->field_74 < 0 )
@@ -366,7 +366,7 @@ void mission_manager::frame_advance(Float a2)
                 if ( this->m_script_to_load == nullptr
                     && this->m_script == nullptr
                     && !this->field_CC
-                    && !g_game_ptr()->flag.game_paused
+                    && !g_game_ptr->flag.game_paused
                     && this->get_script(&script_data) )
                 {
                     if ( script_data.uses_script_stack )

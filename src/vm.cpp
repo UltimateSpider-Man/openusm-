@@ -51,8 +51,8 @@ bool slf__set_mission_text__num__t::operator()(vm_stack &stack,
     float *v3 = (float *) (stack.get_SP() - v1);
     stack.pop(v1);
 
-    auto *v4 = g_game_ptr()->field_7C->lookup_scripttext_string((uint64_t) *v3);
-    mString a2a{v4};
+    auto *v4 = g_game_ptr->field_7C->lookup_scripttext_string((uint64_t) *v3);
+    mString a2a {v4};
 
     sp_log("%s", a2a.c_str());
 
@@ -90,7 +90,7 @@ bool slf__set_mission_text__num__t::operator()(vm_stack &stack,
                 break;
             }
             case 's': {
-                auto v11 = g_game_ptr()->field_7C->lookup_scripttext_string((uint64_t) *v7);
+                auto v11 = g_game_ptr->field_7C->lookup_scripttext_string((uint64_t) *v7);
                 result_string.append(v11);
                 ++v7;
                 break;

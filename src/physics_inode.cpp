@@ -300,7 +300,7 @@ void physics_inode::setup_for_swing()
                                                      g_normal_air_res_down_scale,
                                                      nullptr);
 
-        int swing_speed = g_game_ptr()->gamefile->field_340.m_swing_speed;
+        int swing_speed = g_game_ptr->gamefile->field_340.m_swing_speed;
 
         float v28;
 

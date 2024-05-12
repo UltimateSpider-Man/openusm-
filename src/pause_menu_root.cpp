@@ -91,27 +91,27 @@ void pause_menu_root::_Load()
         this->field_60->TurnOn(1);
         this->field_64->TurnOn(1);
         this->field_9C->SetShown(true);
-        this->field_9C->SetText(global_text_enum {253});
+        this->field_9C->SetText(static_cast<global_text_enum>(253));
         this->field_9C->SetNoFlash(color32 {0xFFC8C8C8});
         this->field_A0->SetShown(1);
-        this->field_A0->SetText(global_text_enum {271});
+        this->field_A0->SetText(static_cast<global_text_enum>(271));
         this->field_A0->SetNoFlash(color32 {0xFFC8C8C8});
         this->field_A4->SetShown(1);
-        this->field_A4->SetText(global_text_enum {254});
+        this->field_A4->SetText(static_cast<global_text_enum>(254));
         this->field_A4->SetNoFlash(color32 {0xFFC87238});
         this->field_A8->SetShown(1);
-        this->field_A8->SetText(global_text_enum {255});
+        this->field_A8->SetText(static_cast<global_text_enum>(255));
         this->field_A8->SetNoFlash(color32 {0xFFC87238});
 
-        this->field_78[7]->SetText(global_text_enum {265});
-        this->field_78[0]->SetText(global_text_enum {275});
-        this->field_78[1]->SetText(global_text_enum {260});
-        this->field_78[2]->SetText(global_text_enum {258});
-        this->field_78[3]->SetText(global_text_enum {259});
-        this->field_78[4]->SetText(global_text_enum {273});
-        this->field_78[5]->SetText(global_text_enum {263});
-        this->field_78[8]->SetText(global_text_enum {261});
-        this->field_78[6]->SetText(global_text_enum {297});
+        this->field_78[7]->SetText(static_cast<global_text_enum>(265));
+        this->field_78[0]->SetText(static_cast<global_text_enum>(275));
+        this->field_78[1]->SetText(static_cast<global_text_enum>(260));
+        this->field_78[2]->SetText(static_cast<global_text_enum>(258));
+        this->field_78[3]->SetText(static_cast<global_text_enum>(259));
+        this->field_78[4]->SetText(static_cast<global_text_enum>(273));
+        this->field_78[5]->SetText(static_cast<global_text_enum>(263));
+        this->field_78[8]->SetText(static_cast<global_text_enum>(261));
+        this->field_78[6]->SetText(static_cast<global_text_enum>(297));
 
         auto v8 = this->field_78[0]->GetX();
         auto v9 = this->field_78[0]->GetY();
@@ -191,7 +191,8 @@ void pause_menu_root::update_switching_heroes() {
         }
 
         auto *v4 = g_femanager.IGO->hero_health;
-        if (v4->field_0[v3] != nullptr) {
+        if (v4->field_0[v3] != nullptr)
+        {
             v4->field_30 = g_world_ptr()->get_hero_ptr(0)->my_handle.field_0;
             v4->field_38 = v3;
             v4->UpdateMasking();

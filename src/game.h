@@ -350,7 +350,7 @@ struct game {
     static inline void (* setup_inputs_p)(game *) = game__setup_inputs;
 };
 
-extern Var<game *> g_game_ptr;
+extern game *& g_game_ptr;
 
 //0x00581B40
 extern void system_idle();

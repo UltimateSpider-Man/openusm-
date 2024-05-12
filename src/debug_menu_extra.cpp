@@ -607,9 +607,9 @@ void populate_gamefile_menu([[maybe_unused]] debug_menu_entry *entry)
 
     auto *v494 = v2;
     entry->set_submenu(v2);
-    if ( g_game_ptr() != nullptr )
+    if ( g_game_ptr != nullptr )
     {
-        auto *v493 = g_game_ptr()->get_game_settings();
+        auto *v493 = g_game_ptr->get_game_settings();
 
         auto *v492 = create_menu_entry(mString {"HERO_POINTS"});
         v492->set_p_ival(&v493->field_340.m_hero_points);
@@ -1125,13 +1125,13 @@ void game_flags_handler(debug_menu_entry *a1)
     case 0u:
     {
         auto v1 = a1->get_bval();
-        g_game_ptr()->enable_physics(v1);
+        g_game_ptr->enable_physics(v1);
         debug_menu::physics_state_on_exit = a1->get_bval();
         break;
     }
     case 1u:
     {
-        g_game_ptr()->flag.single_step = true;
+        g_game_ptr->flag.single_step = true;
         break;
     }
     case SLOW_MOTION:
@@ -1254,7 +1254,7 @@ void game_flags_handler(debug_menu_entry *a1)
         */
 
         auto *v8 = g_world_ptr()->get_hero_ptr(0);
-        if ( v8 != nullptr && g_game_ptr()->m_user_camera_enabled )
+        if ( v8 != nullptr && g_game_ptr->m_user_camera_enabled )
         {
             if ( a1->get_bval() )
             {
@@ -1274,12 +1274,12 @@ void game_flags_handler(debug_menu_entry *a1)
         debug_menu::hide();
         auto a2 = os_developer_options::instance->get_int(mString{"HIRES_SCREENSHOT_X"});
         auto a3 = os_developer_options::instance->get_int(mString{"HIRES_SCREENSHOT_Y"});
-        g_game_ptr()->begin_hires_screenshot(a2, a3);
+        g_game_ptr->begin_hires_screenshot(a2, a3);
         break;
     }
     case 12u:
     {
-        g_game_ptr()->push_lores();
+        g_game_ptr->push_lores();
         break;
     }
     case 13u:
@@ -1346,7 +1346,7 @@ void game_flags_handler(debug_menu_entry *a1)
                 geometry_manager::enable_scene_analyzer(false);
             }
 
-            g_game_ptr()->enable_user_camera(false);
+            g_game_ptr->enable_user_camera(false);
 
             break;
         }
@@ -1355,11 +1355,11 @@ void game_flags_handler(debug_menu_entry *a1)
                 geometry_manager::enable_scene_analyzer(false);
             }
 
-            g_game_ptr()->enable_user_camera(true);
+            g_game_ptr->enable_user_camera(true);
             break;
         }
         case SCENE_ANALYZER_CAM: {
-            g_game_ptr()->enable_user_camera(false);
+            g_game_ptr->enable_user_camera(false);
             geometry_manager::enable_scene_analyzer(true);
             break;
         }

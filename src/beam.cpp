@@ -182,11 +182,12 @@ void sub_CB4800(const vector3d &a1, const vector3d &arg4, int a3, float a4, void
 {
     auto v44 = arg4 - a1;
     auto a3a = v44.length2();
-    if (a3a >= 9.9999997e-10) {
+    if (a3a >= 9.9999997e-10)
+    {
         a3a = std::sqrt(a3a);
         auto v42 = v44 / a3a;
 
-        auto camera_pos = g_game_ptr()->get_current_view_camera(0)->get_abs_position();
+        auto camera_pos = g_game_ptr->get_current_view_camera(0)->get_abs_position();
 
         auto v40 = camera_pos - a1;
         auto v39 = camera_pos - arg4;

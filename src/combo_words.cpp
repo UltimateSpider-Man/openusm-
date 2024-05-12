@@ -23,13 +23,13 @@ void combo_words::Init() {
         this->field_1C = this->field_0->GetTextPointer("combo_word_06");
 
         this->field_20 = this->field_0->GetTextPointer("combo_word_07");
-        this->field_8[0]->SetText(global_text_enum{408});
-        this->field_C->SetText(global_text_enum{409});
-        this->field_10->SetText(global_text_enum{410});
-        this->field_14->SetText(global_text_enum{411});
-        this->field_18->SetText(global_text_enum{412});
-        this->field_1C->SetText(global_text_enum{413});
-        this->field_20->SetText(global_text_enum{414});
+        this->field_8[0]->SetText(static_cast<global_text_enum>(408));
+        this->field_C->SetText(static_cast<global_text_enum>(409));
+        this->field_10->SetText(static_cast<global_text_enum>(410));
+        this->field_14->SetText(static_cast<global_text_enum>(411));
+        this->field_18->SetText(static_cast<global_text_enum>(412));
+        this->field_1C->SetText(static_cast<global_text_enum>(413));
+        this->field_20->SetText(static_cast<global_text_enum>(414));
         auto v18 = 7;
         do {
             (*v3)->SetNoFlash(color32{0xC8, 0xC8, 0xC8, 0xFF});

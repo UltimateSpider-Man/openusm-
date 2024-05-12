@@ -268,12 +268,12 @@ camera * panel_component_camera::get_default_camera() const
 {
     auto v1 = this->field_2C;
     if ( v1 >= 4 ) {
-        return g_game_ptr()->get_current_view_camera(0);
+        return g_game_ptr->get_current_view_camera(0);
     }
 
     auto *result = this->field_34[v1].get_volatile_ptr();
     if ( result == nullptr ) {
-        return g_game_ptr()->get_current_view_camera(0);
+        return g_game_ptr->get_current_view_camera(0);
     }
 
     return result;
@@ -459,7 +459,7 @@ void panel_component_camera::_render(comic_panels::panel_component::render_info 
                                 static Var<bool> byte_922C5D {0x00922C5D};
                                 bool v24 = false;
                                 stru v27 {a6, &byte_922C5D(), &v24};
-                                g_game_ptr()->render_world();
+                                g_game_ptr->render_world();
                             }
 
                             nglListEndScene();

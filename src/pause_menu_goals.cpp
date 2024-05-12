@@ -11,7 +11,7 @@ mString pause_menu_goals::get_element_desc(int a2)
 {
     mString v6;
     int v4, v5;
-    auto *v3 = g_game_ptr()->gamefile;
+    auto *v3 = g_game_ptr->gamefile;
     if ( a2 != 0 )
     {
         if ( a2 == 1 )

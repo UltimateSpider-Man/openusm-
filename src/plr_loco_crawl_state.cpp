@@ -143,9 +143,9 @@ ai::state_trans_messages plr_loco_crawl_state::frame_advance(Float a2)
             assert(lateral_distance >= 0.0f);
 
             if ( ai::hero_inode::get_hero_type() == hero_type_enum::VENOM ) {
-                g_game_ptr()->gamefile->update_miles_crawled_venom(lateral_distance);
+                g_game_ptr->gamefile->update_miles_crawled_venom(lateral_distance);
             } else {
-                g_game_ptr()->gamefile->update_miles_crawled_spidey(lateral_distance);
+                g_game_ptr->gamefile->update_miles_crawled_spidey(lateral_distance);
             }
         }
 

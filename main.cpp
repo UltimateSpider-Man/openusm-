@@ -624,7 +624,7 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                         byte_965BF9() = true;
                     }
 
-                    if (g_game_ptr() == nullptr || !byte_965BF9()) {
+                    if (g_game_ptr == nullptr || !byte_965BF9()) {
                         return DefWindowProcA(hWnd, Msg, wParam, lParam);
                     }
 
@@ -652,10 +652,11 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
 
             sub_5BCA60(0, byte_88CC68()[static_cast<uint16_t>(wParam)]);
 
-            if (g_femanager().m_pause_menu_system != nullptr && g_femanager().m_pause_menu_system->m_index != -1) {
+            if (g_femanager.m_pause_menu_system != nullptr && g_femanager.m_pause_menu_system->m_index != -1)
+            {
             LABEL_24:
 
-                auto *pause_menu_system = g_femanager().m_pause_menu_system;
+                auto *pause_menu_system = g_femanager.m_pause_menu_system;
 
                 auto *vtbl = bit_cast<fastcall_call(*)[10]>(pause_menu_system->m_vtbl);
 
@@ -666,9 +667,11 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                 return DefWindowProcA(hWnd, Msg, wParam, lParam);
             }
 
-            if (g_femanager().m_fe_menu_system != nullptr && g_femanager().m_fe_menu_system->m_index != -1) {
-                if (g_femanager().m_pause_menu_system->m_index == -1) {
-                    auto *frontend_menu_system = g_femanager().m_fe_menu_system;
+            if (g_femanager.m_fe_menu_system != nullptr && g_femanager.m_fe_menu_system->m_index != -1)
+            {
+                if (g_femanager.m_pause_menu_system->m_index == -1)
+                {
+                    auto *frontend_menu_system = g_femanager.m_fe_menu_system;
 
                     auto *vtbl = bit_cast<fastcall_call(*)[10]>(frontend_menu_system->m_vtbl);
 
@@ -691,13 +694,15 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
             case WM_RBUTTONDOWN:
             case WM_RBUTTONUP:
             case WM_MOUSEWHEEL: {
-                if (g_femanager().m_pause_menu_system != nullptr && g_femanager().m_pause_menu_system->m_index != -1) {
+                if (g_femanager.m_pause_menu_system != nullptr && g_femanager.m_pause_menu_system->m_index != -1) {
                     goto LABEL_43;
                 }
 
-                if (g_femanager().m_fe_menu_system != nullptr && g_femanager().m_fe_menu_system->m_index != -1) {
-                    if (g_femanager().m_pause_menu_system->m_index == -1) {
-                        auto *frontend_menu_system = g_femanager().m_fe_menu_system;
+                if (g_femanager.m_fe_menu_system != nullptr && g_femanager.m_fe_menu_system->m_index != -1)
+                {
+                    if (g_femanager.m_pause_menu_system->m_index == -1)
+                    {
+                        auto *frontend_menu_system = g_femanager.m_fe_menu_system;
 
                         auto *vtbl = bit_cast<fastcall_call(*)[10]>(frontend_menu_system->m_vtbl);
 
@@ -709,7 +714,7 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                     } else {
                     LABEL_43:
 
-                        auto *pause_menu_system = g_femanager().m_pause_menu_system;
+                        auto *pause_menu_system = g_femanager.m_pause_menu_system;
 
                         auto *vtbl = bit_cast<fastcall_call(*)[10]>(pause_menu_system->m_vtbl);
 
@@ -720,8 +725,8 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
                     }
                 }
 
-                if (g_femanager().IGO) {
-                    auto v6 = g_femanager().IGO->field_44;
+                if (g_femanager.IGO != nullptr) {
+                    auto v6 = g_femanager.IGO->field_44;
                     if (v6->sub_55F320())
                         v6->sub_638AD0(Msg, wParam, lParam);
                 }
@@ -1635,8 +1640,8 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
         g_timer()->sub_582180();
 
-        g_game_ptr()->gamefile->field_340.m_invert_camera_horz = Settings::InvertCameraH();
-        g_game_ptr()->gamefile->field_340.m_invert_camera_vert = Settings::InvertCameraV();
+        g_game_ptr->gamefile->field_340.m_invert_camera_horz = Settings::InvertCameraH();
+        g_game_ptr->gamefile->field_340.m_invert_camera_vert = Settings::InvertCameraV();
         auto *rumble_ptr = input_mgr::instance()->rumble_ptr;
         if (rumble_ptr != nullptr) {
             rumble_ptr->disable_vibration();
@@ -2182,12 +2187,12 @@ HRESULT __stdcall GetDeviceStateHook(IDirectInputDevice8* self, DWORD cbData, LP
     }
 
     auto g_state = []() -> game_state {
-        if (g_game_ptr() != nullptr)
+        if (g_game_ptr != nullptr)
         {
-            return g_game_ptr()->get_cur_state();
+            return g_game_ptr->get_cur_state();
         }
 
-        return (game_state)0;
+        return static_cast<game_state>(0);
     }();
 
     if (g_state != game_state::RUNNING && g_console == nullptr)

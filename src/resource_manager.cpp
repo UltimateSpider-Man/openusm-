@@ -537,7 +537,8 @@ void frame_advance(Float a2)
         {
             limited_timer timer{0.02};
 
-            if (g_game_ptr() && g_game_ptr()->field_165) {
+            if (g_game_ptr != nullptr && g_game_ptr->field_165)
+            {
                 limited_timer v4{0.5};
 
                 timer = v4;

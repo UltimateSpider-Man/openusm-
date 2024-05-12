@@ -677,7 +677,7 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
             auto *v3 = g_world_ptr()->get_hero_ptr(0);
             if ( v3 != nullptr )
             {
-                if ( !g_game_ptr()->field_170 )
+                if ( !g_game_ptr->field_170 )
                 {
                     auto a2a = v3->get_abs_position();
                     auto *hero_reg = this->find_region(a2a, nullptr);
@@ -690,7 +690,7 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
                             || spider_monkey::is_running() )
                     {
                         byte_960C00 = false;
-                        auto *current_view_camera = g_game_ptr()->get_current_view_camera(0);
+                        auto *current_view_camera = g_game_ptr->get_current_view_camera(0);
                         auto camera_abs_pos = current_view_camera->get_abs_position();
                         auto *cam_reg = this->find_region(camera_abs_pos, nullptr);
                         if ( cam_reg == nullptr ) {
@@ -1412,7 +1412,7 @@ void terrain::frame_advance(Float a2)
         }
         else
         {
-            auto *v5 = g_game_ptr()->get_current_view_camera(0);
+            auto *v5 = g_game_ptr->get_current_view_camera(0);
             pos = v5->get_abs_position();
         }
 

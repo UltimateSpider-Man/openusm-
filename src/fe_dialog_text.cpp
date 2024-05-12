@@ -74,9 +74,9 @@ void fe_dialog_text::_Load() {
         }
         
         bit_cast<FEMultiLineText *>(this->field_80)->SetNumLines(15);
-        this->field_84->SetText(global_text_enum {148});
-        this->field_88->SetText(global_text_enum {149});
-        this->field_8C->SetText(global_text_enum {150});
+        this->field_84->SetText(static_cast<global_text_enum>(148));
+        this->field_88->SetText(static_cast<global_text_enum>(149));
+        this->field_8C->SetText(static_cast<global_text_enum>(150));
 
         this->field_78->SetNoFlash(color32 {0xFFC8C8C8});
         this->field_7C->SetNoFlash(color32 {0xFFC8C8C8});

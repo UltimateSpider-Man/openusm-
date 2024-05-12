@@ -173,7 +173,7 @@ void PauseMenuSystem::Update(Float a2)
 
             this->field_2C->Update(a2);
 
-            if ((g_game_ptr()->field_165 || g_game_ptr()->field_166) && this->m_index >= 0)
+            if ((g_game_ptr->field_165 || g_game_ptr->field_166) && this->m_index >= 0)
             {
                 auto *vtbl = bit_cast<fastcall_call(*)[7]>(this->m_vtbl);
 
@@ -181,11 +181,13 @@ void PauseMenuSystem::Update(Float a2)
                 assert(bit_cast<std::intptr_t>(func) == 0x0060B610);
 
                 this->MakeActive(-1);
-                g_game_ptr()->unpause();
+                g_game_ptr->unpause();
                 comic_panels::game_play_panel()->field_67 = this->field_38;
             }
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0062F0C0, this, a2);
     }
 }
