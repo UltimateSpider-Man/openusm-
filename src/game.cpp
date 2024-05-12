@@ -352,9 +352,9 @@ game::~game()
                 this->unload_current_level();
             }
 
-            g_femanager().ReleaseIGO();
-            g_femanager().ReleaseFonts();
-            g_femanager().ReleaseFrontEnd();
+            g_femanager.ReleaseIGO();
+            g_femanager.ReleaseFonts();
+            g_femanager.ReleaseFrontEnd();
 
             auto *partition = resource_manager::get_partition_pointer(RESOURCE_PARTITION_HERO);
             assert(partition != nullptr);
@@ -615,7 +615,7 @@ void game::render_world()
                         || g_cut_scene_player()->is_playing())
                 {
                     v3->adjust_geometry_pipe(false);
-                    auto *v13 = g_femanager().IGO->field_44;
+                    auto *v13 = g_femanager.IGO->field_44;
                     auto v14 = v13->field_5C4 || v13->field_5C3;
                     if (!g_distance_clipping_enabled() || v14) {
                         if (g_renderState().field_88) {
@@ -740,8 +740,8 @@ void game::one_time_init_stuff()
     if constexpr (1)
     {
         comic_panels::init();
-        g_femanager().LoadFonts();
-        g_femanager().InitIGO();
+        g_femanager.LoadFonts();
+        g_femanager.InitIGO();
         subtitles_init();
 
         terrain_types_manager::create_inst();
@@ -842,11 +842,11 @@ void game::pause() {
             IGOZoomOutMap *v2 = nullptr;
 
             if (!fe_controller_disconnect::get_currently_plugged_in() ||
-                g_femanager().m_pause_menu_system->IsDialogActivated() ||
-                (v2 = g_femanager().IGO->field_44, v2->field_5C4) || v2->field_5C3) {
-                if (!g_femanager().m_pause_menu_system->IsDialogActivated() &&
+                g_femanager.m_pause_menu_system->IsDialogActivated() ||
+                (v2 = g_femanager.IGO->field_44, v2->field_5C4) || v2->field_5C3) {
+                if (!g_femanager.m_pause_menu_system->IsDialogActivated() &&
                     fe_controller_disconnect::get_currently_plugged_in()) {
-                    auto *v6 = g_femanager().IGO->field_44;
+                    auto *v6 = g_femanager.IGO->field_44;
                     if (!v6->field_5C4 && !v6->field_5C3) {
                         sound_manager::fade_sounds_by_type(15u, 0.5, 0.5, 0);
                     }
@@ -889,9 +889,12 @@ void game::pause() {
     }
 }
 
-void game::unpause() {
-    if constexpr (1) {
-        if (this->flag.game_paused && !g_femanager().m_pause_menu_system->IsDialogActivated()) {
+void game::unpause()
+{
+    if constexpr (1)
+    {
+        if (this->flag.game_paused && !g_femanager.m_pause_menu_system->IsDialogActivated())
+        {
             if (sounds_paused()) {
                 sound_manager::unpause_all_sounds();
             }
@@ -927,7 +930,7 @@ void game::advance_state_paused(Float a1)
 
     if constexpr (1) {
         auto *v3 = input_mgr::instance()->rumble_ptr;
-        if (v3 != nullptr && g_femanager().m_pause_menu_system->m_index != 4) {
+        if (v3 != nullptr && g_femanager.m_pause_menu_system->m_index != 4) {
             v3->stop_vibration();
         }
 
@@ -1748,21 +1751,19 @@ void game::load_this_level()
         g_mem_checkpoint_level() = 0; // mem_set_checkpoint()
         this->init_motion_blur();
         glow_init();
-        if (g_femanager().m_fe_menu_system != nullptr)
+        if (g_femanager.m_fe_menu_system != nullptr)
         {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
-            if (g_femanager().m_fe_menu_system != nullptr)
-            {
-                g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
+            if (g_femanager.m_fe_menu_system != nullptr) {
+                g_femanager.m_fe_menu_system->RenderLoadMeter(false);
             }
         }
 
         aeps::Reset();
         ambient_audio_manager::reset();
 
-        if (g_femanager().m_fe_menu_system != nullptr)
-        {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         assert(level.descriptor != nullptr);
@@ -1839,13 +1840,13 @@ void game::load_this_level()
         assert(the_sin != nullptr && "we have no sin!!!");
 
         the_sin->setup_world();
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         this->flag.field_3 = false;
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         auto *v28 = this->the_world->field_A0.field_0;
@@ -1859,8 +1860,8 @@ void game::load_this_level()
         gravity_generator *v30 = new gravity_generator{};
         g_world_ptr()->add_generator(v30);
 
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         system_idle();
@@ -2011,8 +2012,8 @@ void game::load_this_level()
             sp_log("Post-load-scene load time: %f seconds\n", time);
         }
 
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         this->field_64 = find_mic(string_hash{"BOOM_MIC"});
@@ -2021,13 +2022,13 @@ void game::load_this_level()
 
         this->set_current_camera(this->the_world->get_chase_cam_ptr(0), true);
 
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         script_manager::run(0.0, true);
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+        if (g_femanager.m_fe_menu_system != nullptr) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
 
         if (this->field_16E) {
@@ -2131,7 +2132,8 @@ void game::level_load_stuff::look_up_level_descriptor()
     }
 }
 
-void game::level_load_stuff::construct_loading_widgets() {
+void game::level_load_stuff::construct_loading_widgets()
+{
     mString a1{"spidermanlogo"};
 
     mission_manager::s_inst()->lock();
@@ -2141,28 +2143,33 @@ void game::level_load_stuff::construct_loading_widgets() {
     load_widgets_created = true;
 
     if (!os_developer_options::instance->get_flag(mString{"NO_LOAD_SCREEN"})) {
-        g_femanager().LoadFrontEnd();
+        g_femanager.LoadFrontEnd();
     }
 }
 
-void game::level_load_stuff::destroy_loading_widgets() {
-    if constexpr (1) {
+void game::level_load_stuff::destroy_loading_widgets()
+{
+    if constexpr (1)
+    {
         this->load_widgets_created = false;
-        g_femanager().ReleaseFrontEnd();
+        g_femanager.ReleaseFrontEnd();
         mString a1{"spidermanlogo"};
 
         mission_stack_manager::s_inst()->pop_mission_pack_immediate(a1, a1);
         mission_manager::s_inst()->unlock();
-    } else {
+    }
+    else
+    {
         THISCALL(0x0050B560, this);
     }
 }
 
-bool game::level_load_stuff::wait_for_mem_check() {
+bool game::level_load_stuff::wait_for_mem_check()
+{
     bool result = false;
 
-    if (g_femanager().m_fe_menu_system != nullptr) {
-        result = g_femanager().m_fe_menu_system->WaitForMemCheck();
+    if (g_femanager.m_fe_menu_system != nullptr) {
+        result = g_femanager.m_fe_menu_system->WaitForMemCheck();
     }
 
     return result;
@@ -2302,14 +2309,14 @@ void game::advance_state_load_level(Float a2)
             light_manager::frame_advance_all_light_managers(a2);
         }
 
-        if (g_femanager().m_fe_menu_system != nullptr) {
-            void (__fastcall *Update)(void *, void *, Float) = CAST(Update, get_vfunc(g_femanager().m_fe_menu_system->m_vtbl, 0x14));
+        if (g_femanager.m_fe_menu_system != nullptr)
+        {
+            void (__fastcall *Update)(void *, void *, Float) = CAST(Update, get_vfunc(g_femanager.m_fe_menu_system->m_vtbl, 0x14));
 
-            Update(g_femanager().m_fe_menu_system, nullptr, a2);
+            Update(g_femanager.m_fe_menu_system, nullptr, a2);
 
-            g_femanager().m_fe_menu_system->RenderLoadMeter(false);
+            g_femanager.m_fe_menu_system->RenderLoadMeter(false);
         }
-
     }
     else
     {
@@ -2319,7 +2326,7 @@ void game::advance_state_load_level(Float a2)
 
 void game::frame_advance_game_overlays(Float a1)
 {
-    g_femanager().Update(a1);
+    g_femanager.Update(a1);
 
     g_console->frame_advance(a1);
 }
@@ -2623,12 +2630,12 @@ void game::render_ui()
             }
             else
             {
-                g_femanager().RenderLoadMeter(true);
+                g_femanager.RenderLoadMeter(true);
             }
         }
         else
         {
-            g_femanager().Draw();
+            g_femanager.Draw();
         }
 
         nglListBeginScene(static_cast<nglSceneParamType>(1));
@@ -2952,8 +2959,8 @@ void game::unload_current_level()
         mem_print_stats("unload_current_level() start");
 
         this->field_170 = true;
-        if (g_femanager().IGO != nullptr) {
-            g_femanager().IGO->field_0->SetShown(false);
+        if (g_femanager.IGO != nullptr) {
+            g_femanager.IGO->field_0->SetShown(false);
         }
 
         mission_manager::s_inst()->unload_script_now();

@@ -209,21 +209,23 @@ int MultiLineString::ConvertStringToButtonCode(const char *a1, const char **a2, 
     return len;
 }
 
-void MultiLineString::Draw(Float a2, int a3, int a4, Float a5, Float a6, Float a7, Float a8) {
+void MultiLineString::Draw(Float a2, int a3, int a4, Float a5, Float a6, Float a7, Float a8)
+{
     //sp_log("%s", this->field_10.c_str());
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         int v9 = 0;
         if (this->button_array_size <= 0) {
             auto *v26 = this->field_10.c_str();
 
-            nglFont *v27 = g_femanager().GetFont(this->m_font_index);
+            nglFont *v27 = g_femanager.GetFont(this->m_font_index);
 
             nglListAddString(v27, v26, this->field_4[0], this->field_4[1], a2, a3, a5, a6);
         } else {
             auto *v10 = this->field_10.slice(0, this->button_array[0].field_0).c_str();
 
-            nglFont *v13 = g_femanager().GetFont(this->m_font_index);
+            nglFont *v13 = g_femanager.GetFont(this->m_font_index);
 
             nglListAddString(v13, v10, this->field_4[0], this->field_4[1], a2, a3, a5, a6);
 
@@ -246,7 +248,7 @@ void MultiLineString::Draw(Float a2, int a3, int a4, Float a5, Float a6, Float a
                     auto a4a = v18;
                     auto a3a = (double) v31 + this->field_4[0];
 
-                    auto *font = g_femanager().GetFont(font_index{3});
+                    auto *font = g_femanager.GetFont(font_index{3});
 
                     nglListAddString(font, v19, a3a, a4a, a2, a4, a7, a7);
 
@@ -263,7 +265,7 @@ void MultiLineString::Draw(Float a2, int a3, int a4, Float a5, Float a6, Float a
                                         .slice(this->button_array[2 * v9 + 1].field_0, v21)
                                         .c_str();
 
-                        font = g_femanager().GetFont(this->m_font_index);
+                        font = g_femanager.GetFont(this->m_font_index);
 
                         auto a3b = (double) this->button_array[2 * v9 + 1].field_2 +
                             this->field_4[0];
@@ -295,7 +297,7 @@ double MultiLineString::GetWidth(MultiLineString::string a1, Float a5, font_inde
             result = 0.0f;
         } else {
             if (v3 != 5) {
-                v4 = g_femanager().field_4[v3];
+                v4 = g_femanager.field_4[v3];
             }
 
             auto str = *bit_cast<mString *>(&a1);

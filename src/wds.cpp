@@ -488,7 +488,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
         auto v87 = brew.field_1C;
         auto parse_code = brew.parse_code;
         auto v85 = brew.field_24;
-        g_femanager().RenderLoadMeter(false);
+        g_femanager.RenderLoadMeter(false);
         if ( reg != nullptr ) {
             reg->field_60 = brew.field_3C;
         }
@@ -852,7 +852,7 @@ bool world_dynamics_system::un_mash_scene_box_triggers(const resource_key &a1, r
         uint8_t *buffer_ptr = nullptr;
         int buffer_index = 0;
         if ( !resource_manager::get_resource_if_exists(a1, reg, &buffer_ptr, slot_ptr, &mash_data_size)
-            || (g_femanager().RenderLoadMeter(false),
+            || (g_femanager.RenderLoadMeter(false),
                 parse_code = *(uint32_t *)&buffer_ptr[buffer_index],
                 parse_code == 18) )
         {
@@ -976,7 +976,7 @@ bool world_dynamics_system::un_mash_scene_audio_boxes(const resource_key &key_id
                                                       &buffer_ptr,
                                                       slot_ptr,
                                                       &mash_data_size) ||
-            (g_femanager().RenderLoadMeter(false),
+            (g_femanager.RenderLoadMeter(false),
              parse_code = *(uint32_t *) &buffer_ptr[buffer_index],
              parse_code == 18)) {
         } else {
@@ -1051,7 +1051,7 @@ bool world_dynamics_system::un_mash_scene_spline_paths(const resource_key &a2,
         auto *buffer_ptr = brew.field_10;
         auto a2a = brew.field_C;
 
-        g_femanager().RenderLoadMeter(false);
+        g_femanager.RenderLoadMeter(false);
 
         assert(the_terrain != nullptr);
 
@@ -1105,7 +1105,7 @@ bool world_dynamics_system::un_mash_scene_quad_paths(const resource_key &key_id,
                                                       slot_ptr,
                                                       &mash_data_size) ||
             (reg->flags |= 0x800,
-             g_femanager().RenderLoadMeter(false),
+             g_femanager.RenderLoadMeter(false),
              parse_code = *(uint32_t *) &buffer_ptr[buffer_index],
              parse_code == 18)) {
             a4.done();

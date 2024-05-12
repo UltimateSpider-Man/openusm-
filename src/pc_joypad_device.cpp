@@ -278,12 +278,12 @@ void pc_joypad_device::_poll()
 
         if (this->field_70 == 1)
         {
-            if ((g_femanager().m_pause_menu_system != nullptr && g_femanager().m_pause_menu_system->m_index != -1) ||
-                (g_femanager().m_fe_menu_system != nullptr && g_femanager().m_fe_menu_system->m_index != -1) ||
+            if ((g_femanager.m_pause_menu_system != nullptr && g_femanager.m_pause_menu_system->m_index != -1) ||
+                (g_femanager.m_fe_menu_system != nullptr && g_femanager.m_fe_menu_system->m_index != -1) ||
                 dword_967CE4())
             {
-                if (((g_femanager().m_pause_menu_system != nullptr && g_femanager().m_pause_menu_system->m_index != -1) ||
-                     (g_femanager().m_fe_menu_system != nullptr && g_femanager().m_fe_menu_system->m_index != -1)) &&
+                if (((g_femanager.m_pause_menu_system != nullptr && g_femanager.m_pause_menu_system->m_index != -1) ||
+                     (g_femanager.m_fe_menu_system != nullptr && g_femanager.m_fe_menu_system->m_index != -1)) &&
                     dword_967CE4())
                 {
                     dword_967CE4() = false;

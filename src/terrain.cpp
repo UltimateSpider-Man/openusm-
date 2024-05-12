@@ -1405,7 +1405,7 @@ void terrain::frame_advance(Float a2)
         };
 
         if (!os_developer_options::instance->get_flag(mString {"CAMERA_CENTRIC_STREAMER"})
-                || func(g_femanager().IGO->field_44) )
+                || func(g_femanager.IGO->field_44) )
         {
             auto *ent = g_world_ptr()->get_hero_ptr(0);
             pos = ent->get_abs_position();

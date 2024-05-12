@@ -320,11 +320,11 @@ void app::tick()
             }
 
             if ( (g_game_ptr()->flag.level_is_loaded && !g_game_ptr()->field_165) ||
-                    g_femanager().m_fe_menu_system != nullptr
-                    && g_femanager().m_fe_menu_system->sub_60C230()
+                    g_femanager.m_fe_menu_system != nullptr
+                    && g_femanager.m_fe_menu_system->sub_60C230()
                     && g_cut_scene_player()->is_playing()) {
                 comic_panels::render();
-            } else if (g_femanager().m_fe_menu_system == nullptr || !g_femanager().m_fe_menu_system->sub_60C230()) {
+            } else if (g_femanager.m_fe_menu_system == nullptr || !g_femanager.m_fe_menu_system->sub_60C230()) {
                 game::render_empty_list();
             }
 

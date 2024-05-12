@@ -15,6 +15,7 @@
 #include "resource_manager.h"
 #include "trace.h"
 #include "utility.h"
+#include "variable.h"
 #include "vector3d.h"
 #include "vector4d.h"
 
@@ -25,7 +26,7 @@
 VALIDATE_OFFSET(FEManager, IGO, 0x18u);
 VALIDATE_OFFSET(FEManager, field_2A, 0x2A);
 
-Var<FEManager> g_femanager{0x00937B00};
+FEManager & g_femanager = var<FEManager>(0x00937B00);
 
 const char *FEManager::font_name_array[5] = {"nglSysFont",
                                              "i_upupandaway",
@@ -33,7 +34,8 @@ const char *FEManager::font_name_array[5] = {"nglSysFont",
                                              "i_button_icons",
                                              "damnnoisykids"};
 
-void FEManager::InitIGO() {
+void FEManager::InitIGO()
+{
     TRACE("FEManager::InitGO");
 
     if constexpr (0)
@@ -204,9 +206,11 @@ void FEManager::ReleaseFonts() {
     }
 }
 
-void RenderLoadMeter() {
-    if constexpr (1) {
-        auto *system = g_femanager().m_fe_menu_system;
+void RenderLoadMeter()
+{
+    if constexpr (1)
+    {
+        auto *system = g_femanager.m_fe_menu_system;
 
         if (system != nullptr) {
             system->RenderLoadMeter(false);

@@ -2,7 +2,6 @@
 
 #include "float.hpp"
 #include "font_index.h"
-#include "variable.h"
 
 struct nglFont;
 struct IGOFrontEnd;
@@ -66,6 +65,6 @@ struct FEManager {
 //0x006299B0
 extern void RenderLoadMeter();
 
-extern Var<FEManager> g_femanager;
+extern FEManager & g_femanager;
 
 extern void FEManager_patch();

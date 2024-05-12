@@ -397,7 +397,7 @@ void warp_handler(debug_menu_entry *arg0)
 
 void warp_poi_handler([[maybe_unused]] debug_menu_entry *menu_entry)
 {
-    auto *v2 = g_femanager().IGO->field_54;
+    auto *v2 = g_femanager.IGO->field_54;
     if ( v2 != nullptr )
     {
         vector3d a1;

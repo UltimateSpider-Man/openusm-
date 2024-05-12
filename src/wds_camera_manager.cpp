@@ -145,8 +145,8 @@ void wds_camera_manager::setup_cameras()
         this->field_2C = v19;
         this->field_30 = user_cam;
 
-        if ( g_femanager().m_fe_menu_system != nullptr ) {
-            g_femanager().m_fe_menu_system->RenderLoadMeter(0);
+        if ( g_femanager.m_fe_menu_system != nullptr ) {
+            g_femanager.m_fe_menu_system->RenderLoadMeter(0);
         }
 
         system_idle();
@@ -161,7 +161,7 @@ void wds_camera_manager::setup_cameras()
         g_world_ptr()->ent_mgr.add_camera(nullptr, this->field_44);
         g_world_ptr()->set_chase_cam_ptr(0, this->field_44);
 
-        g_femanager().RenderLoadMeter(false);
+        g_femanager.RenderLoadMeter(false);
 
         auto *scene_analyzer_cam = new camera {nullptr, string_hash {"SCENE_ANALYZER_CAM"}};
         scene_analyzer_cam->set_abs_position(v46);

@@ -15,14 +15,16 @@ bool fe_controller_disconnect::update() {
     return (bool) CDECL_CALL(0x00629E60);
 }
 
-void fe_controller_disconnect::draw() {
-    if constexpr (1) {
+void fe_controller_disconnect::draw()
+{
+    if constexpr (1)
+    {
         if (back_ground_quad() == nullptr) {
             auto *mem = mem_alloc(sizeof(PanelQuad));
 
             back_ground_quad() = new (mem) PanelQuad{};
 
-            auto *v2 = g_femanager().m_pause_menu_system->field_2C;
+            auto *v2 = g_femanager.m_pause_menu_system->field_2C;
 
             auto *v4 = v2->GetPQ("pm_splash_dialog_box_02");
             back_ground_quad()->CopyFrom(v4);

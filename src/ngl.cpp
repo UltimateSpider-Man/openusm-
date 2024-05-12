@@ -4293,7 +4293,7 @@ double sub_77E820(Float a1)
 
 bool sub_581C30()
 {
-    auto *v0 = g_femanager().IGO->field_44;
+    auto *v0 = g_femanager.IGO->field_44;
     return v0->field_5C4 || v0->field_5C3;
 }
 

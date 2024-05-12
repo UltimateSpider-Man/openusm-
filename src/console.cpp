@@ -695,7 +695,7 @@ void Console::render()
     {
         this->field_248->Draw();
 
-        auto *font = g_femanager().GetFont(font_index{0});
+        auto *font = g_femanager.GetFont(font_index{0});
 
         uint32_t v26, v25;
         nglGetStringDimensions(font, &v26, &v25, "M");

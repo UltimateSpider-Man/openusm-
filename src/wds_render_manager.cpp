@@ -316,7 +316,7 @@ void update_spidey_interface()
     if ( g_world_ptr() != nullptr )
     {
         if ( g_world_ptr()->get_hero_ptr(0) != nullptr ) {
-            g_femanager().IGO->UpdateInScene();
+            g_femanager.IGO->UpdateInScene();
         }
     }
 }

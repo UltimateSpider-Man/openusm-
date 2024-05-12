@@ -124,7 +124,7 @@ PanelQuad *PanelFile::GetPQ(const char *a2) {
 
     sp_log("Object %s not found in PANEL file\n", a2);
 
-    return g_femanager().GetDefaultPQ();
+    return g_femanager.GetDefaultPQ();
 }
 
 void PanelFile::Update(Float a2)

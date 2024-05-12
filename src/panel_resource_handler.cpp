@@ -85,12 +85,12 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
 
         if (behavior == worldly_resource_handler::UNLOAD)
         {
-            if (g_femanager().IGO != nullptr)
+            if (g_femanager.IGO != nullptr)
             {
                 for ( uint32_t i {0}; i < std::size(heroes); ++i )
                 {
                     if (a3->field_0.m_hash == heroes[i]) {
-                        g_femanager().IGO->hero_health->DeInit(i);
+                        g_femanager.IGO->hero_health->DeInit(i);
                         ++this->field_C;
                         return false;
                     }
@@ -98,8 +98,9 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
 
                 for (uint32_t i {i}; i < std::size(third_party); ++i )
                 {
-                    if (a3->field_0.m_hash == third_party[i]) {
-                        g_femanager().IGO->third_party_health->DeInit(i);
+                    if (a3->field_0.m_hash == third_party[i])
+                    {
+                        g_femanager.IGO->third_party_health->DeInit(i);
                         ++this->field_C;
                         return false;
                     }
@@ -109,44 +110,44 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
                 {
                     if ( a3->field_0.m_hash == bosses[i] )
                     {
-                        g_femanager().IGO->boss_health->DeInit(i);
+                        g_femanager.IGO->boss_health->DeInit(i);
                         ++this->field_C;
                         return false;
                     }
                 }
 
                 if (a3->field_0.m_hash == string_hash{"COMBO_WORDS"}) {
-                    g_femanager().IGO->field_48->DeInit();
+                    g_femanager.IGO->field_48->DeInit();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"MG_HOTPURSUIT_INDICATOR"}) {
-                    g_femanager().IGO->field_4C->DeInit();
+                    g_femanager.IGO->field_4C->DeInit();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"HIGHSCORETRACKING"}) {
-                    g_femanager().IGO->field_50->DeInit();
+                    g_femanager.IGO->field_50->DeInit();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"MEDALS_INTERFACE"}) {
-                    g_femanager().IGO->field_34->DeInit();
+                    g_femanager.IGO->field_34->DeInit();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"RACE_ANNOUNCER"}) {
-                    g_femanager().IGO->field_38->DeInit();
+                    g_femanager.IGO->field_38->DeInit();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"TARGETING_RETICLE_VENOM"}) {
-                    g_femanager().IGO->field_3C->DeInit();
+                    g_femanager.IGO->field_3C->DeInit();
                     ++this->field_C;
                     return false;
                 }
@@ -155,7 +156,7 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
                     a3->field_0.m_hash == string_hash{"CONTROLLER_TUT_XB"} ||
                     a3->field_0.m_hash == string_hash{"CONTROLLER_TUT_PS"})
                 {
-                    g_femanager().IGO->field_30->DeInit();
+                    g_femanager.IGO->field_30->DeInit();
                     ++this->field_C;
                     return false;
                 }
@@ -163,35 +164,35 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
                 for ( uint32_t i {0}; i < std::size(chase_meter); ++i )
                 {
                     if (a3->field_0.m_hash == chase_meter[i]) {
-                        g_femanager().IGO->field_18->DeInit(i);
+                        g_femanager.IGO->field_18->DeInit(i);
                         ++this->field_C;
                         return false;
                     }
                 }
 
                 if (a3->field_0.m_hash == string_hash{"RACE_METER"}) {
-                    g_femanager().IGO->field_1C->DeInit();
+                    g_femanager.IGO->field_1C->DeInit();
                 }
             }
         }
         else
         {
             if (a3->field_0.m_hash == string_hash{"HG_HERO_PETER"}) {
-                g_femanager().IGO->hero_health->Init(5, "HG_HERO_PETER", 0);
+                g_femanager.IGO->hero_health->Init(5, "HG_HERO_PETER", 0);
                 ++this->field_C;
                 return false;
             }
 
             if (a3->field_0.m_hash == string_hash{"HG_HERO_SPIDERMAN"})
             {
-                g_femanager().IGO->hero_health->Init(0, "HG_HERO_SPIDERMAN", false);
+                g_femanager.IGO->hero_health->Init(0, "HG_HERO_SPIDERMAN", false);
 
                 static Var<bool> globaly_packed_bar_need_init{0x00922544};
 
                 if (globaly_packed_bar_need_init()) {
-                    g_femanager().IGO->hero_health->Init(1, "HG_HERO_SPIDERMAN_EX_01", false);
-                    g_femanager().IGO->hero_health->Init(2, "HG_HERO_SPIDERMAN_EX_02", false);
-                    g_femanager().IGO->hero_health->Init(3, "HG_HERO_SPIDERMAN_EX_03", false);
+                    g_femanager.IGO->hero_health->Init(1, "HG_HERO_SPIDERMAN_EX_01", false);
+                    g_femanager.IGO->hero_health->Init(2, "HG_HERO_SPIDERMAN_EX_02", false);
+                    g_femanager.IGO->hero_health->Init(3, "HG_HERO_SPIDERMAN_EX_03", false);
                     globaly_packed_bar_need_init() = false;
                     ++this->field_C;
                     return false;
@@ -200,7 +201,7 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
             else
             {
                 if (a3->field_0.m_hash == string_hash{"HG_HERO_VENOM"}) {
-                    g_femanager().IGO->hero_health->Init(4, "HG_HERO_VENOM", false);
+                    g_femanager.IGO->hero_health->Init(4, "HG_HERO_VENOM", false);
                     ++this->field_C;
                     return false;
                 }
@@ -209,7 +210,7 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
                 {
                     if (a3->field_0.m_hash == third_party[i])
                     {
-                        g_femanager().IGO->third_party_health->Init(i, third_party[i], false);
+                        g_femanager.IGO->third_party_health->Init(i, third_party[i], false);
                         ++this->field_C;
                         return false;
                     }
@@ -219,52 +220,53 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
                 {
                     if ( a3->field_0.m_hash == bosses[i] )
                     {
-                        g_femanager().IGO->boss_health->Init(i, bosses[i], true);
+                        g_femanager.IGO->boss_health->Init(i, bosses[i], true);
                         ++this->field_C;
                         return false;
                     }
                 }
 
                 if (a3->field_0.m_hash == string_hash{"COMBO_WORDS"}) {
-                    g_femanager().IGO->field_48->Init();
+                    g_femanager.IGO->field_48->Init();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"MG_HOTPURSUIT_INDICATOR"}) {
-                    g_femanager().IGO->field_4C->Init();
+                    g_femanager.IGO->field_4C->Init();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"HIGHSCORETRACKING"}) {
-                    g_femanager().IGO->field_50->Init();
+                    g_femanager.IGO->field_50->Init();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"MEDALS_INTERFACE"}) {
-                    g_femanager().IGO->field_34->Init();
+                    g_femanager.IGO->field_34->Init();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"RACE_ANNOUNCER"}) {
-                    g_femanager().IGO->field_38->Init();
+                    g_femanager.IGO->field_38->Init();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"TARGETING_RETICLE_VENOM"}) {
-                    g_femanager().IGO->field_3C->Init();
+                    g_femanager.IGO->field_3C->Init();
                     ++this->field_C;
                     return false;
                 }
 
                 if (a3->field_0.m_hash == string_hash{"CONTROLLER_TUT_PS"} ||
                     a3->field_0.m_hash == string_hash{"CONTROLLER_TUT_XB"} ||
-                    a3->field_0.m_hash == string_hash{"CONTROLLER_TUT_GC"}) {
-                    g_femanager().IGO->field_30->Init();
+                    a3->field_0.m_hash == string_hash{"CONTROLLER_TUT_GC"})
+                {
+                    g_femanager.IGO->field_30->Init();
                     ++this->field_C;
                     return false;
                 }
@@ -273,14 +275,15 @@ bool panel_resource_handler::_handle_resource(worldly_resource_handler::eBehavio
                 {
                     if (a3->field_0.m_hash == chase_meter[i])
                     {
-                        g_femanager().IGO->field_18->Init(i, chase_meter[i]);
+                        g_femanager.IGO->field_18->Init(i, chase_meter[i]);
                         ++this->field_C;
                         return false;
                     }
                 }
 
-                if (a3->field_0.m_hash == string_hash{"RACE_METER"}) {
-                    g_femanager().IGO->field_1C->Init();
+                if (a3->field_0.m_hash == string_hash{"RACE_METER"})
+                {
+                    g_femanager.IGO->field_1C->Init();
                     ++this->field_C;
                     return false;
                 }

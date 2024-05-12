@@ -129,14 +129,18 @@ void PauseMenuSystem::Deactivate() {
 
 void PauseMenuSystem::Update(Float a2)
 {
-    if constexpr (1) {
-        auto idx = this->m_index;
-        if (idx >= 0) {
-            if (idx == 0) {
+    if constexpr (1)
+    {
+        int idx = this->m_index;
+        if (idx >= 0)
+        {
+            if (idx == 0)
+            {
                 auto *dialog_text = bit_cast<fe_dialog_text *>(this->field_4[0]);
 
-                if (dialog_text->field_9C != 3) {
-                    auto *mini_map_widget = g_femanager().IGO->field_4;
+                if (dialog_text->field_9C != 3)
+                {
+                    auto *mini_map_widget = g_femanager.IGO->field_4;
                     auto *vtbl = bit_cast<fastcall_call(*)[4]>(mini_map_widget->m_vtbl);
 
                     auto *func = (*vtbl)[3];
@@ -148,8 +152,9 @@ void PauseMenuSystem::Update(Float a2)
 
             auto *v4 = this->field_34->field_2C;
             v4->field_24 = sub_7B1EE0();
-            auto idx1 = this->m_index;
-            if (idx1 >= 0) {
+            int idx1 = this->m_index;
+            if (idx1 >= 0)
+            {
                 auto **v6 = this->field_4;
 
                 if (v6[idx1] != nullptr) {
@@ -168,7 +173,8 @@ void PauseMenuSystem::Update(Float a2)
 
             this->field_2C->Update(a2);
 
-            if ((g_game_ptr()->field_165 || g_game_ptr()->field_166) && this->m_index >= 0) {
+            if ((g_game_ptr()->field_165 || g_game_ptr()->field_166) && this->m_index >= 0)
+            {
                 auto *vtbl = bit_cast<fastcall_call(*)[7]>(this->m_vtbl);
 
                 auto *func = (*vtbl)[3];

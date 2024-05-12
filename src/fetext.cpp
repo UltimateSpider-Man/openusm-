@@ -86,7 +86,7 @@ void FEText::Draw() {
                 field_108(this, nullptr, &a3, &a4);
             }
 
-            nglFont *font = g_femanager().GetFont(this->field_18);
+            nglFont *font = g_femanager.GetFont(this->field_18);
 
             auto v10 = this->field_40;
             auto v9 = this->field_3C;
@@ -178,10 +178,11 @@ bool FEText::GetFlag(int a2) {
     return (this->field_64 & a2) != 0;
 }
 
-void FEText::AdjustForJustification(float *a2, float *a3) {
+void FEText::AdjustForJustification(float *a2, float *a3)
+{
     if constexpr (1) {
         auto *str = this->field_1C.c_str();
-        nglFont *font = g_femanager().GetFont(this->field_18);
+        nglFont *font = g_femanager.GetFont(this->field_18);
 
         uint32_t v13, v14;
         nglGetStringDimensions(font, (char *) str, &v14, &v13, this->field_3C, this->field_40);
