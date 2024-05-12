@@ -143,7 +143,7 @@ struct physics_system {
     static physics_system *allocate_buffer(const phys_mem_info &a1, phys_memory_heap &a2);
 };
 
-extern Var<physics_system *> g_physics_system;
+extern physics_system *& g_physics_system;
 
 //0x0059F4D0
 extern void physics_system_init();
