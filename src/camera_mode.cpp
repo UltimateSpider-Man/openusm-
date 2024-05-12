@@ -397,8 +397,8 @@ camera_mode_passive::camera_mode_passive(
             camera_mode *a3) : camera_mode(a2, a3)
 {
     this->m_vtbl = CAST(m_vtbl, 0x00882408);
-    this->field_10 = g_camera_max_dist();
-    this->field_C = g_camera_min_dist();
+    this->field_10 = g_camera_max_dist;
+    this->field_C = g_camera_min_dist;
     this->field_14 = -0.5;
     this->field_18 = 0.69999999;
     this->field_1C = YVEC;
@@ -595,8 +595,8 @@ void camera_mode_combat::_frame_advance(
         const camera_target_info &a4)
 {
     {
-        static Var<float> flt_882444 {0x00882444};
-        flt_882444() = 0.66000003 * g_camera_min_dist();
+        static float & flt_882444 = var<float>(0x00882444);
+        flt_882444 = 0.66000003 * g_camera_min_dist;
     }
 
     if constexpr (0)

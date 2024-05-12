@@ -26,11 +26,11 @@ static const float flt_87EA34 = 0.75;
 static const float flt_8820A0 = 0.66000003;
 static const float flt_87EEDC = 0.69999999;
 
-Var<float> g_camera_min_dist {0x00881AB4};
+float & g_camera_min_dist = var<float>(0x00881AB4);
 
-Var<float> g_camera_max_dist {0x00881AB8};
+float & g_camera_max_dist = var<float>(0x00881AB8);
 
-Var<float> g_camera_supermax_dist {0x00881ABC};
+float & g_camera_supermax_dist = var<float>(0x00881ABC);
 
 camera_target_info::camera_target_info(entity *_target,
                                        Float a3,
@@ -103,9 +103,9 @@ camera_target_info::camera_target_info(entity *_target,
             }
         }
 
-        this->min_look_dist = (this->radius * flt_8820A0 + flt_881AC0) * g_camera_min_dist();
+        this->min_look_dist = (this->radius * flt_8820A0 + flt_881AC0) * g_camera_min_dist;
         auto v63 = this->min_look_dist * 2;
-        this->max_look_dist = std::min(v63, g_camera_supermax_dist());
+        this->max_look_dist = std::min(v63, g_camera_supermax_dist);
 
         auto v66 = this->pos;
 

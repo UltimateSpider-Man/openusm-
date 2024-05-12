@@ -32,14 +32,14 @@ constexpr float inverse_pow(float a1, float a2)
 
 void set_dvars()
 {
-    debug_variable_t v0 {"camera_min_dist", g_camera_min_dist()};
-    g_camera_min_dist() = v0;
+    debug_variable_t v0 {"camera_min_dist", g_camera_min_dist};
+    g_camera_min_dist = v0;
 
-    debug_variable_t v1 {"camera_max_dist", g_camera_max_dist()};
-    g_camera_max_dist() = v1;
+    debug_variable_t v1 {"camera_max_dist", g_camera_max_dist};
+    g_camera_max_dist = v1;
 
-    debug_variable_t v2 {"camera_supermax_dist", g_camera_supermax_dist()};
-    g_camera_supermax_dist() = v2;
+    debug_variable_t v2 {"camera_supermax_dist", g_camera_supermax_dist};
+    g_camera_supermax_dist = v2;
 }
 
 void set_filter_time(float a1)
