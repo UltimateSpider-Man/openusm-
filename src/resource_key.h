@@ -134,10 +134,9 @@ struct resource_key {
     static resource_key_type resolve_extension(const char *target_string, bool a2);
 };
 
-extern Var<const char *[4][70]> resource_key_type_ext;
+inline auto & resource_key_type_ext = var<const char *[4][70]>(0x0091E7C8);
 
-inline Var<const char *[70]> resource_key_type_str {0x0091F088};
-
+inline auto & resource_key_type_str = var<const char *[70]>(0x0091F088);
 
 extern const char *to_string(resource_key_type type);
 

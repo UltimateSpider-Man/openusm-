@@ -889,7 +889,7 @@ bool PlayAnimCommand::process_cmd(const std::vector<std::string> &a2)
         auto &v3 = a2.at(0);
         mString a1 {v3.c_str()};
         filespec v35 {a1};
-        v35.m_ext = resource_key_type_ext()[g_platform][RESOURCE_KEY_TYPE_ANIMATION];
+        v35.m_ext = resource_key_type_ext[g_platform][RESOURCE_KEY_TYPE_ANIMATION];
         actor *v33 = nullptr;
         if ( a2.size() == 2 )
         {

@@ -19,9 +19,7 @@ const char *g_resource_key_type_ext[71] {"none", ".PCANIM", ".PCSKEL",
                                         ".ENS", ".SPL", ".AB", ".QP", ".TRIG", ".PCSX", ".INST", ".FDF", ".PANEL", ".TXT", ".ICN", ".PCMESH", ".PCMORPH", ".PCMAT", ".COLL", ".PCPACK", ".PCSANIM", ".MSN", ".MARKER", ".HH", ".WAV", ".WBK", ".M2V", ".M2V", ".PFX", ".CSV", ".CLE", ".LIT", ".GRD", ".GLS", ".LOD", ".SIN", ".GV", ".SV", ".TOKENS", ".DSG", ".PATH", ".PTRL", ".LANG", ".SLF", ".VISEME", ".PCMESHDEF", ".PCMORPHDEF", ".PCMATDEF", ".MUT", ".FX_CACHE", ".ASG", ".BAI", ".CUT", ".INTERACT", ".CSV", ".CSV", "._ENTID_", "._ANIMID_", "._REGIONID_", "._AI_GENERIC_ID_", "._RADIOMSG", "._GOAL_", "._IFC_ATTRIBUTE_", "._SIGNAL_", "._PACKSTATE_"};
 #endif
 
-Var<const char *[4][70]> resource_key_type_ext{0x0091E7C8};
-
-Var<char *[1]> resource_key_type_dir { 0x0091EC28 };
+static auto & resource_key_type_dir = var<char *[1]>(0x0091EC28);
 
 resource_key_type resource_key::resolve_extension(const char *target_string, bool a2)
 {
@@ -34,7 +32,7 @@ resource_key_type resource_key::resolve_extension(const char *target_string, boo
     Dest[EXTENSION_LENGTH - 1] = '\0';
     strupr(Dest);
 
-    for (auto &ext : resource_key_type_ext())
+    for (auto &ext : resource_key_type_ext)
     {
         for (size_t i{0}; i < 70u; ++i) {
             auto Src = ext[i];
@@ -61,7 +59,7 @@ mString resource_key::get_platform_string(int a1) const
 #ifdef TARGET_XBOX
         return g_resource_key_type_ext[self.m_type];
 #else
-        return resource_key_type_ext()[a2][self.m_type];
+        return resource_key_type_ext[a2][self.m_type];
 #endif
     }(*this, a1);
 
@@ -72,7 +70,7 @@ mString resource_key::get_platform_string(int a1) const
 
 const char *to_string(resource_key_type type)
 {
-    return resource_key_type_str()[type];
+    return resource_key_type_str[type];
 }
 
 void resource_key::unmash(mash_info_struct *a1, void *)
