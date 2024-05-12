@@ -1,12 +1,33 @@
-# openusm
-Requiments:
-Linux or Ubuntu on Windows 10
+OpenUSM
+======
 
-how to build :
-1. git clone https://gitlab.com/MrMartinIden/openusm.git 
-2. cd openusm && git submodule update --init --recursive
-3. cd openusm
-4. third party full folder https://drive.google.com/file/d/1kpsxAuAFllnH3i5-QmSgOHPOoZwslM1F/view?usp=sharing replace into project
-5. cmake -B build
-6. cd build
-7. make
+OpenUSM is an open-source game engine that supports playing Ultimate Spider-Man by Treyarch. You need to own the game for OpenUSM to play Ultimate Spider-Man.
+
+Current Status
+--------------
+
+The engine is not complete and is at the prototyping stage.
+
+Requiments:
+* Linux or Ubuntu on Windows 10
+* MinGW-w64 compiler
+
+
+How to build and install:
+------------------------
+
+* Rename binkw32.dll in the game's folder to binkw32_.dll
+* Download the repository to a directory convenient for you using the command git clone https://gitlab.com/MrMartinIden/openusm.git 
+* `cd openusm`
+* `cmake -B build` (a `build` directory and makefile will be created)
+* `cd build`
+* `make -jN`, where N - how many threads you want to allot for compiling.
+* Copy the compiled binkw32.dll from `build` directory in to the game's folder.
+
+
+License
+------------
+
+The code should only be used for educational, documentation and modding purposes.
+I do not encourage piracy or commercial use.
+Please keep derivate work open source and give proper credit.
