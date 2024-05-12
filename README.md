@@ -16,13 +16,13 @@ Requiments:
 How to build and install:
 ------------------------
 
-* Rename binkw32.dll in the game's folder to binkw32_.dll
+* Rename `binkw32.dll` in the game's folder to `binkw32_.dll`
 * Download the repository to a directory convenient for you using the command git clone https://gitlab.com/MrMartinIden/openusm.git 
 * `cd openusm`
 * `cmake -B build` (a `build` directory and makefile will be created)
 * `cd build`
 * `make -jN`, where N - how many threads you want to allot for compiling.
-* Copy the compiled binkw32.dll from `build` directory in to the game's folder.
+* Copy the compiled `binkw32.dll` from `build` directory to the game's folder.
 
 
 License
