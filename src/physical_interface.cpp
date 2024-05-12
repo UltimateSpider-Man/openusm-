@@ -22,13 +22,14 @@
 VALIDATE_OFFSET(physical_interface, field_164, 0x164);
 VALIDATE_SIZE(physical_interface, 0x1B0);
 
-Var<int[512]> physical_interface::rotators = (0x0095AF78);
+std::reference_wrapper<int[512]> physical_interface::rotators = var<int[512]>(0x0095AF78);
 
-Var<int> physical_interface::rotators_num = (0x0095A6B8);
+int & physical_interface::rotators_num = var<int>(0x0095A6B8);
 
 static constexpr float MAX_ASSERT_PHYSICAL_VELOCITY = 500.f;
 
-physical_interface::physical_interface(actor *a2) : field_188(), field_198() {
+physical_interface::physical_interface(actor *a2) : field_188(), field_198()
+{
     this->m_vtbl = 0x00883A44;
     this->field_8 = 0;
     this->field_4 = a2;
@@ -58,7 +59,8 @@ physical_interface::physical_interface(actor *a2) : field_188(), field_198() {
     this->field_185 = 0;
     this->field_186 = 0;
 
-    if (!g_generating_vtables()) {
+    if (!g_generating_vtables())
+    {
         this->add_to_phys_ifc_list();
         this->field_174 = nullptr;
         this->m_bp_sys = nullptr;
@@ -71,9 +73,7 @@ physical_interface::physical_interface(actor *a2) : field_188(), field_198() {
         this->field_2C = ZEROVEC;
         this->field_38 = ZEROVEC;
 
-        static Var<vector3d> stru_91FEBC = {0x0091FEBC};
-
-        this->field_74 = -stru_91FEBC();
+        this->field_74 = -YVEC;
 
         this->field_44 = ZEROVEC;
         this->field_80 = 0;
@@ -95,7 +95,7 @@ physical_interface::physical_interface(actor *a2) : field_188(), field_198() {
         this->field_F8 = 0;
         this->field_184 = 0;
         this->field_180 = g_world_ptr()->field_158.field_8;
-        this->field_100 = stru_91FEBC();
+        this->field_100 = YVEC;
         this->field_10C = 0;
         this->field_C8 = 1.0;
         this->field_CC = -1.0;
@@ -126,7 +126,7 @@ physical_interface::physical_interface(actor *a2) : field_188(), field_198() {
     }
 }
 
-pendulum *physical_interface::get_pendulum(uint32_t num)
+pendulum *physical_interface::get_pendulum(int num)
 {
     assert(num >= 0 && num < PHYS_IFC_MAX_PENDULUM_CONSTRAINTS);
     return this->field_110[num];
@@ -413,9 +413,10 @@ void physical_interface::stop_biped_physics(bool a2) {
     THISCALL(0x004F2700, this, a2);
 }
 
-void physical_interface::clear_static_lists() {
-    memset(physical_interface::rotators(), 0, sizeof(physical_interface::rotators()));
-    physical_interface::rotators_num() = 0;
+void physical_interface::clear_static_lists()
+{
+    memset(physical_interface::rotators, 0, sizeof(physical_interface::rotators));
+    physical_interface::rotators_num = 0;
 }
 
 void physical_interface::set_current_gravity_vector(const vector3d &a2) {
@@ -463,7 +464,7 @@ vector3d physical_interface::calculate_perfect_force_vector(const vector3d &star
                                                             Float gravity_multiplier) {
     assert(start != target);
 
-    auto v5 = g_gravity() * gravity_multiplier * 0.5f;
+    auto v5 = g_gravity * gravity_multiplier * 0.5f;
 
     assert(max_y > start.y);
 
@@ -489,7 +490,7 @@ vector3d physical_interface::calculate_perfect_force_vector(const vector3d &star
 void physical_interface::calculate_force_vector(Float a1, Float a2, float *a3, float *a4, Float a5) {
     *a4 = 0.0;
     *a3 = 0.0;
-    auto v5 = g_gravity() * a5;
+    auto v5 = g_gravity * a5;
     if (a1 < LARGE_EPSILON) {
         a1 = LARGE_EPSILON;
     }

@@ -110,7 +110,7 @@ struct physical_interface {
     //0x004DF020
     physical_interface(actor *a2);
 
-    pendulum *get_pendulum(uint32_t num);
+    pendulum *get_pendulum(int num);
 
     bool is_flag(uint32_t a2) const
     {
@@ -228,10 +228,10 @@ struct physical_interface {
     //0x004BDEB0
     static void clear_static_lists();
 
-    static Var<int[512]> rotators;
-    static Var<int> rotators_num;
+    static std::reference_wrapper<int[512]> rotators ;
+    static int & rotators_num;
 };
 
-static inline Var<float> g_gravity{0x00921E3C};
+static inline float & g_gravity = var<float>(0x00921E3C);
 
 extern void physical_interface_patch();
