@@ -532,13 +532,25 @@ bool hero_inode::compute_curr_ground_plane(force_recompute_enum a2, Float a3)
 {
     TRACE("hero_inode::compute_curr_ground_plane");
 
-    return (bool) THISCALL(0x00698970, this, a2, a3);
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(void *, void *edx, force_recompute_enum a2, Float a3) = CAST(func, 0x00698970);
+        return func(this, nullptr, a2, a3);
+    }
 }
 
-Var<string_hash> bip01_pelvis{0x0095AAFC};
+static const string_hash bip01_pelvis {int(to_hash("BIP01 PELVIS"))};
 
-void shrink_capsule_for_slanted_surfaces(actor *act) {
-    if constexpr (1) {
+static const string_hash bip01_l_foot {int(to_hash("BIP01 L FOOT"))};
+
+static const string_hash bip01_r_foot {int(to_hash("BIP01 R FOOT"))};
+
+void shrink_capsule_for_slanted_surfaces(actor *act)
+{
+    if constexpr (1)
+    {
         assert(act->is_a_conglomerate());
 
         auto *v1 = act->get_ai_core();
@@ -549,7 +561,7 @@ void shrink_capsule_for_slanted_surfaces(actor *act) {
         capsule_alter->set_mode((capsule_alter_sys::eAlterMode) 3);
 
         conglomerate *conglm_ptr = CAST(conglm_ptr, act);
-        auto *v3 = conglm_ptr->get_bone(bip01_pelvis(), true);
+        auto *v3 = conglm_ptr->get_bone(bip01_pelvis, true);
         capsule_alter->set_base_avg_node(1, v3, 1.0);
         capsule_alter->set_base_avg_node(2, nullptr, 0.0);
 
@@ -567,7 +579,8 @@ void shrink_capsule_for_slanted_surfaces(actor *act) {
     }
 }
 
-void extend_capsule_for_jump(actor *act) {
+void extend_capsule_for_jump(actor *act)
+{
     assert(act->is_a_conglomerate());
 
     ai_core *v1 = act->get_ai_core();
@@ -575,17 +588,14 @@ void extend_capsule_for_jump(actor *act) {
     auto *capsule_alter = act->get_ai_core()->field_70;
     capsule_alter->set_mode((capsule_alter_sys::eAlterMode) 3);
 
-    Var<string_hash> bip01_l_foot{0x0095A860};
-    Var<string_hash> bip01_r_foot{0x0095B970};
-
     conglomerate *conglom_ptr = CAST(conglom_ptr, act);
-    auto *v3 = conglom_ptr->get_bone(bip01_l_foot(), true);
+    auto *v3 = conglom_ptr->get_bone(bip01_l_foot, true);
     capsule_alter->set_base_avg_node(0, v3, 1.75);
 
-    auto *v4 = conglom_ptr->get_bone(bip01_r_foot(), true);
+    auto *v4 = conglom_ptr->get_bone(bip01_r_foot, true);
     capsule_alter->set_base_avg_node(1, v4, 1.75);
 
-    auto *v5 = conglom_ptr->get_bone(bip01_pelvis(), true);
+    auto *v5 = conglom_ptr->get_bone(bip01_pelvis, true);
     capsule_alter->set_base_avg_node(2, v5, 1.0);
     capsule_alter->set_base_avg_node(3, nullptr, 0.0);
 }
