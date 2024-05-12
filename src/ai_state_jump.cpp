@@ -26,11 +26,11 @@
 
 #include <cmath>
 
-static Var<float> g_base_factor {0x0091F6D8};
+static auto & g_base_factor = var<float>(0x0091F6D8);
 
-static Var<float> g_snow_balling {0x0091F6DC};
+static auto & g_snow_balling = var<float>(0x0091F6DC);
 
-static Var<float> g_jump_cap_vel {0x0091F6E0};
+static auto & g_jump_cap_vel = var<float>(0x0091F6E0);
 
 namespace ai {
 
@@ -41,7 +41,7 @@ VALIDATE_OFFSET(jump_state, field_30, 0x30);
 VALIDATE_OFFSET(jump_state, field_4C, 0x4C);
 VALIDATE_OFFSET(jump_state, field_81, 0x81);
 
-static Var<jump_param_t[21]> jump_params{0x00958CD0};
+static auto & jump_params = var<jump_param_t[21]>(0x00958CD0);
 
 jump_state::jump_state(from_mash_in_place_constructor *a2) {
     THISCALL(0x00449D10, this, a2);
@@ -70,10 +70,10 @@ vector3d jump_state::compute_force(vector3d a3, vector3d a4)
     if constexpr (1) {
         auto v5 = this->field_30->field_50;
         auto *v8 = this->get_core();
-        auto a9 = v8->field_50.get_pb_float(jump_params()[v5].m_height);
+        auto a9 = v8->field_50.get_pb_float(jump_params[v5].m_height);
 
         auto *v12 = this->get_core();
-        auto a10 = v12->field_50.get_pb_float(jump_params()[v5].m_distance);
+        auto a10 = v12->field_50.get_pb_float(jump_params[v5].m_distance);
 
         vector3d v13 = ((a9 >= 0.0f) ? a4 : -a4);
 
@@ -161,14 +161,14 @@ void jump_state::initiate_from_wall() {
 
         auto *v14 = this->get_actor();
         entity_set_abs_po(v14, v37);
-        auto v15 = jump_params()[this->field_30->field_50].m_height;
+        auto v15 = jump_params[this->field_30->field_50].m_height;
 
         auto *v16 = this->get_core();
 
         auto v30 = v16->field_50.get_pb_float(v15);
         auto v17 = this->field_30->field_50;
 
-        auto v18 = jump_params()[v17].m_distance;
+        auto v18 = jump_params[v17].m_distance;
 
         auto *v19 = this->get_core();
 
@@ -345,17 +345,16 @@ void __fastcall set_velocity(ai::physics_inode *self, void *, const vector3d *a2
     self->field_1C->set_velocity(*a2, a3);
 
     {
-        debug_variable_t v67 {"jump_cap_vel", g_jump_cap_vel()};
-        g_jump_cap_vel() = v67;
+        debug_variable_t v67 {"jump_cap_vel", g_jump_cap_vel};
+        g_jump_cap_vel = v67;
 
-        debug_variable_t v68 {"snow_balling", g_snow_balling()};
-        g_snow_balling() = v68;
+        debug_variable_t v68 {"snow_balling", g_snow_balling};
+        g_snow_balling = v68;
 
-        debug_variable_t v88 {"base_factor", g_base_factor()};
-        g_base_factor() = v88;
+        debug_variable_t v88 {"base_factor", g_base_factor};
+        g_base_factor = v88;
     }
 }
-
 
 void jump_state_patch()
 {
