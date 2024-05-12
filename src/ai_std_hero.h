@@ -7,6 +7,7 @@
 #include "crawl_request_type.h"
 #include "float.hpp"
 #include "vector3d.h"
+#include "vector4d.h"
 
 struct from_mash_in_place_constructor;
 
@@ -45,8 +46,7 @@ struct hero_inode : info_node {
         int field_4;
         int field_8;
         int field_C;
-        vector3d field_10;
-        int field_1C;
+        vector4d field_10;
         line_info field_20;
         corner_info field_7C;
     };
@@ -101,6 +101,9 @@ struct hero_inode : info_node {
 
     //0x006942A0
     void cleanup_collision_lists();
+
+    //0x00693AB0
+    void clear_curr_ground();
 
     //0x006A7110
     bool jump_is_eligible(string_hash a2);

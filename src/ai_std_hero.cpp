@@ -525,7 +525,23 @@ bool hero_inode::crawl_is_eligible_internals(string_hash a2, bool a3)
 {
     TRACE("hero_inode::crawl_is_eligible_internals");
 
-    return (bool) THISCALL(0x006A6900, this, a2, a3);
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(void *, void *edx, string_hash a2, bool a3) = CAST(func, 0x006A6900);
+        return func(this, nullptr, a2, a3);
+    }
+}
+
+void hero_inode::clear_curr_ground()
+{
+    this->field_88.field_10[0] = 0.0;
+    this->field_88.field_10[1] = 0.0;
+    this->field_88.field_10[2] = 0.0;
+    this->field_88.field_10[3] = 0.0;
+
+    this->field_88.field_20.clear();
 }
 
 bool hero_inode::compute_curr_ground_plane(force_recompute_enum a2, Float a3)
@@ -533,7 +549,90 @@ bool hero_inode::compute_curr_ground_plane(force_recompute_enum a2, Float a3)
     TRACE("hero_inode::compute_curr_ground_plane");
 
     if constexpr (0)
-    {}
+    {
+        auto func = [](const line_info &self) -> vector4d
+        {
+            auto v3 = -dot(self.hit_norm, self.hit_pos);
+            vector4d a2 {self.hit_norm, v3};
+            return a2;
+        };
+
+        bool v3 = false;
+        if ( a2 == 1 || bit_cast<vector3d *>(&this->field_88.field_10)->length2() < 0.000099999997 )
+        {
+            auto *v8 = this->get_actor();
+
+            auto &abs_po = v8->get_abs_po();
+            auto v42 = -abs_po.get_y_facing() * a3;
+
+            line_info a1 {};
+            a1.clear();
+
+            auto *v10 = this->get_actor();
+            auto &v11 = v10->get_abs_po();
+
+            auto v45 = v11.get_y_facing() * 0.1f;
+
+            auto *v12 = this->get_actor();
+            auto v13 = v12->get_abs_position();
+
+            a1.field_0 = v13 - v45;
+
+            a1.field_C = a1.field_0 + v42;
+            a1.check_collision(
+                *local_collision::entfilter_entity_no_capsules(),
+                *local_collision::obbfilter_lineseg_test(),
+                nullptr);
+            if ( !a1.collision || is_noncrawlable_surface(a1) )
+            {
+                a1.clear();
+                auto *v19 = this->get_actor();
+                auto &v20 = v19->get_abs_po();
+
+                auto *v21 = this->get_actor();
+                auto &v22 = v21->get_abs_po();
+                vector3d v23 = v22.get_y_facing() + v20.get_z_facing();
+
+                auto *v26 = this->get_actor();
+                auto v40 = v23 * EPSILON;
+                auto v28 = v26->get_abs_position();
+
+                auto *v29 = this->get_actor();
+                a1.field_0 = v28 - v40;
+
+                vector3d v51 = a1.field_0 + v42;
+                a1.field_C = v51;
+
+                auto v31 = v29->get_abs_po().get_z_facing();
+                vector3d v52 = -1.0f * (v31 * 2.5f);
+                a1.field_C += v52;
+                if ( !a1.check_collision(
+                        *local_collision::entfilter_entity_no_capsules(),
+                        *local_collision::obbfilter_lineseg_test(),
+                        nullptr)
+                        || is_noncrawlable_surface(a1) )
+                {
+                    this->clear_curr_ground();
+                }
+                else
+                {
+                    auto v34 = func(a1);
+                    this->field_88.field_10 = v34;
+                    this->field_88.field_20 = a1;
+                    v3 = true;
+                }
+            }
+            else
+            {
+                auto v17 = func(a1);
+                this->field_88.field_10 = v17;
+                this->field_88.field_20 = a1;
+                v3 = true;
+            }
+        }
+
+        return v3;
+    }
     else
     {
         bool (__fastcall *func)(void *, void *edx, force_recompute_enum a2, Float a3) = CAST(func, 0x00698970);
