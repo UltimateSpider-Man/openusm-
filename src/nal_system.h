@@ -29,12 +29,12 @@ struct BaseComponent {
     void PoseDataFree(uint32_t , void *) const;
 };
 
-extern Var<tlInstanceBank> nalTypeInstanceBank;
+extern tlInstanceBank & nalTypeInstanceBank;
 
-extern Var<tlInstanceBank> nalComponentInstanceBank;
+extern tlInstanceBank & nalComponentInstanceBank;
 
 namespace PanelComponentMgr {
-extern Var<int *> comp_list;
+extern int *& comp_list;
 }
 
 struct nal_anim_control {
@@ -204,7 +204,7 @@ struct nalComponentU8Base {
 struct nalComponentStringBase {
     char *GetType();
 
-    static inline Var<char> TypeID{0x00959560};
+    static inline char & TypeID = var<char>(0x00959560);
 };
 
 struct spideySignalData {};

@@ -20,9 +20,9 @@
 
 VALIDATE_OFFSET(nalGeneric::nalGenericSkeleton, field_50, 0x50);
 
-Var<tlInstanceBank> nalTypeInstanceBank{0x009770E8};
+tlInstanceBank & nalTypeInstanceBank = var<tlInstanceBank>(0x009770E8);
 
-Var<tlInstanceBank> nalComponentInstanceBank{0x00977100};
+tlInstanceBank & nalComponentInstanceBank = var<tlInstanceBank>(0x00977100);
 
 template<>
 Var<tlInstanceBankResourceDirectory<nalAnimFile, tlFixedString> *>
@@ -51,7 +51,7 @@ Var<tlInstanceBankResourceDirectory<nalAnimClass<nalAnyPose>, tlFixedString> *> 
 Var<tlInstanceBankResourceDirectory<nalSceneAnim, tlFixedString> *> nalSceneAnimDirectory{
     0x00977168};
 
-Var<int *> PanelComponentMgr::comp_list{0x0096F7DC};
+int *& PanelComponentMgr::comp_list = var<int *>(0x0096F7DC);
 
 void * BaseComponent::ApplyPublicPerSkelDataOffset(uint32_t a1, void *a2) const
 {
@@ -76,9 +76,9 @@ int *nalComponentU8Base::GetType() {
 }
 
 char *nalComponentStringBase::GetType() {
-    sp_log("%d", TypeID());
+    sp_log("%d", TypeID);
 
-    return &TypeID();
+    return &TypeID;
 }
 
 nalBaseSkeleton *nalGetSkeleton(const tlFixedString &a1) {
@@ -99,17 +99,17 @@ struct nalAnimCache {
     int field_8;
 };
 
-static Var<void *> dword_970D64{0x00970D64};
+static auto & dword_970D64 = var<void *>(0x00970D64);
 
-static Var<char[1]> nalAnimPath{0x00976FC8};
+static auto & nalAnimPath = var<char[1]>(0x00976FC8);
 
-static Var<char[1]> nalSkeletonPath{0x00976EC8};
+static auto & nalSkeletonPath = var<char[1]>(0x00976EC8);
 
-static Var<nalHeap> nalDefaultHeap{0x00946A84};
+static nalHeap & nalDefaultHeap = var<nalHeap>(0x00946A84);
 
-static Var<nalAnimCache> nalAnimationCache{0x00977114};
+static nalAnimCache & nalAnimationCache = var<nalAnimCache>(0x00977114);
 
-static Var<nalHeap *> nalAnimationHeap{0x00976EC0};
+static nalHeap *& nalAnimationHeap = var<nalHeap *>(0x00976EC0);
 
 void nalInit(nalHeap *a1) {
     TRACE("nalInit");
@@ -117,11 +117,11 @@ void nalInit(nalHeap *a1) {
     if constexpr (1) {
         tlStackRangeInit();
         if (tlScratchPadRefCount++ == 0) {
-            dword_970D64() = tlMemAlloc(0x4000, 16, 0x2000000u);
+            dword_970D64 = tlMemAlloc(0x4000, 16, 0x2000000u);
         }
 
-        nalAnimPath()[0] = 0;
-        nalSkeletonPath()[0] = 0;
+        nalAnimPath[0] = 0;
+        nalSkeletonPath[0] = 0;
         auto *mem = tlMemAlloc(20, 8, 0x2000000u);
 
         nalAnimFileDirectory() = new (mem)
@@ -139,21 +139,21 @@ void nalInit(nalHeap *a1) {
         nalSkeletonDirectory() = new (mem)
             tlInstanceBankResourceDirectory<nalBaseSkeleton, tlFixedString>{};
 
-        nalTypeInstanceBank().Init();
-        nalComponentInstanceBank().Init();
+        nalTypeInstanceBank.Init();
+        nalComponentInstanceBank.Init();
         nalInitListInit();
 
         auto *v10 = a1;
         if (v10 == nullptr) {
-            nalDefaultHeap().field_4 = 0x100000;
-            nalDefaultHeap().field_8 = 0;
-            v10 = &nalDefaultHeap();
+            nalDefaultHeap.field_4 = 0x100000;
+            nalDefaultHeap.field_8 = 0;
+            v10 = &nalDefaultHeap;
         }
 
-        nalAnimationCache().field_8 = 0;
-        nalAnimationCache().field_4 = 0;
-        nalAnimationHeap() = v10;
-        nalAnimationCache().field_0 = v10;
+        nalAnimationCache.field_8 = 0;
+        nalAnimationCache.field_4 = 0;
+        nalAnimationHeap = v10;
+        nalAnimationCache.field_0 = v10;
 
     } else {
         CDECL_CALL(0x00783CF0, a1);
@@ -224,7 +224,7 @@ bool nalLoadAnimFileInternal(nalAnimFile *anim_file)
 
             auto *v7 = skeletons[anim_class->field_28];
             anim_class->Skeleton = v7;
-            auto *instance = nalTypeInstanceBank().Search(v7->field_28);
+            auto *instance = nalTypeInstanceBank.Search(v7->field_28);
             if (instance == nullptr) {
                 assert(0 && "couldn't find animation type instance");
             }

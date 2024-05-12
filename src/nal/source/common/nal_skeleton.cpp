@@ -32,7 +32,7 @@ void *nalConstructSkeleton(void *a1)
         const tlHashString &str = skel->field_28;
 #endif
 
-        auto *instance = nalTypeInstanceBank().Search(str);
+        auto *instance = nalTypeInstanceBank.Search(str);
         assert(instance != nullptr && "unable to find skeleton type in type instance bank");
 
         auto *v1 = static_cast<nalInitListAnimType *>(instance->field_20);

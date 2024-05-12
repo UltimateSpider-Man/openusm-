@@ -64,18 +64,14 @@ void nalGenericSkeleton::Process()
 
         //sp_log("%s", this->field_8C[0].field_0.c_str());
 
-        if (this->field_88 > 0) {
-            for (int i = 0; i < this->field_88; ++i) {
-                this->field_8C[i].field_20 = static_cast<decltype(this->field_8C[i].field_20)>(
-                    nalComponentInstanceBank().Search(this->field_8C[i].field_0)->field_20);
-            }
+        for (int i = 0; i < this->field_88; ++i) {
+            this->field_8C[i].field_20 = static_cast<decltype(this->field_8C[i].field_20)>(
+                nalComponentInstanceBank.Search(this->field_8C[i].field_0)->field_20);
         }
 
-        if (this->field_A4 > 0) {
-            for (int i = 0; i < this->field_A4; ++i) {
-                this->field_A8[i].field_20 = static_cast<decltype(this->field_A8[i].field_20)>(
-                    nalComponentInstanceBank().Search(this->field_A8[i].field_0)->field_20);
-            }
+        for (int i = 0; i < this->field_A4; ++i) {
+            this->field_A8[i].field_20 = static_cast<decltype(this->field_A8[i].field_20)>(
+                nalComponentInstanceBank.Search(this->field_A8[i].field_0)->field_20);
         }
 
         auto v29 = this->field_A0;

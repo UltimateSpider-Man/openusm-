@@ -27,7 +27,7 @@ nalPanelPose::nalPanelPose(const nalPanelSkeleton *a2) : nalCompPose(a2) {
 }
 
 void nalPanelSkeleton::Process() {
-    auto *v1 = PanelComponentMgr::comp_list();
+    auto *v1 = PanelComponentMgr::comp_list;
     int num;
     for (num = 0; v1 != nullptr; ++num) {
         v1 = (int *) v1[1];
@@ -37,8 +37,9 @@ void nalPanelSkeleton::Process() {
     int v5 = 0;
 
     decltype(v4) j;
-    for (j = v4; v5 < num; ++v5) {
-        auto *v7 = PanelComponentMgr::comp_list();
+    for (j = v4; v5 < num; ++v5)
+    {
+        auto *v7 = PanelComponentMgr::comp_list;
         for (auto k = v5; k; v7 = (int *) v7[1]) {
             if (v7 == nullptr) {
                 break;
