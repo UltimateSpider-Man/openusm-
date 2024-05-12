@@ -35,6 +35,10 @@ struct entity : signaller {
     //0x004F9180
     entity(const string_hash &a2, uint32_t a3);
 
+    bool is_a_car() const {
+        return this->is_flagged(0x800u);
+    }
+
     static void destroy_static_entity_pointers();
 
     bool is_in_limbo() const;

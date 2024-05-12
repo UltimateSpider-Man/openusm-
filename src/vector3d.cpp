@@ -296,6 +296,16 @@ void vector3d::sub_4B9FA0(vector3d a2, Float a5)
     (*this) = v3.normalized();
 }
 
+void vector3d::sub_48A850(Float a2)
+{
+    auto v2 = this->length2();
+    if ( v2 > (0.0000099999997 * 0.0000099999997) )
+    {
+        auto v4 = a2 / std::sqrt(v2);
+        (*this) *= v4;
+    }
+}
+
 #ifndef USE_GLM
 bool is_colinear(vector3d a1, vector3d a4, Float epsilon) {
 #if 0       

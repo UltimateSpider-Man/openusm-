@@ -270,8 +270,239 @@ bool web_zip_inode::is_eligible(string_hash a2)
     }
 }
 
-bool web_zip_inode::find_zip_anchor_from_crawl() {
-    return THISCALL(0x0045D600, this);
+static string_hash web_zip_from_crawl_max_length_id {int(to_hash("web_zip_from_crawl_max_length"))};
+
+bool web_zip_inode::find_zip_anchor_from_crawl()
+{
+    if constexpr (0)
+    {
+        auto *v2 = this->field_DC->field_28;
+        auto *p_param_block = this->field_8->get_param_block();
+        bool v89 = false;
+        auto pb_float = p_param_block->get_pb_float(web_zip_from_crawl_max_length_id);
+        auto *v4 = &this->field_1C;
+        v4->clear();
+
+        auto *v5 = this->get_actor();
+        this->field_1C.field_0 = v5->get_abs_position();
+
+        auto v8 = v2->get_z_facing() * pb_float;
+        this->field_1C.field_C = this->field_1C.field_0 + v8;
+
+        bool v88 = false;
+        bool v92 = false;
+        this->field_1C.sub_48B410(100.0f);
+        if ( this->field_1C.check_collision(
+            *local_collision::entfilter_entity_no_capsules(),
+            *local_collision::obbfilter_lineseg_test(),
+            nullptr) )
+        {
+            bool v13 = ( (!is_noncrawlable_surface(this->field_1C) || this->field_1C.hit_norm[1] > 0.73242188f) 
+                && this->correct_zip_target_pos(&this->field_1C) );
+            v88 = v13;
+
+            v92 = true;
+        }
+
+        if ( this->field_1C.collision && !v88 )
+        {
+            vector3d a1 = this->field_1C.hit_pos + this->field_1C.hit_norm;
+            this->field_1C.clear();
+            this->field_1C.field_0 = a1;
+
+            auto &v18 = v2->get_z_facing();
+            vector3d v19 = v18 * 2.0f;
+            auto v21 = this->field_1C.field_0 - v19;
+            this->field_1C.field_C = v21;
+            this->field_1C.sub_48B410(100.0f);
+            if ( this->field_1C.check_collision(
+                    *local_collision::entfilter_entity_no_capsules(),
+                    *local_collision::obbfilter_lineseg_test(),
+                    nullptr) )
+            {
+                auto abs_pos = v2->get_abs_position();
+                auto v25 = abs_pos - this->field_1C.hit_pos;
+                v88 = ( v25.length2() > 4.0f 
+                    && (!is_noncrawlable_surface(this->field_1C) || this->field_1C.hit_norm[1] > 0.73242188)
+                    && this->correct_zip_target_pos(&this->field_1C) );
+            }
+        }
+
+        if ( !v88 && !v92 )
+        {
+            this->field_1C.clear();
+            auto v96 = v2->get_z_facing() * pb_float;
+            auto v28 = v2->get_abs_position();
+            auto v29 = v28 + v96;
+            this->field_1C.field_0 = v29;
+
+            auto &v31 = v2->get_y_facing();
+            auto v32 = v31 + 2.0f;
+            auto v33 = this->field_1C.field_0 - v32;
+            this->field_1C.field_C = v33;
+
+            auto &v35 = v2->get_y_facing();
+            auto v36 = v35 * 1.0f;
+            auto v37 = this->field_1C.field_0 + v36;
+            this->field_1C.field_0 = v37;
+            this->field_1C.sub_48B410(100.0f);
+            if ( !this->field_1C.check_collision(
+                    *local_collision::entfilter_entity_no_capsules(),
+                    *local_collision::obbfilter_lineseg_test(),
+                    nullptr)
+                || is_noncrawlable_surface(this->field_1C)
+                || !this->correct_zip_target_pos(&this->field_1C) )
+            {
+                this->field_1C.clear();
+                auto v41 = v2->get_y_facing();
+                auto v96 = v41 * 1.0f;
+
+                auto *v42 = this->get_actor();
+
+                auto v45 = v42->get_abs_position();
+                this->field_1C.field_C = v45 - v96;
+
+                auto v48 = v2->get_z_facing();
+                auto v49 = v48 * pb_float;
+                this->field_1C.field_0 = this->field_1C.field_C + v49;
+                this->field_1C.sub_48B410(100.0f);
+                if ( this->field_1C.check_collision(
+                        *local_collision::entfilter_entity_no_capsules(),
+                        *local_collision::obbfilter_lineseg_test(),
+                        nullptr)
+                        && !is_noncrawlable_surface(this->field_1C) )
+                {
+                    if ( this->field_1C.hit_norm[1] > 0.73242188 )
+                    {
+                        auto &v52 = v2->get_z_facing();
+                        if ( std::abs(dot(v52, this->field_1C.hit_norm)) < 0.34999999 ) {
+                            v89 = true;
+                        }
+                    }
+
+                    static bool & byte_91F728 = var<bool>(0x0091F728);
+
+                    if ( !byte_91F728 )
+                    {
+                    }
+                    else
+                    {
+                        line_info v97 {};
+                        auto v53 = this->field_1C.hit_norm * 0.1f;
+                        v97.field_C = this->field_1C.hit_pos + v53;
+                        auto &v54 = v2->get_abs_po();
+                        auto v55 = v54[1] * 2.0f;
+                        v97.field_0 = v97.field_C + v55;
+                        auto v56 = this->field_1C.hit_norm * 0.5f;
+                        auto v57 = this->field_1C.hit_pos - v56;
+                        this->field_1C.field_C = v57;
+
+                        auto &v58 = v2->get_z_facing();
+                        auto v59 = v58 * 2.0f;
+                        this->field_1C.field_0 = this->field_1C.field_C + v59;
+                        this->field_1C.sub_48B410(100.0f);
+                        if ( this->field_1C.check_collision(
+                                *local_collision::entfilter_entity_no_capsules(),
+                                *local_collision::obbfilter_lineseg_test(),
+                                nullptr) )
+                        {
+                            auto *v62 = this->get_actor();
+                            auto v63 = v62->get_abs_position();
+                            auto v64 = v63 - this->field_1C.hit_pos;
+                            if ( v64.length2() < 4.0f )
+                            {
+                                this->field_1C.clear();
+                                v89 = false;
+                            }
+                        }
+                        else
+                        {
+                            v89 = false;
+                        }
+
+                        if ( v89 )
+                        {
+                            v97.clear();
+                            auto v65 = this->field_1C.hit_norm * 0.1f;
+                            auto v66 = this->field_1C.hit_pos + v65;
+                            v97.field_0 = v66;
+                            auto *v67 = this->get_actor();
+                            auto a3 = v67->get_render_scale().y * 1.9f;
+                            auto v68 = YVEC * a3;
+                            v97.field_C = v97.field_0 + v68;
+                            v97.sub_48B410(100.0);
+                            v89 = !v97.check_collision(
+                                    *local_collision::entfilter_entity_no_capsules(),
+                                    *local_collision::obbfilter_lineseg_test(),
+                                    nullptr);
+                        }
+                    }
+                }
+
+                v88 = ( this->field_1C.collision
+                    && (v89 || !is_noncrawlable_surface(this->field_1C))
+                    && this->correct_zip_target_pos(&this->field_1C) );
+            }
+        }
+
+        if (v88)
+        {
+            auto v70  = v2->get_z_facing();
+            if ( v70.y > 0.0f ) {
+                v70 = -v70;
+            }
+
+            vector3d v72 = v70 * 6.0f;
+
+            auto *v73 = this->get_actor();
+            auto v75 = v73->get_abs_position() + v72;
+
+            auto *v76 = this->get_actor();
+
+            vector3d a5 {};
+            vector3d a6 {};
+
+            find_intersection(
+                v76->get_abs_position(),
+                v75,
+                *local_collision::entfilter_entity_collision,
+                *local_collision::obbfilter_lineseg_test(),
+                &a5,
+                &a6,
+                nullptr,
+                nullptr,
+                nullptr,
+                false);
+        }
+
+        auto result = v88;
+        if ( !v88 )
+        {
+            this->field_1C.clear();
+            auto *v79 = this->get_actor();
+
+            this->field_1C.field_0 = v79->get_abs_position();
+
+            auto &v82 = v2->get_y_facing();
+            vector3d a1 = v82 + 2.0f;
+            auto v84 = this->field_1C.field_0 - a1;
+            this->field_1C.field_C = v84;
+            this->field_1C.sub_48B410(100.0f);
+            this->field_1C.check_collision(
+                *local_collision::entfilter_entity_no_capsules(),
+                *local_collision::obbfilter_lineseg_test(),
+                nullptr);
+
+            return this->field_1C.collision && !is_noncrawlable_surface(this->field_1C);
+        }
+
+        return result;
+    }
+    else
+    {
+        bool (__fastcall *func)(void *) = CAST(func, 0x0045D600);
+        return func(this);
+    }
 }
 
 bool web_zip_inode::find_zip_anchor_and_transition_to_zip_jump(web_zip_inode::eZipReattachMode a2)

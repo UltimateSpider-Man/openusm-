@@ -1,6 +1,7 @@
 #include "ai_plr_loco_crawling.h"
 
 #include "ai_crawl_params_record.h"
+#include "ai_std_hero.h"
 #include "actor.h"
 #include "collision_geometry.h"
 #include "custom_math.h"

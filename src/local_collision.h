@@ -171,6 +171,8 @@ inline Var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>>>
 
 inline Var<entfilter<entfilter_AND<entfilter_BLOCKS_BEAMS, entfilter_LINESEG_TEST>> *> entfilter_blocks_beams {0x00960060};
 
+inline auto & entfilter_entity_collision = var<local_collision::entfilter_base *>(0x00960058);
+
 inline Var<entfilter_base *> entfilter_line_segment_camera_collision {0x00960070};
 
 inline Var<entfilter_base *> entfilter_sphere_camera_collision {0x00960074};

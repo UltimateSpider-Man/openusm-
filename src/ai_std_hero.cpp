@@ -12,6 +12,7 @@
 #include "base_ai_core.h"
 #include "colgeom_alter_sys.h"
 #include "collide.h"
+#include "collision_geometry.h"
 #include "combat_state.h"
 #include "common.h"
 #include "conglom.h"
@@ -31,6 +32,7 @@
 #include "plr_loco_crawl_state.h"
 #include "plr_loco_crawl_transition_state.h"
 #include "put_down_state.h"
+#include "subdivision_node_obb_base.h"
 #include "terrain.h"
 #include "throw_state.h"
 #include "utility.h"
@@ -293,7 +295,9 @@ bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3)
         }
 
         return result;
-    } else {
+    }
+    else
+    {
         return (bool) THISCALL(0x0069FAF0, this, &a2, a3);
     }
 }
@@ -302,8 +306,15 @@ bool hero_inode::accept_crawl_spot(vector3d a1, vector3d a4) {
     return (bool) THISCALL(0x00693B00, this, a1, a4);
 }
 
-bool hero_inode::get_closest_corner(corner_info *a2, crawl_request_type a3) {
-    return (bool) THISCALL(0x006A5CF0, this, a2, a3);
+bool hero_inode::get_closest_corner(corner_info *a2, crawl_request_type a3)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(void *, void *edx, corner_info *a2, crawl_request_type a3) = CAST(func, 0x006A5CF0);
+        return func(this, nullptr, a2, a3);
+    }
 }
 
 bool hero_inode::run_is_eligible(string_hash a2)
@@ -696,6 +707,41 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
 
     return true;
 }
+
+bool is_noncrawlable_surface(line_info &a1)
+{
+    if constexpr (0)
+    {
+        auto v_hit_entity = a1.hit_entity;
+        if ( v_hit_entity.get_volatile_ptr() != nullptr )
+        {
+            assert(v_hit_entity.get_volatile_ptr()->is_an_actor());
+
+            auto *act = bit_cast<actor *>(v_hit_entity.get_volatile_ptr());
+            if (act->is_a_car()) {
+                return true;
+            }
+
+            if ( !(!act->is_ext_flagged(0x8000u))) {
+                return true;
+            }
+
+            if ( auto *colgeom = act->get_colgeom(); colgeom != nullptr
+                || colgeom->get_type() == 1 )
+            {
+                return true;
+            }
+        }
+
+        return ( a1.m_obb != nullptr && a1.m_obb->is_flagged(0x40) );
+    }
+    else
+    {
+        bool (*func)(line_info *a1) = CAST(func, 0x0068A9D0);
+        return func(&a1);
+    }
+}
+
 
 void hero_inode_patch()
 {

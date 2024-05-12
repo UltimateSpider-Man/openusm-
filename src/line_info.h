@@ -50,6 +50,8 @@ struct line_info {
 
     bool release_mem();
 
+    void sub_48B410(Float a2);
+
     //0x0052F120
     static void frame_advance(int a1);
 
@@ -63,8 +65,5 @@ extern int num_debug_line_info[2];
 extern std::array<line_info[64], 2> debug_line_info;
 
 #endif
-
-//0x0068A9D0
-extern bool is_noncrawlable_surface(line_info &a1);
 
 extern void line_info_patch();

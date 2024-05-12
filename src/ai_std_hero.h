@@ -168,6 +168,10 @@ extern void extend_capsule_for_jump(actor *act);
 
 } // namespace ai
 
+
+//0x0068A9D0
+extern bool is_noncrawlable_surface(line_info &a1);
+
 //0x0069F9A0
 extern bool have_relative_movement(entity *a1, entity *a2);
 

@@ -161,6 +161,8 @@ struct vector3d
     //0x00401690
     float length() const;
 
+    void sub_48A850(Float a2);
+
     void sub_4B9FA0(vector3d a2, Float a5);
 
     static float abs(Float a1);

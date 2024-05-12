@@ -192,15 +192,21 @@ void line_info::copy(const line_info &a2) {
     THISCALL(0x006B6E00, this, &a2);
 }
 
-bool is_noncrawlable_surface(line_info &a1) {
-    return (bool) CDECL_CALL(0x0068A9D0, &a1);
-}
-
 void line_info::frame_advance(int a1)
 {
     TRACE("line_info::frame_advance");
 
     CDECL_CALL(0x0052F120, a1);
+}
+
+void line_info::sub_48B410(Float a2)
+{
+    vector3d v4 = this->field_C - this->field_0;
+    if ( v4.length2() > a2 * a2 )
+    {
+        v4.sub_48A850(a2);
+        this->field_C = this->field_0 + v4;
+    }
 }
 
 void line_info_patch() {

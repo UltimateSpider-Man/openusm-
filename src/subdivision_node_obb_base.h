@@ -23,6 +23,10 @@ struct subdivision_node_obb_base {
         return this->field_0 & 0x7F;
     }
 
+    bool is_flagged(uint32_t a2) const {
+        return a2 == (a2 & this->field_14);
+    }
+
     bool is_obb_node() const;
 
     //0x0052C580
