@@ -103,11 +103,8 @@ struct region
     //0x0053B4B0
     region(const mString &a2);
 
-    static inline Var<uint32_t> visit_key{0x0095C914};
-
-    static void prepare_for_visiting()
-    {
-        ++visit_key();
+    static void prepare_for_visiting() {
+        ++visit_key;
     } 
 
     void constructor_common();
@@ -193,13 +190,15 @@ struct region
     //0x0054FEC0
     void un_mash_lego_map(char *a2, int *a3);
 
-	static inline Var<int> visit_key1 {0x0095C918};
+    static inline uint32_t & visit_key = var<uint32_t>(0x0095C914);
 
-    static inline Var<int> visit_key2 {0x0095C91C};
+	static inline int & visit_key1 = var<int>(0x0095C918);
 
-    static inline Var<region *> all_regions{0x0095C924};
+    static inline int & visit_key2 = var<int>(0x0095C91C);
 
-    static inline Var<int> number_of_allocated_regions{0x0095C920};
+    static inline region *& all_regions = var<region *>(0x0095C924);
+
+    static inline int & number_of_allocated_regions = var<int>(0x0095C920);
 };
 
 extern void region_patch();

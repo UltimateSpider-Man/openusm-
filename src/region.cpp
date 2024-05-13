@@ -26,15 +26,15 @@ VALIDATE_SIZE(region, 0x134u);
 VALIDATE_OFFSET(region, field_C4, 0xC4);
 VALIDATE_OFFSET(region, field_108, 0x108);
 
-static Var<fixed_pool> lego_bitvector_pool {0x009222D4};
+static fixed_pool & lego_bitvector_pool = var<fixed_pool>(0x009222D4);
 
 static constexpr auto REGION_UNINITIALIZED_STRIP_ID = -1;
 
 region::region(const mString &a2)
 {
 	if constexpr (0) {
-		this->visited = region::visit_key();
-		this->field_58 = region::visit_key1();
+		this->visited = region::visit_key;
+		this->field_58 = region::visit_key1;
 
 		auto *mem = mem_alloc(sizeof(region_mash_info));
 		this->mash_info = new (mem) region_mash_info {};
@@ -263,7 +263,7 @@ bool region::is_interior() const {
 }
 
 bool region::already_visited() const {
-    return visit_key() == this->visited;
+    return visit_key == this->visited;
 }
 
 
@@ -366,12 +366,12 @@ void region::create_proximity_maps()
 
 region *region::__nw(uint32_t)
 {
-    if (region::all_regions() == nullptr) {
-        region::all_regions() = static_cast<region *>(arch_memalign(4u, sizeof(region) * 256));
+    if (region::all_regions == nullptr) {
+        region::all_regions = static_cast<region *>(arch_memalign(4u, sizeof(region) * 256));
     }
 
-    ++region::number_of_allocated_regions();
-    return &region::all_regions()[region::number_of_allocated_regions() - 1];
+    ++region::number_of_allocated_regions;
+    return &region::all_regions[region::number_of_allocated_regions - 1];
 }
 
 const mString &region::get_scene_id(bool a2) const
@@ -403,7 +403,7 @@ void region::un_mash_lego_map(char *a2, int *a3)
     if constexpr (1) {
         this->field_9C = (lego_map_root_node *)a2;
         this->field_9C->un_mash(a2, a3, this);
-        auto *mem = lego_bitvector_pool().allocate_new_block();
+        auto *mem = lego_bitvector_pool.allocate_new_block();
         this->bitvector_of_legos_rendered_last_frame = new (mem) fixed_bitvector<uint, 2048>{};
 
         assert(bitvector_of_legos_rendered_last_frame != nullptr);

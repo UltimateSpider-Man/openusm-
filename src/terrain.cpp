@@ -167,7 +167,7 @@ terrain::~terrain()
                 if ( v7 != nullptr )
                 {
                     v7->~region();
-                    --region::number_of_allocated_regions();
+                    --region::number_of_allocated_regions;
                 }
             }
             operator delete[](this->regions);
@@ -380,7 +380,7 @@ region *terrain::find_region(const vector3d &a2, region *a3) const
 
         simple_region_visitor visitor {a2, false};
 
-        ++region::visit_key2();
+        ++region::visit_key2;
         static_region_list_methods::init();
         this->region_map->traverse_point(a2, visitor);
         static_region_list_methods::term();
@@ -791,10 +791,10 @@ void terrain::find_ideal_terrain_packs_internal(const vector3d &a2,
 
             std::list<region *> regions {};
 
-            ++region::visit_key();
+            ++region::visit_key;
 
             auto sub_69FD45 = [](region *self) -> void {
-                self->visited = region::visit_key();
+                self->visited = region::visit_key;
             };
 
             sub_69FD45(center_region);
@@ -1183,7 +1183,7 @@ region *terrain::find_outermost_region(const vector3d &a2) const
     {
         simple_region_visitor a3{a2, true};
 
-        ++region::visit_key2();
+        ++region::visit_key2;
         static_region_list_methods::init();
         this->region_map->traverse_point(a2, a3);
 
@@ -1301,7 +1301,7 @@ void terrain::find_regions(const vector3d &a2, _std::vector<region *> *regions) 
         regions->clear();
         simple_region_visitor v5 {a2, true};
 
-        ++region::visit_key2();
+        ++region::visit_key2;
 
         static_region_list_methods::init();
         this->region_map->traverse_point(a2, v5);

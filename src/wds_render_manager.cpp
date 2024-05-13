@@ -238,7 +238,7 @@ void wds_render_manager::update_occluders(camera &a2)
             vector3d a2a = a2.get_abs_position() - v12.get_z_facing() * 20.f;
 
             sector2d v26{a2a, v11.get_z_facing(), a4};
-            ++region::visit_key2();
+            ++region::visit_key2;
             auto *v16 = reg->field_98;
             if (v16 != nullptr) {
                 v16->field_5C->traverse_sector_raster(v26, 100.0f, visitor);
@@ -384,7 +384,7 @@ void wds_render_manager::render(camera &a2, int a3)
             }
 
             geometry_manager::rebuild_view_frame();
-            ++region::visit_key();
+            ++region::visit_key;
             this->field_30.field_0.reserve(g_world_ptr()->the_terrain->get_num_regions() + 1);
 
             a2.get_abs_position();
