@@ -15,36 +15,36 @@
 #include <cassert>
 
 #ifndef TEST_CASE
-Var<mAvlTree<string_hash_entry> *> string_hash_dictionary::entries{0x0095C7E0};
-Var<mAvlTree<string_hash_entry> *> string_hash_dictionary::prereg_entries{0x0095C7E4};
+mAvlTree<string_hash_entry> *& string_hash_dictionary::entries = var<mAvlTree<string_hash_entry> *>(0x0095C7E0);
+mAvlTree<string_hash_entry> *& string_hash_dictionary::prereg_entries = var<mAvlTree<string_hash_entry> *>(0x0095C7E4);
 #else
 
-static mAvlTree<string_hash_entry> *g_entries{};
-Var<mAvlTree<string_hash_entry> *> string_hash_dictionary::entries{&g_entries};
+static mAvlTree<string_hash_entry> *g_entries {};
+mAvlTree<string_hash_entry> *& string_hash_dictionary::entries{g_entries};
 
-static mAvlTree<string_hash_entry> *g_prereg_entries{};
-Var<mAvlTree<string_hash_entry> *> string_hash_dictionary::prereg_entries{&g_prereg_entries};
+static mAvlTree<string_hash_entry> *g_prereg_entries {};
+mAvlTree<string_hash_entry> *& string_hash_dictionary::prereg_entries {g_prereg_entries};
 #endif
 
-Var<char *> string_hash_dictionary::default_dictionary_filename{0x00921CA0};
+char *& string_hash_dictionary::default_dictionary_filename = var<char *>(0x00921CA0);
 
-Var<char *> string_hash_dictionary::dictionary_extension{0x00921CA4};
+char *& string_hash_dictionary::dictionary_extension = var<char *>(0x00921CA4);
 
-Var<char *> string_hash_dictionary::file_header_identifier_string{0x00921CAC};
+char *& string_hash_dictionary::file_header_identifier_string = var<char *>(0x00921CAC);
 
-Var<ghetto_mash_file_header *> string_hash_dictionary::header{0x0095C7DC};
+ghetto_mash_file_header *& string_hash_dictionary::header = var<ghetto_mash_file_header *>(0x0095C7DC);
 
-Var<uint8_t *> string_hash_dictionary::mash_image_buffer{0x0095C7E8};
+uint8_t *& string_hash_dictionary::mash_image_buffer = var<uint8_t *>(0x0095C7E8);
 
-Var<char *> string_hash_dictionary::textfile_extension{0x00921CA8};
+char *& string_hash_dictionary::textfile_extension = var<char *>(0x00921CA8);
 
-Var<os_file> string_hash_dictionary::_hard_log{0x00960448};
+os_file & string_hash_dictionary::_hard_log = var<os_file>(0x00960448);
 
-Var<char *> string_hash_dictionary::hard_log_filename{0x00921C9C};
+char *& string_hash_dictionary::hard_log_filename = var<char *>(0x00921C9C);
 
-Var<bool> string_hash_dictionary::is_setup{0x0095C7EC};
+bool & string_hash_dictionary::is_setup = var<bool>(0x0095C7EC);
 
-static Var<int> RESOURCE_VERSION_MASH_DEP{0x00937454};
+static constexpr int RESOURCE_VERSION_MASH_DEP = 0x13;
 
 static_assert('A' == 65);
 static_assert('a' == 97);
@@ -62,32 +62,32 @@ void string_hash_dictionary::create_inst()
         if (g_is_the_packer() ||
             os_developer_options::instance->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"}))
         {
-            string_hash_dictionary::load_dictionary(nullptr);
+            load_dictionary(nullptr);
         }
 
         sp_log("string_hash_dictionary::prereg_entries = %s",
-               (string_hash_dictionary::prereg_entries() == nullptr) ? "null" : "valid");
+               (prereg_entries == nullptr) ? "null" : "valid");
 
-        if (prereg_entries() != nullptr)
+        if (prereg_entries != nullptr)
         {
-            if (entries() != nullptr)
+            if (entries != nullptr)
             {
-                assert(prereg_entries()->get_destruct_contents());
+                assert(prereg_entries->get_destruct_contents());
 
-                entries()->insert_tree(prereg_entries());
-                prereg_entries()->field_C = false;
+                entries->insert_tree(prereg_entries);
+                prereg_entries->field_C = false;
             }
 
-            if (prereg_entries() != nullptr)
+            if (prereg_entries != nullptr)
             {
-                auto *v0 = prereg_entries();
+                auto *v0 = prereg_entries;
                 v0->sub_5702D0();
                 operator delete(v0);
-                prereg_entries() = nullptr;
+                prereg_entries = nullptr;
             }
         }
 
-        is_setup() = true;
+        is_setup = true;
     }
     else
     {
@@ -95,39 +95,45 @@ void string_hash_dictionary::create_inst()
     }
 }
 
-void string_hash_dictionary::clear() {
-#if 0
-    if (string_hash_dictionary::mash_image_buffer() != nullptr) {
-        if (string_hash_dictionary::header()) {
-            //JUMPOUT(unk_547A43);
+void string_hash_dictionary::clear()
+{
+    if constexpr (0)
+    {
+        if (mash_image_buffer != nullptr)
+        {
+            if (header != nullptr) {
+                //JUMPOUT(unk_547A43);
+            }
+
+            if (entries != nullptr) {
+                entries->destruct_mashed_class();
+            }
+
+            mem_freealign(mash_image_buffer);
+        }
+        else
+        {
+            if (header != nullptr) {
+                operator delete(header);
+            }
+
+            if (entries != nullptr) {
+                entries->sub_5702D0();
+                operator delete(entries);
+            }
         }
 
-        if (string_hash_dictionary::entries() != nullptr) {
-            string_hash_dictionary::entries()->destruct_mashed_class();
-        }
-
-        mem_freealign(string_hash_dictionary::mash_image_buffer());
-    } else {
-        if (string_hash_dictionary::header() != nullptr) {
-            operator delete(string_hash_dictionary::header());
-        }
-
-        if (string_hash_dictionary::entries() != nullptr) {
-            string_hash_dictionary::entries()->sub_5702D0();
-            operator delete(string_hash_dictionary::entries());
+        mash_image_buffer = nullptr;
+        header = nullptr;
+        entries = nullptr;
+        if (_hard_log.opened) {
+            _hard_log.close();
         }
     }
-
-    string_hash_dictionary::mash_image_buffer() = nullptr;
-    string_hash_dictionary::header() = nullptr;
-    string_hash_dictionary::entries() = nullptr;
-    if (string_hash_dictionary::_hard_log().opened) {
-        string_hash_dictionary::_hard_log().close();
+    else
+    {
+        CDECL_CALL(0x00547A30);
     }
-
-#else
-    CDECL_CALL(0x00547A30);
-#endif
 }
 
 bool string_hash_dictionary::read(const char *a1)
@@ -136,59 +142,63 @@ bool string_hash_dictionary::read(const char *a1)
 
     if constexpr (1)
     {
-        assert(mash_image_buffer() == nullptr && "we assume the dictionary is not already open");
-        assert(header() == nullptr && "we assume the dictionary is not already open");
-        assert(entries() == nullptr && "we assume the dictionary is not already open");
+        assert(mash_image_buffer == nullptr && "we assume the dictionary is not already open");
+        assert(header == nullptr && "we assume the dictionary is not already open");
+        assert(entries == nullptr && "we assume the dictionary is not already open");
 
         bool result;
 
-        os_file v10{{a1}, 1u};
+        os_file v10 {{a1}, 1u};
 
         if (v10.opened)
         {
             std::uint32_t size = v10.get_size();
             //sp_log("size_file = %u", size); //8096228
 
-            mash_image_buffer() = static_cast<uint8_t *>(
+            mash_image_buffer = static_cast<uint8_t *>(
                 arch_memalign(16u, size));
 
 #ifndef TARGET_XBOX
-            mash_info_struct v5{mash_image_buffer(), static_cast<int>(size)};
+            mash_info_struct v5 {mash_image_buffer, static_cast<int>(size)};
 #else
-            mash_info_struct v5 {mash::UNMASH_MODE, mash_image_buffer(), static_cast<int>(size), true};
+            mash_info_struct v5 {mash::UNMASH_MODE, mash_image_buffer, static_cast<int>(size), true};
 #endif
 
-            v10.read(mash_image_buffer(), size);
+            v10.read(mash_image_buffer, size);
 
-            v5.unmash_class(header(), nullptr
+            v5.unmash_class(header, nullptr
 #ifdef TARGET_XBOX 
                     , mash::NORMAL_BUFFER
 #endif
                     );
-            assert(header() != nullptr);
+            assert(header != nullptr);
 
-            if (header()
-                    ->validate(file_header_identifier_string(),
-                               RESOURCE_VERSION_MASH_DEP())) {
+            if (header->validate(file_header_identifier_string,
+                               RESOURCE_VERSION_MASH_DEP))
+            {
                 sp_log("string_hash_dictionary::header is valid");
 
-                v5.unmash_class(entries(), nullptr
+                v5.unmash_class(entries, nullptr
 #ifdef TARGET_XBOX
                     , mash::NORMAL_BUFFER
 #endif 
                         );
 
-                v5.construct_class(entries());
+                v5.construct_class(entries);
 
                 result = true;
-            } else {
+            }
+            else
+            {
                 sp_log("string_hash_dictionary::header is non valid");
 
                 clear();
 
                 result = false;
             }
-        } else {
+        }
+        else
+        {
             result = false;
         }
 
@@ -200,32 +210,39 @@ bool string_hash_dictionary::read(const char *a1)
     }
 }
 
-void string_hash_dictionary::save_dictionary(const char *a1) {
-    TRACE("string_hash_dictionary::save_dictionary():");
-#if 0
-    mString v2 = string_hash_dictionary::figure_out_filename(
-        a1,
-        string_hash_dictionary::default_dictionary_filename(),
-        string_hash_dictionary::textfile_extension());
+void string_hash_dictionary::save_dictionary(const char *a1)
+{
+    TRACE("string_hash_dictionary::save_dictionary");
 
-    string_hash_dictionary::write_text(v2.c_str());
-    mString v3 = string_hash_dictionary::figure_out_filename(
+    if constexpr (0)
+    {
+        mString v2 = figure_out_filename(
+            a1,
+            default_dictionary_filename,
+            textfile_extension);
 
-        a1,
-        string_hash_dictionary::default_dictionary_filename(),
-        string_hash_dictionary::dictionary_extension());
+        write_text(v2.c_str());
+        mString v3 = figure_out_filename(
 
-    v2 = v3;
-#else
-    CDECL_CALL(0x00531A60, a1);
-#endif
+            a1,
+            default_dictionary_filename,
+            dictionary_extension);
+
+        v2 = v3;
+    }
+    else
+    {
+        CDECL_CALL(0x00531A60, a1);
+    }
 }
 
-void string_hash_dictionary::write_text(const char *a1) {
+void string_hash_dictionary::write_text(const char *a1)
+{
     sp_log("string_hash_dictionary::write_text: %s", a1);
-    if constexpr (1) {
-        mString v6{a1};
-        os_file file{v6, 2u};
+    if constexpr (1)
+    {
+        mString v6 {a1};
+        os_file file {v6, 2u};
 
         if (file.opened) {
             mString v4{"hashcode\tstring\r\n"};
@@ -236,8 +253,7 @@ void string_hash_dictionary::write_text(const char *a1) {
 
             file.write(v4.c_str(), v4.size());
 
-            auto *v1 = string_hash_dictionary::entries()
-                           ->m_head; // mAvlTree<string_hash_entry>::begin()
+            auto *v1 = entries->m_head; // mAvlTree<string_hash_entry>::begin()
             if (v1 != nullptr) {
                 for (auto &i = v1->m_left; i != nullptr; i = i->m_left) {
                     v1 = i;
@@ -265,15 +281,16 @@ void string_hash_dictionary::write_text(const char *a1) {
     }
 }
 
-void string_hash_dictionary::delete_inst() {
+void string_hash_dictionary::delete_inst()
+{
     TRACE("string_hash_dictionary::delete_inst():");
 
-    string_hash_dictionary::is_setup() = false;
+    is_setup = false;
     if (g_is_the_packer() || os_developer_options::instance->get_flag(mString {"LOAD_STRING_HASH_DICTIONARY"})) {
-        string_hash_dictionary::save_dictionary(nullptr);
+        save_dictionary(nullptr);
     }
 
-    string_hash_dictionary::clear();
+    clear();
 }
 
 mString string_hash_dictionary::figure_out_filename(const char *a2,
@@ -297,11 +314,11 @@ void string_hash_dictionary::load_dictionary(const char *a1)
     TRACE("string_hash_dictionary::load_dictionary");
     mString v1 = string_hash_dictionary::figure_out_filename(
         a1,
-        string_hash_dictionary::default_dictionary_filename(),
-        string_hash_dictionary::dictionary_extension());
+        default_dictionary_filename,
+        dictionary_extension);
 
-    if (!string_hash_dictionary::read(v1.c_str())) {
-        string_hash_dictionary::create_new_dictionary();
+    if (!read(v1.c_str())) {
+        create_new_dictionary();
     }
 }
 
@@ -310,35 +327,40 @@ void string_hash_dictionary::create_new_dictionary()
     TRACE("string_hash_dictionary::create_new_dictionary");
     if constexpr (1)
     {
-        assert(header() == nullptr && "dictionary already loaded");
+        assert(header == nullptr && "dictionary already loaded");
 
-        assert(entries() == nullptr && "dictionary already loaded");
+        assert(entries == nullptr && "dictionary already loaded");
 
-        assert(mash_image_buffer() == nullptr && "dictionary already loaded");
+        assert(mash_image_buffer == nullptr && "dictionary already loaded");
 
-        string_hash_dictionary::header() =
-            new ghetto_mash_file_header {mash::ALLOCATED,
-                                        string_hash_dictionary::file_header_identifier_string(),
-                                        RESOURCE_VERSION_MASH_DEP()};
+        header = new ghetto_mash_file_header {mash::ALLOCATED,
+                                        file_header_identifier_string,
+                                        RESOURCE_VERSION_MASH_DEP};
 
-        string_hash_dictionary::entries() = new mAvlTree<string_hash_entry>{};
-    } else {
+        entries = new mAvlTree<string_hash_entry> {};
+    }
+    else
+    {
         CDECL_CALL(0x0052A5E0);
     }
 }
 
-const char *string_hash_dictionary::lookup_string(string_hash a1) {
+const char *string_hash_dictionary::lookup_string(string_hash a1)
+{
     const char *res = nullptr;
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         string_hash_entry a2{};
         a2.field_0 = a1;
 
-        auto *v6 = string_hash_dictionary::entries()->find(&a2);
+        auto *v6 = entries->find(&a2);
         if (v6 != nullptr) {
             res = v6->field_4.c_str();
         }
-    } else {
+    }
+    else
+    {
         res = bit_cast<char *>(CDECL_CALL(0x00531990, a1));
     }
 
@@ -348,44 +370,44 @@ const char *string_hash_dictionary::lookup_string(string_hash a1) {
 void string_hash_dictionary::hard_log_string(const char *a1, const string_hash &a2) {
     mString v2;
 
-    if (string_hash_dictionary::_hard_log().opened) {
+    if (_hard_log.opened) {
         goto LABEL_6;
     }
 
     {
-        mString v4 =
-            string_hash_dictionary::figure_out_filename(nullptr,
-                                                        string_hash_dictionary::hard_log_filename(),
-                                                        string_hash_dictionary::textfile_extension());
+        mString v4 = figure_out_filename(nullptr,
+                                hard_log_filename,
+                                textfile_extension);
 
-        string_hash_dictionary::_hard_log().open({v4.c_str()}, 2);
+        _hard_log.open({v4.c_str()}, 2);
     }
 
-    if (string_hash_dictionary::_hard_log().opened) {
+    if (_hard_log.opened) {
     LABEL_6:
         string_hash_entry v5{a1, &a2};
 
         v2 = v5.sub_50DBC0("\r\n");
 
-        string_hash_dictionary::_hard_log().write(v2.c_str(), v2.size());
+        _hard_log.write(v2.c_str(), v2.size());
     }
 }
 
 bool string_hash_dictionary::is_loaded() {
-    return entries() != nullptr;
+    return entries != nullptr;
 }
 
 #if 1
 
-string_hash string_hash_dictionary::register_string(const char *str) {
+string_hash string_hash_dictionary::register_string(const char *str)
+{
     static const char *s_debug_string = "ai_arena.dsg";
     _strcmpi(str, s_debug_string);
     auto v2 = to_hash(str);
     string_hash a3{static_cast<int>(v2)};
 
     string_hash a1;
-    if (string_hash_dictionary::entries() != nullptr) {
-        string_hash_dictionary::register_in_tree(string_hash_dictionary::entries(), str, &a3);
+    if (entries != nullptr) {
+        register_in_tree(entries, str, &a3);
         a1.source_hash_code = a3.source_hash_code;
     }
 #if 1
@@ -393,18 +415,18 @@ string_hash string_hash_dictionary::register_string(const char *str) {
         a1.source_hash_code = v2;
     }
 #else
-    else if (!string_hash_dictionary::is_setup()) {
-        if (string_hash_dictionary::prereg_entries() == nullptr) {
-            string_hash_dictionary::prereg_entries() = new mAvlTree<string_hash_entry>{};
+    else if (!string_hash_dictionary::is_setup) {
+        if (string_hash_dictionary::prereg_entries == nullptr) {
+            string_hash_dictionary::prereg_entries = new mAvlTree<string_hash_entry>{};
         }
 
-        string_hash_dictionary::register_in_tree(string_hash_dictionary::prereg_entries(), str, &a3);
+        string_hash_dictionary::register_in_tree(string_hash_dictionary::prereg_entries, str, &a3);
     }
 
     a1 = a3;
 
     if (!g_is_the_packer()) {
-        if (string_hash_dictionary::is_setup() && os_developer_options::instance->get_flag(14)) {
+        if (string_hash_dictionary::is_setup && os_developer_options::instance->get_flag(14)) {
             string_hash_dictionary::hard_log_string(str, a3);
         }
         a1 = a3;
@@ -454,8 +476,12 @@ bool string_hash_dictionary::register_in_tree(mAvlTree<string_hash_entry> *a1,
 
         return true;
     }
-    else {
-        return (bool) CDECL_CALL(0x0053DD00, a1, str, a3);
+    else
+    {
+        bool (*func)(mAvlTree<string_hash_entry> *a1,
+                      const char *str,
+                      const string_hash *a3) = CAST(func, 0x0053DD00);
+        return func(a1, str, a3);
     }
 }
 
