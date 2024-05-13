@@ -4,25 +4,26 @@
 
 struct os_developer_options;
 
-struct ini_parser {
+namespace ini_parser {
+
     //0x005CA120
-    static void parse(const char *ini_filename, os_developer_options *a2);
+    extern void parse(const char *ini_filename, os_developer_options *a2);
 
     //0x005C3000
-    static int get_token(char **a1, int *a2, int *a3);
+    extern int get_token(char **a1, int *a2, int *a3);
 
     //0x005B8B00
-    static signed int build_token(char *a1, char *a2);
+    extern signed int build_token(char *a1, char *a2);
 
-    static void new_line(char *lpBuffer);
+    extern void new_line(char *lpBuffer);
 
-    static inline auto & filename = var<char[255]>(0x009682F8);
+    inline auto & filename = var<char[255]>(0x009682F8);
 
+    extern int & scan_pos;
+    extern char *& line;
+    extern char & token;
+    extern char & stored_token;
+    extern char & stored_type;
+    extern char & stored_num;
 
-    static int & scan_pos;
-    static char *& line;
-    static char & token;
-    static char & stored_token;
-    static char & stored_type;
-    static char & stored_num;
-};
+}
