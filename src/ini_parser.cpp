@@ -7,21 +7,21 @@
 
 #include <cassert>
 
-Var<char[255]> ini_parser::filename{0x009682F8};
+int & ini_parser::scan_pos = var<int>(0x009684F8);
+char *& ini_parser::line = var<char *>(0x009684FC);
+char & ini_parser::token = var<char>(0x009683F8);
+char & ini_parser::stored_token = var<char>(0x00968500);
+char & ini_parser::stored_type = var<char>(0x00968501);
+char & ini_parser::stored_num = var<char>(0x00968502);
 
-Var<int> ini_parser::scan_pos{0x009684F8};
-Var<char *> ini_parser::line{0x009684FC};
-Var<char> ini_parser::token{0x009683F8};
-Var<char> ini_parser::stored_token{0x00968500};
-Var<char> ini_parser::stored_type{0x00968501};
-Var<char> ini_parser::stored_num{0x00968502};
-
-void ini_parser::new_line(char *lpBuffer) {
-    ini_parser::line() = lpBuffer;
-    ini_parser::scan_pos() = 0;
+void ini_parser::new_line(char *lpBuffer)
+{
+    ini_parser::line = lpBuffer;
+    ini_parser::scan_pos = 0;
 }
 
-signed int ini_parser::build_token(char *a1, char *a2) {
+signed int ini_parser::build_token(char *a1, char *a2)
+{
     char *v2 = a1;
     char v3 = *a1;
     signed int result = 0;
@@ -69,7 +69,8 @@ int sub_5B8AB0(char *a1) {
     return result;
 }
 
-int ini_parser::get_token(char **a1, int *a2, int *a3) {
+int ini_parser::get_token(char **a1, int *a2, int *a3)
+{
     int result;
     char *v4;
     int v5;
@@ -78,22 +79,24 @@ int ini_parser::get_token(char **a1, int *a2, int *a3) {
     int *v8;
     unsigned int v9;
 
-    if (ini_parser::stored_token()) {
-        *a1 = &ini_parser::token();
-        *a2 = ini_parser::stored_type();
-        *a3 = ini_parser::stored_num();
-        ini_parser::stored_token() = 0;
+    if (stored_token) {
+        *a1 = &token;
+        *a2 = stored_type;
+        *a3 = stored_num;
+        stored_token = 0;
         result = *a2;
     } else {
-        v4 = ini_parser::line();
-        v5 = ini_parser::scan_pos();
-        ini_parser::token() = 0;
-        while (1) {
+        v4 = line;
+        v5 = scan_pos;
+        token = 0;
+
+        while (1)
+        {
             v6 = isspace(v4[v5]);
-            v4 = ini_parser::line();
-            v5 = ini_parser::scan_pos();
-            if (!v6 || (v7 = ini_parser::line()[ini_parser::scan_pos()]) == 0) {
-                v7 = ini_parser::line()[ini_parser::scan_pos()];
+            v4 = line;
+            v5 = scan_pos;
+            if (!v6 || (v7 = line[scan_pos]) == 0) {
+                v7 = line[scan_pos];
                 if (v7 != '\n' && v7 != '\r' && v7 != ';') {
                     break;
                 }
@@ -108,34 +111,34 @@ int ini_parser::get_token(char **a1, int *a2, int *a3) {
                         break;
                     }
 
-                    ini_parser::scan_pos() = ++v5;
-                    v7 = ini_parser::line()[v5];
+                    scan_pos = ++v5;
+                    v7 = line[v5];
                 } while (v7 != 10);
             } else {
-                v5 = ini_parser::scan_pos()++ + 1;
+                v5 = scan_pos++ + 1;
             }
         }
-        result = ini_parser::build_token(&ini_parser::line()[ini_parser::scan_pos()],
-                                         &ini_parser::token());
-        ini_parser::scan_pos() = result + v5;
+        result = ini_parser::build_token(&line[scan_pos],
+                                         &token);
+        scan_pos = result + v5;
         if (result) {
-            *a1 = &ini_parser::token();
-            sub_5B8AB0(&ini_parser::token());
-            if (ini_parser::token() == '[') {
-                strlwr(&ini_parser::token());
+            *a1 = &token;
+            sub_5B8AB0(&token);
+            if (token == '[') {
+                strlwr(&token);
                 v8 = a2;
                 *a2 = 1;
-            } else if (ini_parser::token() == '=') {
+            } else if (token == '=') {
                 v8 = a2;
                 *a2 = 3;
             } else {
-                v9 = strlen(&ini_parser::token());
+                v9 = strlen(&token);
                 v8 = a2;
                 *a2 = v9 > 0 ? 2 : 0;
             }
 
-            ini_parser::stored_num() = *bit_cast<char *>(a3);
-            ini_parser::stored_type() = *bit_cast<char *>(v8);
+            stored_num = *bit_cast<char *>(a3);
+            stored_type = *bit_cast<char *>(v8);
             result = *v8;
         } else {
             *a1 = nullptr;
@@ -146,8 +149,10 @@ int ini_parser::get_token(char **a1, int *a2, int *a3) {
 
 static constexpr int TOKEN_STRING = 2;
 
-void ini_parser::parse(const char *ini_filename, os_developer_options *a2) {
-    if constexpr (1) {
+void ini_parser::parse(const char *ini_filename, os_developer_options *a2)
+{
+    if constexpr (1)
+    {
         assert(ini_filename != nullptr);
 
         int v11;
@@ -155,23 +160,24 @@ void ini_parser::parse(const char *ini_filename, os_developer_options *a2) {
         os_file file{};
 
         int v9 = 0;
-        strncpy(ini_parser::filename(), ini_filename, 256u);
+        strncpy(filename, ini_filename, 256u);
 
-        static Var<char> byte_9683F7{0x009683F7};
-        byte_9683F7() = 0;
-        ini_parser::scan_pos() = 0;
-        ini_parser::line() = nullptr;
-        ini_parser::token() = 0;
-        ini_parser::stored_token() = 0;
-        ini_parser::stored_type() = 0;
-        ini_parser::stored_num() = 0;
-        mString v13{ini_parser::filename()};
+        static char & byte_9683F7 = var<char>(0x009683F7);
+        byte_9683F7 = 0;
+        scan_pos = 0;
+        line = nullptr;
+        token = 0;
+        stored_token = 0;
+        stored_type = 0;
+        stored_num = 0;
+        mString v13 {filename};
 
         file.open(v13, 1u);
 
         //sub_4209C0(&v13, 0);
         //nullsub_2(0);
-        if (file.opened) {
+        if (file.opened)
+        {
             auto file_size = file.get_size();
             char *buf = static_cast<char *>(malloc(file_size + 1));
             assert(buf != nullptr);
@@ -248,7 +254,7 @@ void ini_parser::parse(const char *ini_filename, os_developer_options *a2) {
                                 "Mangled INI file, expected '=' but found '%s', trying to salvage "
                                 "things...",
                                 ini_filename);
-                            ini_parser::stored_token() = 1;
+                            stored_token = 1;
                         }
                     } else if (token_type == 3) {
                         sp_log(
@@ -266,13 +272,17 @@ void ini_parser::parse(const char *ini_filename, os_developer_options *a2) {
                 buf = v12;
             }
             free(buf);
-        } else {
-            sp_log("Error.  Could not open ini file %s\n", ini_parser::filename());
+        }
+        else
+        {
+            sp_log("Error.  Could not open ini file %s\n", filename);
             //assert(0);
         }
 
         //sub_59B6F0(&file);
-    } else {
+    }
+    else
+    {
         CDECL_CALL(0x005CA120, ini_filename, a2);
     }
 }

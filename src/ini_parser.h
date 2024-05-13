@@ -16,12 +16,13 @@ struct ini_parser {
 
     static void new_line(char *lpBuffer);
 
-    static Var<char[255]> filename;
+    static inline auto & filename = var<char[255]>(0x009682F8);
 
-    static Var<int> scan_pos;
-    static Var<char *> line;
-    static Var<char> token;
-    static Var<char> stored_token;
-    static Var<char> stored_type;
-    static Var<char> stored_num;
+
+    static int & scan_pos;
+    static char *& line;
+    static char & token;
+    static char & stored_token;
+    static char & stored_type;
+    static char & stored_num;
 };
