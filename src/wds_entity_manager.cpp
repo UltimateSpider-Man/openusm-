@@ -345,7 +345,7 @@ box_trigger *wds_entity_manager::create_and_add_box_trigger(
     TRACE("wds_entity_manager::create_and_add_box_trigger");
 
     if constexpr (1) {
-        auto *new_trigger = (box_trigger *) trigger_manager::instance()->new_box_trigger(a1, a3);
+        auto *new_trigger = (box_trigger *) trigger_manager::instance->new_box_trigger(a1, a3);
         new_trigger->set_box_info(a4);
         return new_trigger;
     } else {

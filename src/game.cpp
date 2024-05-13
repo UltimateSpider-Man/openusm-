@@ -514,7 +514,7 @@ void game::one_time_deinit_stuff()
 
     this->field_B4 = nullptr;
     this->field_B8 = nullptr;
-    trigger_manager::instance()->deinit();
+    trigger_manager::instance->deinit();
     terrain_types_manager::delete_inst();
 }
 
@@ -3025,7 +3025,7 @@ void game::unload_current_level()
             this->freeze_hero(false);
         }
 
-        trigger_manager::instance()->purge();
+        trigger_manager::instance->purge();
 
         event_manager::clear();
 

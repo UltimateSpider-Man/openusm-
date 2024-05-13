@@ -516,7 +516,7 @@ entity_base *mission_manager::get_mission_key_entity() const
 trigger * mission_manager::get_mission_key_trigger() const
 {
     mString v3 {this->m_script->field_84.c_str()};
-    auto *instance = trigger_manager::instance()->find_instance(v3);
+    auto *instance = trigger_manager::instance->find_instance(v3);
     return instance;
 }
 

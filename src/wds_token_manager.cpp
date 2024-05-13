@@ -156,7 +156,7 @@ _std::list<wds_token_manager::active_token>::iterator wds_token_manager::remove_
 {
     TRACE("wds_token_manager::remove_active_token");
 
-    auto *trigger_mgr = trigger_manager::instance();
+    auto *trigger_mgr = trigger_manager::instance;
     assert(trigger_mgr != nullptr);
 
     auto &v10 = (*a3);

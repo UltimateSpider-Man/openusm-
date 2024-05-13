@@ -39,7 +39,7 @@ bool box_trigger_resource_handler::_handle_resource(
 
     auto *v3 = this->my_slot->box_trigger_instances->at(this->field_C);
     if (v3 != nullptr) {
-        trigger_manager::instance()->delete_trigger((trigger *) v3);
+        trigger_manager::instance->delete_trigger((trigger *) v3);
     }
 
     ++this->field_C;

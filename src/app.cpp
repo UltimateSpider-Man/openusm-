@@ -418,10 +418,10 @@ void app::cleanup()
             pc_input_mgr::instance() = nullptr;
         }
 
-        if ( trigger_manager::instance() != nullptr )
+        if ( trigger_manager::instance != nullptr )
         {
-            delete trigger_manager::instance();
-            trigger_manager::instance() = nullptr;
+            delete trigger_manager::instance;
+            trigger_manager::instance = nullptr;
         }
 
         event_manager::delete_inst();

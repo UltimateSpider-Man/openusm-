@@ -741,7 +741,7 @@ void entity_base::_un_mash(generic_mash_header *a1, void *a2, generic_mash_data_
 
             auto *v12 = bit_cast<convex_box *>(a3->field_4);
             a3->field_4 += sizeof(convex_box);
-            auto *v13 = (box_trigger *) trigger_manager::instance()->new_box_trigger(this->field_10, this);
+            auto *v13 = (box_trigger *) trigger_manager::instance->new_box_trigger(this->field_10, this);
             v13->set_box_info(*v12);
         }
     }
@@ -1150,8 +1150,10 @@ void entity_set_abs_parent(entity_base *me, entity_base *parent) {
     }
 }
 
-void entity_set_abs_po(entity_base *ent, const po &the_po) {
-    if constexpr (1) {
+void entity_set_abs_po(entity_base *ent, const po &the_po)
+{
+    if constexpr (1)
+    {
         assert(ent != nullptr && "No Entity passed in");
 
         assert(Abs(the_po.get_x_facing()) > EPSILON);
@@ -1246,9 +1248,9 @@ void entity_base::common_destruct()
 
         if ( this->is_flagged(0x400) )
         {
-            auto *v4 = trigger_manager::instance()->find_instance(this);
+            auto *v4 = trigger_manager::instance->find_instance(this);
             if (v4 != nullptr) {
-                trigger_manager::instance()->delete_trigger(v4);
+                trigger_manager::instance->delete_trigger(v4);
             }
         }
 

@@ -392,7 +392,7 @@ void world_dynamics_system::frame_advance(Float a2)
         web_interface::frame_advance_all_web_interfaces(a2);
         this->update_collision_proximity_maps_for_moved_entities(a2);
         this->the_terrain->frame_advance(a2);
-        trigger_manager::instance()->update();
+        trigger_manager::instance->update();
         this->sub_54A3B0();
         decal_morphs::frame_advance(a2);
 

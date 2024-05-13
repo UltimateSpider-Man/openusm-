@@ -12,7 +12,7 @@
 
 VALIDATE_SIZE(trigger_manager, 8u);
 
-Var<trigger_manager *> trigger_manager::instance{0x0095FF98};
+trigger_manager *& trigger_manager::instance = var<trigger_manager *>(0x0095FF98);
 
 trigger_manager::trigger_manager() : m_triggers(nullptr) {
     this->m_vtbl = 0x00891274;
@@ -22,9 +22,9 @@ void trigger_manager::create_inst()
 {
     TRACE("trigger_manager::create_inst");
 
-    assert(instance() == nullptr);
+    assert(instance == nullptr);
 
-    instance() = new trigger_manager {};
+    instance = new trigger_manager {};
 }
 
 void trigger_manager::deinit() {

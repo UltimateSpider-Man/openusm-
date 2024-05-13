@@ -5,8 +5,6 @@
 #include "string_hash.h"
 #include "vector3d.h"
 
-#include "variable.h"
-
 struct box_trigger;
 struct entity_base;
 struct entity_trigger;
@@ -57,7 +55,7 @@ struct trigger_manager : singleton {
 
     static void create_inst();
 
-    static Var<trigger_manager *> instance;
+    static trigger_manager *& instance;
 };
 
 extern void trigger_manager_patch();
