@@ -256,7 +256,7 @@ struct actor : entity {
     static void get_animations(actor *a1, std::list<nalAnimClass<nalAnyPose> *> &a2);
 };
 
-inline Var<actor *> global_transfer_variable_the_actor {0x0096C978};
+inline actor *& global_transfer_variable_the_actor = var<actor *>(0x0096C978);
 
 namespace ai {
 

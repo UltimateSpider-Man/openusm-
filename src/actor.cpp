@@ -45,7 +45,7 @@
 VALIDATE_SIZE(actor, 0xC0u);
 VALIDATE_OFFSET(actor, adv_ptrs, 0x78);
 
-static Var<collision_free_state *> collision_free_states {0x00968504};
+static collision_free_state *& collision_free_states = var<collision_free_state *>(0x00968504);
 
 actor::actor(const string_hash &a2, uint32_t a3) : entity(a2, a3)
 {
@@ -100,7 +100,7 @@ collision_free_state *actor::get_last_collision_free_state() const
 {
     auto v1 = this->field_A4;
     if ( v1 != 0 ) {
-        return collision_free_states() + v1;
+        return collision_free_states + v1;
     }
 
     return nullptr;
@@ -682,7 +682,7 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
             auto *v42 = v4->field_0;
             v4->field_0 += v38;
 
-            global_transfer_variable_the_actor() = this;
+            global_transfer_variable_the_actor = this;
 
 #if XBOX_RELEASE
             mash_info_struct a1 {2, v42, v38, true};
@@ -952,10 +952,12 @@ void actor::create_player_controller(int a2) {
     this->m_player_controller->set_player_num(a2);
 }
 
-static Var<_std::list<actor::mesh_buffers *>> stru_95AAB4{0x0095AAB4};
+static _std::list<actor::mesh_buffers *> & stru_95AAB4 = var<_std::list<actor::mesh_buffers *>>(0x0095AAB4);
 
-void actor::swap_all_mesh_buffers() {
-    for (auto &i : stru_95AAB4()) {
+void actor::swap_all_mesh_buffers()
+{
+    for (auto &i : stru_95AAB4)
+    {
         actor::mesh_buffers *v2 = i;
         auto v3 = v2->field_5;
         if (v3 > 1u) {
