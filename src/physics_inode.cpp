@@ -143,8 +143,10 @@ void physics_inode::set_always_standing(bool a2) {
     }
 }
 
-void physics_inode::setup_for_walk() {
-    if constexpr (1) {
+void physics_inode::setup_for_walk()
+{
+    if constexpr (1)
+    {
         this->set_collisions_active(true, true);
         this->set_always_standing(false);
         this->set_adv_standing(false);
@@ -156,22 +158,24 @@ void physics_inode::setup_for_walk() {
         v2->set_current_gravity_vector(-YVEC);
         this->cleanup_from_swing();
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00698E50, this);
     }
 }
 
-static Var<string_hash> physics_normal_drag_id{0x0096C0F8};
+static const string_hash physics_normal_drag_id {int(to_hash("physics_normal_drag"))};
 
-static Var<string_hash> physics_gravity_normal_id{0x0096BFC8};
+static const string_hash physics_gravity_normal_id {int(to_hash("physics_gravity_normal"))};
 
-static Var<string_hash> physics_normal_drag_down_scale_id{0x0096C154};
+static const string_hash physics_normal_drag_down_scale_id {int(to_hash("physics_normal_drag_down_scale"))};
 
-static Var<string_hash> physics_normal_drag_up_scale_id{0x0096BFB0};
+static const string_hash physics_normal_drag_up_scale_id {int(to_hash("physics_normal_drag_up_scale"))};
 
-static Var<string_hash> physics_normal_drag_min_speed_id{0x0096C4CC};
+static const string_hash physics_normal_drag_min_speed_id {int(to_hash("physics_normal_drag_min_speed"))};
 
-static Var<string_hash> physics_normal_drag_horz_scale_id{0x0096C00C};
+static const string_hash physics_normal_drag_horz_scale_id {int(to_hash("physics_normal_drag_horz_scale"))};
 
 static constexpr auto g_normal_gravity = 3.75f;
 
@@ -183,35 +187,37 @@ static constexpr auto g_normal_air_res_down_scale = 1.0f;
 
 static float g_normal_air_res_horz_scale = 1.0f;
 
-static Var<float> g_normal_air_res_min_speed{0x0096BE3C};
+static float & g_normal_air_res_min_speed = var<float>(0x0096BE3C);
 
-void physics_inode::cleanup_from_swing() {
-    if constexpr (1) {
-        auto *v2 = &this->field_8->field_50;
+void physics_inode::cleanup_from_swing()
+{
+    if constexpr (1)
+    {
+        auto &v2 = this->field_8->field_50;
 
-        auto v16 = v2->get_optional_pb_float(physics_normal_drag_id(), g_normal_air_res, nullptr);
+        auto v16 = v2.get_optional_pb_float(physics_normal_drag_id, g_normal_air_res, nullptr);
 
         auto &v3 = this->field_8->field_50;
 
-        auto v17 = v3.get_optional_pb_float(physics_normal_drag_min_speed_id(),
-                                            g_normal_air_res_min_speed(),
+        auto v17 = v3.get_optional_pb_float(physics_normal_drag_min_speed_id,
+                                            g_normal_air_res_min_speed,
                                             nullptr);
 
         auto &v4 = this->field_8->field_50;
 
-        auto v18 = v4.get_optional_pb_float(physics_normal_drag_horz_scale_id(),
+        auto v18 = v4.get_optional_pb_float(physics_normal_drag_horz_scale_id,
                                             g_normal_air_res_horz_scale,
                                             nullptr);
 
         auto &v5 = this->field_8->field_50;
 
-        auto v19 = v5.get_optional_pb_float(physics_normal_drag_up_scale_id(),
+        auto v19 = v5.get_optional_pb_float(physics_normal_drag_up_scale_id,
                                             g_normal_air_res_up_scale,
                                             nullptr);
 
         auto &v6 = this->field_8->field_50;
 
-        auto v20 = v6.get_optional_pb_float(physics_normal_drag_down_scale_id(),
+        auto v20 = v6.get_optional_pb_float(physics_normal_drag_down_scale_id,
                                             g_normal_air_res_down_scale,
                                             nullptr);
 
@@ -228,7 +234,7 @@ void physics_inode::cleanup_from_swing() {
 
         auto &v12 = this->field_8->field_50;
 
-        this->field_1C->m_gravity_multiplier = v12.get_optional_pb_float(physics_gravity_normal_id(),
+        this->field_1C->m_gravity_multiplier = v12.get_optional_pb_float(physics_gravity_normal_id,
                                                                          g_normal_gravity,
                                                                          nullptr);
 
@@ -244,23 +250,23 @@ void physics_inode::apply_force_increment(const vector3d &a2,
     this->field_1C->apply_force_increment(a2, a3, a4, a5);
 }
 
-static Var<float> g_swing_gravity{0x00937D34};
+static float & g_swing_gravity = var<float>(0x00937D34);
 
-static Var<string_hash> physics_gravity_swing_id{0x0096C020};
+static const string_hash physics_gravity_swing_id {int(to_hash("physics_gravity_swing"))};
 
-static Var<string_hash> physics_swing_drag_0_id{0x0096C044};
-static Var<string_hash> physics_swing_drag_1_id{0x0096C410};
-static Var<string_hash> physics_swing_drag_2_id{0x0096C488};
-static Var<string_hash> physics_swing_drag_3_id{0x0096C390};
+static const string_hash physics_swing_drag_0_id {int(to_hash("physics_swing_drag_0"))};
+static const string_hash physics_swing_drag_1_id {int(to_hash("physics_swing_drag_1"))};
+static const string_hash physics_swing_drag_2_id {int(to_hash("physics_swing_drag_2"))};
+static const string_hash physics_swing_drag_3_id {int(to_hash("physics_swing_drag_3"))};
 
-static Var<string_hash> physics_swing_drag_min_speed_0_id{0x0096C200};
-static Var<string_hash> physics_swing_drag_min_speed_1_id{0x0096C25C};
-static Var<string_hash> physics_swing_drag_min_speed_2_id{0x0096C1A4};
-static Var<string_hash> physics_swing_drag_min_speed_3_id{0x0096C1A8};
+static const string_hash physics_swing_drag_min_speed_0_id {int(to_hash("physics_swing_drag_min_speed_0"))};
+static const string_hash physics_swing_drag_min_speed_1_id {int(to_hash("physics_swing_drag_min_speed_1"))};
+static const string_hash physics_swing_drag_min_speed_2_id {int(to_hash("physics_swing_drag_min_speed_2"))};
+static const string_hash physics_swing_drag_min_speed_3_id {int(to_hash("physics_swing_drag_min_speed_3"))};
 
-static Var<string_hash> physics_swing_drag_horz_scale_id{0x0096C1D0};
-static Var<string_hash> physics_swing_drag_up_scale_id{0x0096BFCC};
-static Var<string_hash> physics_swing_drag_down_scale_id{0x0096C0A8};
+static const string_hash physics_swing_drag_horz_scale_id {int(to_hash("physics_swing_drag_horz_scale"))};
+static const string_hash physics_swing_drag_up_scale_id {int(to_hash("physics_swing_drag_up_scale"))};
+static const string_hash physics_swing_drag_down_scale_id {int(to_hash("physics_swing_drag_down_scale"))};
 
 static constexpr float g_swing_air_res = 0.022500001f;
 
@@ -286,17 +292,17 @@ void physics_inode::setup_for_swing()
         auto v27 = g_swing_air_res;
 
         auto horz_scale = this->field_8->field_50
-                              .get_optional_pb_float(physics_swing_drag_horz_scale_id(),
+                              .get_optional_pb_float(physics_swing_drag_horz_scale_id,
                                                      g_normal_air_res_horz_scale,
                                                      nullptr);
 
         auto up_scale = this->field_8->field_50
-                            .get_optional_pb_float(physics_swing_drag_up_scale_id(),
+                            .get_optional_pb_float(physics_swing_drag_up_scale_id,
                                                    g_normal_air_res_up_scale,
                                                    nullptr);
 
         auto down_scale = this->field_8->field_50
-                              .get_optional_pb_float(physics_swing_drag_down_scale_id(),
+                              .get_optional_pb_float(physics_swing_drag_down_scale_id,
                                                      g_normal_air_res_down_scale,
                                                      nullptr);
 
@@ -306,25 +312,25 @@ void physics_inode::setup_for_swing()
 
         switch (swing_speed) {
         case 0:
-            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_0_id());
+            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_0_id);
 
-            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_0_id());
+            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_0_id);
             break;
         case 1:
-            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_1_id());
+            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_1_id);
 
-            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_1_id());
+            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_1_id);
             break;
         case 2:
-            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_2_id());
+            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_2_id);
 
-            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_2_id());
+            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_2_id);
 
             break;
         case 3:
-            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_3_id());
+            v27 = this->field_8->field_50.get_pb_float(physics_swing_drag_3_id);
 
-            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_3_id());
+            v28 = this->field_8->field_50.get_pb_float(physics_swing_drag_min_speed_3_id);
             break;
         default:
             break;
@@ -342,11 +348,13 @@ void physics_inode::setup_for_swing()
 
         phys_ifc->field_16C = down_scale;
 
-        this->field_8->field_50.get_optional_pb_float(physics_gravity_swing_id(),
-                                                      g_swing_gravity(),
+        this->field_8->field_50.get_optional_pb_float(physics_gravity_swing_id,
+                                                      g_swing_gravity,
                                                       nullptr);
-        this->field_1C->m_gravity_multiplier = g_swing_gravity();
-    } else {
+        this->field_1C->m_gravity_multiplier = g_swing_gravity;
+    }
+    else
+    {
         THISCALL(0x00694AF0, this);
     }
 }
