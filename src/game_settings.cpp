@@ -199,7 +199,7 @@ void game_settings::soft_load(uint32_t soft_save_type) {
         this->field_4C0 = false;
         this->export_game_settings();
         script_manager::load_game_var_buffer(this->field_494[soft_save_type]);
-        mission_manager::s_inst()->set_real_time();
+        mission_manager::s_inst->set_real_time();
 
     } else {
         THISCALL(0x0057C1E0, this, soft_save_type);
@@ -251,7 +251,7 @@ void game_settings::load_game(int slot_num)
             if (this->field_4C8 > 2) {
                 this->field_4C2 = false;
                 this->start_new_game();
-                mission_manager::s_inst()->lock();
+                mission_manager::s_inst->lock();
                 this->field_4C1 = false;
                 std::memcpy(&this->field_340,
                             this->field_49C[slot_num] + sizeof(game_data_essentials),
@@ -280,7 +280,7 @@ void game_settings::load_game(int slot_num)
             this->field_4C2 = true;
             this->field_4C8 = 0;
             this->m_slot_num = slot_num;
-            mission_manager::s_inst()->unload_script_now();
+            mission_manager::s_inst->unload_script_now();
             auto v3 = g_world_ptr()->num_players;
             if (v3 > 0) {
                 g_world_ptr()->remove_player(v3 - 1);

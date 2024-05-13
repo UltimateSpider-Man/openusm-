@@ -573,7 +573,7 @@ std::vector<mission_t> menu_missions;
 
 void mission_unload_handler(debug_menu_entry *)
 {
-    auto *v1 = mission_manager::s_inst();
+    auto *v1 = mission_manager::s_inst;
     v1->prepare_unload_script();
     debug_menu::hide();
 }
@@ -586,7 +586,7 @@ void mission_select_handler(debug_menu_entry *entry)
     auto v5 = v7.field_14;
     auto *v4 = v7.field_0.c_str();
     auto v3 = v7.m_district_id;
-    auto *v2 = mission_manager::s_inst();
+    auto *v2 = mission_manager::s_inst;
     v2->force_mission(v3, v4, v5, v6);
     debug_menu::hide();
 }
@@ -630,7 +630,7 @@ void populate_missions_menu(debug_menu_entry *entry)
     mission_unload_entry->set_game_flags_handler(mission_unload_handler);
     head_menu->add_entry(mission_unload_entry);
 
-    auto *v2 = mission_manager::s_inst();
+    auto *v2 = mission_manager::s_inst;
     auto v58 = v2->get_district_table_count();
     for ( auto i = -1; i < v58; ++i )
     {
@@ -754,12 +754,12 @@ void _populate_missions()
         }
     };
 
-    auto *v2 = mission_manager::s_inst();
+    auto *v2 = mission_manager::s_inst;
     auto count = v2->get_district_table_count();
     sp_log("%s %d", "table_count = ", count);
 
     {
-        auto *v3 = mission_manager::s_inst();
+        auto *v3 = mission_manager::s_inst;
         auto *table = v3->get_global_table();
 
         handle_table(table, 0);

@@ -136,7 +136,7 @@ bool mission_condition::check_condition(mission_manager_script_data *data) const
     data->uses_script_stack = ( this->is_flag_set(0x1000) || this->is_flag_set(0x2000) );
 
     bool v11 = false;
-    auto *v4 = mission_manager::s_inst();
+    auto *v4 = mission_manager::s_inst;
     if ( v4->field_80 )
     {
         if ( _strcmpi(this->field_18, v4->field_88.to_string()) != 0 ) {
@@ -296,7 +296,7 @@ bool mission_table_game_state_entry::check() const
         return (a2 & self->field_8) != 0;
     };
 
-    auto v1 = mission_manager::s_inst()->field_80;
+    auto v1 = mission_manager::s_inst->field_80;
     auto v2 = this->field_8;
     bool v3 = false;
     float v4;
@@ -363,9 +363,9 @@ bool mission_table_game_state_entry::check() const
 
     if ( v1 )
     {
-        auto v5 = mission_manager::s_inst()->field_60;
+        auto v5 = mission_manager::s_inst->field_60;
         if ( this->field_0 == v5 ) {
-            mission_manager::s_inst()->field_5C = *v5;
+            mission_manager::s_inst->field_5C = *v5;
         }
     }
 

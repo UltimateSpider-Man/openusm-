@@ -72,7 +72,7 @@ bool initialize_game_init_instances(const script_executable *se, string_hash a2)
         auto v14 = entry->field_C;
         if ( v14.is_set() )
         {
-            auto a4 = mission_manager::s_inst()->get_mission_key_po();
+            auto a4 = mission_manager::s_inst->get_mission_key_po();
             auto *resource = (generic_mash_header *)resource_manager::get_resource(v14, nullptr, nullptr);
             if ( resource == nullptr )
             {

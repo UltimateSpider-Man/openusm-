@@ -637,7 +637,7 @@ bool ForceMissionCommand::process_cmd(const std::vector<std::string> &a1)
             auto *v16 = v4.c_str();
             mString v5 {a1.at(0).c_str()};
             auto v14 = v5.to_int();
-            auto *v6 = mission_manager::s_inst();
+            auto *v6 = mission_manager::s_inst;
             v6->force_mission(v14, v16, v19, nullptr);
         }
         else
@@ -648,7 +648,7 @@ bool ForceMissionCommand::process_cmd(const std::vector<std::string> &a1)
             auto *v17 = v8.c_str();
             mString v9 {a1.at(0).c_str()};
             auto v15 = v9.to_int();
-            auto *v10 = mission_manager::s_inst();
+            auto *v10 = mission_manager::s_inst;
             v10->force_mission(v15, v17, 0, v20);
         }
     }
@@ -663,7 +663,7 @@ bool ForceMissionCommand::process_cmd(const std::vector<std::string> &a1)
 
         auto &v11 = a1.at(0);
         auto *v18 = v11.c_str();
-        auto *v12 = mission_manager::s_inst();
+        auto *v12 = mission_manager::s_inst;
         v12->force_mission(0, v18, 0, nullptr);
     }
 
@@ -763,7 +763,7 @@ ListMissionsCommand::ListMissionsCommand()
 
 bool ListMissionsCommand::process_cmd(const std::vector<std::string> &)
 {
-    auto *v2 = mission_manager::s_inst();
+    auto *v2 = mission_manager::s_inst;
     auto v25 = v2->get_district_table_count();
     for ( auto i = -1; i < v25; ++i )
     {

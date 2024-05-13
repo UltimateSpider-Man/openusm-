@@ -26,9 +26,9 @@
 
 VALIDATE_SIZE(mission_manager, 0x100u);
 
-Var<mission_manager *> mission_manager::s_inst{0x00968518};
+mission_manager *& mission_manager::s_inst = var<mission_manager *>(0x00968518);
 
-Var<mString> mission_manager::current_mission_debug_title {0x00969E90};
+mString & mission_manager::current_mission_debug_title = var<mString>(0x00969E90);
 
 mission_manager::mission_manager()
 {

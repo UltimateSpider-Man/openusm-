@@ -150,7 +150,7 @@ bool slf__initialize_encounter_object__t::operator()(vm_stack &stack, [[maybe_un
 
         assert(0 && "USM SHIPPING HACK: Could not initialize encounter object, trying to exit script gracefully.");
 
-        mission_manager::s_inst()->prepare_unload_script();
+        mission_manager::s_inst->prepare_unload_script();
 
         return false;
     }

@@ -310,7 +310,7 @@ void FrontEndMenuSystem::GoNextState() {
             break;
         case 10: {
             if (this->m_index != 5) {
-                mission_manager::s_inst()->sub_5BACA0(0.0);
+                mission_manager::s_inst->sub_5BACA0(0.0);
             }
 
             this->sub_60C290();

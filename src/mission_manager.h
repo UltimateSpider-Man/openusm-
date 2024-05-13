@@ -157,9 +157,9 @@ struct mission_manager {
 
     int sub_5C5BD0() const;
 
-    static Var<mission_manager *> s_inst;
+    static mission_manager *& s_inst;
 
-    static Var<mString> current_mission_debug_title;
+    static mString & current_mission_debug_title;
 };
 
 extern void mission_manager_patch();

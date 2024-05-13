@@ -1884,7 +1884,7 @@ void game::load_this_level()
         resource_key v93 = create_resource_key_from_path(this->level.name_mission_table.c_str(),
                                                          RESOURCE_KEY_TYPE_MISSION_TABLE);
 
-        mission_manager::s_inst()->add_global_table(v93);
+        mission_manager::s_inst->add_global_table(v93);
 
         g_world_ptr()->field_28.setup_cameras();
         script_manager::link();
@@ -2136,7 +2136,7 @@ void game::level_load_stuff::construct_loading_widgets()
 {
     mString a1{"spidermanlogo"};
 
-    mission_manager::s_inst()->lock();
+    mission_manager::s_inst->lock();
     mission_stack_manager::s_inst()->push_mission_pack_immediate(a1, a1);
 
     assert(!load_widgets_created);
@@ -2156,7 +2156,7 @@ void game::level_load_stuff::destroy_loading_widgets()
         mString a1{"spidermanlogo"};
 
         mission_stack_manager::s_inst()->pop_mission_pack_immediate(a1, a1);
-        mission_manager::s_inst()->unlock();
+        mission_manager::s_inst->unlock();
     }
     else
     {
@@ -2626,7 +2626,7 @@ void game::render_ui()
                     nglCalculateMatrices(false);
                 }
 
-                mission_manager::s_inst()->render_fade();
+                mission_manager::s_inst->render_fade();
             }
             else
             {
@@ -2916,7 +2916,7 @@ void game::frame_advance_level(Float time_inc)
 
         this->handle_game_states(time_inc);
         this->handle_cameras(v2, time_inc);
-        mission_manager::s_inst()->frame_advance(time_inc);
+        mission_manager::s_inst->frame_advance(time_inc);
         spider_monkey::frame_advance(time_inc);
         this->gamefile->frame_advance(time_inc);
     }
@@ -2963,7 +2963,7 @@ void game::unload_current_level()
             g_femanager.IGO->field_0->SetShown(false);
         }
 
-        mission_manager::s_inst()->unload_script_now();
+        mission_manager::s_inst->unload_script_now();
         auto *v2 = this->the_world->the_terrain;
         if (v2 != nullptr) {
             v2->sub_557130();
