@@ -35,8 +35,8 @@ void spider_monkey::start()
 {
     if constexpr (1)
     {
-        input_mgr::instance()->set_control_state_monkey_callback(spider_monkey::state_callback);
-        input_mgr::instance()->set_control_delta_monkey_callback(spider_monkey::delta_callback);
+        input_mgr::instance->set_control_state_monkey_callback(spider_monkey::state_callback);
+        input_mgr::instance->set_control_delta_monkey_callback(spider_monkey::delta_callback);
         m_running() = 1;
         m_ook_timer() = 0.0;
         m_clock().reset();

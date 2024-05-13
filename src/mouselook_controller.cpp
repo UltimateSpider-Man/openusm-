@@ -27,7 +27,7 @@ mouselook_controller::mouselook_controller(
     this->m_vtbl = 0x00889114;
     this->field_C = a3;
     this->field_10 = a4;
-    this->field_14 = input_mgr::instance()->field_58;
+    this->field_14 = input_mgr::instance->field_58;
 }
 
 void mouselook_controller::reset()
@@ -76,7 +76,7 @@ void mouselook_controller::_frame_advance(Float time_inc)
             return user_cam;
         }();
 
-        auto *v4 = input_mgr::instance();
+        auto *v4 = input_mgr::instance;
 
         float speed = 10.0;
         if ( AXIS_MAX == v4->get_control_state(26, (device_id_t)-1) ) {

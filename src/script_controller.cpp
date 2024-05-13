@@ -24,7 +24,7 @@ void script_controller::update()
     TRACE("script_controller::update");
 
     {
-        auto v1 = input_mgr::instance()->field_58;
+        auto v1 = input_mgr::instance->field_58;
         sp_log("0x%X", v1);
     }
 
@@ -38,13 +38,13 @@ void script_controller::update()
 
 bool script_controller::is_button_pressed(int a1) const
 {
-    auto v3 = input_mgr::instance()->field_58;
+    auto v3 = input_mgr::instance->field_58;
     if ( v3 == -1 ) {
         return false;
     }
 
     bool result = false;
-    auto *device = input_mgr::instance()->get_device_from_map(v3);
+    auto *device = input_mgr::instance->get_device_from_map(v3);
     if ( device != nullptr )
     {
         if ( 1.0f != device->get_axis_state(22, 0) )
@@ -61,12 +61,12 @@ bool script_controller::is_button_pressed(int a1) const
 
 float script_controller::get_axis_position(int a1) const
 {
-    auto v3 = input_mgr::instance()->field_58;
+    auto v3 = input_mgr::instance->field_58;
     if ( v3 == -1 ) {
         return 0.0f;
     }
     
-    auto *device = input_mgr::instance()->get_device_from_map_internal(v3);
+    auto *device = input_mgr::instance->get_device_from_map_internal(v3);
     if ( device != nullptr
         && device->get_id() != -1
         && 1.0f != device->get_axis_state(22, 0) )

@@ -46,7 +46,7 @@ void rumble_manager::stop_vibration() {
 }
 
 void rumble_manager::enable_vibration() {
-    input_mgr::instance()->field_20 &= 0xFFFFFFFD;
+    input_mgr::instance->field_20 &= 0xFFFFFFFD;
 }
 
 void rumble_manager::disable_vibration() {
@@ -67,7 +67,7 @@ void rumble_manager::disable_vibration() {
         (*(void (**)(void))(*(uint32_t *) v1 + 60))();
     }
 
-    input_mgr::instance()->field_20 |= 2u;
+    input_mgr::instance->field_20 |= 2u;
 }
 
 void rumble_manager::vibrate(rumble_struct a2) {

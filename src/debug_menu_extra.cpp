@@ -1158,7 +1158,7 @@ void game_flags_handler(debug_menu_entry *a1)
         {
             spider_monkey::start();
             spider_monkey::on_level_load();
-            auto *v2 = input_mgr::instance();
+            auto *v2 = input_mgr::instance;
             auto *rumble_device = v2->rumble_ptr;
 
             assert(rumble_device != nullptr);
@@ -1175,7 +1175,7 @@ void game_flags_handler(debug_menu_entry *a1)
     }
     case 4u:
     {
-        auto *v3 = input_mgr::instance();
+        auto *v3 = input_mgr::instance;
         auto *rumble_device = v3->rumble_ptr;
         assert(rumble_device != nullptr);
 
@@ -1222,7 +1222,7 @@ void game_flags_handler(debug_menu_entry *a1)
     case 9u:
     {
         auto v24 = a1->get_bval();
-        auto *v5 = input_mgr::instance();
+        auto *v5 = input_mgr::instance;
         if ( !v5->field_30[1] )
         {
             v24 = false;
@@ -1230,7 +1230,7 @@ void game_flags_handler(debug_menu_entry *a1)
 
 
         os_developer_options::instance->set_flag(mString{"USERCAM_ON_CONTROLLER2"}, v24);
-        auto *v6 = input_mgr::instance();
+        auto *v6 = input_mgr::instance;
         [[maybe_unused]] auto *v23 = v6->field_30[1];
 
         //TODO

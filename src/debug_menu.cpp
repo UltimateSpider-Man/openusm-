@@ -113,7 +113,7 @@ void debug_menu::frame_advance(Float a1)
 
 void debug_menu::gather_input(Float a1)
 {
-    auto *v3 = input_mgr::instance();
+    auto *v3 = input_mgr::instance;
     memcpy(previous_input_state, current_input_state, 10);
     memset(current_input_state, 0, sizeof(current_input_state));
     memset(virtual_input_state, 0, sizeof(virtual_input_state));

@@ -1642,7 +1642,7 @@ int __stdcall myWinMain(HINSTANCE hInstance,
 
         g_game_ptr->gamefile->field_340.m_invert_camera_horz = Settings::InvertCameraH();
         g_game_ptr->gamefile->field_340.m_invert_camera_vert = Settings::InvertCameraV();
-        auto *rumble_ptr = input_mgr::instance()->rumble_ptr;
+        auto *rumble_ptr = input_mgr::instance->rumble_ptr;
         if (rumble_ptr != nullptr) {
             rumble_ptr->disable_vibration();
         }

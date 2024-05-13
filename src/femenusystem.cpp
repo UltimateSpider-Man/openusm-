@@ -119,7 +119,7 @@ void FEMenuSystem::OnButtonPress(int a2, int a3)
                 v5->OnAnyButtonPress(a3, a2);
             }
 
-            if (!this->GetSingleInput() || a3 == input_mgr::instance()->field_58 - 1000000)
+            if (!this->GetSingleInput() || a3 == input_mgr::instance->field_58 - 1000000)
 			{
                 if (a2 > 128)
 				{
@@ -228,10 +228,11 @@ void FEMenuSystem::OnButtonRelease(int a2, int a3)
     }
 }
 
-int sub_618A40(int a2, int a3) {
+int sub_618A40(int a2, int a3)
+{
     if constexpr (1)
     {
-        auto v2 = input_mgr::instance()->get_control_state(a2, static_cast<device_id_t>(a3 + 1000000));
+        auto v2 = input_mgr::instance->get_control_state(a2, static_cast<device_id_t>(a3 + 1000000));
         if (v2 > 0.5) {
             return 1;
         }
@@ -259,12 +260,12 @@ bool getButtonState(int a2, int a3)
                 switch (a2) {
                 case 1: {
                     return equal(1.0f,
-                                 input_mgr::instance()->get_control_state(93,
+                                 input_mgr::instance->get_control_state(93,
                                                                           static_cast<device_id_t>(a3 + 1000000)));
                 }
                 case 2: {
                     return equal(1.0f,
-                                 input_mgr::instance()->get_control_state(92,
+                                 input_mgr::instance->get_control_state(92,
                                                                           static_cast<device_id_t>(a3 +
                                                                                       1000000)));
                 }
@@ -305,7 +306,7 @@ bool getButtonState(int a2, int a3)
                 }
                 case 64: {
                     return equal(1.0f,
-                                 input_mgr::instance()->get_control_state(80,
+                                 input_mgr::instance->get_control_state(80,
                                                                           static_cast<device_id_t>(a3 +
                                                                                       1000000)));
                 }
@@ -317,7 +318,7 @@ bool getButtonState(int a2, int a3)
             }
 
             return equal(1.0f,
-                         input_mgr::instance()->get_control_state(82,
+                         input_mgr::instance->get_control_state(82,
                              static_cast<device_id_t>(a3 + 1000000)));
         }
 
@@ -350,9 +351,13 @@ bool getButtonState(int a2, int a3)
                 return false;
             }
         }
-        return equal(1.0f, input_mgr::instance()->get_control_state(a2a, static_cast<device_id_t>(a3 + 1000000)));
-    } else {
-        return (bool) CDECL_CALL(0x00618A90, a2, a3);
+
+        return equal(1.0f, input_mgr::instance->get_control_state(a2a, static_cast<device_id_t>(a3 + 1000000)));
+    }
+    else
+    {
+        bool (*func)(int a2, int a3) = CAST(func, 0x00618A90);
+        return func(a2, a3);
     }
 }
 

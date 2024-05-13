@@ -195,7 +195,7 @@ void ai_player_controller::remap_controls()
 {
     if constexpr (0)
     {
-        auto v2 = input_mgr::instance()->field_58;
+        auto v2 = input_mgr::instance->field_58;
         this->gb_jump.set_id(v2);
 
         this->gb_swing_raw.set_id(v2);

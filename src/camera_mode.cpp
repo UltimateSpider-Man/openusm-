@@ -160,11 +160,11 @@ camera_mode_lookaround::camera_mode_lookaround(
 
     this->field_C = true;
 
-    this->field_10.set_id(input_mgr::instance()->field_58);
+    this->field_10.set_id(input_mgr::instance->field_58);
     this->field_10.set_control(109);
     this->field_10.field_8 = 0.1;
 
-    this->field_40.set_id(input_mgr::instance()->field_58);
+    this->field_40.set_id(input_mgr::instance->field_58);
     this->field_40.field_4 = 108;
     this->field_40.field_8 = 0.34999999;
 }

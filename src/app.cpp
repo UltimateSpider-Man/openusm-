@@ -342,7 +342,7 @@ void app::tick()
             }
 
             event_manager::garbage_collect();
-            input_mgr::instance()->poll_devices();
+            input_mgr::instance->poll_devices();
 
             assert(time_inc >= 0 && time_inc < 10.0f);
 
@@ -404,10 +404,10 @@ void app::cleanup()
         script_sound_manager::delete_inst();
         sound_manager::delete_inst();
 
-        if ( input_mgr::instance() != nullptr )
+        if ( input_mgr::instance != nullptr )
         {
-            delete input_mgr::instance();
-            input_mgr::instance() = nullptr;
+            delete input_mgr::instance;
+            input_mgr::instance = nullptr;
         }
 
         string_hash_dictionary::delete_inst();

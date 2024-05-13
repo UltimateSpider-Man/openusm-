@@ -11,7 +11,7 @@ game_axis::game_axis()
 {
     this->field_2C = false;
     this->field_2D = false;
-    this->field_0 = input_mgr::instance()->field_58;
+    this->field_0 = input_mgr::instance->field_58;
     this->field_8 = 0.0;
     this->field_4 = 5;
 

@@ -875,8 +875,9 @@ void game::pause() {
             this->push_process(pause_process);
 
             this->flag.game_paused = true;
-            auto *v7 = input_mgr::instance()->rumble_ptr;
-            if (v7 != nullptr) {
+            auto *v7 = input_mgr::instance->rumble_ptr;
+            if (v7 != nullptr)
+            {
                 if (v7->field_5C) {
                     v7->get_current_rumble_info(this->field_290);
                     v7->stop_vibration();
@@ -907,7 +908,7 @@ void game::unpause()
             }
 
             if (this->field_2B5) {
-                auto *v4 = input_mgr::instance()->rumble_ptr;
+                auto *v4 = input_mgr::instance->rumble_ptr;
                 if (v4 != nullptr) {
                     if (this->field_290.field_1D) {
                         rumble_struct v5{this->field_290};
@@ -929,7 +930,7 @@ void game::advance_state_paused(Float a1)
     TRACE("game::advance_state_paused():");
 
     if constexpr (1) {
-        auto *v3 = input_mgr::instance()->rumble_ptr;
+        auto *v3 = input_mgr::instance->rumble_ptr;
         if (v3 != nullptr && g_femanager.m_pause_menu_system->m_index != 4) {
             v3->stop_vibration();
         }
@@ -1700,8 +1701,8 @@ void game::setup_inputs()
 
 void game::reset_control_mappings()
 {
-    input_mgr::instance()->clear_mapping();
-    input_mgr::instance()->scan_devices();
+    input_mgr::instance->clear_mapping();
+    input_mgr::instance->scan_devices();
 
     this->setup_inputs();
 }
@@ -2260,7 +2261,7 @@ void game::advance_state_load_level(Float a2)
         static Var<bool> loading_a_level{0x00960CB5};
 
         this->level.name_mission_table = g_scene_name();
-        input_mgr::instance()->field_26 = false;
+        input_mgr::instance->field_26 = false;
         if (!loading_a_level())
         {
             this->level.reset_level_load_data();
@@ -2891,7 +2892,7 @@ void game::frame_advance_level(Float time_inc)
     {
         static Var<bool> gimme_the_lowdown{0x0095C8EE};
 
-        auto *v2 = input_mgr::instance();
+        auto *v2 = input_mgr::instance;
         if (gimme_the_lowdown()) {
             gimme_the_lowdown() = false;
         }
@@ -3015,7 +3016,7 @@ void game::unload_current_level()
         assert(the_world != nullptr);
 
         spider_monkey::on_level_unload();
-        auto *v10 = input_mgr::instance()->rumble_ptr;
+        auto *v10 = input_mgr::instance->rumble_ptr;
         if (v10 != nullptr) {
             v10->stop_vibration();
             v10->field_60 = true;
@@ -3045,7 +3046,7 @@ void game::unload_current_level()
         slc_manager::kill();
         cg_mesh_bank().purge();
         this->flag.level_is_loaded = 0;
-        input_mgr::instance()->field_24 = false;
+        input_mgr::instance->field_24 = false;
 
         mem_print_stats("unloading level");
 
@@ -3122,13 +3123,13 @@ void game::unload_hero_packfile()
 
 bool game::is_button_pressed(int a4) const
 {
-    auto id = input_mgr::instance()->field_58;
+    auto id = input_mgr::instance->field_58;
     if ( id == INVALID_DEVICE_ID ) {
         return false;
     }
 
     bool result = false;
-    auto *device = input_mgr::instance()->get_device_from_map(id);
+    auto *device = input_mgr::instance->get_device_from_map(id);
 
     if ( device != nullptr )
     {
@@ -3153,7 +3154,7 @@ void game::sub_5580F0()
 
 void game::sub_5241D0(Float a1)
 {
-    input_mgr::instance()->frame_advance(a1);
+    input_mgr::instance->frame_advance(a1);
 }
 
 void game::sub_524170()
@@ -3165,7 +3166,7 @@ void game::sub_524170()
     }
 
     script_pad()->update();
-    input_mgr::instance()->scan_devices();
+    input_mgr::instance->scan_devices();
 }
 
 void game::sub_559F50(Float *a1)
@@ -3183,7 +3184,7 @@ void game::sub_559F50(Float *a1)
 
 void map_spiderman_controls()
 {
-    auto *v1 = input_mgr::instance();
+    auto *v1 = input_mgr::instance;
     auto id = v1->field_58;
     v1->map_control(96, id, 10);
     v1->map_control(98, id, 11);
@@ -3211,7 +3212,7 @@ void map_spiderman_controls()
 
 void map_pc_2_playstation_inputs()
 {
-    auto *v0 = input_mgr::instance();
+    auto *v0 = input_mgr::instance;
     auto id = v0->field_58;
     v0->map_control(80, id, 10);
     v0->map_control(81, id, 11);
@@ -3239,7 +3240,7 @@ void game__setup_inputs(game *a1)
 
     if constexpr (0)
     {
-        auto *v2 = input_mgr::instance();
+        auto *v2 = input_mgr::instance;
         v2->clear_mapping();
         auto id = v2->field_58;
         

@@ -15,7 +15,7 @@
 
 #include <cassert>
 
-Var<bool> pc_inserted_devices{0x00965EBD};
+bool & pc_inserted_devices = var<bool>(0x00965EBD);
 
 VALIDATE_SIZE(input_mgr, 0x5Cu);
 
@@ -46,9 +46,10 @@ input_mgr::~input_mgr() {
     THISCALL(0x005E0870, this);
 }
 
-void input_mgr::create_inst() {
+void input_mgr::create_inst()
+{
     if constexpr (1) {
-        input_mgr::instance() = new input_mgr{};
+        instance = new input_mgr{};
     } else {
         CDECL_CALL(0x005EB840);
     }
@@ -72,15 +73,15 @@ void input_mgr::register_control(const game_control &control)
     }
 }
 
-static Var<uint32_t> PreviousConnected{0x009874F4};
+static uint32_t & PreviousConnected = var<uint32_t>(0x009874F4);
 
 BOOL __cdecl GetDeviceChanges([[maybe_unused]] void *a1,
                               unsigned int *pdwInsertions,
                               unsigned int *pdwRemovals) {
-    auto v3 = PreviousConnected();
+    auto v3 = PreviousConnected;
     auto CurrentConnected = Input::instance()->m_current_connected;
-    *pdwInsertions = CurrentConnected & ~PreviousConnected();
-    PreviousConnected() = CurrentConnected;
+    *pdwInsertions = CurrentConnected & ~PreviousConnected;
+    PreviousConnected = CurrentConnected;
     *pdwRemovals = v3 & ~CurrentConnected;
     return false;
 }
@@ -102,9 +103,9 @@ void input_mgr::scan_devices()
 
     if constexpr (0)
     {
-        if (!pc_inserted_devices())
+        if (!pc_inserted_devices)
         {
-            pc_inserted_devices() = true;
+            pc_inserted_devices = true;
             for (auto i = 0u; i < 4u; ++i) {
                 if (pc_input_mgr::instance()->pad[i]) {
                     this->insert_device(pc_input_mgr::instance()->pad[i]);
@@ -115,9 +116,11 @@ void input_mgr::scan_devices()
         uint32_t dwInsertions;
         uint32_t dwRemovals;
         GetDeviceChanges(nullptr, &dwInsertions, &dwRemovals);
-        for (auto j = 0u; j < 4u; ++j) {
+        for (auto j = 0u; j < 4u; ++j)
+        {
             pc_input_mgr::instance()->pad[j]->field_8C = pc_input_mgr::instance()->pad[j]->field_88;
-            if (((1 << j) & dwInsertions) != 0) {
+            if (((1 << j) & dwInsertions) != 0)
+            {
                 pc_input_mgr::instance()->pad[j]->field_88 = 0;
                 auto *v4 = pc_input_mgr::instance();
                 v4->pad[j]->field_70 = InputOpen(0, j);

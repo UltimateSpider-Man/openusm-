@@ -100,7 +100,7 @@ spiderman_camera::spiderman_camera(const string_hash &a2, entity *a3) : game_cam
         g_move_mult() =     os_developer_options::instance->get_int(mString {"DEBUG_CAMERA_MOVE_MULTIPLIER"}) * 0.1;
         g_strafe_mult() =   os_developer_options::instance->get_int(mString {"DEBUG_CAMERA_STRAFE_MULTIPLIER"}) * 0.1;
 
-        this->field_1D0.set_id(input_mgr::instance()->field_58);
+        this->field_1D0.set_id(input_mgr::instance->field_58);
         this->field_1D0.set_control(static_cast<game_control_t>(102));
     }
     else

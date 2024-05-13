@@ -17,7 +17,7 @@ game_button::game_button()
 {
     if constexpr (0)
     {
-        this->field_4 = input_mgr::instance()->field_58;
+        this->field_4 = input_mgr::instance->field_58;
         this->field_C = nullptr;
         this->field_10 = nullptr;
         this->m_flags = 0;
@@ -34,7 +34,7 @@ game_button::game_button()
 
 game_button::game_button(game_control_t a2)
 {
-    this->field_4 = input_mgr::instance()->field_58;
+    this->field_4 = input_mgr::instance->field_58;
     this->field_C = nullptr;
     this->field_10 = nullptr;
     this->m_flags = 0;
@@ -46,7 +46,7 @@ game_button::game_button(game_control_t a2)
 
 game_button::game_button(const game_button &a2)
 {
-    this->field_4 = input_mgr::instance()->field_58;
+    this->field_4 = input_mgr::instance->field_58;
     this->field_C = nullptr;
     this->field_10 = nullptr;
     (*this) = a2;
@@ -57,7 +57,7 @@ game_button::game_button(
         const game_button &a3,
         int a4)
 {
-    this->field_4 = input_mgr::instance()->field_58;
+    this->field_4 = input_mgr::instance->field_58;
     this->field_8 = static_cast<game_control_t>(0);
     this->field_C = nullptr;
     this->field_10 = nullptr;
@@ -207,7 +207,7 @@ void game_button::update(Float a2)
         auto *v3 = this->field_C;
         if (v3 == nullptr)
         {
-            auto *inst = input_mgr::instance();
+            auto *inst = input_mgr::instance;
             auto v37 = inst->get_control_state(this->field_8, this->field_4);
             auto v35 = inst->get_control_delta(this->field_8, this->field_4);
             this->override(a2, v37, v35);

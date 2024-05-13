@@ -366,7 +366,7 @@ void Console::hide() {
     v2 = sub_668F07();
     sub_69EDB4(v2);
 #else
-    input_mgr::instance()->field_20 &= 0xFFFFFFFE;
+    input_mgr::instance->field_20 &= 0xFFFFFFFE;
 #endif
 
     g_game_ptr->unpause();
@@ -675,7 +675,7 @@ void Console::show()
     v2 = sub_668F07();
     sub_69EDB4(v2);
 #else
-    input_mgr::instance()->field_20 |= 1u;
+    input_mgr::instance->field_20 |= 1u;
 #endif
 
     g_game_ptr->pause();
