@@ -14,4 +14,6 @@ struct region_mash_info {
 
     //0x005C56D0
     region_mash_info();
+
+    void * operator new(size_t);
 };

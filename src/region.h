@@ -103,6 +103,9 @@ struct region
     //0x0053B4B0
     region(const mString &a2);
 
+    //0x0053B380
+    void * operator new(uint32_t);
+
     static void prepare_for_visiting() {
         ++visit_key;
     } 
@@ -176,9 +179,6 @@ struct region
     inline auto get_multiblock_number() {
         return this->multiblock_number;
     }
-
-    //0x0053B380
-    static region *__nw(uint32_t);
 
     //0x00519BB0
     fixedstring<8> &get_name();

@@ -30,14 +30,15 @@ static fixed_pool & lego_bitvector_pool = var<fixed_pool>(0x009222D4);
 
 static constexpr auto REGION_UNINITIALIZED_STRIP_ID = -1;
 
+static constexpr auto MAX_ALLOCATABLE_REGIONS = 256u;
+
 region::region(const mString &a2)
 {
 	if constexpr (0) {
 		this->visited = region::visit_key;
 		this->field_58 = region::visit_key1;
 
-		auto *mem = mem_alloc(sizeof(region_mash_info));
-		this->mash_info = new (mem) region_mash_info {};
+		this->mash_info = new region_mash_info {};
 
 		fixedstring<8> v1 {a2.c_str()};
 		this->mash_info->field_0 = v1.to_string();
@@ -45,6 +46,17 @@ region::region(const mString &a2)
 	} else {
 		THISCALL(0x0053B4B0, this, &a2);
 	}
+}
+
+void * region::operator new(uint32_t)
+{
+    if (all_regions == nullptr) {
+        all_regions = static_cast<region *>(arch_memalign(4u, sizeof(region) * MAX_ALLOCATABLE_REGIONS));
+    }
+
+    assert(number_of_allocated_regions < MAX_ALLOCATABLE_REGIONS);
+
+    return &all_regions[number_of_allocated_regions++];
 }
 
 void region::constructor_common()
@@ -362,16 +374,6 @@ void region::create_proximity_maps()
     {
         THISCALL(0x00544F60, this);
     }
-}
-
-region *region::__nw(uint32_t)
-{
-    if (region::all_regions == nullptr) {
-        region::all_regions = static_cast<region *>(arch_memalign(4u, sizeof(region) * 256));
-    }
-
-    ++region::number_of_allocated_regions;
-    return &region::all_regions[region::number_of_allocated_regions - 1];
 }
 
 const mString &region::get_scene_id(bool a2) const
