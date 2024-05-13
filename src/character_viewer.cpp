@@ -149,8 +149,8 @@ void character_viewer::sub_63FEC0(int idx)
             g_world_ptr()->ent_mgr.destroy_entity(this->field_2DC);
             auto v6 = "ch_vwr_" + a3;
 
-            if (mission_stack_manager::s_inst()->is_pack_pushed(v6)) {
-                mission_stack_manager::s_inst()->pop_mission_pack_immediate(v6, v6);
+            if (mission_stack_manager::s_inst->is_pack_pushed(v6)) {
+                mission_stack_manager::s_inst->pop_mission_pack_immediate(v6, v6);
             }
         }
     } else {
@@ -240,7 +240,7 @@ void character_viewer::OnActivate() {
     if constexpr (0) {
         mString v34{"unlockables_chars_costumes"};
 
-        mission_stack_manager::s_inst()->push_mission_pack_immediate(v34, v34);
+        mission_stack_manager::s_inst->push_mission_pack_immediate(v34, v34);
         auto *v2 = resource_manager::get_best_context(RESOURCE_PARTITION_MISSION);
         resource_manager::push_resource_context(v2);
 

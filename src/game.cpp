@@ -2137,7 +2137,7 @@ void game::level_load_stuff::construct_loading_widgets()
     mString a1{"spidermanlogo"};
 
     mission_manager::s_inst->lock();
-    mission_stack_manager::s_inst()->push_mission_pack_immediate(a1, a1);
+    mission_stack_manager::s_inst->push_mission_pack_immediate(a1, a1);
 
     assert(!load_widgets_created);
     load_widgets_created = true;
@@ -2155,7 +2155,7 @@ void game::level_load_stuff::destroy_loading_widgets()
         g_femanager.ReleaseFrontEnd();
         mString a1{"spidermanlogo"};
 
-        mission_stack_manager::s_inst()->pop_mission_pack_immediate(a1, a1);
+        mission_stack_manager::s_inst->pop_mission_pack_immediate(a1, a1);
         mission_manager::s_inst->unlock();
     }
     else
@@ -2270,7 +2270,7 @@ void game::advance_state_load_level(Float a2)
                 sound_manager::load_common_sound_bank(true);
             }
 
-            mission_stack_manager::s_inst()->start_streaming();
+            mission_stack_manager::s_inst->start_streaming();
 
             this->level.construct_loading_widgets();
 

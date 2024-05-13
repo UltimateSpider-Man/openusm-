@@ -160,7 +160,7 @@ void pause_menu_root::Update(Float a2) {
         }
 
         if (this->field_2C) {
-            if (!mission_stack_manager::s_inst()->waiting_for_push_or_pop()) {
+            if (!mission_stack_manager::s_inst->waiting_for_push_or_pop()) {
                 auto *v3 = this->field_AC;
                 this->field_2C = false;
 

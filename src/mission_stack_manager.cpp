@@ -17,10 +17,10 @@
 
 VALIDATE_SIZE(mission_stack_manager, 12u);
 
-Var<mission_stack_manager *> mission_stack_manager::s_inst = (0x0096851C);
+mission_stack_manager *& mission_stack_manager::s_inst = var<mission_stack_manager *>(0x0096851C);
 
 mission_stack_manager::mission_stack_manager() {
-    s_inst() = this;
+    s_inst = this;
     this->pack_loads_or_unloads_pending = 0;
     this->field_4 = 0;
     this->loading_started = 0;
@@ -197,7 +197,7 @@ bool mission_stack_manager::mission_stack_callback(resource_pack_slot::callback_
                                                    resource_pack_streamer *a2,
                                                    resource_pack_slot *a3,
                                                    limited_timer *a5) {
-    return mission_stack_manager::s_inst()->nonstatic_mission_stack_callback(a1, a2, a3, a5);
+    return s_inst->nonstatic_mission_stack_callback(a1, a2, a3, a5);
 }
 
 void mission_stack_manager::unmap_directory_parent(resource_pack_slot *a1)
@@ -301,10 +301,11 @@ void mission_stack_manager::pop_mission_pack_immediate(const mString &a1, const 
     streamer->flush(game::render_empty_list);
 }
 
-mission_stack_manager *mission_stack_manager::get_instance() {
-    assert(s_inst() != nullptr);
+mission_stack_manager *mission_stack_manager::get_instance()
+{
+    assert(s_inst != nullptr);
 
-    return s_inst();
+    return s_inst;
 }
 
 void mission_stack_manager::start_streaming()

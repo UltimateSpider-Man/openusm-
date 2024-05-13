@@ -64,8 +64,8 @@ void alternate_costumes::sub_640740(int idx) {
             g_world_ptr()->ent_mgr.release_entity(this->field_150);
             mString a1 = "ch_vwr_" + a3;
 
-            if (mission_stack_manager::s_inst()->is_pack_pushed(a1)) {
-                mission_stack_manager::s_inst()->pop_mission_pack_immediate(a1, a1);
+            if (mission_stack_manager::s_inst->is_pack_pushed(a1)) {
+                mission_stack_manager::s_inst->pop_mission_pack_immediate(a1, a1);
             }
         }
     } else {
@@ -91,7 +91,7 @@ void alternate_costumes::onActivate() {
     if constexpr (0) {
         mString v32{"unlockables_chars_costumes"};
 
-        mission_stack_manager::s_inst()->push_mission_pack_immediate(v32, v32);
+        mission_stack_manager::s_inst->push_mission_pack_immediate(v32, v32);
         auto *v2 = resource_manager::get_best_context(RESOURCE_PARTITION_MISSION);
         resource_manager::push_resource_context(v2);
 

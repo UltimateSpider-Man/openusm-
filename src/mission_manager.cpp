@@ -191,7 +191,7 @@ void mission_manager::load_script(const mission_manager_script_data &data)
             }
 
             this->field_4 = 0;
-            mission_stack_manager::s_inst()->push_mission_pack(data.field_0, a3, -1, false);
+            mission_stack_manager::s_inst->push_mission_pack(data.field_0, a3, -1, false);
         } else {
             sp_log("Could not find pack file %s", a3.c_str());
             assert(0);
@@ -343,7 +343,7 @@ void mission_manager::frame_advance(Float a2)
 
             bool v16, v17;
             if ( this->m_script_to_load
-                && (v16 = mission_stack_manager::s_inst()->pack_loads_or_unloads_pending == 0,
+                && (v16 = mission_stack_manager::s_inst->pack_loads_or_unloads_pending == 0,
                 v17 = sound_manager::is_mission_sound_bank_ready(),
                 v16)
                 && v17
@@ -572,7 +572,7 @@ void mission_manager::get_missions_nums_by_index(
 {
     assert(nums_result != nullptr);
 
-    for ( uint32_t i = 0; i < this->m_district_table_count; ++i )
+    for ( int i = 0; i < this->m_district_table_count; ++i )
     {
         auto *reg = this->m_district_table_containers[i]->get_region();
         if ( a2 == reg->get_district_id()

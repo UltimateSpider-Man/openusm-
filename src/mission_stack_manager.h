@@ -74,7 +74,7 @@ struct mission_stack_manager {
     static mission_stack_manager *get_instance();
 
     //0x0096851C
-    static Var<mission_stack_manager *> s_inst;
+    static mission_stack_manager *& s_inst;
 };
 
 extern void mission_stack_manager_patch();
