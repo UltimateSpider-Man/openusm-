@@ -27,7 +27,7 @@ void collision_geometry::split_xform(const po &, const po &, int ) {
 }
 
 float collision_geometry::get_colgeom_radius() {
-    this->owner->get_colgeom_radius();
+    return this->owner->get_colgeom_radius();
 }
 
 vector3d collision_geometry::get_local_space_bounding_sphere_center()

@@ -41,10 +41,12 @@ vector2d & vector2d::operator*=(float a2)
 {
     this->arr[0] *= a2;
     this->arr[1] *= a2;
+    return (*this);
 }
 
 vector2d & vector2d::operator/=(float a2)
 {
     this->arr[0] *= (1.0 / a2);
     this->arr[1] *= (1.0 / a2);
+    return (*this);
 }
