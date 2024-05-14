@@ -31,7 +31,7 @@ protected:
     _Vector_val(_Alloc _Al = _Alloc()) : _Alval(_Al) { // construct allocator from _Al
     }
 
-    typedef typename _Alloc::template rebind<_Ty>::other _Alty;
+    typedef typename std::allocator_traits<_Alloc>::template rebind_alloc<_Ty> _Alty;
 
     _Alty _Alval; // allocator object for values
 };
@@ -46,13 +46,13 @@ struct vector : public _Vector_val<_Ty, _Ax> {
     typedef typename _Alloc::size_type size_type;
     typedef typename _Alloc::difference_type _Dift;
     typedef _Dift difference_type;
-    typedef typename _Alloc::pointer _Tptr;
-    typedef typename _Alloc::const_pointer _Ctptr;
+    typedef typename _Alloc::value_type * _Tptr;
+    typedef typename _Alloc::value_type const * _Ctptr;
     typedef _Tptr pointer;
     typedef _Ctptr const_pointer;
-    typedef typename _Alloc::reference _Reft;
+    typedef typename _Alloc::value_type & _Reft;
     typedef _Reft reference;
-    typedef typename _Alloc::const_reference const_reference;
+    typedef typename _Alloc::value_type const & const_reference;
     typedef typename _Alloc::value_type value_type;
 
     typedef typename std::vector<_Ty, _Alloc>::iterator iterator;
@@ -969,7 +969,7 @@ template<class _Alloc>
 struct vector<_Bool, _Alloc> : public _Container_base {
     typedef typename _Alloc::size_type size_type;
     typedef typename _Alloc::difference_type _Dift;
-    typedef _std::vector<_Vbase, typename _Alloc::template rebind<_Vbase>::other> _Vbtype;
+    typedef _std::vector<_Vbase, typename std::allocator_traits<_Alloc>::template rebind_alloc<_Vbase>> _Vbtype;
     typedef _std::vector<_Bool, _Alloc> _Myt;
     typedef _Dift difference_type;
     typedef _Bool _Ty;
