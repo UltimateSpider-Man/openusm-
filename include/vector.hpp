@@ -5,6 +5,7 @@
 #include <cstdbool>
 
 #include <algorithm>
+#include <vector>
 
 //#define _THROW(a0, a1)
 
@@ -22,232 +23,6 @@ namespace _std {
 
 template<class _Ty, class _Ax = std::allocator<_Ty>>
 struct vector;
-
-// iterator for nonmutable vector
-template<class _Ty, class _Alloc>
-struct _Vector_const_iterator : public _Ranit<_Ty,
-                                              typename _Alloc::difference_type,
-                                              typename _Alloc::const_pointer,
-                                              typename _Alloc::const_reference> {
-    typedef _Vector_const_iterator<_Ty, _Alloc> _Myt;
-    typedef vector<_Ty, _Alloc> _Myvec;
-    typedef typename _Alloc::pointer _Tptr;
-
-    typedef std::random_access_iterator_tag iterator_category;
-    typedef _Ty value_type;
-    typedef typename _Alloc::difference_type difference_type;
-    typedef typename _Alloc::const_pointer pointer;
-    typedef typename _Alloc::const_reference reference;
-
-    // Setting _Inner_type implies that the internal structure of vector is
-    // an array of _Ty. This information is used in the copy and move algorithm.
-    // The helper function _Ptr_cat will return _Scalar_ptr_iterator_tag if you
-    // pass a vector iterator.
-    typedef _Tptr _Inner_type;
-
-    _Vector_const_iterator() { // construct with null pointer
-        _Myptr = nullptr;
-    }
-
-    _Vector_const_iterator(_Tptr _Ptr) { // construct with pointer _Ptr
-        _Myptr = _Ptr;
-    }
-
-    reference operator*() const { // return designated object
-
-        return (*_Myptr);
-    }
-
-    pointer operator->() const { // return pointer to class object
-        return (&**this);
-    }
-
-    _Myt &operator++() { // preincrement
-        ++_Myptr;
-        return (*this);
-    }
-
-    _Myt operator++(int) { // postincrement
-        _Myt _Tmp = *this;
-        ++*this;
-        return (_Tmp);
-    }
-
-    _Myt &operator--() { // predecrement
-        _SCL_SECURE_VALIDATE(this->_Mycont != NULL);
-        _SCL_SECURE_VALIDATE_RANGE(_Myptr > ((_Myvec *) (this->_Mycont))->m_first);
-        --_Myptr;
-        return (*this);
-    }
-
-    _Myt operator--(int) { // postdecrement
-        _Myt _Tmp = *this;
-        --*this;
-        return (_Tmp);
-    }
-
-    _Myt &operator+=(difference_type _Off) { // increment by integer
-        _SCL_SECURE_VALIDATE(this->_Mycont != NULL);
-        _SCL_SECURE_VALIDATE_RANGE(_Myptr + _Off <= ((_Myvec *) (this->_Mycont))->m_last &&
-                                   _Myptr + _Off >= ((_Myvec *) (this->_Mycont))->m_first);
-        _Myptr += _Off;
-        return (*this);
-    }
-
-    _Myt operator+(difference_type _Off) const { // return this + integer
-        _Myt _Tmp = *this;
-        return (_Tmp += _Off);
-    }
-
-    _Myt &operator-=(difference_type _Off) { // decrement by integer
-        return (*this += -_Off);
-    }
-
-    _Myt operator-(difference_type _Off) const { // return this - integer
-        _Myt _Tmp = *this;
-        return (_Tmp -= _Off);
-    }
-
-    difference_type operator-(const _Myt &_Right) const { // return difference of iterators
-
-        return (_Myptr - _Right._Myptr);
-    }
-
-    reference operator[](difference_type _Off) const { // subscript
-        return (*(*this + _Off));
-    }
-
-    bool operator==(const _Myt &_Right) const { // test for iterator equality
-
-        return (_Myptr == _Right._Myptr);
-    }
-
-    bool operator!=(const _Myt &_Right) const { // test for iterator inequality
-        return (!(*this == _Right));
-    }
-
-    bool operator<(const _Myt &_Right) const { // test if this < _Right
-
-        return (_Myptr < _Right._Myptr);
-    }
-
-    bool operator>(const _Myt &_Right) const { // test if this > _Right
-        return (_Right < *this);
-    }
-
-    bool operator<=(const _Myt &_Right) const { // test if this <= _Right
-        return (!(_Right < *this));
-    }
-
-    bool operator>=(const _Myt &_Right) const { // test if this >= _Right
-        return (!(*this < _Right));
-    }
-
-    static void _Xlen() { // report a length_error
-        _THROW(std::length_error, "vector<T> too long");
-    }
-
-    static void _Xran() { // report an out_of_range error
-        _THROW(std::out_of_range, "invalid vector<T> subscript");
-    }
-
-    static void _Xinvarg() { // report an invalid_argument error
-        _THROW(std::invalid_argument, "invalid vector<T> argument");
-    }
-
-    _Tptr _Myptr; // offset of element in vector
-};
-
-template<class _Ty, class _Alloc>
-inline _Vector_const_iterator<_Ty, _Alloc> operator+(
-    typename _Vector_const_iterator<_Ty, _Alloc>::difference_type _Off,
-    _Vector_const_iterator<_Ty, _Alloc> _Next) { // add offset to iterator
-    return (_Next += _Off);
-}
-
-// iterator for mutable vector
-template<class _Ty, class _Alloc>
-struct _Vector_iterator : public _Vector_const_iterator<_Ty, _Alloc> {
-public:
-    typedef _Vector_iterator<_Ty, _Alloc> _Myt;
-    typedef _Vector_const_iterator<_Ty, _Alloc> _Mybase;
-
-    typedef std::random_access_iterator_tag iterator_category;
-    typedef _Ty value_type;
-    typedef typename _Alloc::difference_type difference_type;
-    typedef typename _Alloc::pointer pointer;
-    typedef typename _Alloc::reference reference;
-
-    _Vector_iterator() { // construct with null vector pointer
-    }
-
-    // construct with pointer _Ptr
-    _Vector_iterator(pointer _Ptr) : _Mybase(_Ptr) {}
-
-    reference operator*() const {
-        return (*this->_Myptr);
-    }
-
-    pointer operator->() const { // return pointer to class object
-        return (&**this);
-    }
-
-    _Myt &operator++() { // preincrement
-        ++(*(_Mybase *) this);
-        return (*this);
-    }
-
-    _Myt operator++(int) { // postincrement
-        _Myt _Tmp = *this;
-        ++*this;
-        return (_Tmp);
-    }
-
-    _Myt &operator--() { // predecrement
-        --(*(_Mybase *) this);
-        return (*this);
-    }
-
-    _Myt operator--(int) { // postdecrement
-        _Myt _Tmp = *this;
-        --*this;
-        return (_Tmp);
-    }
-
-    _Myt &operator+=(difference_type _Off) { // increment by integer
-        (*(_Mybase *) this) += _Off;
-        return (*this);
-    }
-
-    _Myt operator+(difference_type _Off) const { // return this + integer
-        _Myt _Tmp = *this;
-        return (_Tmp += _Off);
-    }
-
-    _Myt &operator-=(difference_type _Off) { // decrement by integer
-        return (*this += -_Off);
-    }
-
-    _Myt operator-(difference_type _Off) const { // return this - integer
-        _Myt _Tmp = *this;
-        return (_Tmp -= _Off);
-    }
-
-    difference_type operator-(const _Mybase &_Right) const { // return difference of iterators
-        return (this->_Myptr - _Right._Myptr);
-    }
-
-    reference operator[](difference_type _Off) const { // subscript
-        return (*(*this + _Off));
-    }
-};
-
-template<class _Ty, class _Alloc>
-inline _Vector_iterator<_Ty, _Alloc> operator+(
-    typename _Vector_iterator<_Ty, _Alloc>::difference_type _Off,
-    _Vector_iterator<_Ty, _Alloc> _Next) { // add offset to iterator
-    return (_Next += _Off);
-}
 
 // base class for vector to hold allocator _Alval
 template<class _Ty, class _Alloc>
@@ -280,8 +55,8 @@ struct vector : public _Vector_val<_Ty, _Ax> {
     typedef typename _Alloc::const_reference const_reference;
     typedef typename _Alloc::value_type value_type;
 
-    typedef _Vector_iterator<_Ty, _Alloc> iterator;
-    typedef _Vector_const_iterator<_Ty, _Alloc> const_iterator;
+    typedef typename std::vector<_Ty, _Alloc>::iterator iterator;
+    typedef typename std::vector<_Ty, _Alloc>::const_iterator const_iterator;
 
 #if 0
 
@@ -289,11 +64,8 @@ struct vector : public _Vector_val<_Ty, _Ax> {
         return it._Myptr;
     }
 #else
-#define _VEC_ITER_BASE(it) (it)._Myptr
+#define _VEC_ITER_BASE(it) &(*it)
 #endif
-
-    //	friend class _Vector_iterator<_Ty, _Alloc>;
-    friend class _Vector_const_iterator<_Ty, _Alloc>;
 
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
