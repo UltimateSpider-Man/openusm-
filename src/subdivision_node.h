@@ -19,5 +19,5 @@ struct subdivision_node {
 
     };
 
-    static inline Var<void *[13]> methods { 0x00960980 };
+    static inline auto & methods = var<void *[13]>(0x00960980);
 };

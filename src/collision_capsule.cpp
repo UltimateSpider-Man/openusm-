@@ -6,13 +6,14 @@
 #include "func_wrapper.h"
 #include "oldmath_po.h"
 #include "trace.h"
+#include "variable.h"
 
 #include <cassert>
 #include <cmath>
 
 VALIDATE_SIZE(collision_capsule, 0x2C);
 
-Var<std::intptr_t> collision_capsule_v_table{0x0095A664};
+std::intptr_t & collision_capsule_v_table = var<std::intptr_t>(0x0095A664);
 
 collision_capsule::collision_capsule() : collision_geometry() {}
 

@@ -2,7 +2,6 @@
 
 #include "capsule.h"
 #include "collision_geometry.h"
-#include "variable.h"
 
 struct actor;
 
@@ -44,6 +43,6 @@ struct collision_capsule : collision_geometry {
     /* virtual */ void render(const po &a1);
 };
 
-extern Var<std::intptr_t> collision_capsule_v_table;
+extern std::intptr_t & collision_capsule_v_table;
 
 extern void collision_capsule_patch();

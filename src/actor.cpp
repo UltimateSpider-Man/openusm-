@@ -605,7 +605,7 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
 
             auto *v15 = v4->get<collision_capsule>();
 
-            v15->m_vtbl = collision_capsule_v_table();
+            v15->m_vtbl = collision_capsule_v_table;
             assert(((int)a3) % 4 == 0);
 
             v15->un_mash(a3, v15, v4);
