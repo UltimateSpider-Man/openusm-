@@ -113,3 +113,9 @@ void event_type::clear_script_callbacks(entity_base_vhandle a2, script_executabl
         }
     }
 }
+
+bool event_type::garbage_collect()
+{
+    bool (__fastcall *func)(void *) = CAST(func, 0x004D65B0);
+    return func(this);
+}

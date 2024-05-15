@@ -33,4 +33,6 @@ struct event_type {
     void remove_default_callback(unsigned int a2);
 
     void clear_script_callbacks(entity_base_vhandle a2, script_executable *a3);
+
+    bool garbage_collect();
 };

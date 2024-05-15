@@ -529,7 +529,8 @@ bool event_manager::does_script_have_callbacks(const script_executable *a1) {
     return (bool) CDECL_CALL(0x004D2000, a1);
 }
 
-void event_manager::raise_event(string_hash a1, entity_base_vhandle a2) {
+void event_manager::raise_event(string_hash a1, entity_base_vhandle a2)
+{
     if constexpr (1) {
         auto *v2 = event_manager::get_event_type(a1);
         if (v2 != nullptr) {
@@ -540,10 +541,42 @@ void event_manager::raise_event(string_hash a1, entity_base_vhandle a2) {
     }
 }
 
-void event_manager::garbage_collect() {
+void event_manager::garbage_collect()
+{
     TRACE("event_manager::garbage_collect");
 
-    CDECL_CALL(0x004E1B00);
+    if constexpr (0)
+    {
+        if ( event_types.empty()
+            || garbage_index >= event_types.size() )
+        {
+            garbage_index = 0;
+        }
+        else
+        {
+            auto it = event_types.begin() + garbage_index;
+            auto *v1 = (*it);
+            if ( v1->garbage_collect() )
+            {
+                if ( v1 != nullptr )
+                {
+                    v1->~event_type();
+                    mem_dealloc(v1, sizeof(event_type));
+
+                }
+
+                event_types.erase(it);
+            }
+            else
+            {
+                ++garbage_index;
+            }
+        }
+    }
+    else
+    {
+        CDECL_CALL(0x004E1B00);
+    }
 }
 
 event_type *event_manager::get_event_type(string_hash a1)

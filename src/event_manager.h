@@ -50,6 +50,8 @@ namespace event_manager {
 
     extern void remove_callback(unsigned int a1, string_hash a2, entity_base_vhandle a3);
 
+    inline int & garbage_index = var<int>(0x0095A6DC);
+
     inline _std::vector<event_type *> & event_types = var<_std::vector<event_type *>>(0x0095BA48);
 
 }
