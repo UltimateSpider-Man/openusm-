@@ -851,6 +851,48 @@ void swing_inode::frame_advance(Float a2)
     }
 }
 
+void swap_swing_attach_prop_callback(event *the_event, entity_base_vhandle a2, void *params)
+{
+    [[maybe_unused]] auto *ent = a2.get_volatile_ptr();
+
+    assert(the_event != nullptr && params != nullptr);
+}
+
+void swing_inode::_activate(ai::ai_core *a2)
+{
+    info_node::_activate(a2);
+
+    this->field_20 = bit_cast<hero_inode *>(this->get_core()->get_info_node(hero_inode::default_id, true));
+    this->field_1C = false;
+    this->m_constraint = 0.0;
+
+    auto *v3 = this->get_actor();
+    this->field_34 = event_manager::add_callback(
+        event::SWAP_PROP_A,
+        v3->get_my_handle(),
+        swap_swing_attach_prop_callback,
+        this,
+        false);
+
+    this->field_38 = event_manager::add_callback(
+        event::SWAP_PROP_B,
+        v3->get_my_handle(),
+        swap_swing_attach_prop_callback,
+        this,
+        false);
+}
+
+void swing_inode::_deactivate()
+{
+    this->cleanup_swingers();
+
+    auto v5 = this->get_actor()->get_my_handle();
+    event_manager::remove_callback(this->field_34, event::SWAP_PROP_A, v5);
+
+    v5 = this->get_actor()->get_my_handle();
+    event_manager::remove_callback(this->field_38, event::SWAP_PROP_B, v5);
+}
+
 float swing_inode::get_swing_cur_max_anchor_dist() const
 {
     static constexpr float swing_sweet_upper = 25.f;
@@ -1097,9 +1139,12 @@ void swing_inode::cleanup_swingers()
                     g_world_ptr()->ent_mgr.destroy_entity(v3);
                 }
             }
-            this->field_1C = 0;
+
+            this->field_1C = false;
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0044C320, this);
     }
 }

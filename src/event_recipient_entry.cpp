@@ -69,3 +69,14 @@ bool event_recipient_entry::callback_exists(int a2) const
 
     return false;
 }
+
+void event_recipient_entry::remove_callback(unsigned int a2)
+{
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        THISCALL(0x004DB7F0, this, a2);
+    }
+}

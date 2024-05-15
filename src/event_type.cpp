@@ -13,7 +13,7 @@ event_type::event_type(string_hash a2, bool a3) {
     THISCALL(0x004E18B0, this, a2, a3);
 }
 
-event_recipient_entry * event_type::sub_4EE580(entity_base_vhandle a2)
+event_recipient_entry * event_type::find_recipient_entry(entity_base_vhandle a2)
 {
     int a5 = -1;
     if ( !this->field_18 )
@@ -44,7 +44,7 @@ event_recipient_entry * event_type::create_recipient_entry(entity_base_vhandle a
 {
     if constexpr (0)
     {
-        auto *ret_val = this->sub_4EE580(a2);
+        auto *ret_val = this->find_recipient_entry(a2);
         if ( ret_val == nullptr )
         {
             ret_val = new event_recipient_entry {a2, false};
@@ -96,4 +96,9 @@ bool event_type::callback_exists(int a2) const
     }
 
     return false;
+}
+
+void event_type::remove_default_callback(unsigned int a2)
+{
+    THISCALL(0x004D4320, this, a2);
 }

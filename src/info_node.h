@@ -27,6 +27,10 @@ struct info_node : mash_virtual_base {
         return this->field_C;
     }
 
+    ai_core * get_core() {
+        return this->field_8;
+    }
+
     ~info_node() = default;
 
     //virtual
@@ -34,6 +38,15 @@ struct info_node : mash_virtual_base {
 
     //virtual
     void frame_advance(Float a2);
+
+    //virtual
+    void activate(ai_core *a2);
+
+    void _activate(ai_core *a2);
+
+    //virtual
+    void deactivate();
+
 };
 
 } // namespace ai

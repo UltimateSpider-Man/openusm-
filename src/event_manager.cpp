@@ -639,6 +639,19 @@ int event_manager::add_callback(
     }
 }
 
+void event_manager::remove_callback(unsigned int a1, string_hash a2, entity_base_vhandle a3)
+{
+    auto *v4 = get_event_type(a2);
+    if ( v4 != nullptr )
+    {
+        v4->remove_default_callback(a1);
+        auto *v5 = v4->find_recipient_entry(a3);
+        if ( v5 != nullptr ) {
+            v5->remove_callback(a1);
+        }
+    }
+}
+
 
 void event_manager_patch()
 {

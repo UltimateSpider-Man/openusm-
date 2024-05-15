@@ -48,6 +48,8 @@ namespace event_manager {
         void *a4,
         bool a5);
 
+    extern void remove_callback(unsigned int a1, string_hash a2, entity_base_vhandle a3);
+
     inline Var<_std::vector<event_type *>> event_types{0x0095BA48};
 
 }

@@ -221,6 +221,12 @@ struct swing_inode : info_node {
     //virtual
     void frame_advance(Float a2);
 
+    //virtual
+    void _activate(ai::ai_core *a2);
+
+    //virtual
+    void _deactivate();
+
     static const inline string_hash default_id{to_hash("SWING")};
 };
 

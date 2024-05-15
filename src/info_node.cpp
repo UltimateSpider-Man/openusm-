@@ -35,4 +35,22 @@ void info_node::frame_advance(Float a2)
     func(this, nullptr, a2);
 }
 
+void info_node::activate(ai_core *a2)
+{
+    void (__fastcall *func)(void *, void *, ai_core *) = CAST(func, get_vfunc(m_vtbl, 0x20));
+    func(this, nullptr, a2);
+}
+
+void info_node::_activate(ai_core *a2)
+{
+    this->field_8 = a2;
+    this->field_C = a2->field_64;
+}
+
+void info_node::deactivate()
+{
+    void (__fastcall *func)(void *) = CAST(func, get_vfunc(m_vtbl, 0x24));
+    func(this);
+}
+
 } // namespace ai

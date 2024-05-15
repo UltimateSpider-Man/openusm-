@@ -29,4 +29,7 @@ struct event_recipient_entry {
     int add_callback(void (*cb)(event *, entity_base_vhandle, void *), void *a3, bool a4);
 
     bool callback_exists(int a2) const;
+
+    void remove_callback(unsigned int a2);
+
 };

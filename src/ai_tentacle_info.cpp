@@ -106,10 +106,14 @@ vector3d ai_tentacle_info::correct_tentacle_pos(
         vector3d &a5,
         vector3d &a6)
 {
-    vector3d result;
-    THISCALL(0x00465090, this, &result, &a3, &a4, &a5, &a6);
-
-    return result;
+    if constexpr (0)
+    {}
+    else
+    {
+        vector3d result;
+        THISCALL(0x00465090, this, &result, &a3, &a4, &a5, &a6);
+        return result;
+    }
 }
 
 int ai_tentacle_info::push_engine(ai_tentacle_engine *eng)

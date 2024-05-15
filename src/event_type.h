@@ -18,7 +18,7 @@ struct event_type {
     //0x004E18B0
     event_type(string_hash a2, bool a3);
 
-    event_recipient_entry * sub_4EE580(entity_base_vhandle a2);
+    event_recipient_entry * find_recipient_entry(entity_base_vhandle a2);
 
     //0x004EE6C0
     void raise_event(entity_base_vhandle a2, event *a3);
@@ -28,4 +28,6 @@ struct event_type {
 
     //0x004CFB90
     bool callback_exists(int a2) const;
+
+    void remove_default_callback(unsigned int a2);
 };
