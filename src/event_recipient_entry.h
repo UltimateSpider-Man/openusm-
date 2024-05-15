@@ -6,6 +6,7 @@
 
 struct event;
 struct event_callback;
+struct script_executable;
 struct script_instance;
 struct vm_executable;
 
@@ -31,5 +32,7 @@ struct event_recipient_entry {
     bool callback_exists(int a2) const;
 
     void remove_callback(unsigned int a2);
+
+    void clear_script_callbacks(script_executable *a2);
 
 };

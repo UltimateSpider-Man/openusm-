@@ -102,3 +102,14 @@ void event_type::remove_default_callback(unsigned int a2)
 {
     THISCALL(0x004D4320, this, a2);
 }
+
+void event_type::clear_script_callbacks(entity_base_vhandle a2, script_executable *a3)
+{
+
+    for ( auto &v1 : this->field_8 )
+    {
+        if ( v1->field_0 == a2 ) {
+            v1->clear_script_callbacks(a3);
+        }
+    }
+}

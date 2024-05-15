@@ -80,3 +80,8 @@ void event_recipient_entry::remove_callback(unsigned int a2)
         THISCALL(0x004DB7F0, this, a2);
     }
 }
+
+void event_recipient_entry::clear_script_callbacks(script_executable *a2)
+{
+    THISCALL(0x004D4120, this, a2);
+}

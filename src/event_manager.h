@@ -37,7 +37,7 @@ namespace event_manager {
     //0x004E1B00
     extern void garbage_collect();
 
-    extern void clear_script_callbacks(entity_base_vhandle a1, const script_executable *a2);
+    extern void clear_script_callbacks(entity_base_vhandle a1, script_executable *a2);
 
     extern event_recipient_entry * create_event_recipient(string_hash arg0, entity_base_vhandle a2);
 
@@ -50,7 +50,7 @@ namespace event_manager {
 
     extern void remove_callback(unsigned int a1, string_hash a2, entity_base_vhandle a3);
 
-    inline Var<_std::vector<event_type *>> event_types{0x0095BA48};
+    inline _std::vector<event_type *> & event_types = var<_std::vector<event_type *>>(0x0095BA48);
 
 }
 

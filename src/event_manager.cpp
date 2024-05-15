@@ -28,7 +28,7 @@ bool event_manager::callback_exists(int id)
         return false;
     }
 
-    for ( auto &v1 : event_types()  )
+    for ( auto &v1 : event_types  )
     {
         if (v1->callback_exists(id) )  {
             return true;
@@ -552,17 +552,18 @@ event_type *event_manager::get_event_type(string_hash a1)
     {
         auto index = -1;
 
-        auto size = event_types().size();
+        auto size = event_types.size();
 
         event_type *result = nullptr;
 
         if (binary_search_array_cmp<string_hash, event_type *>(&a1,
-                                                                        &event_types().front(),
-                                                                        0,
-                                                                        size,
-                                                                        &index,
-                                                                        compare_deref<string_hash, event_type *>)) {
-            result = event_types().at(index);
+                                                            &event_types.front(),
+                                                            0,
+                                                            size,
+                                                            &index,
+                                                            compare_deref<string_hash, event_type *>))
+        {
+            result = event_types.at(index);
         }
 
         return result;
@@ -594,9 +595,9 @@ event_type *event_manager::register_event_type(string_hash a1, bool a2) {
 
             int (*compare)(const void *, const void *) = CAST(compare, 0x005034D0);
 
-            push_back(&event_types(), nullptr, &the_type);
-            if (event_types().size() > 1) {
-                qsort(event_types().m_first, event_types().size(), 4u, compare);
+            push_back(&event_types, nullptr, &the_type);
+            if (event_types.size() > 1) {
+                qsort(event_types.m_first, event_types.size(), 4u, compare);
             }
         }
 
@@ -606,9 +607,18 @@ event_type *event_manager::register_event_type(string_hash a1, bool a2) {
     }
 }
 
-void event_manager::clear_script_callbacks(entity_base_vhandle a1, const script_executable *a2)
+void event_manager::clear_script_callbacks(entity_base_vhandle a1, script_executable *a2)
 {
-    CDECL_CALL(0x004D4380, a1, a2);
+    if constexpr (0)
+    {
+        for ( auto &v2 : event_types ) {
+            v2->clear_script_callbacks(a1, a2);
+        }
+    }
+    else
+    {
+        CDECL_CALL(0x004D4380, a1, a2);
+    }
 }
 
 event_recipient_entry * event_manager::create_event_recipient(string_hash arg0, entity_base_vhandle a2)
