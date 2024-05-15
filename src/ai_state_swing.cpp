@@ -32,6 +32,8 @@
 #include "interaction_inode.h"
 #include "layer_state_machine.h"
 #include "marker.h"
+#include "memory.h"
+#include "ngl.h"
 #include "oldmath_po.h"
 #include "oldmath_usefulmath.h"
 #include "os_developer_options.h"
@@ -39,8 +41,10 @@
 #include "physics_inode.h"
 #include "pick_up_state.h"
 #include "polytube.h"
+#include "polytubecustommaterial.h"
 #include "quaternion.h"
 #include "region.h"
+#include "resource_manager.h"
 #include "sampling_window.h"
 #include "spiderman_camera.h"
 #include "spidey_combat_inode.h"
@@ -49,6 +53,7 @@
 #include "swinger.h"
 #include "utility.h"
 #include "variable.h"
+#include "variables.h"
 #include "vtbl.h"
 #include "wds.h"
 #include "web_polytube.h"
@@ -871,7 +876,200 @@ float swing_inode::get_swing_cur_max_anchor_dist() const
 void swing_inode::init_swingers()
 {
     if constexpr (0)
-    {}
+    {
+        if ( webline_texture == nullptr )
+        {
+            auto *slot = this->get_actor()->get_resource_context();
+            auto *__old_context = resource_manager::push_resource_context(slot);
+
+            auto *mem = mem_alloc(sizeof(PolytubeCustomMaterial));
+
+            tlFixedString a1 {"spideywebstring"};
+            auto *Tex = nglGetTexture(a1);
+            webline_texture = new (mem) PolytubeCustomMaterial {Tex, static_cast<nglBlendModeType>(2), 72};
+
+            resource_manager::pop_resource_context();
+            assert(resource_manager::get_resource_context() == __old_context);
+        }
+
+        for ( int i = 0; i < 2; ++i )
+        {
+            auto *mem = mem_alloc(sizeof(web_polytube));
+
+            auto entity_id = make_unique_entity_id();
+            auto *v5 = new (mem) web_polytube {&swingers[i], entity_id, 0};
+
+            g_world_ptr()->ent_mgr.add_dynamic_instanced_entity(v5);
+
+            auto *v7 = v5;
+            v7->set_render_color(color32 {255, 255, 254, 255});
+            if ( v7->tube_radius != 0.1f )
+            {
+                v7->tube_radius = 0.1;
+                v7->field_78 = false;
+            }
+
+            v7->set_tiles_per_meter(1.5f);
+
+            if ( v7->num_sides != 2 )
+            {
+                v7->num_sides = 2;
+                v7->field_78 = false;
+            }
+
+            v7->field_104 = 30.0f * 1.5f;
+
+            if ( webline_texture != nullptr )
+            {
+                v7->set_material(webline_texture);
+                v7->field_D0->m_blend_mode = static_cast<nglBlendModeType>(2);
+            }
+
+            v7->force_regions(this->get_actor());
+
+            v7->the_spline.need_rebuild = !v7->the_spline.field_3C;
+            v7->the_spline.field_3C = true;
+            auto *p_the_spline = &v7->the_spline;
+            if ( v7->the_spline.control_pts.m_first )
+                operator delete(v7->the_spline.control_pts.m_first);
+
+            p_the_spline->control_pts.m_first = 0;
+            p_the_spline->control_pts.m_last = 0;
+            p_the_spline->control_pts.m_end = 0;
+
+            if ( p_the_spline->curve_pts.m_first )
+                operator delete(p_the_spline->curve_pts.m_first);
+
+            p_the_spline->curve_pts.m_first = 0;
+            p_the_spline->curve_pts.m_last = 0;
+            p_the_spline->curve_pts.m_end = 0;
+
+            p_the_spline->need_rebuild = true;
+            p_the_spline->control_pts.reserve(4u);
+
+            for (int j = 0; j < 4; ++j ) {
+                v7->add_control_pt(ZEROVEC);
+            }
+
+            v7->build(10, static_cast<spline::eSplineType>(3));
+
+            v7->set_visible(false, false);
+
+            if ( this->get_actor()->is_a_conglomerate() )
+            {
+                static string_hash bip01_r_prop {int(to_hash("BIP01_R_PROP_HAND"))};
+
+                auto *conglom = bit_cast<conglomerate *>(this->get_actor());
+
+                swingers[i].field_3C = bit_cast<entity *>(conglom->get_bone(bip01_r_prop, true));
+            }
+            else
+            {
+                swingers[i].field_3C = nullptr;
+            }
+
+            auto *v13 = mem_alloc(sizeof(polytube));
+
+            auto v15 = make_unique_entity_id();
+            swingers[i].field_94 = new (v13) polytube {v15, 0};
+
+            g_world_ptr()->ent_mgr.add_dynamic_instanced_entity(swingers[i].field_94);
+
+            swingers[i].field_94->set_render_color(color32 {254, 255, 255, 255});
+
+            auto *v17 = swingers[i].field_94;
+            if ( v17->tube_radius != 0.1f )
+            {
+                v17->tube_radius = 0.1;
+                v17->field_78 = false;
+            }
+
+            v17->set_tiles_per_meter(1.5f);
+
+            if ( v17->num_sides != 2 )
+            {
+                v17->num_sides = 2;
+                v17->field_78 = 0;
+            }
+
+            if ( webline_texture != nullptr )
+            {
+                v17->set_material(webline_texture);
+                v17->field_D0->m_blend_mode = static_cast<nglBlendModeType>(2);
+            }
+
+            auto *v18 = swingers[i].field_94;
+            v18->the_spline.need_rebuild = !v18->the_spline.field_3C;
+            v18->the_spline.field_3C = true;
+
+            auto *v20 = &v18->the_spline;
+            if ( v18->the_spline.control_pts.m_first )
+                operator delete(v18->the_spline.control_pts.m_first);
+
+            v20->control_pts.m_first = 0;
+            v20->control_pts.m_last = 0;
+            v20->control_pts.m_end = 0;
+            if ( v20->curve_pts.m_first )
+                operator delete(v20->curve_pts.m_first);
+
+            v20->curve_pts.m_first = 0;
+            v20->curve_pts.m_last = 0;
+            v20->curve_pts.m_end = 0;
+            v20->need_rebuild = true;
+
+            v20->control_pts.reserve(10u);
+
+            for ( int k = 0; k < 10; ++k ) {
+                v18->add_control_pt(ZEROVEC);
+            }
+
+            auto *v22 = v18;
+            v22->build(5, static_cast<spline::eSplineType>(3));
+
+            v22->set_visible(false, false);
+
+            v18->set_parent(swingers[i].field_3C);
+            v18->create_tentacle_info();
+
+            [](ai_tentacle_info *self, bool a2) -> void
+            {
+                self->field_A8 = (a2
+                                ? (self->field_A8 | 4u)
+                                : (self->field_A8 & (~4u))
+                                );
+
+            }(v18->field_130, false);
+
+            auto *v23 = new ai_tentacle_web_curly {v18->field_130};
+            swingers[i].field_98 = v23;
+
+            auto v26 = this->get_actor()->get_my_vhandle();
+            auto v46 = swingers[i].field_3C;
+            v23->setup({v26}, v46);
+
+            swingers[i].field_94->field_130->push_engine(swingers[i].field_98);
+
+            swingers[i].field_94->field_130->set_code_blend(1.0, 0.0);
+
+            swingers[i].field_40 = ZEROVEC;
+            swingers[i].field_4C = 0.0f;
+
+            auto *v35 = mem_alloc(sizeof(marker));
+            auto v36 = make_unique_entity_id();
+            auto *v37 = new (v35) marker {v36, 0};
+
+            swingers[i].field_0.sub_48AFB0(v37);
+
+            auto *ent = bit_cast<entity *>(swingers[i].field_0.get_volatile_ptr());
+            g_world_ptr()->ent_mgr.add_dynamic_instanced_entity(ent);
+
+            auto *v45 = this->get_actor()->physical_ifc();
+            v45->set_pendulum(i, &swingers[i].field_0);
+        }
+
+        swinger_lr_swing_accel = 0;
+        swinger_ud_swing_accel = 0;
+    }
     else
     {
         THISCALL(0x004875F0, this);
@@ -984,7 +1182,7 @@ void swing_inode::fire_new_web(bool is_play_fire_web_sound)
 
         v12->max_length = 0.0;
 
-        v12->build(10, spline::eSplineType{3});
+        v12->build(10, static_cast<spline::eSplineType>(3));
 
         v12->set_visible(true, false);
 

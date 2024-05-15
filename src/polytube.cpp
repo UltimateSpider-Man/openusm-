@@ -17,6 +17,16 @@ VALIDATE_SIZE(polytube_pt_anim, 0x2C);
 
 VALIDATE_SIZE(PolytubeCustomVertex::Iterator, 0x4Cu);
 
+polytube_pt_anim::polytube_pt_anim() : field_0(0), 
+                    field_4(ZEROVEC),
+                    field_10(ZEROVEC),
+                    field_1C(0.0),
+                    field_20(0.0),
+                    field_24(0.0),
+                    field_28(0.0)
+{
+}
+
 polytube::polytube(const string_hash &a2, uint32_t a3) : entity(a2, a3)
 {
     static Var<bool> g_generating_vtables = (0x0095A6F1);
@@ -81,12 +91,12 @@ void polytube::init() {
     this->field_7C = 0;
     this->field_108 = 0;
 
-    string_hash v5{"c_alpha"};
+    string_hash v5 {"c_alpha"};
     this->set_material(v5);
     this->field_78 = 0;
     this->field_74 = nullptr;
     this->field_70 = nullptr;
-    this->field_130 = 0;
+    this->field_130 = nullptr;
 
     std::memset(this->field_15C, 0, sizeof(this->field_15C));
 
@@ -166,6 +176,62 @@ void polytube::set_material(string_hash a2)
     v4->field_1C = &v5->field_60;
     v4->m_vtbl = 0x0087E698;
     this->field_D0 = v4;
+}
+
+void polytube::set_material(PolytubeCustomMaterial *a2)
+{
+    THISCALL(0x005A2460, this, a2);
+}
+
+void polytube::set_tiles_per_meter(Float a2)
+{
+    this->tiles_per_meter = a2;
+    assert(tiles_per_meter > 0.0f);
+}
+
+void polytube::check_anims(bool a2)
+{
+    if ( !this->pt_anims.empty() || a2 )
+    {
+        auto anim_size = this->pt_anims.size();
+        auto pt_size = this->get_num_control_pts();
+        assert(anim_size <= pt_size);
+
+        while ( anim_size < pt_size )
+        {
+            polytube_pt_anim pt_anim {};
+
+            this->pt_anims.push_back(pt_anim);
+
+            ++anim_size;
+
+            assert(anim_size == pt_anims.size());
+        }
+
+        assert(pt_anims.size() == get_num_control_pts());
+    }
+}
+
+void polytube::add_control_pt(const vector3d &a2)
+{
+    this->the_spline.add_control_pt(a2);
+    this->check_anims(false);
+
+    if (this->field_130)
+    {
+        this->destroy_tentacle_info();
+        this->create_tentacle_info();
+    }
+}
+
+void polytube::destroy_tentacle_info()
+{
+    THISCALL(0x005A29B0, this);
+}
+
+void polytube::create_tentacle_info()
+{
+    THISCALL(0x005A2930, this);
 }
 
 void PolytubeCustomVertex::Iterator::Write(

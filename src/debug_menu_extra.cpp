@@ -416,7 +416,7 @@ void sub_6A9FED(debug_menu_entry *entry)
     if ( v7 != nullptr && v7->is_an_actor() )
     {
         auto *v6 = (actor *) v7;
-        auto *context = v6->field_BC;
+        auto *context = v6->get_resource_context();
         assert(context != nullptr);
 
         string_hash v4 {entry->get_name().c_str()};

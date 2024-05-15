@@ -2,6 +2,7 @@
 
 #include "entity.h"
 
+#include "ai_tentacle_info.h"
 #include "ngl_vertexdef.h"
 #include "spline.h"
 
@@ -9,9 +10,18 @@
 
 struct string_hash;
 struct PCUV_ShaderMaterial;
+struct PolytubeCustomMaterial;
 
 struct polytube_pt_anim {
-    float field_0[11];
+    uint32_t field_0;
+    vector3d field_4;
+    vector3d field_10;
+    float field_1C;
+    float field_20;
+    float field_24;
+    float field_28;
+
+    polytube_pt_anim();
 };
 
 struct PolytubeCustomOffset {
@@ -75,7 +85,7 @@ struct polytube : entity {
     float field_124;
     int field_128;
     int field_12C;
-    int field_130;
+    ai_tentacle_info *field_130;
     int empty[3];
     int16_t field_140;
     char field_142;
@@ -100,6 +110,8 @@ struct polytube : entity {
 
     void set_control_pt(int index, const vector3d &a2);
 
+    void set_tiles_per_meter(Float a2);
+
     vector3d get_control_pt(int a3);
 
     int get_num_control_pts();
@@ -114,6 +126,17 @@ struct polytube : entity {
 
     //0x005A2390
     void set_material(string_hash a2);
+
+    //0x005A2460
+    void set_material(PolytubeCustomMaterial *a2);
+
+    void add_control_pt(const vector3d &a2);
+
+    void check_anims(bool a2);
+
+    void destroy_tentacle_info();
+
+    void create_tentacle_info();
 
     //0x005A5B10
     //virtual

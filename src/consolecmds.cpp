@@ -961,8 +961,9 @@ bool PlayAnimCommand::process_cmd(const std::vector<std::string> &a2)
         }
 #else
         {
-            auto *pack_slot = v33->field_BC;
-            if (pack_slot != nullptr) {
+            auto *pack_slot = v33->get_resource_context();
+            if (pack_slot != nullptr)
+            {
                 auto &res_dir = pack_slot->get_resource_directory();
                 auto tlresource_count = res_dir.get_tlresource_count(TLRESOURCE_TYPE_ANIM_FILE);
                 assert(tlresource_count == 1);
@@ -996,7 +997,7 @@ bool PlayAnimCommand::process_cmd(const std::vector<std::string> &a2)
 
 #endif
 
-        auto *v13 = v29->field_BC;
+        auto *v13 = v29->get_resource_context();
         resource_manager::push_resource_context(v13);
         string_hash v16 {a1.c_str()};
 

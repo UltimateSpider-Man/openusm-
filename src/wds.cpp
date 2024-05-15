@@ -1509,7 +1509,7 @@ void world_dynamics_system::activate_corner_web_splats()
 
     auto *act = bit_cast<actor *>(this->get_hero_ptr(0));
 
-    auto *__old_context = resource_manager::push_resource_context(act->field_BC);
+    auto *__old_context = resource_manager::push_resource_context(act->get_resource_context());
 
     resource_key a2 {string_hash {"websplat_crnr"}, RESOURCE_KEY_TYPE_ENTITY};
 
@@ -1549,7 +1549,7 @@ void world_dynamics_system::activate_web_splats()
     {
         auto *act = bit_cast<actor *>(this->get_hero_ptr(0));
 
-        auto *__old_context = resource_manager::push_resource_context(act->field_BC);
+        auto *__old_context = resource_manager::push_resource_context(act->get_resource_context());
         string_hash v3{"spdywebsplatter"};
 
         resource_key a2;

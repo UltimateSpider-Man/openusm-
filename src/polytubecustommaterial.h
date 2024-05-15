@@ -5,5 +5,5 @@
 struct nglTexture;
 
 struct PolytubeCustomMaterial : PCUV_ShaderMaterial {
-    PolytubeCustomMaterial(nglTexture *a2, nglBlendModeType a3, int a4, int a5);
+    PolytubeCustomMaterial(nglTexture *a2, nglBlendModeType a3, int a5);
 };

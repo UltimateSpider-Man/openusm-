@@ -8,8 +8,11 @@
 struct string_hash;
 struct Input;
 struct InputSettings;
+struct PolytubeCustomMaterial;
 
 inline constexpr bool STANDALONE_SYSTEM = 0;
+
+extern PolytubeCustomMaterial *& webline_texture;
 
 inline Var<float> g_strafe_mult {0x00921B70};
 

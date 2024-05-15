@@ -22,6 +22,6 @@ struct swinger_t {
 
     int field_8C;
     polytube *field_90;
-    entity *field_94;
+    polytube *field_94;
     ai_tentacle_web_curly *field_98;
 };

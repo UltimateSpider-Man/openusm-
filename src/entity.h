@@ -107,7 +107,8 @@ struct entity : signaller {
 
     void unsuspend(bool);
 
-    void set_render_color();
+    //virtual
+    void set_render_color(color32);
 
     color32 get_render_color() const;
 

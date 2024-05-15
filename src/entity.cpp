@@ -332,9 +332,12 @@ void entity::unsuspend(bool) {
     ;
 }
 
-void entity::set_render_color() {
-    ;
+void entity::set_render_color(color32 c)
+{
+    void (__fastcall *func)(entity *, void *, color32) = CAST(func, get_vfunc(m_vtbl, 0x1C0));
+    func(this, nullptr, c);
 }
+
 
 color32 entity::get_render_color() const
 {

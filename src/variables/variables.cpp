@@ -5,6 +5,8 @@
 
 #include <dsound.h>
 
+PolytubeCustomMaterial *& webline_texture = var<PolytubeCustomMaterial *>(0x00958058);
+
 Var<float> flt_87EBD4 = {0x87EBD4};
 
 Var<float> flt_86F860 = {0x86F860};

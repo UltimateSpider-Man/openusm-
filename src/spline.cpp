@@ -16,7 +16,7 @@ spline::spline() {
     this->need_rebuild = false;
     this->field_3E = false;
     this->field_30 = 5;
-    this->field_38.field_0 = 3;
+    this->field_38 = static_cast<eSplineType>(3);
     this->field_3C = true;
     this->need_rebuild = true;
     this->field_3E = true;
@@ -41,11 +41,12 @@ vector3d &spline::get_control_pt(int index) {
 
 void spline::build(int a2, spline::eSplineType a3) {
     this->field_30 = a2;
-    if (a3.field_0 != 0) {
+
+    if (a3 != 0) {
         this->field_38 = a3;
     }
 
-    if (this->field_38.field_0 == 4) {
+    if (this->field_38 == 4) {
         this->field_34 = (this->get_num_control_pts() - 1) / 3;
     } else {
         this->field_34 = 1;
@@ -94,9 +95,9 @@ vector3d sub_5C2B20(float a3, float a4, float a5, const vector3d *a6) {
 void spline::compute_spline_pos(int index, Float t, vector3d &a4, bool a5, spline::eSplineType a6) {
     sp_log("compute_spline_pos: ");
 
-    int v6 = a6.field_0;
-    if (a6.field_0 == 0) {
-        v6 = this->field_38.field_0;
+    auto v6 = a6;
+    if (a6 == 0) {
+        v6 = this->field_38;
     }
 
     switch (v6) {
@@ -205,7 +206,15 @@ void spline::rebuild_helper() {
     THISCALL(0x005DC830, this);
 }
 
-void spline_patch() {
+void spline::add_control_pt(const vector3d &a1)
+{
+    this->control_pts.push_back(a1);
+    this->need_rebuild = true;
+    this->field_3E = true;
+}
+
+void spline_patch()
+{
     {
         void (spline::*compute_spline_pos)(int index,
                                            Float a3,

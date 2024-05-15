@@ -292,7 +292,7 @@ void animation_logic_system::frame_advance_play_new_animations(Float a2)
             };
 
 
-            auto *old_context = resource_manager::push_resource_context(this->field_6C->field_BC);
+            auto *old_context = resource_manager::push_resource_context(this->field_6C->get_resource_context());
 
             func(&this->field_18, -1);
             for ( auto i = 0u; i < this->field_8.size(); ++i ) {
@@ -376,7 +376,7 @@ void animation_logic_system::frame_advance_controller(Float a2)
         }
 
         auto a2a = v4 * a2;
-        resource_manager::push_resource_context(this->field_6C->field_BC);
+        resource_manager::push_resource_context(this->field_6C->get_resource_context());
         this->the_controller->frame_advance(a2a, false, false);
         resource_manager::pop_resource_context();
     } else {
@@ -401,7 +401,7 @@ void animation_logic_system::frame_advance_post_controller(Float arg0)
         }
 
         auto arg0a = v4 * arg0;
-        resource_manager::push_resource_context(this->field_6C->field_BC);
+        resource_manager::push_resource_context(this->field_6C->get_resource_context());
         if ( this->field_7C )
         {
             use_anim_only v6 {};

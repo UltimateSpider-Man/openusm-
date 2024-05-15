@@ -8,7 +8,12 @@
 
 VALIDATE_SIZE(web_polytube, 0x17C);
 
-web_polytube::web_polytube(const string_hash &a2, uint32_t a3) : polytube(a2, a3) {}
+web_polytube::web_polytube(swinger_t *a1, const string_hash &a2, uint32_t a3)
+                : polytube(a2, a3)
+{
+    this->m_vtbl = 0x0087E738;
+    this->field_178 = a1;
+}
 
 void web_polytube::render(Float a2)
 {

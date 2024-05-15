@@ -75,7 +75,7 @@ struct actor : entity {
     vector3d field_AC;
 
     int field_B8;
-    resource_pack_slot *field_BC;
+    resource_pack_slot *m_resource_context;
 
     //0x004F92D0
     actor(const string_hash &a2, uint32_t a3);
@@ -86,6 +86,10 @@ struct actor : entity {
     ~actor();
 
     void common_construct();
+
+    resource_pack_slot * get_resource_context() {
+        return this->m_resource_context;
+    }
 
     collision_free_state *get_last_collision_free_state() const;
 

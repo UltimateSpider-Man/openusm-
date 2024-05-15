@@ -1,14 +1,15 @@
 #include "pendulum.h"
 
+#include "biped_system.h"
 #include "common.h"
 #include "entity_base.h"
 #include "entity_base_vhandle.h"
 #include "oldmath_po.h"
 #include "physical_interface.h"
-#include "rbc_def_distance.h"
 #include "physics_system.h"
-#include "biped_system.h"
 #include "phys_vector3d.h"
+#include "rbc_def_distance.h"
+#include "vector3d.h"
 
 #include <cassert>
 
@@ -79,10 +80,11 @@ void pendulum::set_attach_limb(int l) {
     }
 }
 
-vector3d &pendulum::get_pivot_abs_pos()
+const vector3d & pendulum::get_pivot_abs_pos()
 {
     auto *ent = this->get_volatile_ptr();
-    if (ent != nullptr) {
+    if (ent != nullptr)
+    {
         auto &local_po = ent->get_abs_po();
 
         this->field_10 = local_po.slow_xform(this->field_4);
@@ -202,4 +204,16 @@ void pendulum::update_biped_constraint(physical_interface *a2)
             this->sub_4BD990(a2);
         }
     }
+}
+
+vector3d pendulum::sub_48AFB0(entity_base *a2)
+{
+    *bit_cast<entity_base_vhandle *>(this) = ( a2 != nullptr
+                ? a2->get_my_handle()
+                : entity_base_vhandle {}
+                );
+
+    this->field_10 = ZEROVEC;
+    this->field_4 = ZEROVEC;
+    return this->get_pivot_abs_pos();
 }

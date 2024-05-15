@@ -90,7 +90,7 @@ void actor::common_construct()
     this->anim_ctrl = nullptr;
     this->m_skeleton= nullptr;
     this->field_A4 = 0;
-    this->field_BC = nullptr;
+    this->m_resource_context = nullptr;
     this->field_A8[0] = 0;
     this->field_AC = {};
     this->field_B8 = 0;
@@ -1304,7 +1304,7 @@ ai::ai_core *actor::_get_ai_core() {
 void actor::get_animations(actor *a1, std::list<nalAnimClass<nalAnyPose> *> &a2)
 {
     a2.clear();
-    auto *v11 = a1->field_BC;
+    auto *v11 = a1->get_resource_context();
     if ( v11 != nullptr )
     {
         auto &res_dir = v11->get_resource_directory();
