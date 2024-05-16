@@ -1,6 +1,8 @@
 #pragma once
 
 #include "base_state.h"
+
+#include "state_trans_action.h"
 #include "float.hpp"
 #include "state_trans_messages.h"
 #include "string_hash.h"
@@ -14,7 +16,7 @@ struct enhanced_state : base_state {
     state_trans_messages field_20;
     int field_24;
     bool field_28;
-    int field_2C;
+    state_trans_actions field_2C;
 
     enhanced_state();
 
@@ -27,7 +29,7 @@ struct enhanced_state : base_state {
         return this->my_mashed_state == nullptr;
     }
 
-    bool can_handle_message(ai::state_trans_messages a2, bool a3);
+    bool can_handle_message(ai::state_trans_messages a2, bool a3) const;
 
     //0x006BD5A0
     /* virtual */
@@ -65,9 +67,13 @@ struct enhanced_state : base_state {
 
     static inline Var<string_hash[1]> to_state_hashes{0x0096CEB0};
 
+    static const inline string_hash to_state_always_hash {int(to_hash("to_state_always"))};
+
     static inline Var<string_hash[1]> exit_layer_hashes{0x0096D0C0};
 
-    static inline Var<string_hash> process_default_trans_hash{0x0096D284};
+    static const inline string_hash process_default_trans_hash {int(to_hash("process_default_trans"))};
+
+    static const inline string_hash exit_layer_always_hash {int(to_hash("exit_layer_always"))};
 };
 
 } // namespace ai

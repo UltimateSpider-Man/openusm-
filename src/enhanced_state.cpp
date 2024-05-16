@@ -1,5 +1,6 @@
 #include "enhanced_state.h"
 
+#include "base_ai_state_machine.h"
 #include "common.h"
 #include "func_wrapper.h"
 #include "mashed_state.h"
@@ -33,11 +34,54 @@ float enhanced_state::get_timeout_timer() {
     return this->field_24;
 }
 
-bool enhanced_state::can_handle_message(ai::state_trans_messages a2, bool a3)
+bool enhanced_state::can_handle_message(ai::state_trans_messages the_msg, bool a3) const
 {
     TRACE("enhanced_state::can_handle_message");
 
-    return (bool) THISCALL(0x006CE3D0, this, a2, a3);
+    assert(the_msg >= 0);
+
+    assert(the_msg < TRANS_TOTAL_MSGS);
+
+    if constexpr (1)
+    {
+        bool result = false;
+        const auto &pb = this->my_mashed_state->field_0;
+        if ( pb.does_parameter_exist(to_state_hashes()[the_msg]) )
+        {
+            auto pb_hash = pb.get_pb_hash(to_state_hashes()[the_msg]);
+            result = this->get_machine()->can_switch_to_state(pb_hash);
+        }
+        else
+        {
+            if ( a3
+                && pb.does_parameter_exist(to_state_always_hash) )
+            {
+                auto v11 = pb.get_pb_hash(to_state_always_hash);
+                result = this->get_machine()->can_switch_to_state(v11);
+            }
+            else
+            {
+                auto v13 = exit_layer_hashes()[the_msg];
+                if ( pb.does_parameter_exist(v13) ) {
+                    return true;
+                }
+
+                if (a3)
+                {
+                    if ( pb.does_parameter_exist(exit_layer_always_hash) ) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+    else
+    {
+        bool (__fastcall *func)(const void *, void *edx, state_trans_messages, bool) = CAST(func, 0x006CE3D0);
+        return func(this, nullptr, the_msg, a3);
+    }
 }
 
 void enhanced_state::activate(ai_state_machine *a2,
@@ -53,7 +97,7 @@ void enhanced_state::activate(ai_state_machine *a2,
         auto *state = this->my_mashed_state;
         this->field_20 = TRANS_TOTAL_MSGS;
         this->field_24 = -1.0;
-        this->field_2C = 3;
+        this->field_2C = static_cast<state_trans_actions>(3);
 
         assert(!is_default_transition_state() &&
                "transition state should inherit from base_state to save CPU cycle");
@@ -73,7 +117,7 @@ void enhanced_state::activate(ai_state_machine *a2,
             this->field_28 = p_block->does_parameter_exist(to_state_hashes()[3]) ||
                 p_block->does_parameter_exist(exit_layer_hashes()[3]);
 
-            this->field_2C = p_block->get_optional_pb_int(process_default_trans_hash(), 3, &v10);
+            this->field_2C = static_cast<state_trans_actions>(p_block->get_optional_pb_int(process_default_trans_hash, 3, &v10));
         }
 
     } else {
@@ -119,17 +163,17 @@ state_trans_action enhanced_state::process_message(Float a3, state_trans_message
         if (this->is_default_transition_state()) {
             result = default_return_code;
         } else if (a4) {
-            if (this->my_mashed_state->field_0.does_parameter_exist(to_state_always_hash())) {
+            if (this->my_mashed_state->field_0.does_parameter_exist(to_state_always_hash)) {
                 string_hash v11{default_return_code.the_message};
 
-                result = this->state_exit(to_state_always_hash(), v11, a4, default_return_code);
+                result = this->state_exit(to_state_always_hash, v11, a4, default_return_code);
 
             } else {
                 auto v8 = this->my_mashed_state->field_0.does_parameter_exist(
-                    exit_layer_always_hash());
+                    exit_layer_always_hash);
 
                 if (v8) {
-                    result = this->exit_layer(exit_layer_always_hash(), a4, default_return_code);
+                    result = this->exit_layer(exit_layer_always_hash, a4, default_return_code);
                 } else {
                     result = this->state_exit(to_state_hashes()[a4],
                                               exit_layer_hashes()[a4],
@@ -162,10 +206,11 @@ state_trans_action enhanced_state::get_default_return_code() {
 }
 
 state_trans_action enhanced_state::process_exit_message([[maybe_unused]] Float a3,
-                                                        state_trans_messages the_msg) {
+                        state_trans_messages the_msg)
+{
     assert(the_msg == TRANS_MACHINE_EXIT_REQUEST_MSG);
 
-    state_trans_action action {2, string_hash {0}, TRANS_SUCCESS_MSG, nullptr};
+    state_trans_action action {state_trans_actions::MACHINE_EXIT, string_hash {0}, TRANS_SUCCESS_MSG, nullptr};
     return action;
 }
 
@@ -208,6 +253,11 @@ ai::state_trans_action * __fastcall ai_enhanced_state_check_transition(ai::enhan
 
 void enhanced_state_patch()
 {
+    {
+        FUNC_ADDRESS(address, &ai::enhanced_state::can_handle_message);
+        //SET_JUMP(0x006CE3D0, address);
+    }
+
     {
         auto address = int(&ai_enhanced_state_check_transition);
         SET_JUMP(0x006BD600, address);

@@ -70,7 +70,7 @@ state_trans_action hero_base_state::check_transition(Float a3)
                 {
                     v9 = this->get_actor();
                     if (v9->damage_ifc()->field_1FC.field_0[0] <= 0.0f) {
-                        result = state_trans_action {0, subdued_state::default_id, TRANS_TOTAL_MSGS, nullptr};
+                        result = state_trans_action {state_trans_actions::TRANSITION, subdued_state::default_id, TRANS_TOTAL_MSGS, nullptr};
                         return result;
                     }
                 }
@@ -86,12 +86,12 @@ state_trans_action hero_base_state::check_transition(Float a3)
             hero_inode_ptr->set_jump_type(static_cast<ai::eJumpType>(14), false);
             glass_house_inode_ptr->show_glass_house_message();
             glass_house_inode_ptr->field_20 = 0;
-            return result = state_trans_action {0, ai::jump_state::default_id, TRANS_TOTAL_MSGS, nullptr};
+            return result = state_trans_action {state_trans_actions::TRANSITION, ai::jump_state::default_id, TRANS_TOTAL_MSGS, nullptr};
         }
 
         if (hero_inode_ptr->field_23C.get_volatile_ptr() != nullptr) {
             hero_inode_ptr->engage_water_exit();
-            result = state_trans_action {0, plr_loco_crawl_transition_state::default_id, TRANS_TOTAL_MSGS, nullptr};
+            result = state_trans_action {state_trans_actions::TRANSITION, plr_loco_crawl_transition_state::default_id, TRANS_TOTAL_MSGS, nullptr};
             return result;
         }
 
@@ -106,15 +106,15 @@ state_trans_action hero_base_state::check_transition(Float a3)
 
                 this->combat_inode_transition_notification(a3, v20);
                 printf("%s => %s", name.to_string(), v20.to_string());
-                result = state_trans_action {0, v20, TRANS_TOTAL_MSGS, nullptr};
+                result = state_trans_action {state_trans_actions::TRANSITION, v20, TRANS_TOTAL_MSGS, nullptr};
                 return result;
             } else {
-                result = state_trans_action {3, string_hash {0}, TRANS_TOTAL_MSGS, nullptr};
+                result = state_trans_action {static_cast<state_trans_actions>(3), string_hash {0}, TRANS_TOTAL_MSGS, nullptr};
                 return result;
             }
 
         } else {
-            result = state_trans_action {3, string_hash {0}, TRANS_TOTAL_MSGS, nullptr};
+            result = state_trans_action {static_cast<state_trans_actions>(3), string_hash {0}, TRANS_TOTAL_MSGS, nullptr};
             return result;
         }
 

@@ -17,8 +17,6 @@ struct state_trans_action;
 struct state_graph;
 struct ai_core;
 
-inline constexpr auto PROCESSING_EXIT_REQUEST = 4;
-
 struct ai_state_machine {
     enum {
         PRE_TEST = 0,
@@ -26,7 +24,7 @@ struct ai_state_machine {
     } my_curr_mode;
     ai_core *my_core;
     actor *field_8;
-    const state_graph *field_C;
+    const state_graph *m_state_graph;
     base_state *my_curr_state;
     const mashed_state *field_14;
     ai_state_machine *my_parent;
@@ -65,12 +63,19 @@ struct ai_state_machine {
     //0x0069BA60
     void request_exit();
 
-    void sub_69BAA0();
+    //0x0069BAA0
+    void external_request_exit();
 
-    state_trans_action sub_697A00(
+    state_trans_action process_msg_on_interrupt(
         Float a3,
         int a4,
         const ai::state_trans_action &a5);
+
+    //0x00688100
+    bool has_state(string_hash a2) const;
+
+    //0x00688120
+    bool can_switch_to_state(string_hash a2) const;
 
     //0x0069BAC0
     bool transition_state(string_hash arg0, const param_block *a3);
@@ -79,10 +84,10 @@ struct ai_state_machine {
     [[nodiscard]] state_trans_action check_keyword_overrides(const state_trans_action &a3);
 
     //0x006880E0
-    string_hash get_initial_state_id();
+    string_hash get_initial_state_id() const;
 
     //0x00687F90
-    resource_key get_name();
+    resource_key get_name() const;
 
     //0x006A1530
     void add_as_child(ai_state_machine *a2);

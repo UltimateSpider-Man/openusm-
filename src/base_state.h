@@ -46,6 +46,10 @@ struct base_state : mash_virtual_base {
 
     bool is_flag_set(int a2) const;
 
+    ai_state_machine * get_machine() const {
+        return this->field_C;
+    }
+
     /* virtual */ ~base_state() = default;
 
     //0x006C4BD0

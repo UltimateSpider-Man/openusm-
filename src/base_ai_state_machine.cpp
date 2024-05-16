@@ -23,25 +23,28 @@ namespace ai {
 
 VALIDATE_SIZE(ai_state_machine, 0x48u);
 
-ai_state_machine::ai_state_machine(ai::ai_core *a2, const ai::state_graph *a3, string_hash a4) {
+ai_state_machine::ai_state_machine(ai::ai_core *a2, const ai::state_graph *a3, string_hash a4)
+{
     this->my_curr_mode = PRE_TEST;
     this->my_core = a2;
-    this->field_C = a3;
+    this->m_state_graph = a3;
     this->my_parent = nullptr;
     this->field_1C = {};
-    auto &v5 = this->field_30;
     this->field_2C = 0;
+    this->field_30 = 0;
 
     this->field_38 = nullptr;
     this->field_3C = nullptr;
     this->field_40 = nullptr;
+
+    assert(this->my_core != nullptr);
+
     this->field_8 = a2->field_64;
-    auto *v6 = this->field_C;
     this->my_curr_state = nullptr;
     this->field_14 = nullptr;
-    v5.source_hash_code = a4.source_hash_code;
+    this->field_30 = a4;
     this->field_44 = 2;
-    auto v7 = v6->get_size_memory_block();
+    auto v7 = this->m_state_graph->get_size_memory_block();
     if (v7 > 0) {
         this->field_38 = mem_alloc(v7);
     }
@@ -83,19 +86,16 @@ state_trans_action ai_state_machine::check_trans_on_interrupt(Float a3, const st
 
     if (a4.the_action != 4 && this->field_34)
     {
-        auto &v7 = this->field_C->field_20;
-        if (v7.size() > 0)
+        auto &v7 = this->m_state_graph->field_20;
+        for (auto *state : v7)
         {
-            for (auto *state : v7)
-            {
-                sp_log("0x%08X", state->m_vtbl);
-                state->activate(this, nullptr, nullptr, nullptr, static_cast<base_state::activate_flag_e>(1));
-                auto trans_action = state->check_transition(a3);
+            sp_log("0x%08X", state->m_vtbl);
+            state->activate(this, nullptr, nullptr, nullptr, static_cast<base_state::activate_flag_e>(1));
+            auto trans_action = state->check_transition(a3);
 
-                state->deactivate(nullptr);
-                if (!(trans_action.the_action == 3 || trans_action.the_action == 4)) {
-                    return trans_action;
-                }
+            state->deactivate(nullptr);
+            if ( !trans_action.is_default() ) {
+                return trans_action;
             }
         }
     }
@@ -103,34 +103,34 @@ state_trans_action ai_state_machine::check_trans_on_interrupt(Float a3, const st
     return a4;
 }
 
-void ai_state_machine::process_transition(Float a2) {
+void ai_state_machine::process_transition(Float a2)
+{
     TRACE("ai_state_machine::process_transition");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         sp_log("0x%08X", this->my_curr_state->m_vtbl);
-        state_trans_action a3 = this->my_curr_state->check_transition(a2);
+        state_trans_action v3 = this->my_curr_state->check_transition(a2);
 
-        a3 = this->check_trans_on_interrupt(a2, a3);
+        v3 = this->check_trans_on_interrupt(a2, v3);
 
-        ai::state_trans_action v3 = this->check_keyword_overrides(a3);
-
-        a3.the_action = v3.the_action;
-
-        a3.field_4 = v3.field_4;
-        a3.the_message = v3.the_message;
-        a3.field_C = v3.field_C;
-        if (a3.the_action) {
-            if (a3.the_action == 1) {
-                this->process_return();
-            } else {
-                if (a3.the_action == state_trans_action::MACHINE_EXIT) {
-                    this->process_machine_exit(a3.the_message);
-                }
-            }
-        } else {
-            this->transition_state(a3.field_4, a3.field_C);
+        v3 = this->check_keyword_overrides(v3);
+        switch (v3.the_action) {
+        case state_trans_actions::TRANSITION:
+            this->transition_state(v3.field_4, v3.field_C);
+            break;
+        case state_trans_actions::RETURN:
+            this->process_return();
+            break;
+        case state_trans_actions::MACHINE_EXIT:
+            this->process_machine_exit(v3.the_message);
+            break;
+        default:
+            break;
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0069ED60, this, a2);
     }
 }
@@ -141,54 +141,52 @@ void ai_state_machine::process_transition_message(Float a2, state_trans_messages
 
     assert(my_curr_state != nullptr);
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         assert(my_curr_state != nullptr);
 
         auto a3a = bit_cast<ai::enhanced_state *>(this->my_curr_state)->process_message(a2, the_msg);
-        a3a = this->sub_697A00(a2, the_msg, a3a);
+        a3a = this->process_msg_on_interrupt(a2, the_msg, a3a);
         auto v4 = this->check_keyword_overrides(a3a);
         auto the_action = v4.the_action;
-        a3a.the_action = the_action;
-
-        string_hash v6 = v4.field_4;
-
-        a3a.field_4 = v6;
-        auto the_message = v4.the_message;
-        a3a.the_message = the_message;
-        if ( the_action != 0 ) {
-            switch (the_action) {
-            case 1:
-                this->process_return();
-                break;
-            case state_trans_action::MACHINE_EXIT:
-                this->process_machine_exit(the_message);
-                break;
-            default:
-                assert((the_msg != TRANS_FAILURE_MSG)
-                        && (the_msg != TRANS_SUCCESS_MSG)
-                        && "You must process a state exit message either in the state's transition or the default one.");
-                break;
-            }
+        switch (the_action) {
+        case state_trans_actions::TRANSITION:
+            this->transition_state(v4.field_4, v4.field_C);
+            break;
+        case state_trans_actions::RETURN:
+            this->process_return();
+            break;
+        case state_trans_actions::MACHINE_EXIT:
+            this->process_machine_exit(v4.the_message);
+            break;
+        default:
+            assert((the_msg != TRANS_FAILURE_MSG)
+                    && (the_msg != TRANS_SUCCESS_MSG)
+                    && "You must process a state exit message either in the state's transition or the default one.");
+            break;
         }
-        else
-        {
-            auto v8 = v4.field_C;
-            this->transition_state(v6, v8);
-        }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0069ECA0, this, a2, the_msg);
     }
 }
 
-state_trans_action ai_state_machine::sub_697A00(
+state_trans_action ai_state_machine::process_msg_on_interrupt(
         Float a3,
         int a4,
         const ai::state_trans_action &a5)
 {
 
-    ai::state_trans_action out;
-    THISCALL(0x00697A00, this, &out, a3, a4, &a5);
-    return out;
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        ai::state_trans_action out;
+        THISCALL(0x00697A00, this, &out, a3, a4, &a5);
+        return out;
+    }
 }
 
 void ai_state_machine::process_mode(Float a2, bool a3) {
@@ -202,9 +200,9 @@ void ai_state_machine::process_mode(Float a2, bool a3) {
         case PRE_TEST: {
             mashed_state *initial_state;
             if (this->field_30.source_hash_code == string_hash{}) {
-                initial_state = this->field_C->field_1C;
+                initial_state = this->m_state_graph->field_1C;
             } else {
-                initial_state = this->field_C->find_state(this->field_30);
+                initial_state = this->m_state_graph->find_state(this->field_30);
             }
 
             assert(initial_state != nullptr &&
@@ -213,7 +211,7 @@ void ai_state_machine::process_mode(Float a2, bool a3) {
             this->field_30.source_hash_code = 0;
             auto *v6 = static_cast<base_state *>(
                 mash_virtual_base::create_subclass_by_enum(initial_state->field_14));
-            auto *v7 = this->field_C;
+            auto *v7 = this->m_state_graph;
 
             this->my_curr_state = v6;
 
@@ -349,14 +347,22 @@ void ai_state_machine::request_exit() {
     }
 }
 
-string_hash ai_state_machine::get_initial_state_id() {
-    string_hash result;
-    THISCALL(0x006880E0, this, &result);
+string_hash ai_state_machine::get_initial_state_id() const
+{
+    if constexpr (0)
+    {
+        return this->m_state_graph->field_1C->get_name();
+    }
+    else
+    {
+        string_hash result;
+        THISCALL(0x006880E0, this, &result);
 
-    return result;
+        return result;
+    }
 }
 
-void ai_state_machine::sub_69BAA0()
+void ai_state_machine::external_request_exit()
 {
     auto curr_mode = this->my_curr_mode;
     if ( curr_mode != 3 && curr_mode != 5 && curr_mode != 4 ) {
@@ -364,15 +370,46 @@ void ai_state_machine::sub_69BAA0()
     }
 }
 
-bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3) {
+bool ai_state_machine::has_state(string_hash a2) const
+{
+    return this->m_state_graph->find_state(a2) != nullptr;
+}
+
+bool ai_state_machine::can_switch_to_state(string_hash a2) const
+{
+    if ( this->has_state(a2) ) {
+        return true;
+    }
+
+    if (this->my_parent == nullptr || this->my_parent->get_curr_state() == nullptr) {
+        return false;
+    }
+
+    if ( !this->my_parent->get_curr_state()->is_or_is_subclass_of(static_cast<mash::virtual_types_enum>(330)) ) { // launch_layer_state
+        return false;
+    }
+
+    auto name = this->get_name();
+    auto *v7 = bit_cast<launch_layer_state *>(this->my_parent->get_curr_state());
+    auto v10 = v7->get_layer_resource_key();
+    auto result = (v10 == name 
+                    && this->my_parent->can_switch_to_state(a2));
+    return result;
+}
+
+bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
+{
     TRACE("ai_state_machine::transition_state");
 
-    assert(my_curr_state != nullptr);
-    if constexpr (1) {
-        auto *v4 = this->field_C;
+    assert(this->my_curr_state != nullptr);
+
+    if constexpr (1)
+    {
+        auto *v4 = this->m_state_graph;
 
         auto *the_state = v4->find_state(arg0);
-        if (the_state != nullptr) {
+        if (the_state != nullptr)
+        {
             auto *v13 = bit_cast<ai::base_state *>(this->my_curr_state);
             auto *v14 = v13->my_mashed_state;
             if (v14->is_flag_set(0)) {
@@ -407,10 +444,11 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
 
 
         auto *cur_child_machine = this;
-        for ( auto *cur_parent = this->my_parent; cur_parent != nullptr; cur_parent = cur_parent->my_parent ) {
+        for ( auto *cur_parent = this->my_parent; cur_parent != nullptr; cur_parent = cur_parent->my_parent )
+        {
             assert(cur_child_machine->my_parent == cur_parent);
 
-            auto *v7 = cur_parent->field_C;
+            auto *v7 = cur_parent->m_state_graph;
             if (v7->find_state(arg0)) {
                 assert(cur_parent->get_curr_state() != nullptr);
 
@@ -419,7 +457,7 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
                     if (auto v9 = cur_child_machine->get_name();
                         v8->get_layer_resource_key() != v9 )
                     {
-                        this->sub_69BAA0();
+                        this->external_request_exit();
                         return cur_parent->transition_state(arg0, nullptr);
                     }
                 }
@@ -461,15 +499,17 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
         }
 
         return false;
-    } else {
+    }
+    else
+    {
         return THISCALL(0x0069BAC0, this, arg0, a3);
     }
 }
 
-resource_key ai_state_machine::get_name()
+resource_key ai_state_machine::get_name() const
 {
     TRACE("ai::ai_state_machine::get_name");
-    return this->field_C->sub_6B68F0();
+    return this->m_state_graph->sub_6B68F0();
 }
 
 void ai_state_machine::add_as_child(ai_state_machine *a2)
@@ -477,35 +517,38 @@ void ai_state_machine::add_as_child(ai_state_machine *a2)
     THISCALL(0x006A1530, this, a2);
 }
 
-state_trans_action ai_state_machine::check_keyword_overrides(const state_trans_action &a3) {
+state_trans_action ai_state_machine::check_keyword_overrides(const state_trans_action &a3)
+{
     TRACE("ai_state_machine::check_keyword_overrides");
 
-    ai::state_trans_action result;
+    state_trans_action result;
 
-    if (a3.the_action != 0) {
+    if (a3.the_action != state_trans_actions::TRANSITION) {
         return a3;
     }
 
     auto v3 = a3.field_4;
 
-    if (v3 == ai::ai_state_machine::prev_state_id_hash()) {
+    if (v3 == prev_state_id_hash())
+    {
         if (this->my_curr_state->is_flag_set(mashed_state::IS_INTERRUPT_STATE)) {
 
-            result = ai::state_trans_action {1, string_hash {0}, TRANS_TOTAL_MSGS, nullptr};
+            result = state_trans_action {state_trans_actions::RETURN, string_hash {0}, TRANS_TOTAL_MSGS, nullptr};
             return result;
         } else {
             assert(this->get_prev_mashed_state() != nullptr && "No previous state to return to");
         }
 
         auto name = this->get_prev_mashed_state()->get_name();
-        result = ai::state_trans_action {0, name, TRANS_TOTAL_MSGS, nullptr}; 
+        result = state_trans_action {state_trans_actions::TRANSITION, name, TRANS_TOTAL_MSGS, nullptr}; 
         return result;
     }
 
-    if (v3 == ai::ai_state_machine::initial_state_id_hash()) {
+    if (v3 == initial_state_id_hash())
+    {
         auto initial_state = this->get_initial_state_id();
 
-        result = ai::state_trans_action {0, initial_state, TRANS_TOTAL_MSGS, nullptr};
+        result = state_trans_action {state_trans_actions::TRANSITION, initial_state, TRANS_TOTAL_MSGS, nullptr};
         return result;
     }
 
@@ -514,7 +557,8 @@ state_trans_action ai_state_machine::check_keyword_overrides(const state_trans_a
 
 } // namespace ai
 
-void ai_state_machine_patch() {
+void ai_state_machine_patch()
+{
 
     {
         FUNC_ADDRESS(address, &ai::ai_state_machine::process_mode);
