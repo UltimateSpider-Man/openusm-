@@ -44,7 +44,7 @@ bool find_sphere_intersection(const vector3d &a1,
         for (auto *it = v8; it != nullptr; it = v12)
         {
             v12 = it->field_0;
-            local_collision::primitive_list_t::pool().remove(it);
+            local_collision::primitive_list_t::pool.remove(it);
         }
 
         if (result && best_isect.is_ent)

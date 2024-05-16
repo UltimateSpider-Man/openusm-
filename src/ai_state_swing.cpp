@@ -336,9 +336,11 @@ void swing_state::_activate(ai_state_machine *a2,
     }
 }
 
-void swing_state::deactivate(const ai::mashed_state *a1)
+void swing_state::_deactivate(const ai::mashed_state *a1)
 {
-    base_state::deactivate(a1);
+    TRACE("ai::swing_state::deactivate");
+
+    base_state::_deactivate(a1);
     if (this->get_actor() != nullptr)
     {
         auto *v3 = this->get_actor();
@@ -884,6 +886,8 @@ void swing_inode::_activate(ai::ai_core *a2)
 
 void swing_inode::_deactivate()
 {
+    //TRACE("ai::swing_inode::deactivate");
+
     this->cleanup_swingers();
 
     auto v5 = this->get_actor()->get_my_handle();
@@ -1167,8 +1171,8 @@ void swing_inode::clip_web(Float a2)
                 auto v5 = v4.field_0.get_pivot_abs_pos();
                 v19.field_C = v5;
 
-                v19.check_collision(*local_collision::entfilter_entity_no_capsules(),
-                                    *local_collision::obbfilter_lineseg_test(),
+                v19.check_collision(*local_collision::entfilter_entity_no_capsules,
+                                    *local_collision::obbfilter_lineseg_test,
                                     nullptr);
                 if ( v19.collision ) {
                     if (v19.hit_entity.get_volatile_ptr() != nullptr) {
@@ -1248,7 +1252,7 @@ void swing_inode::fire_new_web(bool is_play_fire_web_sound)
 
         do_web_splat(something_to_swing_to_data.m_visual_point,
                      something_to_swing_to_data.field_18,
-                     *local_collision::entfilter_reject_all());
+                     *local_collision::entfilter_reject_all);
 
     }
     else
@@ -1406,8 +1410,8 @@ void swing_inode::update_pendulums(Float a2)
                     vector3d normal;
                     if (find_intersection(v26->get_abs_position(),
                                           a2a,
-                                          *local_collision::entfilter_entity_no_capsules(),
-                                          *local_collision::obbfilter_lineseg_test(),
+                                          *local_collision::entfilter_entity_no_capsules,
+                                          *local_collision::obbfilter_lineseg_test,
                                           &point,
                                           &normal,
                                           nullptr,
@@ -1967,7 +1971,7 @@ void swing_inode::do_web_splat(vector3d target_point,
             }
 
             if (line.check_collision(entfilter_arg,
-                                     *local_collision::obbfilter_lineseg_test(),
+                                     *local_collision::obbfilter_lineseg_test,
                                      nullptr))
             {
                 vector3d axis;
@@ -2013,16 +2017,16 @@ void swing_inode::do_web_splat(vector3d target_point,
                 bool cond[4]{};
 
                 cond[3] = array_lines[3].check_collision(entfilter_arg,
-                                                         *local_collision::obbfilter_lineseg_test(),
+                                                         *local_collision::obbfilter_lineseg_test,
                                                          nullptr);
                 cond[2] = array_lines[2].check_collision(entfilter_arg,
-                                                         *local_collision::obbfilter_lineseg_test(),
+                                                         *local_collision::obbfilter_lineseg_test,
                                                          nullptr);
                 cond[1] = array_lines[1].check_collision(entfilter_arg,
-                                                         *local_collision::obbfilter_lineseg_test(),
+                                                         *local_collision::obbfilter_lineseg_test,
                                                          nullptr);
                 cond[0] = array_lines[0].check_collision(entfilter_arg,
-                                                         *local_collision::obbfilter_lineseg_test(),
+                                                         *local_collision::obbfilter_lineseg_test,
                                                          nullptr);
 
                 static constexpr auto flt_87EEE4 = 0.050000001f;
@@ -2147,7 +2151,8 @@ float swing_inode::compute_ground_level_at_sweet_spot_position(const vector3d &a
                                                                const region *reg) {
     assert(reg != nullptr);
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         vector3d v1 = a1 - YVEC * a2;
 
         vector3d a5;
@@ -2156,8 +2161,8 @@ float swing_inode::compute_ground_level_at_sweet_spot_position(const vector3d &a
         float result;
         if (find_intersection(a1,
                               v1,
-                              *local_collision::entfilter_entity_no_capsules(),
-                              *local_collision::obbfilter_lineseg_test(),
+                              *local_collision::entfilter_entity_no_capsules,
+                              *local_collision::obbfilter_lineseg_test,
                               &a5,
                               &a6,
                               nullptr,
@@ -2170,8 +2175,14 @@ float swing_inode::compute_ground_level_at_sweet_spot_position(const vector3d &a
         }
         return result;
 
-    } else {
-        return (double) THISCALL(0x0044C280, this, &a1, a2, reg);
+    }
+    else
+    {
+        float (__fastcall *func)(void *, void *,
+                               const vector3d *a1,
+                               Float a2,
+                               const region *reg) = CAST(func, 0x0044C280);
+        return func(this, nullptr, &a1, a2, reg);
     }
 }
 
@@ -2746,6 +2757,11 @@ void swing_state_patch()
     }
 
     {
+        FUNC_ADDRESS(address, &ai::swing_state::_deactivate);
+        set_vfunc(0x008774D4, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &ai::swing_state::_frame_advance);
         set_vfunc(0x008774D8, address);
     }
@@ -2830,6 +2846,11 @@ void swing_inode_patch()
     {
         FUNC_ADDRESS(address, &ai::swing_inode::fire_new_web);
         REDIRECT(0x0047DE72, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &ai::swing_inode::_deactivate);
+        set_vfunc(0x0087DB58, address);
     }
 
     return;

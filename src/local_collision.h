@@ -18,7 +18,7 @@ struct intraframe_trajectory_t;
 namespace local_collision {
 
 struct closest_points_pair_t {
-    static inline Var<fixed_pool> pool{0x0};
+    static inline fixed_pool & pool = var<fixed_pool>(0x00922154);
 };
 
 struct intersection_list_t {
@@ -115,7 +115,7 @@ struct primitive_list_t {
 
     void * get_obb_node();
 
-    static inline Var<fixed_pool> pool{0x00922174};
+    static inline fixed_pool & pool = var<fixed_pool>(0x00922174);
 };
 
 bool test_line_intersection_ex(local_collision::primitive_list_t **a1,
@@ -163,29 +163,27 @@ extern bool collision_pair_matches_query_constraints(
         local_collision::entfilter_base &a3,
         local_collision::query_args_t &a4);
 
-inline Var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>> *>
-    entfilter_entity_no_capsules{0x00960068};
+inline auto & entfilter_entity_no_capsules = var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>> *>(0x00960068);
 
-inline Var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>>>
-    entfilter_entity_no_capsules_instance{0x00922474};
+inline auto & entfilter_entity_no_capsules_instance = var<entfilter<entfilter_AND<entfilter_ENTITY, entfilter_NO_CAPSULES>>>(0x00922474);
 
-inline Var<entfilter<entfilter_AND<entfilter_BLOCKS_BEAMS, entfilter_LINESEG_TEST>> *> entfilter_blocks_beams {0x00960060};
+inline auto & entfilter_blocks_beams = var<entfilter<entfilter_AND<entfilter_BLOCKS_BEAMS, entfilter_LINESEG_TEST>> *>(0x00960060);
 
 inline auto & entfilter_entity_collision = var<local_collision::entfilter_base *>(0x00960058);
 
-inline Var<entfilter_base *> entfilter_line_segment_camera_collision {0x00960070};
+inline entfilter_base *& entfilter_line_segment_camera_collision = var<entfilter_base *>(0x00960070);
 
-inline Var<entfilter_base *> entfilter_sphere_camera_collision {0x00960074};
+inline entfilter_base *& entfilter_sphere_camera_collision = var<entfilter_base *>(0x00960074);
 
-inline Var<obbfilter_base *> obbfilter_lineseg_test{0x00960064};
+inline obbfilter_base *& obbfilter_lineseg_test = var<obbfilter_base *>(0x00960064);
 
-inline Var<obbfilter<obbfilter_OBB_SPHERE_TEST> *> obbfilter_sphere_test {0x00960050};
+inline obbfilter<obbfilter_OBB_SPHERE_TEST> *& obbfilter_sphere_test = var<obbfilter<obbfilter_OBB_SPHERE_TEST> *>(0x00960050);
 
-inline Var<obbfilter_base *> obbfilter_accept_all {0x00960048};
+inline obbfilter_base *& obbfilter_accept_all = var<obbfilter_base *>(0x00960048);
 
-inline Var<entfilter_reject_all_t *> entfilter_reject_all{0x00960054};
+inline entfilter_reject_all_t *& entfilter_reject_all = var<entfilter_reject_all_t *>(0x00960054);
 
-inline Var<entfilter_accept_all_t *> entfilter_accept_all{0x0096004C};
+inline entfilter_accept_all_t *& entfilter_accept_all = var<entfilter_accept_all_t *>(0x0096004C);
 
 } // namespace local_collision
 

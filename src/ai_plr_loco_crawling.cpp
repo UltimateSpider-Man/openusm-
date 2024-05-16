@@ -125,8 +125,8 @@ line_info *check_exterior_transition(
         auto v20 = sub_48B6F0(v10, a5) * v19;
         surface_info().field_C = surface_info().field_0 + z_facing * v20;
         surface_info().check_collision(
-            *local_collision::entfilter_entity_no_capsules(),
-            *local_collision::obbfilter_lineseg_test(),
+            *local_collision::entfilter_entity_no_capsules,
+            *local_collision::obbfilter_lineseg_test,
             nullptr);
 
         if ( surface_info().collision ) {
@@ -144,8 +144,8 @@ line_info *check_exterior_transition(
         surface_info().field_C = surface_info().field_C - z_facing * v25;
 
         surface_info().check_collision(
-            *local_collision::entfilter_entity_no_capsules(),
-            *local_collision::obbfilter_lineseg_test(),
+            *local_collision::entfilter_entity_no_capsules,
+            *local_collision::obbfilter_lineseg_test,
             nullptr);
 
         auto line0_collision = [&]() -> bool {
@@ -153,8 +153,8 @@ line_info *check_exterior_transition(
             line0.field_0 = surface_info().field_0 + y_facing * (floor_offset + 0.1);
             line0.field_C = surface_info().field_0 - y_facing * 0.1f;
             line0.check_collision(
-                *local_collision::entfilter_entity_no_capsules(),
-                *local_collision::obbfilter_lineseg_test(),
+                *local_collision::entfilter_entity_no_capsules,
+                *local_collision::obbfilter_lineseg_test,
                 nullptr);
             return line0.collision;
         }();
@@ -172,8 +172,8 @@ line_info *check_exterior_transition(
                 line1.field_0 = surface_info().hit_pos + surface_info().hit_norm * 2;
                 line1.field_C = YVEC * 2 + line1.field_0;
                 line1.check_collision(
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     nullptr);
                 if ( line1.collision
                     || is_colinear(YVEC, the_actor->get_abs_po().get_y_facing(), 0.0099999998) )
@@ -227,8 +227,8 @@ line_info *check_exterior_transition(
             auto a3a = sub_48B710(v95, cond0);
             line3.field_C = line3.field_0 + v100.get_z_facing() * a3a;
             auto v40 = line3.check_collision(
-                        *local_collision::entfilter_entity_no_capsules(),
-                        *local_collision::obbfilter_lineseg_test(),
+                        *local_collision::entfilter_entity_no_capsules,
+                        *local_collision::obbfilter_lineseg_test,
                         nullptr);
             auto v93 = !v40;
             bool cond1 = v93;
@@ -240,8 +240,8 @@ line_info *check_exterior_transition(
                 auto a3b = sub_48B710(v38, cond0);
                 line3.field_C = line3.field_0 + v100.get_z_facing() * a3b;
                 v93 = !line3.check_collision(
-                                  *local_collision::entfilter_entity_no_capsules(),
-                                  *local_collision::obbfilter_lineseg_test(),
+                                  *local_collision::entfilter_entity_no_capsules,
+                                  *local_collision::obbfilter_lineseg_test,
                                   nullptr);
             }
 
@@ -259,8 +259,8 @@ line_info *check_exterior_transition(
 
             bool v47;
             if ( !line3.check_collision(
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     nullptr)
                 || is_noncrawlable_surface(line3) )
             {
@@ -274,8 +274,8 @@ line_info *check_exterior_transition(
                     line3.field_0 = surface_info().hit_norm * 0.1 + surface_info().hit_pos + v48;
                     line3.field_C = line3.field_0 - surface_info().hit_norm * 0.30000001;
                     v47 = line3.check_collision(
-                            *local_collision::entfilter_entity_no_capsules(),
-                            *local_collision::obbfilter_lineseg_test(),
+                            *local_collision::entfilter_entity_no_capsules,
+                            *local_collision::obbfilter_lineseg_test,
                             nullptr)
                     && !is_noncrawlable_surface(line3);
                 }
@@ -296,8 +296,8 @@ line_info *check_exterior_transition(
                 line3.field_0 = surface_info().hit_norm * 0.1 + surface_info().hit_pos + v52;
                 line3.field_C = line3.field_0 - surface_info().hit_norm * 0.89999998;
                 auto v55 = line3.check_collision(
-                                  *local_collision::entfilter_entity_no_capsules(),
-                                  *local_collision::obbfilter_lineseg_test(),
+                                  *local_collision::entfilter_entity_no_capsules,
+                                  *local_collision::obbfilter_lineseg_test,
                                   nullptr);
 
                 v88 = !v55;
@@ -307,8 +307,8 @@ line_info *check_exterior_transition(
                     cond1 = true;
                     line3.field_C = line3.field_0 - surface_info().hit_norm * 1.1f;
                     v93 = !line3.check_collision(
-                                     *local_collision::entfilter_entity_no_capsules(),
-                                     *local_collision::obbfilter_lineseg_test(),
+                                     *local_collision::entfilter_entity_no_capsules,
+                                     *local_collision::obbfilter_lineseg_test,
                                      nullptr);
                 }
             }
@@ -326,8 +326,8 @@ line_info *check_exterior_transition(
                 }
 
                 cond1 = !line3.check_collision(
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     nullptr);
 
             }
@@ -348,8 +348,8 @@ line_info *check_exterior_transition(
 
                 line3.field_C = line3.field_0 + v99.get_z_facing() * v95;
                 auto v61 = line3.check_collision(
-                       *local_collision::entfilter_entity_no_capsules(),
-                       *local_collision::obbfilter_lineseg_test(),
+                       *local_collision::entfilter_entity_no_capsules,
+                       *local_collision::obbfilter_lineseg_test,
                        nullptr);
                 cond1 = !v61;
                 if ( v61 && !cond0 ) {
@@ -367,8 +367,8 @@ line_info *check_exterior_transition(
 
                     line3.field_C = line3.field_0 + v100.get_z_facing() * v95;
                     cond1 = !line3.check_collision(
-                             *local_collision::entfilter_entity_no_capsules(),
-                             *local_collision::obbfilter_lineseg_test(),
+                             *local_collision::entfilter_entity_no_capsules,
+                             *local_collision::obbfilter_lineseg_test,
                              nullptr);
                 }
 

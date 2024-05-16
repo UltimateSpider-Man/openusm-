@@ -41,7 +41,8 @@ bool find_intersection(const vector3d &a1,
 {
     TRACE("find_intersection");
     
-    if constexpr (0) {
+    if constexpr (0)
+    {
         local_collision::query_args_t v23{};
 
         auto *v10 = local_collision::query_line_segment(a1, a2, a3, a4, v23);
@@ -90,14 +91,25 @@ bool find_intersection(const vector3d &a1,
         }
 
         for (auto *i = v10; i != nullptr; i = i->field_0) {
-            local_collision::primitive_list_t::pool().remove(i);
+            local_collision::primitive_list_t::pool.remove(i);
         }
 
         return v16;
 
-    } else {
-        return (
-            bool) CDECL_CALL(0x005C4DD0, &a1, &a2, &a3, &a4, point, normal, a7, a8, hit_obb, a10);
+    }
+    else
+    {
+        bool (*func)(const vector3d *a1,
+                       const vector3d *a2,
+                       const local_collision::entfilter_base *a3,
+                       const local_collision::obbfilter_base *a4,
+                       vector3d *point,
+                       vector3d *normal,
+                       region **a7,
+                       entity **a8,
+                       subdivision_node_obb_base **hit_obb,
+                       bool a10) = CAST(func, 0x005C4DD0);
+        return func(&a1, &a2, &a3, &a4, point, normal, a7, a8, hit_obb, a10);
     }
 }
 
@@ -384,8 +396,8 @@ bool sub_50D220(const vector3d &a1, const vector3d &a2, entity *a3)
     return !find_intersection(
         a1,
         a2,
-        *local_collision::entfilter_blocks_beams(),
-        *local_collision::obbfilter_lineseg_test(),
+        *local_collision::entfilter_blocks_beams,
+        *local_collision::obbfilter_lineseg_test,
         &point,
         &normal,
         nullptr,

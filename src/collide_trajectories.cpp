@@ -136,7 +136,7 @@ void roll_back_rotation_and_rel_capsule_if_tunnelled(intraframe_trajectory_t *tr
         }
 
         for (auto *v8 = v5; v8 != nullptr; v8 = v8->field_0) {
-            local_collision::primitive_list_t::pool().remove(v8);
+            local_collision::primitive_list_t::pool.remove(v8);
         }
     }
 }
@@ -188,7 +188,7 @@ local_collision::primitive_list_t *query_potential_collision_primitives(const ca
                 static local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_VALID_COLLISION_PAIR>> constraint_filter {};
                 
                 if ( local_collision::collision_pair_matches_query_constraints(a4->ent, v10, constraint_filter, v20) ) {
-                    auto *mem = local_collision::primitive_list_t::pool().allocate_new_block();
+                    auto *mem = local_collision::primitive_list_t::pool.allocate_new_block();
                     v11 = new (mem) local_collision::primitive_list_t {i->ent, i->field_13C};
                     v11->field_10 = i;
                 }
@@ -204,7 +204,7 @@ local_collision::primitive_list_t *query_potential_collision_primitives(const ca
         v18.center,
         v18.radius,
         entf_36027,
-        *local_collision::obbfilter_sphere_test(),
+        *local_collision::obbfilter_sphere_test,
         v17);
 
     local_collision::primitive_list_t *j = nullptr;

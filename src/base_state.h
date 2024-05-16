@@ -57,6 +57,8 @@ struct base_state : mash_virtual_base {
 
     /* virtual */ void deactivate(const mashed_state *);
 
+    void _deactivate(const mashed_state *) {}
+
     /* virtual */ state_trans_messages frame_advance(Float a2) /* = 0 */;
 
     /* virtual */ void get_info_node_list(info_node_desc_list &);

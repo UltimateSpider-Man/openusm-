@@ -118,7 +118,8 @@ void base_state::activate(ai_state_machine *the_state_machine,
     }
 }
 
-void base_state::deactivate(const mashed_state *a2) {
+void base_state::deactivate(const mashed_state *a2)
+{
     void (__fastcall *func)(base_state *, void *, const mashed_state *) = CAST(func, get_vfunc(m_vtbl, 0x1C));
     func(this, nullptr, a2);
 }

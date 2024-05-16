@@ -120,8 +120,8 @@ void game_camera::frame_advance(Float t)
                 && find_intersection(
                     this->field_11C,
                     a2,
-                    *local_collision::entfilter_line_segment_camera_collision(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_line_segment_camera_collision,
+                    *local_collision::obbfilter_lineseg_test,
                     &a5,
                     &a6,
                     nullptr,
@@ -150,8 +150,8 @@ void game_camera::frame_advance(Float t)
                 && find_intersection(
                     this->field_11C,
                     v24,
-                    *local_collision::entfilter_line_segment_camera_collision(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_line_segment_camera_collision,
+                    *local_collision::obbfilter_lineseg_test,
                     &a5,
                     &a6,
                     nullptr,

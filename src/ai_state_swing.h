@@ -98,7 +98,7 @@ struct swing_state : enhanced_state {
 
     //0x0044BB00
     //virtual
-    void deactivate(const ai::mashed_state *a1);
+    void _deactivate(const ai::mashed_state *a1);
 
     //0x0047DDD0
     /* virtual */ state_trans_messages _frame_advance(Float a2);

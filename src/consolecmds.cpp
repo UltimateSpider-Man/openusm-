@@ -1215,8 +1215,8 @@ bool SpawnCommand::process_cmd(const std::vector<std::string> &a2)
                 bool v30 = find_sphere_intersection(
                             pos,
                             0.5f,
-                            *local_collision::entfilter_accept_all(),
-                            *local_collision::obbfilter_sphere_test(),
+                            *local_collision::entfilter_accept_all,
+                            *local_collision::obbfilter_sphere_test,
                             &v65,
                             &v64,
                             nullptr,
@@ -1315,8 +1315,8 @@ bool SpawnXCommand::process_cmd(const std::vector<std::string> &a2)
         if ( find_sphere_intersection(
                 pos,
                 0.5,
-                *local_collision::entfilter_accept_all(),
-                *local_collision::obbfilter_sphere_test(),
+                *local_collision::entfilter_accept_all,
+                *local_collision::obbfilter_sphere_test,
                 &impact_pos,
                 &impact_normal,
                 nullptr,

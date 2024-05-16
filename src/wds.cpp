@@ -258,12 +258,13 @@ void zero_xz_velocity_for_effectively_standing_physical_interfaces() {
     CDECL_CALL(0x004D1A30);
 }
 
-int sub_A4B0D0() {
+int sub_A4B0D0()
+{
     assert(intraframe_trajectory_t::pool().is_empty());
 
-    assert(local_collision::closest_points_pair_t::pool().is_empty());
+    assert(local_collision::closest_points_pair_t::pool.is_empty());
 
-    assert(local_collision::primitive_list_t::pool().is_empty());
+    assert(local_collision::primitive_list_t::pool.is_empty());
 
     assert(intersected_trajectory_t::pool().is_empty());
 

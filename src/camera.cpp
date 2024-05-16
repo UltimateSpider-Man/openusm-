@@ -134,8 +134,8 @@ vector3d collide_with_world(
     {
         vector3d a5{};
         vector3d a6{};
-        auto *v13 = local_collision::obbfilter_lineseg_test();
-        auto *v12 = local_collision::entfilter_line_segment_camera_collision();
+        auto *v13 = local_collision::obbfilter_lineseg_test;
+        auto *v12 = local_collision::entfilter_line_segment_camera_collision;
         auto v6 = a3 + a1;
         if ( find_intersection(a3, v6, *v12, *v13, &a5, &a6, &a7, nullptr, nullptr, false) )
         {
@@ -157,8 +157,8 @@ vector3d collide_with_world(
         if ( find_sphere_intersection(
                 v25,
                 a2,
-                *local_collision::entfilter_sphere_camera_collision(),
-                *local_collision::obbfilter_sphere_test(),
+                *local_collision::entfilter_sphere_camera_collision,
+                *local_collision::obbfilter_sphere_test,
                 &impact_pos,
                 &impact_normal,
                 nullptr,

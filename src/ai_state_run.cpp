@@ -33,8 +33,10 @@ run_state::run_state(from_mash_in_place_constructor *a2) {
 
 string_hash fence_hop_grind_angle_cosine_id{to_hash("fence_hop_grind_angle_cosine")};
 
-bool run_state::check_for_fence_hop(Float a2, vector3d *a3) {
-    if constexpr (1) {
+bool run_state::check_for_fence_hop(Float a2, vector3d *a3)
+{
+    if constexpr (1)
+    {
         auto *act = this->get_actor();
 
         vector3d abs_pos = act->get_abs_position();
@@ -48,15 +50,17 @@ bool run_state::check_for_fence_hop(Float a2, vector3d *a3) {
 
         line_info v21{abs_pos, v20};
 
-        if (v21.check_collision(*local_collision::entfilter_entity_no_capsules(),
-                                *local_collision::obbfilter_lineseg_test(),
+        if (v21.check_collision(*local_collision::entfilter_entity_no_capsules,
+                                *local_collision::obbfilter_lineseg_test,
                                 nullptr)) {
             act->cancel_animated_movement(v21.hit_norm, 0.0f);
         }
 
         return false;
 
-    } else {
+    }
+    else
+    {
         return (bool) THISCALL(0x004696B0, this, a2, a3);
     }
 }

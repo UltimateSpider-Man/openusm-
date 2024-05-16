@@ -293,8 +293,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
         bool v92 = false;
         this->field_1C.sub_48B410(100.0f);
         if ( this->field_1C.check_collision(
-            *local_collision::entfilter_entity_no_capsules(),
-            *local_collision::obbfilter_lineseg_test(),
+            *local_collision::entfilter_entity_no_capsules,
+            *local_collision::obbfilter_lineseg_test,
             nullptr) )
         {
             bool v13 = ( (!is_noncrawlable_surface(this->field_1C) || this->field_1C.hit_norm[1] > 0.73242188f) 
@@ -316,8 +316,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
             this->field_1C.field_C = v21;
             this->field_1C.sub_48B410(100.0f);
             if ( this->field_1C.check_collision(
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     nullptr) )
             {
                 auto abs_pos = v2->get_abs_position();
@@ -347,8 +347,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
             this->field_1C.field_0 = v37;
             this->field_1C.sub_48B410(100.0f);
             if ( !this->field_1C.check_collision(
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     nullptr)
                 || is_noncrawlable_surface(this->field_1C)
                 || !this->correct_zip_target_pos(&this->field_1C) )
@@ -367,8 +367,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
                 this->field_1C.field_0 = this->field_1C.field_C + v49;
                 this->field_1C.sub_48B410(100.0f);
                 if ( this->field_1C.check_collision(
-                        *local_collision::entfilter_entity_no_capsules(),
-                        *local_collision::obbfilter_lineseg_test(),
+                        *local_collision::entfilter_entity_no_capsules,
+                        *local_collision::obbfilter_lineseg_test,
                         nullptr)
                         && !is_noncrawlable_surface(this->field_1C) )
                 {
@@ -402,8 +402,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
                         this->field_1C.field_0 = this->field_1C.field_C + v59;
                         this->field_1C.sub_48B410(100.0f);
                         if ( this->field_1C.check_collision(
-                                *local_collision::entfilter_entity_no_capsules(),
-                                *local_collision::obbfilter_lineseg_test(),
+                                *local_collision::entfilter_entity_no_capsules,
+                                *local_collision::obbfilter_lineseg_test,
                                 nullptr) )
                         {
                             auto *v62 = this->get_actor();
@@ -432,8 +432,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
                             v97.field_C = v97.field_0 + v68;
                             v97.sub_48B410(100.0);
                             v89 = !v97.check_collision(
-                                    *local_collision::entfilter_entity_no_capsules(),
-                                    *local_collision::obbfilter_lineseg_test(),
+                                    *local_collision::entfilter_entity_no_capsules,
+                                    *local_collision::obbfilter_lineseg_test,
                                     nullptr);
                         }
                     }
@@ -466,7 +466,7 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
                 v76->get_abs_position(),
                 v75,
                 *local_collision::entfilter_entity_collision,
-                *local_collision::obbfilter_lineseg_test(),
+                *local_collision::obbfilter_lineseg_test,
                 &a5,
                 &a6,
                 nullptr,
@@ -489,8 +489,8 @@ bool web_zip_inode::find_zip_anchor_from_crawl()
             this->field_1C.field_C = v84;
             this->field_1C.sub_48B410(100.0f);
             this->field_1C.check_collision(
-                *local_collision::entfilter_entity_no_capsules(),
-                *local_collision::obbfilter_lineseg_test(),
+                *local_collision::entfilter_entity_no_capsules,
+                *local_collision::obbfilter_lineseg_test,
                 nullptr);
 
             return this->field_1C.collision && !is_noncrawlable_surface(this->field_1C);
@@ -563,7 +563,7 @@ void web_zip_inode::process_zip(Float a2)
                     if (v7 == 1 || v7 == 3) {
                         swing_inode::do_web_splat(this->field_1C.hit_pos,
                                                   this->field_1C.hit_norm,
-                                                  *local_collision::entfilter_entity_no_capsules());
+                                                  *local_collision::entfilter_entity_no_capsules);
                     }
 
                     this->field_7C = 1;

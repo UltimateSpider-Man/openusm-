@@ -108,8 +108,8 @@ bool swing_anchor_finder::accept_swing_point(const quick_anchor_info &info,
 
             vector3d v29{info.m_position[0], a5, info.m_position[2]};
 
-            auto *v27 = local_collision::obbfilter_lineseg_test();
-            auto *v26 = local_collision::entfilter_reject_all();
+            auto *v27 = local_collision::obbfilter_lineseg_test;
+            auto *v26 = local_collision::entfilter_reject_all;
 
             normal *= 0.2f;
 
@@ -231,8 +231,8 @@ bool swing_anchor_finder::find_best_offset_anchor(entity *self,
         if ( find_intersection(
                     sweet_cone.m_position,
                     _a2a,
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     &a5a,
                     &a6,
                     nullptr,
@@ -265,7 +265,7 @@ bool swing_anchor_finder::find_best_offset_anchor(entity *self,
 
         auto v65 = v90;
         auto *a7 = local_collision::query_line_segment(occluder_query_min,
-           occluder_query_max, ent_ai_los_filter, *local_collision::obbfilter_accept_all(), v65);
+           occluder_query_max, ent_ai_los_filter, *local_collision::obbfilter_accept_all, v65);
         sub_464850(&a7);
 
         auto *mem = scratchpad_stack::alloc(4192);
@@ -296,7 +296,7 @@ bool swing_anchor_finder::find_best_offset_anchor(entity *self,
 
             local_collision::query_args_t v65 {};
             auto *v75 = local_collision::query_line_segment(min_query_extent,
-                    max_query_extent, *local_collision::entfilter_reject_all(), v92, v65);
+                    max_query_extent, *local_collision::entfilter_reject_all, v92, v65);
             fixed_vector<quick_anchor_info, 100> v98 {};
 
             auto *mem = scratchpad_stack::alloc(sizeof(quick_anchor_container_t));

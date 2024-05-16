@@ -170,8 +170,8 @@ void hero_inode::_frame_advance(Float a2)
         vector3d v20, v21;
         if (find_intersection(v18,
                               v19,
-                              *local_collision::entfilter_entity_no_capsules(),
-                              *local_collision::obbfilter_lineseg_test(),
+                              *local_collision::entfilter_entity_no_capsules,
+                              *local_collision::obbfilter_lineseg_test,
                               &v20,
                               &v21,
                               nullptr,
@@ -261,13 +261,14 @@ bool hero_inode::ought_to_stick_to_wall(line_info &a2, bool a3)
         vector3d a5;
         if (!find_sphere_intersection(a2.field_0,
                                       2.0,
-                                      *local_collision::entfilter_entity_no_capsules(),
-                                      *local_collision::obbfilter_sphere_test(),
+                                      *local_collision::entfilter_entity_no_capsules,
+                                      *local_collision::obbfilter_sphere_test,
                                       &a1,
                                       &a5,
                                       &v20,
                                       &v21) ||
-            !glass_house_manager::is_point_in_glass_house(a1) || a5[1] > 0.73242188f) {
+            !glass_house_manager::is_point_in_glass_house(a1) || a5[1] > 0.73242188f)
+        {
             return false;
         }
 
@@ -580,8 +581,8 @@ bool hero_inode::compute_curr_ground_plane(force_recompute_enum a2, Float a3)
 
             a1.field_C = a1.field_0 + v42;
             a1.check_collision(
-                *local_collision::entfilter_entity_no_capsules(),
-                *local_collision::obbfilter_lineseg_test(),
+                *local_collision::entfilter_entity_no_capsules,
+                *local_collision::obbfilter_lineseg_test,
                 nullptr);
             if ( !a1.collision || is_noncrawlable_surface(a1) )
             {
@@ -607,8 +608,8 @@ bool hero_inode::compute_curr_ground_plane(force_recompute_enum a2, Float a3)
                 vector3d v52 = -1.0f * (v31 * 2.5f);
                 a1.field_C += v52;
                 if ( !a1.check_collision(
-                        *local_collision::entfilter_entity_no_capsules(),
-                        *local_collision::obbfilter_lineseg_test(),
+                        *local_collision::entfilter_entity_no_capsules,
+                        *local_collision::obbfilter_lineseg_test,
                         nullptr)
                         || is_noncrawlable_surface(a1) )
                 {
@@ -717,8 +718,8 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
     auto check1 = find_intersection(
                     a1,
                     v25,
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     &a5,
                     &a6,
                     nullptr,
@@ -740,8 +741,8 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
     auto check2 = find_intersection(
                     a1,
                     v25,
-                    *local_collision::entfilter_entity_no_capsules(),
-                    *local_collision::obbfilter_lineseg_test(),
+                    *local_collision::entfilter_entity_no_capsules,
+                    *local_collision::obbfilter_lineseg_test,
                     &v29,
                     &v33,
                     nullptr,
@@ -760,8 +761,8 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
             && find_intersection(
                         v24,
                         v26,
-                        *local_collision::entfilter_entity_no_capsules(),
-                        *local_collision::obbfilter_lineseg_test(),
+                        *local_collision::entfilter_entity_no_capsules,
+                        *local_collision::obbfilter_lineseg_test,
                         &a5,
                         &a6,
                         nullptr,
@@ -778,8 +779,8 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
             && find_intersection(
                 v24,
                 v26,
-                *local_collision::entfilter_entity_no_capsules(),
-                *local_collision::obbfilter_lineseg_test(),
+                *local_collision::entfilter_entity_no_capsules,
+                *local_collision::obbfilter_lineseg_test,
                 &v29,
                 &v33,
                 nullptr,
