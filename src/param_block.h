@@ -161,7 +161,7 @@ struct param_block {
     int get_optional_pb_int(string_hash a2, const int &a3, bool *a4) const;
 
     //0x006CDF10
-    float get_optional_pb_float(string_hash a2, const Float &a3, bool *a4) const;
+    float get_optional_pb_float(string_hash a2, const float &a3, bool *a4) const;
 };
 } // namespace ai
 

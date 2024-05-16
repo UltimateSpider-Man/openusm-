@@ -334,7 +334,8 @@ int param_block::get_optional_pb_int(string_hash a2, const int &a3, bool *a4) co
     return result;
 }
 
-float param_block::get_optional_pb_float(string_hash a2, const Float &a3, bool *a4) const {
+float param_block::get_optional_pb_float(string_hash a2, const float &a3, bool *a4) const
+{
     if (a4 != nullptr) {
         *a4 = false;
     }

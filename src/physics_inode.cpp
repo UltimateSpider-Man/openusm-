@@ -193,31 +193,23 @@ void physics_inode::cleanup_from_swing()
 {
     if constexpr (1)
     {
-        auto &v2 = this->field_8->field_50;
+        const auto &pb = this->field_8->field_50;
 
-        auto v16 = v2.get_optional_pb_float(physics_normal_drag_id, g_normal_air_res, nullptr);
+        auto v16 = pb.get_optional_pb_float(physics_normal_drag_id, g_normal_air_res, nullptr);
 
-        auto &v3 = this->field_8->field_50;
-
-        auto v17 = v3.get_optional_pb_float(physics_normal_drag_min_speed_id,
+        auto v17 = pb.get_optional_pb_float(physics_normal_drag_min_speed_id,
                                             g_normal_air_res_min_speed,
                                             nullptr);
 
-        auto &v4 = this->field_8->field_50;
-
-        auto v18 = v4.get_optional_pb_float(physics_normal_drag_horz_scale_id,
+        auto v18 = pb.get_optional_pb_float(physics_normal_drag_horz_scale_id,
                                             g_normal_air_res_horz_scale,
                                             nullptr);
 
-        auto &v5 = this->field_8->field_50;
-
-        auto v19 = v5.get_optional_pb_float(physics_normal_drag_up_scale_id,
+        auto v19 = pb.get_optional_pb_float(physics_normal_drag_up_scale_id,
                                             g_normal_air_res_up_scale,
                                             nullptr);
 
-        auto &v6 = this->field_8->field_50;
-
-        auto v20 = v6.get_optional_pb_float(physics_normal_drag_down_scale_id,
+        auto v20 = pb.get_optional_pb_float(physics_normal_drag_down_scale_id,
                                             g_normal_air_res_down_scale,
                                             nullptr);
 
@@ -232,13 +224,14 @@ void physics_inode::cleanup_from_swing()
 
         phys_ifc->field_16C = v20;
 
-        auto &v12 = this->field_8->field_50;
 
-        this->field_1C->m_gravity_multiplier = v12.get_optional_pb_float(physics_gravity_normal_id,
+        this->field_1C->m_gravity_multiplier = pb.get_optional_pb_float(physics_gravity_normal_id,
                                                                          g_normal_gravity,
                                                                          nullptr);
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00694D80, this);
     }
 }
