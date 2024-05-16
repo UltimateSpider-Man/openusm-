@@ -51,17 +51,15 @@ void sub_86B3C0() {
     CDECL_CALL(0x0086B3C0);
 }
 
-unsigned int state_graph::get_size_memory_block() const {
-    auto v1 = this->my_states.size();
+unsigned int state_graph::get_size_memory_block() const
+{
+    int size = this->my_states.size();
     auto result = 0;
-    if (v1 > 0) {
-        do {
-            if (result < 24) {
-                result = 24;
-            }
-
-            --v1;
-        } while (v1);
+    for ( int i = 0; i < size; ++i )
+    {
+        if (result < 24) {
+            result = 24;
+        }
     }
 
     return result;
@@ -71,8 +69,12 @@ resource_key state_graph::sub_6B68F0() const {
     return this->field_0;
 }
 
-mashed_state *state_graph::find_state(string_hash a2) const {
-    if constexpr (1) {
+mashed_state *state_graph::find_state(string_hash a2) const
+{
+    TRACE("ai::state_graph::find_state", a2.to_string());
+
+    if constexpr (1)
+    {
         static mashed_state searcher{};
 
         searcher.field_C = a2;
