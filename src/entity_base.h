@@ -31,14 +31,12 @@ namespace ai {
 struct ai_core;
 }
 
-inline constexpr auto EFLAG_EXT_SIGNALLER_ONLY = 0x20000u;
-
-inline constexpr auto EFLAG_EXT_DOES_NOT_MANAGE_ABS_PO = 0x40000000u;
-
 enum entity_flag_t {
 };
 
 enum entity_ext_flag_t {
+    EFLAG_EXT_SIGNALLER_ONLY = 0x20000u,
+    EFLAG_EXT_DOES_NOT_MANAGE_ABS_PO = 0x40000000u,
 };
 
 struct entity_base : entity_base_vtable {
@@ -311,6 +309,8 @@ struct entity_base : entity_base_vtable {
     bool is_dynamic() const;
 
     bool is_walkable() const;
+
+    bool playing_scene_anim() const;
 
     bool manage_abs_po();
 

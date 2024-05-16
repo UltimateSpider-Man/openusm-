@@ -5,7 +5,10 @@
 #include "float.hpp"
 #include "mstring.h"
 #include "string_hash.h"
+#include "variable.h"
 #include "vector3d.h"
+
+#include <vector.hpp>
 
 struct actor;
 struct biped_system;
@@ -42,7 +45,6 @@ struct physical_interface {
     vector3d field_5C;
     vector3d field_68;
     vector3d field_74;
-
     int field_80;
     vhandle_type<entity, vhandle_type<signaller, entity_base_vhandle>> field_84;
     string_hash field_88;
@@ -112,9 +114,12 @@ struct physical_interface {
 
     pendulum *get_pendulum(int num);
 
-    bool is_flag(uint32_t a2) const
-    {
+    bool is_flag(uint32_t a2) const {
         return (a2 & this->field_C) != 0;
+    }
+
+    actor * get_actor() {
+        return this->field_4;
     }
 
     bool is_enabled() const;
@@ -227,6 +232,8 @@ struct physical_interface {
 
     //0x004BDEB0
     static void clear_static_lists();
+
+    static inline auto & all_phys_interfaces = var<_std::vector<physical_interface *> *>(0x0095A6B0);
 
     static std::reference_wrapper<int[512]> rotators ;
     static int & rotators_num;

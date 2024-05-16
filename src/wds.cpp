@@ -254,8 +254,44 @@ void world_dynamics_system::advance_entity_animations(Float a3) {
     }
 }
 
-void zero_xz_velocity_for_effectively_standing_physical_interfaces() {
-    CDECL_CALL(0x004D1A30);
+void zero_xz_velocity_for_effectively_standing_physical_interfaces()
+{
+    TRACE("zero_xz_velocity_for_effectively_standing_physical_interfaces");
+
+    if constexpr (1)
+    {
+        if ( physical_interface::all_phys_interfaces == nullptr || physical_interface::all_phys_interfaces->empty() )
+        {
+            return;
+        }
+
+        for ( auto &v3 : (*physical_interface::all_phys_interfaces) )
+        {
+            auto act = v3->get_actor();
+            if ( !act->playing_scene_anim() && !act->is_in_limbo() )
+            {
+                if ( v3->is_effectively_standing() )
+                {
+                    if ( !v3->is_biped_physics_running() )
+                    {
+                        if ( !v3->is_prop_physics_running() )
+                        {
+                            vector3d vel = v3->get_velocity();
+
+                            vel[2] = 0.0;
+                            vel[0] = 0.0;
+
+                            v3->set_velocity(vel, false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        CDECL_CALL(0x004D1A30);
+    }
 }
 
 int sub_A4B0D0()
@@ -1948,6 +1984,8 @@ int get_hero_type_helper()
 
 void world_dynamics_system_patch()
 {
+    REDIRECT(0x005584BD, zero_xz_velocity_for_effectively_standing_physical_interfaces);
+
     {
         FUNC_ADDRESS(address, &world_dynamics_system::add_anim_ctrl);
         REDIRECT(0x0049BD38, address);

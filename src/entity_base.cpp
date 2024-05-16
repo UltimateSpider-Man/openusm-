@@ -1300,13 +1300,16 @@ bool entity_base::is_ext_flagged(uint32_t a2) const {
     return (a2 & this->field_8) != 0;
 }
 
-bool entity_base::is_flagged_in_the_moved_list() const
-{
+bool entity_base::is_flagged_in_the_moved_list() const {
     return this->is_ext_flagged(0x800000u);
 }
 
 bool entity_base::is_dynamic() const {
     return this->is_ext_flagged(0x80000000);
+}
+
+bool entity_base::playing_scene_anim() const {
+    return this->is_ext_flagged(0x40000);
 }
 
 bool entity_base::manage_abs_po() {
