@@ -65,10 +65,6 @@ unsigned int state_graph::get_size_memory_block() const
     return result;
 }
 
-resource_key state_graph::sub_6B68F0() const {
-    return this->field_0;
-}
-
 mashed_state *state_graph::find_state(string_hash a2) const
 {
     TRACE("ai::state_graph::find_state", a2.to_string());

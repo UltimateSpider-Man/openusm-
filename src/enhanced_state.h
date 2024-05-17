@@ -25,7 +25,7 @@ struct enhanced_state : base_state {
 
     float get_timeout_timer();
 
-    inline bool is_default_transition_state() {
+    bool is_default_transition_state() const {
         return this->my_mashed_state == nullptr;
     }
 
@@ -46,22 +46,22 @@ struct enhanced_state : base_state {
     /* virtual */ state_trans_action check_transition(Float a3) /* override */;
 
     //0x006D34F0
-    /* virtual */ state_trans_action process_message(Float a3, state_trans_messages a4);
+    /* virtual */ state_trans_action process_message(Float a3, state_trans_messages a4) const;
 
     //0x0043A040
     //virtual
-    [[nodiscard]] state_trans_action get_default_return_code();
+    [[nodiscard]] state_trans_action get_default_return_code() const;
 
-    /* virtual */ state_trans_action process_exit_message(Float a3, state_trans_messages the_msg);
+    /* virtual */ state_trans_action process_exit_message(Float a3, state_trans_messages the_msg) const;
 
     state_trans_action state_exit(string_hash a3,
                                   string_hash a4,
                                   state_trans_messages a5,
-                                  state_trans_action a6);
+                                  state_trans_action a6) const;
 
     ai::state_trans_action exit_layer(string_hash a3,
                                       state_trans_messages a4,
-                                      state_trans_action a5);
+                                      state_trans_action a5) const;
 
     static inline Var<string_hash[1]> timeout_hashes{0x0096CD28};
 

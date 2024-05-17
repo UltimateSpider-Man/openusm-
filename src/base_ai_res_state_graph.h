@@ -25,7 +25,9 @@ struct state_graph {
 
     unsigned int get_size_memory_block() const;
 
-    resource_key sub_6B68F0() const;
+    resource_key get_name() const {
+        return this->field_0;
+    }
 
     //0x006D8480
     mashed_state *find_state(string_hash a2) const;

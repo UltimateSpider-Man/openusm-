@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.12)
 
 include(cmake/i686-pc-mingw32.cmake)
 
@@ -226,7 +226,7 @@ target_compile_options(ngl_dx
 
 target_include_directories(ngl_dx PUBLIC "./src/ngl/include/dx")
 target_include_directories(ngl_dx PUBLIC "./src/ngl/include/")
-target_link_libraries(ngl_dx PUBLIC utility variables)
+target_link_libraries(ngl_dx PUBLIC psapi utility variables)
 
 file(GLOB_RECURSE SRC_NGL_SHADERS "./src/ngl/shaders/*.cpp")
 add_library(ngl_shaders ${SRC_NGL_SHADERS})

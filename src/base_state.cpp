@@ -86,7 +86,8 @@ void base_state::activate(ai_state_machine *the_state_machine,
                           const mashed_state *a4,
                           const param_block *a5,
                           base_state::activate_flag_e a6) {
-    if constexpr (0) {
+    if constexpr (0)
+    {
         this->field_4 = a6;
         this->field_C = the_state_machine;
         this->my_mashed_state = a3;
@@ -114,8 +115,9 @@ void base_state::activate(ai_state_machine *the_state_machine,
                 }
             }
         }
-    } else {
-
+    }
+    else
+    {
         void (__fastcall *func)(void *,
                                     int,
                                     ai_state_machine *the_state_machine,

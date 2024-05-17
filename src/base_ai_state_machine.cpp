@@ -52,30 +52,36 @@ ai_state_machine::ai_state_machine(ai::ai_core *a2, const ai::state_graph *a3, s
     this->field_34 = true;
 }
 
-void ai_state_machine::advance_curr_state(Float a2, bool a3) {
+void ai_state_machine::advance_curr_state(Float a2, bool a3)
+{
     TRACE("ai::ai_state_machine::advance_curr_state");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         assert(my_curr_state != nullptr);
 
-        state_trans_messages v4 {TRANS_TOTAL_MSGS};
+        state_trans_messages the_msg {TRANS_TOTAL_MSGS};
 
         if (!a3 || this->my_curr_state->is_flag_set(mashed_state::IS_INTERRUPT_STATE)) {
             printf("frame_advance: 0x%08X\n", this->my_curr_state->m_vtbl);
-            v4 = this->my_curr_state->frame_advance(a2);
+            the_msg = this->my_curr_state->frame_advance(a2);
         }
 
-        if (v4 == TRANS_TOTAL_MSGS) {
+        if (the_msg == TRANS_TOTAL_MSGS)
+        {
             if (this->my_curr_mode != 2) {
                 this->process_transition(a2);
             }
-        } else {
-            this->process_transition_message(a2, v4);
+        }
+        else
+        {
+            this->process_transition_message(a2, the_msg);
         }
 
         assert(my_curr_state != nullptr);
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x0069F870, this, a2, a3);
     }
 }
@@ -86,6 +92,7 @@ state_trans_action ai_state_machine::check_trans_on_interrupt(Float a3, const st
 
     if (a4.the_action != 4 && this->field_34)
     {
+        sp_log("%s", this->get_name().get_platform_string(3).c_str());
         auto &v7 = this->m_state_graph->field_20;
         for (auto *state : v7)
         {
@@ -177,15 +184,21 @@ state_trans_action ai_state_machine::process_msg_on_interrupt(
         state_trans_messages a4,
         const state_trans_action &a5)
 {
+    TRACE("ai::ai_state_machine::process_msg_on_interrupt");
 
-    if constexpr (0)
+    if constexpr (1)
     {
-        if ( a5.the_action != 4
-            && this->field_34)
+        if ( a5.the_action != 4 && this->field_34)
         {
+            sp_log("%s", this->get_name().get_platform_string(3).c_str());
             for ( auto &state : this->m_state_graph->field_20 )
             {
-                state->activate(this, 0, 0, 0, (base_state::activate_flag_e)1);
+                state->activate(this,
+                            nullptr,
+                            nullptr,
+                            nullptr,
+                            static_cast<base_state::activate_flag_e>(1));
+
                 auto v14 = state->process_message(a3, a4);
                 state->deactivate(nullptr);
 
@@ -367,7 +380,7 @@ string_hash ai_state_machine::get_initial_state_id() const
 {
     if constexpr (0)
     {
-        return this->m_state_graph->field_1C->get_name();
+        return this->m_state_graph->get_initial_state()->get_name();
     }
     else
     {
@@ -543,10 +556,8 @@ bool ai_state_machine::transition_state(string_hash arg0, const param_block *a3)
     }
 }
 
-resource_key ai_state_machine::get_name() const
-{
-    TRACE("ai::ai_state_machine::get_name");
-    return this->m_state_graph->sub_6B68F0();
+resource_key ai_state_machine::get_name() const {
+    return this->m_state_graph->get_name();
 }
 
 void ai_state_machine::add_as_child(ai_state_machine *a2)
