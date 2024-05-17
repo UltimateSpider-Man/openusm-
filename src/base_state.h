@@ -69,14 +69,19 @@ struct base_state : mash_virtual_base {
 
     /* virtual */ void get_state_graph_list(state_graph_list &);
 
+    //virtual
     state_trans_action check_transition(Float a3) /* = 0 */;
+
+    //virtual
+    state_trans_action process_message(Float a3,
+                    state_trans_messages the_msg) const /* = 0 */;
 
     //0x0043C5E0
     //virtual
-    bool is_subclass_of(mash::virtual_types_enum a1);
+    bool is_subclass_of(mash::virtual_types_enum a1) const;
 
     //0x006BD940
-    uint32_t get_virtual_type_enum();
+    uint32_t get_virtual_type_enum() const;
 
     int get_mash_sizeof();
 };

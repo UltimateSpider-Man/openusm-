@@ -174,12 +174,28 @@ void ai_state_machine::process_transition_message(Float a2, state_trans_messages
 
 state_trans_action ai_state_machine::process_msg_on_interrupt(
         Float a3,
-        int a4,
-        const ai::state_trans_action &a5)
+        state_trans_messages a4,
+        const state_trans_action &a5)
 {
 
     if constexpr (0)
     {
+        if ( a5.the_action != 4
+            && this->field_34)
+        {
+            for ( auto &state : this->m_state_graph->field_20 )
+            {
+                state->activate(this, 0, 0, 0, (base_state::activate_flag_e)1);
+                auto v14 = state->process_message(a3, a4);
+                state->deactivate(nullptr);
+
+                if ( !v14.is_default() ) {
+                    return v14;
+                }
+            }
+        }
+
+        return a5;
     }
     else
     {
@@ -189,21 +205,21 @@ state_trans_action ai_state_machine::process_msg_on_interrupt(
     }
 }
 
-void ai_state_machine::process_mode(Float a2, bool a3) {
+void ai_state_machine::process_mode(Float a2, bool a3)
+{
     TRACE("ai::ai_state_machine::process_mode");
 
-    if constexpr (1) {
+    if constexpr (1)
+    {
         base_state *v9;
 
         printf("this->my_curr_mode = %d\n", this->my_curr_mode);
         switch (this->my_curr_mode) {
         case PRE_TEST: {
-            mashed_state *initial_state;
-            if (this->field_30.source_hash_code == string_hash{}) {
-                initial_state = this->m_state_graph->field_1C;
-            } else {
-                initial_state = this->m_state_graph->find_state(this->field_30);
-            }
+            mashed_state *initial_state = (this->field_30.source_hash_code == string_hash{}
+                                            ? this->m_state_graph->get_initial_state()
+                                            : this->m_state_graph->find_state(this->field_30)
+                                            );
 
             assert(initial_state != nullptr &&
                    "We need to find the initial state, not finding it would be bad ");
@@ -211,13 +227,13 @@ void ai_state_machine::process_mode(Float a2, bool a3) {
             this->field_30.source_hash_code = 0;
             auto *v6 = static_cast<base_state *>(
                 mash_virtual_base::create_subclass_by_enum(initial_state->field_14));
-            auto *v7 = this->m_state_graph;
 
             this->my_curr_state = v6;
 
             assert(this->my_curr_state != nullptr);
 
-            v6->activate(this, v7->field_1C, nullptr, nullptr, static_cast<base_state::activate_flag_e>(0));
+            auto *v7 = this->m_state_graph->get_initial_state();
+            v6->activate(this, v7, nullptr, nullptr, static_cast<base_state::activate_flag_e>(0));
 
             assert(!my_curr_state->is_flag_set(mashed_state::IS_INTERRUPT_STATE));
             this->my_curr_mode = static_cast<decltype(my_curr_mode)>(1);
@@ -370,6 +386,27 @@ void ai_state_machine::external_request_exit()
     }
 }
 
+bool ai_state_machine::has_default_transition(
+        mash::virtual_types_enum a2,
+        bool a3) const
+{
+    for ( auto &state : this->m_state_graph->field_20 )
+    {
+        if ( state->get_virtual_type_enum() == a2 ) {
+            return true;
+        }
+
+        if ( a3 )
+        {
+            if (state->is_or_is_subclass_of(a2) ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool ai_state_machine::has_state(string_hash a2) const
 {
     return this->m_state_graph->find_state(a2) != nullptr;
@@ -514,10 +551,18 @@ resource_key ai_state_machine::get_name() const
 
 void ai_state_machine::add_as_child(ai_state_machine *a2)
 {
-    THISCALL(0x006A1530, this, a2);
+    if constexpr (0)
+    {
+        this->field_1C.push_back(a2);
+        a2->my_parent = this;
+    }
+    else
+    {
+        THISCALL(0x006A1530, this, a2);
+    }
 }
 
-state_trans_action ai_state_machine::check_keyword_overrides(const state_trans_action &a3)
+state_trans_action ai_state_machine::check_keyword_overrides(const state_trans_action &a3) const
 {
     TRACE("ai_state_machine::check_keyword_overrides");
 

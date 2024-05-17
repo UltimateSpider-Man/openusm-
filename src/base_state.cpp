@@ -37,7 +37,7 @@ ai_core *base_state::get_core() {
     return this->field_14;
 }
 
-bool base_state::is_subclass_of(mash::virtual_types_enum a1) {
+bool base_state::is_subclass_of(mash::virtual_types_enum a1) const {
     return mash_virtual_base::get_virtual_type_enum() == a1;
 }
 
@@ -47,7 +47,13 @@ bool base_state::is_flag_set(int a2) const {
     return mashed_state->is_flag_set(a2);
 }
 
-state_trans_action base_state::check_transition(Float a3) {
+state_trans_messages base_state::frame_advance(Float a2) {
+    state_trans_messages (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x20));
+    return func(this, nullptr, a2);
+}
+
+state_trans_action base_state::check_transition(Float a3)
+{
     void (__fastcall *func)(base_state *, void *, state_trans_action *, Float) = CAST(func, get_vfunc(m_vtbl, 0x2C));
 
     state_trans_action action;
@@ -56,9 +62,14 @@ state_trans_action base_state::check_transition(Float a3) {
     return action;
 }
 
-state_trans_messages base_state::frame_advance(Float a2) {
-    state_trans_messages (__fastcall *func)(void *, void *, Float) = CAST(func, get_vfunc(m_vtbl, 0x20));
-    return func(this, nullptr, a2);
+state_trans_action base_state::process_message(Float a3, state_trans_messages the_msg) const
+{
+    void (__fastcall *func)(const base_state *, void *, state_trans_action *, Float, state_trans_messages) = CAST(func, get_vfunc(m_vtbl, 0x30));
+
+    state_trans_action action;
+    func(this, nullptr, &action, a3, the_msg);
+
+    return action;
 }
 
 void base_state::get_info_node_list(info_node_desc_list &) {}
@@ -124,7 +135,7 @@ void base_state::deactivate(const mashed_state *a2)
     func(this, nullptr, a2);
 }
 
-uint32_t base_state::get_virtual_type_enum() {
+uint32_t base_state::get_virtual_type_enum() const {
     return 567;
 }
 

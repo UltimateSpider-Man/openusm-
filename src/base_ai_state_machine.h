@@ -1,6 +1,7 @@
 #pragma once
 
 #include "float.hpp"
+#include "mash_virtual_base.h"
 #include "state_trans_messages.h"
 #include "string_hash.h"
 
@@ -68,8 +69,12 @@ struct ai_state_machine {
 
     state_trans_action process_msg_on_interrupt(
         Float a3,
-        int a4,
+        state_trans_messages a4,
         const ai::state_trans_action &a5);
+
+    bool has_default_transition(
+                        mash::virtual_types_enum a2,
+                        bool a3) const;
 
     //0x00688100
     bool has_state(string_hash a2) const;
@@ -81,7 +86,7 @@ struct ai_state_machine {
     bool transition_state(string_hash arg0, const param_block *a3);
 
     //0x0068FD60
-    [[nodiscard]] state_trans_action check_keyword_overrides(const state_trans_action &a3);
+    [[nodiscard]] state_trans_action check_keyword_overrides(const state_trans_action &a3) const;
 
     //0x006880E0
     string_hash get_initial_state_id() const;
@@ -92,11 +97,11 @@ struct ai_state_machine {
     //0x006A1530
     void add_as_child(ai_state_machine *a2);
 
-    inline auto *get_prev_mashed_state() {
+    auto * get_prev_mashed_state() const {
         return this->field_14;
     }
 
-    inline auto *get_curr_state() {
+    auto * get_curr_state() const {
         return this->my_curr_state;
     }
 

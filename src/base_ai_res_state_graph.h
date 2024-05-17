@@ -15,6 +15,10 @@ struct state_graph {
 
     state_graph();
 
+    mashed_state * get_initial_state() const {
+        return this->field_1C;
+    }
+
     void destruct_mashed_class();
 
     void unmash(mash_info_struct *a1, void *a3);

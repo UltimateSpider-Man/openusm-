@@ -28,12 +28,12 @@ struct mash_virtual_base {
     ~mash_virtual_base() = default;
 
     //0x0041F840
-    uint32_t get_virtual_type_enum();
+    uint32_t get_virtual_type_enum() const;
 
-    bool is_subclass_of(mash::virtual_types_enum);
+    bool is_subclass_of(mash::virtual_types_enum) const;
 
     //0x0041F850
-    bool is_or_is_subclass_of(mash::virtual_types_enum a2);
+    bool is_or_is_subclass_of(mash::virtual_types_enum a2) const;
 
     //0x00432B60
     static void generate_vtable();

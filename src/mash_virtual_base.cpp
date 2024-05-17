@@ -57,15 +57,15 @@ void mash_virtual_base::unmash(mash_info_struct *a2, void *a3) {
     }
 }
 
-uint32_t mash_virtual_base::get_virtual_type_enum() {
+uint32_t mash_virtual_base::get_virtual_type_enum() const {
     return 573;
 }
 
-bool mash_virtual_base::is_subclass_of(mash::virtual_types_enum) {
+bool mash_virtual_base::is_subclass_of(mash::virtual_types_enum) const {
     return false;
 }
 
-bool mash_virtual_base::is_or_is_subclass_of(mash::virtual_types_enum a2) {
+bool mash_virtual_base::is_or_is_subclass_of(mash::virtual_types_enum a2) const {
     return this->get_virtual_type_enum() == a2 || this->is_subclass_of(a2);
 }
 
