@@ -15,12 +15,12 @@ static Var<fixed_pool> hash_entry_pool {0x00922240};
 static uint32_t BYTEn(int x, int n)
 {
     return (*(bit_cast<BYTE*>(&x) + n));
-};
+}
 
 static uint32_t BYTE1(int x)
 {
     return BYTEn(x,  1);
-};
+}
 
 int hierarchical_entity_proximity_map::traverse_sphere(
         const vector3d &a2,

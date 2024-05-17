@@ -6,7 +6,7 @@
 #include "variable.h"
 
 struct generic_mash_header;
-struct generic_mash_data_ptrs;;
+struct generic_mash_data_ptrs;
 struct nglTexture;
 struct vector3d;
 

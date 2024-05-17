@@ -79,6 +79,6 @@ namespace string_hash_dictionary {
 
     //0x0052A6A0
     extern void write_text(const char *a1);
-};
+}
 
 void string_hash_dictionary_patch();

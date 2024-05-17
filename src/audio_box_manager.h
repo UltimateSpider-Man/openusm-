@@ -11,6 +11,6 @@ namespace audio_box_manager {
     extern void frame_advance(Float a1);
 
     extern void delete_inst();
-};
+}
 
 extern Var<int> s_holds;

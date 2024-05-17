@@ -115,6 +115,6 @@ namespace geometry_manager {
     extern bool is_scene_analyzer_enabled();
 
     extern void enable_scene_analyzer(bool a1);
-}; // namespace geometry_manager
+} // namespace geometry_manager
 
 extern void geometry_manager_patch();

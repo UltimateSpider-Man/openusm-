@@ -71,7 +71,7 @@ make_var(nglMaterialBase, tlHashString);
 
 #define make_var(T0, T1, address) \
 template<> \
-T0 *& tlresource_directory<T0, T1>::default_tlres = var<T0 *>(address);
+T0 *& tlresource_directory<T0, T1>::default_tlres = var<T0 *>(address)
 
 make_var(nglMesh, tlHashString, 0x009609DC);
 

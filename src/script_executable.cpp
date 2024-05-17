@@ -889,7 +889,7 @@ uint16_t * script_executable::get_exec_code(unsigned int offset) {
     assert(offset < (uint32_t) sx_exe_image_size && "offset into exec code is out of bounds... bad juju man");
 
     return sx_exe_image + (offset >> 1);
-};
+}
 
 void script_executable::link()
 {

@@ -14,4 +14,4 @@ namespace ambient_audio_manager {
 
     //0x0054DF90
     extern void reset();
-};
+}

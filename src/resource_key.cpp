@@ -66,7 +66,7 @@ mString resource_key::get_platform_string(int a1) const
     auto result = a2a + v4;
 
     return result;
-};
+}
 
 const char *to_string(resource_key_type type)
 {

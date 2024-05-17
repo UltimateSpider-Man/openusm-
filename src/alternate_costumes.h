@@ -13,7 +13,7 @@ struct FEText;
 
 namespace comic_panels {
 struct panel;
-};
+}
 
 struct ptr_PanelQuad {
     PanelQuad *field_0;

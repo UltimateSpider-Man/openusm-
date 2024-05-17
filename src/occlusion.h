@@ -54,4 +54,4 @@ namespace occlusion {
     inline Var<quad_shadow_volume *> active_shadow_volumes_scratchpad_mirror {0x0095C888};
 
     inline int init_frame_count {0};
-};
+}

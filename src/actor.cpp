@@ -1076,7 +1076,7 @@ float actor::get_colgeom_radius() const
 {
     float (__fastcall *func)(const actor *) = CAST(func, get_vfunc(m_vtbl, 0x254));
     return func(this);
-};
+}
 
 bool actor::is_frame_delta_valid() const {
     TRACE("actor::is_frame_delta_valid");

@@ -40,7 +40,7 @@ namespace sound_manager {
 
     //0x00551C20
     extern void frame_advance(Float a1);
-};
+}
 
 extern void sub_54DC10(const char *a1, bool a2);
 

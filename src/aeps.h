@@ -19,6 +19,6 @@ namespace aeps {
     void Reset();
 
     void Init();
-};
+}
 
 extern void aeps_patch();

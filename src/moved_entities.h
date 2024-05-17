@@ -26,6 +26,6 @@ namespace moved_entities {
     inline constexpr auto MAX_MOVED = 600;
 
     inline auto & moved_list = var<vhandle_type<entity>[MAX_MOVED]>(0x0095EFC8);
-};
+}
 
 extern void moved_entities_patch();

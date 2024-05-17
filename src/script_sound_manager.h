@@ -13,7 +13,7 @@ namespace script_sound_manager {
 
     //0x0065F240
     extern void frame_advance(Float a1);
-};
+}
 
 struct script_sound_instance_slot {
     sound_instance_id field_0;

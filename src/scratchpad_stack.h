@@ -30,7 +30,7 @@ extern void initialize();
 
 extern void term();
 
-}; // namespace scratchpad_stack
+} // namespace scratchpad_stack
 
 extern bool sub_512730(void *a1);
 

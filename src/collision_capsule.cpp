@@ -107,7 +107,7 @@ float collision_capsule::get_core_radius() {
 
 int collision_capsule::get_type() {
     return collision_geometry::CAPSULE;
-};
+}
 
 void collision_capsule::un_mash(generic_mash_header *a1, void *a2, generic_mash_data_ptrs *a3) {
     collision_geometry::un_mash(a1, a2, a3);
