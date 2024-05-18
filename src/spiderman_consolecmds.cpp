@@ -16,7 +16,7 @@ AmbientLightCommand::AmbientLightCommand()
 
 bool AmbientLightCommand::process_cmd(const std::vector<std::string> &a2)
 {
-    auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
+    auto *hero_ptr = g_world_ptr->get_hero_ptr(0);
     auto *mgr = hero_ptr->get_light_set();
     assert(mgr != nullptr);
 
@@ -88,7 +88,7 @@ bool SetBlendModeCommand::process_cmd(const std::vector<std::string> &a2)
             return true;
         }
 
-        auto *hero = g_world_ptr()->get_hero_ptr(0);
+        auto *hero = g_world_ptr->get_hero_ptr(0);
         auto *mesh = hero->get_mesh();
 
         for ( auto i = 0u; i < mesh->NSections; ++i )
@@ -130,7 +130,7 @@ bool SetMaterialFeaturesCommand::process_cmd(const std::vector<std::string> &a2)
 
         if (mode == 4)
         {
-            auto *hero = g_world_ptr()->get_hero_ptr(0);
+            auto *hero = g_world_ptr->get_hero_ptr(0);
             auto *mesh = hero->get_mesh();
             for ( auto i = 0u; i < mesh->NSections; ++i )
             {
@@ -158,7 +158,7 @@ bool SetMaterialFeaturesCommand::process_cmd(const std::vector<std::string> &a2)
             {1, 1, "Enabled Ink and Highlight features!"}
         };
 
-        auto *hero = g_world_ptr()->get_hero_ptr(0);
+        auto *hero = g_world_ptr->get_hero_ptr(0);
         auto *mesh = hero->get_mesh();
 
         for ( auto i = 0u; i < mesh->NSections; ++i )

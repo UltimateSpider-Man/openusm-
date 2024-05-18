@@ -61,7 +61,7 @@ void alternate_costumes::sub_640740(int idx) {
             v3->field_7C = nullptr;
             v3->field_80 = 0;
             v3->field_84 = 0;
-            g_world_ptr()->ent_mgr.release_entity(this->field_150);
+            g_world_ptr->ent_mgr.release_entity(this->field_150);
             mString a1 = "ch_vwr_" + a3;
 
             if (mission_stack_manager::s_inst->is_pack_pushed(a1)) {
@@ -130,7 +130,7 @@ void alternate_costumes::onActivate() {
             v4->text_box->SetTextNoLocalize(str);
         }
 
-        auto *v7 = g_world_ptr()->get_hero_ptr(0);
+        auto *v7 = g_world_ptr->get_hero_ptr(0);
         if (v7 != nullptr) {
             this->field_158 = v7->get_abs_position();
         } else {
@@ -172,10 +172,10 @@ void alternate_costumes::onActivate() {
         v16->set_loc(v31);
         v16->field_68 = true;
 
-        if (!g_world_ptr()->field_28.field_48)
+        if (!g_world_ptr->field_28.field_48)
         {
             g_game_ptr->enable_marky_cam(true, true, -1000.0, 0.0);
-            auto *v18 = g_world_ptr()->field_28.field_44;
+            auto *v18 = g_world_ptr->field_28.field_44;
             auto *vtbl = bit_cast<fastcall_call(*)[1]>(v18->m_vtbl);
             void (__fastcall *sync)(void *, void *, void *) = CAST(sync, (*vtbl)[165]);
 

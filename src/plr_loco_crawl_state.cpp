@@ -89,7 +89,7 @@ void plr_loco_crawl_state::activate(
         info_node->compute_curr_ground_plane((force_recompute_enum)1, 2.5);
         auto *player_controller = this->get_actor()->m_player_controller;
         if ( player_controller != nullptr ) {
-            player_controller->frame_advance(g_world_ptr()->field_158.field_18);
+            player_controller->frame_advance(g_world_ptr->field_158.field_18);
         }
 
         info_node->update_crawl_als_params();

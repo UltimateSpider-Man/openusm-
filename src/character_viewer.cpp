@@ -146,7 +146,7 @@ void character_viewer::sub_63FEC0(int idx)
             v3->field_7C = nullptr;
             v3->field_80 = 0;
             v3->field_84 = 0;
-            g_world_ptr()->ent_mgr.destroy_entity(this->field_2DC);
+            g_world_ptr->ent_mgr.destroy_entity(this->field_2DC);
             auto v6 = "ch_vwr_" + a3;
 
             if (mission_stack_manager::s_inst->is_pack_pushed(v6)) {
@@ -289,7 +289,7 @@ void character_viewer::OnActivate() {
             func(v4->text_box);
         }
 
-        auto *v7 = g_world_ptr()->get_hero_ptr(0);
+        auto *v7 = g_world_ptr->get_hero_ptr(0);
         if (v7 != nullptr) {
             auto &v8 = v7->get_abs_position();
             this->field_2E0[1] = v8[0];
@@ -339,10 +339,10 @@ void character_viewer::OnActivate() {
         v33[2] = 10.0;
         v19->set_loc(v33);
         this->field_2D8->field_68 = 1;
-        if (!g_world_ptr()->field_28.field_48)
+        if (!g_world_ptr->field_28.field_48)
 		{
             g_game_ptr->enable_marky_cam(true, true, -1000.0, 0.0);
-            auto *v20 = g_world_ptr()->field_28.field_44;
+            auto *v20 = g_world_ptr->field_28.field_44;
 
             auto *v22 = g_game_ptr->get_current_view_camera(0);
 
@@ -366,7 +366,7 @@ void character_viewer::OnActivate() {
         this->field_2E0[0] = 0.0;
         this->field_2F4 = g_TOD();
         us_lighting_switch_time_of_day(0);
-        auto v25 = g_world_ptr()->field_158.field_8;
+        auto v25 = g_world_ptr->field_158.field_8;
         this->field_28 |= 0x80u;
         this->field_2FC = v25;
         this->field_2A = -1;

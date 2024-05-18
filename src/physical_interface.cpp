@@ -94,7 +94,7 @@ physical_interface::physical_interface(actor *a2) : field_188(), field_198()
         this->field_FC = 0;
         this->field_F8 = 0;
         this->field_184 = 0;
-        this->field_180 = g_world_ptr()->field_158.field_8;
+        this->field_180 = g_world_ptr->field_158.field_8;
         this->field_100 = YVEC;
         this->field_10C = 0;
         this->field_C8 = 1.0;

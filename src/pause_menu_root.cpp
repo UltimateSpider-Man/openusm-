@@ -177,15 +177,15 @@ void pause_menu_root::Update(Float a2) {
 void pause_menu_root::update_switching_heroes() {
     int v2 = this->field_30;
     if (v2 == 4) {
-        g_world_ptr()->remove_player(g_world_ptr()->num_players - 1);
+        g_world_ptr->remove_player(g_world_ptr->num_players - 1);
     } else if (v2 == 2) {
         int v3;
         if (this->field_34) {
-            g_world_ptr()->add_player(mString{"venom"});
+            g_world_ptr->add_player(mString{"venom"});
 
             v3 = 4;
         } else {
-            g_world_ptr()->add_player(mString{"ultimate_spiderman"});
+            g_world_ptr->add_player(mString{"ultimate_spiderman"});
 
             v3 = 0;
         }
@@ -193,7 +193,7 @@ void pause_menu_root::update_switching_heroes() {
         auto *v4 = g_femanager.IGO->hero_health;
         if (v4->field_0[v3] != nullptr)
         {
-            v4->field_30 = g_world_ptr()->get_hero_ptr(0)->my_handle.field_0;
+            v4->field_30 = g_world_ptr->get_hero_ptr(0)->my_handle.field_0;
             v4->field_38 = v3;
             v4->UpdateMasking();
             v4->clear_bars();

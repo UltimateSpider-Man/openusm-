@@ -97,7 +97,7 @@ static constexpr auto SPLINE_PATHS_TAG = 7;
 static constexpr auto AUDIO_BOXES_TAG = 8;
 static constexpr auto REGION_MESH_VOBBS_TAG = 13;
 
-Var<world_dynamics_system *> g_world_ptr{0x0095C770};
+world_dynamics_system *& g_world_ptr = var<world_dynamics_system *>(0x0095C770);
 
 world_dynamics_system::world_dynamics_system()
     : field_4(), field_3E0()
@@ -672,7 +672,7 @@ bool world_dynamics_system::un_mash_scene_entities(const resource_key &a2, regio
                 {
                     assert(ent_ptr != nullptr);
                     v78.reset();
-                    g_world_ptr()->ent_mgr.add_ent_to_lists(ent_vec_ptr, item_vec_ptr, ent_ptr);
+                    g_world_ptr->ent_mgr.add_ent_to_lists(ent_vec_ptr, item_vec_ptr, ent_ptr);
                     dword_15684A4 += sub_68D9F1(v78);
                     //sp_log("adding entities to lists = %f sec", dword_15684A4);
 
@@ -973,7 +973,7 @@ bool world_dynamics_system::un_mash_box_triggers(
             auto &v9 = *a2;
             auto *v5 = v18->to_string();
             string_hash v8 {v5};
-            auto *v14 = g_world_ptr()->ent_mgr.create_and_add_box_trigger(v8, v9, v10);
+            auto *v14 = g_world_ptr->ent_mgr.create_and_add_box_trigger(v8, v9, v10);
             if ( v14 != nullptr ) {
                 assert(box_trigger_vec_ptr != nullptr);
 
@@ -1278,7 +1278,7 @@ camera *world_dynamics_system::get_chase_cam_ptr(int a2) {
 
 void wds_enter_water_trigger_callback(event *, entity_base_vhandle a2, void *)
 {
-    assert(g_world_ptr() != nullptr);
+    assert(g_world_ptr != nullptr);
 
     auto *ptr = a2.get_volatile_ptr();
     assert(ptr != nullptr);
@@ -1289,7 +1289,7 @@ void wds_enter_water_trigger_callback(event *, entity_base_vhandle a2, void *)
     auto *ent = trig->get_triggered_ent();
 
     auto v5 = ent->my_handle.field_0;
-    auto *list = &g_world_ptr()->field_254;
+    auto *list = &g_world_ptr->field_254;
     auto *m_head = list->m_head;
     auto *Prev = m_head->_Prev;
 
@@ -1451,7 +1451,7 @@ int world_dynamics_system::add_player(const mString &a2)
 
             string_hash v36 {v23};
             string_hash v35 {a2.c_str()};
-            this->field_230[this->num_players] = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+            this->field_230[this->num_players] = g_world_ptr->ent_mgr.create_and_add_entity_or_subclass(
                v35,
                v36,
                v82,
@@ -1477,7 +1477,7 @@ int world_dynamics_system::add_player(const mString &a2)
             this->field_234[this->num_players] = new spiderman_camera {v43, v31};
 
             auto *v73 = this->field_234[this->num_players];
-            g_world_ptr()->ent_mgr.add_camera(nullptr, v73);
+            g_world_ptr->ent_mgr.add_camera(nullptr, v73);
 
             if ( this->num_players == 0 ) {
                 g_spiderman_camera_ptr() = CAST(g_spiderman_camera_ptr(), this->field_234[0]);
@@ -1649,10 +1649,10 @@ int world_dynamics_system::remove_player(int player_num)
         this->field_28.field_44->sync(*(this->field_234[0]));
     }
 
-    g_world_ptr()->ent_mgr.destroy_entity(this->field_234[this->num_players]);
+    g_world_ptr->ent_mgr.destroy_entity(this->field_234[this->num_players]);
     this->field_234[this->num_players] = nullptr;
     bit_cast<actor *>(this->field_230[this->num_players])->destroy_player_controller();
-    g_world_ptr()->ent_mgr.destroy_entity(this->field_230[this->num_players]);
+    g_world_ptr->ent_mgr.destroy_entity(this->field_230[this->num_players]);
     this->field_230[this->num_players] = nullptr;
     if (this->num_players == 0)
     {
@@ -1973,7 +1973,7 @@ nal_anim_control *world_dynamics_system::get_anim_ctrl(uint32_t a1)
 
 int get_hero_type_helper()
 {
-    auto *hero_ptr = (actor *) g_world_ptr()->get_hero_ptr(0);
+    auto *hero_ptr = (actor *) g_world_ptr->get_hero_ptr(0);
     if (hero_ptr != nullptr) {
         return hero_ptr->m_player_controller->m_hero_type;
     }

@@ -94,14 +94,11 @@ bool mission_condition::get_key_po(int instance, po *p) const
 
 bool mission_condition::applies_to_current_hero() const
 {
-    //entity_base_vhandle INVALID_HANDLE {0};
-    //assert(g_world_ptr()->get_hero_ptr( 0 ) != INVALID_HANDLE);
+    assert(g_world_ptr->get_hero_ptr( 0 ) != nullptr);
 
-    assert(g_world_ptr()->get_hero_ptr( 0 ) != nullptr);
+    assert(bit_cast<actor*>(g_world_ptr->get_hero_ptr( 0 ))->get_player_controller() != nullptr);
 
-    assert(bit_cast<actor*>(g_world_ptr()->get_hero_ptr( 0 ))->get_player_controller() != nullptr);
-
-    auto *v8 = bit_cast<actor*>(g_world_ptr()->get_hero_ptr( 0 ))->get_player_controller();
+    auto *v8 = bit_cast<actor*>(g_world_ptr->get_hero_ptr( 0 ))->get_player_controller();
     auto v15 = v8->m_hero_type;
     if ( v15 == 1 )
     {

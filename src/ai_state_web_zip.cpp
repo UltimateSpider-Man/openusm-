@@ -69,12 +69,12 @@ void web_zip_state::activate(
 
         const string_hash v28 {"Web_Zip"};
         v10->request_category_transition(v28, static_cast<als::layer_types>(0), true, false, true);
-        auto &v12 = g_world_ptr()->field_1B0;
+        auto &v12 = g_world_ptr->field_1B0;
         if ( v12.field_8.is_set() )
         {
-            auto *the_controller = bit_cast<actor *>(g_world_ptr()->get_hero_ptr(0))->get_player_controller();
+            auto *the_controller = bit_cast<actor *>(g_world_ptr->get_hero_ptr(0))->get_player_controller();
             if ( the_controller->m_hero_type == SPIDEY || the_controller->m_hero_type == PARKER )
-                g_world_ptr()->activate_web_splats();
+                g_world_ptr->activate_web_splats();
         }
 
         auto *v15 = bit_cast<conglomerate *>(this->get_actor());
@@ -557,7 +557,7 @@ void web_zip_inode::process_zip(Float a2)
 
                     entity_set_abs_po(this->field_D8, v6->get_abs_po());
 
-                    actor *hero_ptr = bit_cast<actor *>(g_world_ptr()->get_hero_ptr(0));
+                    actor *hero_ptr = bit_cast<actor *>(g_world_ptr->get_hero_ptr(0));
 
                     auto v7 = hero_ptr->get_player_controller()->m_hero_type;
                     if (v7 == 1 || v7 == 3) {

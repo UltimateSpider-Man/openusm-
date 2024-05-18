@@ -237,11 +237,11 @@ void entity_handle_manager::clear_ent_slots() {
 
 void entity_handle_manager::remove_entity(const entity_base_vhandle &ent_handle)
 {
-    if ( g_world_ptr() != nullptr && check_world_lists() )
+    if ( g_world_ptr != nullptr && check_world_lists() )
     {
-        assert("Entity handle is being released while entity still exists in lists" && !g_world_ptr()->ent_mgr.is_entity_valid( (entity *) ent_handle.field_0 ));
+        assert("Entity handle is being released while entity still exists in lists" && !g_world_ptr->ent_mgr.is_entity_valid( (entity *) ent_handle.field_0 ));
 
-        assert("Item handle is being released while item still exists in lists" && !g_world_ptr()->ent_mgr.is_item_valid( (item *) ent_handle.field_0 ));
+        assert("Item handle is being released while item still exists in lists" && !g_world_ptr->ent_mgr.is_item_valid( (item *) ent_handle.field_0 ));
     }
 
     int which_slot = ent_handle.field_0 & 0x3FFF;

@@ -155,7 +155,7 @@ struct region
     //0x00519C70
     float get_ground_level() const;
 
-	int get_district_variant();
+	int get_district_variant() const;
 
     //0x00545700
     void remove(entity *a3);

@@ -89,15 +89,15 @@ wds_render_manager::wds_render_manager() {
 
 void show_terrain_info()
 {
-    if ( g_world_ptr() != nullptr )
+    if ( g_world_ptr != nullptr )
     {
-        auto *v0 = g_world_ptr()->get_hero_ptr(0);
+        auto *v0 = g_world_ptr->get_hero_ptr(0);
         if ( v0 != nullptr )
         {
-            auto *v8 = g_world_ptr()->get_hero_ptr(0);
+            auto *v8 = g_world_ptr->get_hero_ptr(0);
             if ( v8->has_physical_ifc() )
             {
-                auto *v3 = g_world_ptr()->get_hero_ptr(0);
+                auto *v3 = g_world_ptr->get_hero_ptr(0);
                 auto *v4 = v3->physical_ifc();
 
                 string_hash v17;
@@ -151,7 +151,7 @@ void wds_render_manager::debug_render()
 
         //if ( debug_render_get_ival((debug_render_items_e)21) || SHOW_OBBS || SHOW_DISTRICTS )
         {
-            auto *ter= g_world_ptr()->get_the_terrain();
+            auto *ter= g_world_ptr->get_the_terrain();
             ter->show_obbs();
         }
 
@@ -313,9 +313,9 @@ void sub_520E60()
 
 void update_spidey_interface()
 {
-    if ( g_world_ptr() != nullptr )
+    if ( g_world_ptr != nullptr )
     {
-        if ( g_world_ptr()->get_hero_ptr(0) != nullptr ) {
+        if ( g_world_ptr->get_hero_ptr(0) != nullptr ) {
             g_femanager.IGO->UpdateInScene();
         }
     }
@@ -357,13 +357,13 @@ void wds_render_manager::render(camera &a2, int a3)
             this->field_30.field_0.clear();
             this->field_30.field_10.clear();
 
-            a2.compute_sector(g_world_ptr()->the_terrain, false, nullptr);
+            a2.compute_sector(g_world_ptr->the_terrain, false, nullptr);
             auto *prim_reg = a2.get_primary_region();
 
-            auto *reg = g_world_ptr()->the_terrain->find_region(a2.get_abs_position(), nullptr);
+            auto *reg = g_world_ptr->the_terrain->find_region(a2.get_abs_position(), nullptr);
             if ( reg != prim_reg )
             {
-                auto *v10 = g_world_ptr()->get_hero_ptr(a3);
+                auto *v10 = g_world_ptr->get_hero_ptr(a3);
                 if ( v10 != nullptr )
                 {
                     if ( v10->get_primary_region() == nullptr )
@@ -385,7 +385,7 @@ void wds_render_manager::render(camera &a2, int a3)
 
             geometry_manager::rebuild_view_frame();
             ++region::visit_key;
-            this->field_30.field_0.reserve(g_world_ptr()->the_terrain->get_num_regions() + 1);
+            this->field_30.field_0.reserve(g_world_ptr->the_terrain->get_num_regions() + 1);
 
             a2.get_abs_position();
 

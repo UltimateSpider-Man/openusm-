@@ -1485,7 +1485,7 @@ void entity_base::on_fade_distance_changed_internal(int a2) {
     assert(is_an_entity() && ((entity *) this)->is_renderable());
 
     if (this->is_visible() && distance_fader::fade_distances()[a2] > 140.0f) {
-        g_world_ptr()->field_A0.add_far_away_entity({this->my_handle});
+        g_world_ptr->field_A0.add_far_away_entity({this->my_handle});
     }
 }
 

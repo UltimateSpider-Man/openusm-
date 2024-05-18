@@ -76,8 +76,10 @@ void als_inode::set_known_combat_signal_time_and_category(Float a2, string_hash 
     this->field_28 = a3;
 }
 
-float als_inode::get_eta_of_combat_signal(als::layer_types a2) {
-    if constexpr (1) {
+float als_inode::get_eta_of_combat_signal(als::layer_types a2)
+{
+    if constexpr (1)
+    {
         string_hash v16 = event::ATTACK;
         auto *v3 = this->field_1C;
 
@@ -99,12 +101,15 @@ float als_inode::get_eta_of_combat_signal(als::layer_types a2) {
 
             string_hash category_id = v11->get_category_id();
 
-            auto tmp = g_world_ptr()->field_158.get_level_time() + a2a;
+            auto tmp = g_world_ptr->field_158.get_level_time() + a2a;
             this->set_known_combat_signal_time_and_category(tmp, category_id);
         }
         return a2a;
-    } else {
-        return (float) THISCALL(0x00689C20, this, a2);
+    }
+    else
+    {
+        float (__fastcall *func)(void *, void *edx, als::layer_types a2) = CAST(func, 0x00689C20);
+        return func(this, nullptr, a2);
     }
 }
 

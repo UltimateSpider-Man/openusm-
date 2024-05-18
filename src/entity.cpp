@@ -598,7 +598,7 @@ void entity::remove_from_regions()
 
         assert(this->extended_regions != nullptr ? this->extended_regions->size() > 0 : 1);
 
-        if ( g_world_ptr() != nullptr )
+        if ( g_world_ptr != nullptr )
         {
             auto *v2 = this->regions[0];
             if ( v2 != nullptr && v2->is_loaded() ) {

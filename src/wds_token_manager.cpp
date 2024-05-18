@@ -21,12 +21,12 @@ void wds_token_manager_region_change_callback(bool a1, region *a2)
 {
     if constexpr (1)
     {
-        assert(g_world_ptr() != nullptr);
+        assert(g_world_ptr != nullptr);
         
         if ( a1 ) {
-            g_world_ptr()->field_188.register_region(a2);
+            g_world_ptr->field_188.register_region(a2);
         } else {
-            g_world_ptr()->field_188.unregister_region(a2);
+            g_world_ptr->field_188.unregister_region(a2);
         }
     } else {
         CDECL_CALL(0x00558660, a1, a2);
@@ -48,10 +48,10 @@ void wds_token_manager::initialize(const resource_key &a2)
     if constexpr (1)
     {
         assert(tokens == nullptr);
-        assert(g_world_ptr() != nullptr);
+        assert(g_world_ptr != nullptr);
 
         this->field_8 = 0.0;
-        auto *the_terrain = g_world_ptr()->get_the_terrain();
+        auto *the_terrain = g_world_ptr->get_the_terrain();
 
         int size;
         auto *res = resource_manager::get_resource(a2, &size, nullptr);
@@ -175,7 +175,7 @@ _std::list<wds_token_manager::active_token>::iterator wds_token_manager::remove_
         auto *icon = v10.field_4.get_volatile_ptr();
         assert(icon != nullptr);
 
-        g_world_ptr()->ent_mgr.release_entity(icon);
+        g_world_ptr->ent_mgr.release_entity(icon);
     }
 
     auto Next = a3._Ptr->_Next;

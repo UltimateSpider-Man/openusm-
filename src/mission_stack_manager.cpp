@@ -274,7 +274,7 @@ void mission_stack_manager::pop_mission_pack_internal()
         if (slot->is_empty()) {
             auto slot_idx = slot->get_pack_token().field_0;
             if (slot_idx != -1) {
-                g_world_ptr()->the_terrain->unlock_district_pack_slot(slot_idx);
+                g_world_ptr->the_terrain->unlock_district_pack_slot(slot_idx);
             }
 
             my_partition->pop_pack_slot();

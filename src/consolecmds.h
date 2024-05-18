@@ -261,3 +261,16 @@ struct SetPBFloatCommand : ConsoleCommand {
         return "set_ai <EntityName> <ParamName> [<ParamValue>]";
     }
 };
+
+struct SCCommand : ConsoleCommand {
+
+    SCCommand() {
+        this->setName("sc");
+    }
+
+    virtual bool process_cmd(const std::vector<std::string> &) override;
+
+    virtual const char *helpText() const override {
+        return "sc <function> [args] ...";
+    }
+};

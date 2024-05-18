@@ -757,7 +757,7 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
         auto v13 = a2 * 0.15000001;
 
         vector3d v24 = a1 - v13;
-        check1 = g_world_ptr()->the_terrain->find_region(v24, nullptr)
+        check1 = g_world_ptr->the_terrain->find_region(v24, nullptr)
             && find_intersection(
                         v24,
                         v26,
@@ -775,7 +775,7 @@ bool get_axis_correction_delta(const vector3d &a1, const vector3d &a2, float a3,
         v26 = v15 + a1;
 
         v24 = a2 * 0.15000001 + a1;
-        check2 = g_world_ptr()->the_terrain->find_region(v24, nullptr)
+        check2 = g_world_ptr->the_terrain->find_region(v24, nullptr)
             && find_intersection(
                 v24,
                 v26,

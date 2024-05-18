@@ -205,32 +205,34 @@ bool worldly_pack_slot::_on_load(limited_timer *a2)
     }
 }
 
-_std::vector<item *> *worldly_pack_slot::get_item_instances() {
-    assert(g_world_ptr() != nullptr);
+_std::vector<item *> * worldly_pack_slot::get_item_instances()
+{
+    assert(g_world_ptr != nullptr);
 
     if (this->item_instances == nullptr) {
-        auto *items = g_world_ptr()->ent_mgr.get_items();
+        auto *items = g_world_ptr->ent_mgr.get_items();
 
         this->item_instances = items->sub_50A2B0();
     }
 
     auto *item_instances = this->item_instances;
-    assert(g_world_ptr()->ent_mgr.get_items()->get_vector_index(item_instances) > 0);
+    assert(g_world_ptr->ent_mgr.get_items()->get_vector_index(item_instances) > 0);
 
     return this->item_instances;
 }
 
-_std::vector<entity *> *worldly_pack_slot::get_entity_instances() {
-    assert(g_world_ptr() != nullptr);
+_std::vector<entity *> * worldly_pack_slot::get_entity_instances()
+{
+    assert(g_world_ptr != nullptr);
 
     if (this->entity_instances == nullptr) {
-        auto *entities = g_world_ptr()->ent_mgr.get_entities();
+        auto *entities = g_world_ptr->ent_mgr.get_entities();
 
         this->entity_instances = entities->sub_50A230();
     }
 
     auto *entity_instances = this->entity_instances;
-    assert(g_world_ptr()->ent_mgr.get_entities()->get_vector_index(entity_instances) > 0);
+    assert(g_world_ptr->ent_mgr.get_entities()->get_vector_index(entity_instances) > 0);
 
     return this->entity_instances;
 }
@@ -308,7 +310,7 @@ void worldly_pack_slot::_clear_pack()
 
 _std::vector<box_trigger *> *worldly_pack_slot::get_box_trigger_instances()
 {
-    assert(g_world_ptr() != nullptr);
+    assert(g_world_ptr != nullptr);
     if ( this->box_trigger_instances == nullptr )
     {
         auto *mem = mem_alloc(sizeof(_std::vector<box_trigger *>));
@@ -346,7 +348,7 @@ bool entity_resource_handler::_handle_resource(worldly_resource_handler::eBehavi
         bool result;
 
         auto *entity_instances = this->my_slot->entity_instances;
-        auto *entities = g_world_ptr()->ent_mgr.get_entities();
+        auto *entities = g_world_ptr->ent_mgr.get_entities();
 
         if (entities->get_vector_index(entity_instances) > 0)
         {
@@ -357,7 +359,7 @@ bool entity_resource_handler::_handle_resource(worldly_resource_handler::eBehavi
             {
                 if (!v4->is_conglom_member())
                 {
-                    g_world_ptr()->ent_mgr.remove_entity_from_misc_lists(v4);
+                    g_world_ptr->ent_mgr.remove_entity_from_misc_lists(v4);
                     entity_handle_manager::check_world_lists() = false;
                     if (v4->is_dynamic())
                     {
@@ -396,7 +398,7 @@ bool entity_resource_handler::_handle_resource(worldly_resource_handler::eBehavi
 void entity_resource_handler::_post_handle_resources(worldly_resource_handler::eBehavior)
 {
     if (this->my_slot->entity_instances != nullptr) {
-        g_world_ptr()->ent_mgr.entities.sub_572FB0(this->my_slot->entity_instances);
+        g_world_ptr->ent_mgr.entities.sub_572FB0(this->my_slot->entity_instances);
         this->my_slot->entity_instances = nullptr;
     }
 }

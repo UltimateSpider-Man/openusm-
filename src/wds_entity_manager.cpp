@@ -317,8 +317,8 @@ entity * wds_entity_manager::create_and_add_entity_or_subclass(string_hash a2,
             else if ( !v60 )
             {
                 auto *tmp_e = v71;
-                auto *the_terrain = g_world_ptr()->get_the_terrain();
-                tmp_e->compute_sector(the_terrain, g_world_ptr()->is_loading_from_scn_file(), nullptr);
+                auto *the_terrain = g_world_ptr->get_the_terrain();
+                tmp_e->compute_sector(the_terrain, g_world_ptr->is_loading_from_scn_file(), nullptr);
             }
         }
 

@@ -188,24 +188,24 @@ void HealthVariable::setValue(const std::string &arg0) {
         v20 = atoi(v2);
         if (v20 >= 0) {
             for (auto a2 = 0;; ++a2) {
-                auto v3 = g_world_ptr()->get_num_players();
+                auto v3 = g_world_ptr->get_num_players();
                 if (a2 >= v3) {
                     break;
                 }
 
-                auto *v12 = g_world_ptr()->get_hero_ptr(a2);
+                auto *v12 = g_world_ptr->get_hero_ptr(a2);
 
                 [[maybe_unused]] auto *v5 = v12->damage_ifc();
                 //v5->field_1FC[0];
 
                 auto v15 = (float) v20;
 
-                v12 = g_world_ptr()->get_hero_ptr(a2);
+                v12 = g_world_ptr->get_hero_ptr(a2);
 
                 auto *v7 = v12->damage_ifc();
                 v7->field_1FC.sub_48BFB0(v15);
                 if (v20 == 0) {
-                    auto *v9 = g_world_ptr()->get_hero_ptr(a2);
+                    auto *v9 = g_world_ptr->get_hero_ptr(a2);
 
                     entity_base_vhandle v11 = v9->get_my_handle();
 

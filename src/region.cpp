@@ -280,7 +280,7 @@ bool region::already_visited() const {
 
 
 traffic_path_graph *region::get_traffic_path_graph() {
-    auto *result = g_world_ptr()->the_terrain->traffic_ptr;
+    auto *result = g_world_ptr->the_terrain->traffic_ptr;
     if (result == nullptr) {
         result = this->field_100;
     }
@@ -437,12 +437,12 @@ void region::add(light_source *l)
     THISCALL(0x00545780, this, l);
 }
 
-int region::get_district_variant()
+int region::get_district_variant() const
 {
 	auto *v1 = this->get_scene_id(false).c_str();
 	string_hash v2 {v1};
 
-	auto *the_terrain = g_world_ptr()->the_terrain;
+	auto *the_terrain = g_world_ptr->the_terrain;
 	auto *pack_switch_info = the_terrain->field_24.get_pack_switch_info(v2);
 	if ( pack_switch_info != nullptr ) {
 		return pack_switch_info->field_8;
@@ -463,7 +463,7 @@ region *region::get_neighbor(int neighbor_index) const
     assert(neighbor_index < this->neighbors.size());
 
     auto v4 = this->neighbors[neighbor_index];
-    auto *the_terrain = g_world_ptr()->get_the_terrain();
+    auto *the_terrain = g_world_ptr->get_the_terrain();
     return the_terrain->get_region(v4);
 }
 

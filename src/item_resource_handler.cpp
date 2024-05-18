@@ -38,7 +38,7 @@ bool item_resource_handler::_handle_resource([[maybe_unused]] eBehavior behavior
 
     if constexpr (1)
     {
-        if (g_world_ptr()->ent_mgr.items.get_vector_index(this->my_slot->item_instances) > 0)
+        if (g_world_ptr->ent_mgr.items.get_vector_index(this->my_slot->item_instances) > 0)
         {
             auto *v4 = this->my_slot->item_instances->at(this->field_C);
             if (v4 != nullptr)
@@ -46,7 +46,7 @@ bool item_resource_handler::_handle_resource([[maybe_unused]] eBehavior behavior
                 auto *v5 = this->my_slot->item_instances->at(this->field_C);
                 if ( v4->is_conglom_member() )
                 {
-                    g_world_ptr()->ent_mgr.remove_entity_from_misc_lists(v4);
+                    g_world_ptr->ent_mgr.remove_entity_from_misc_lists(v4);
                     if ( v5->is_dynamic() ) {
                         v5->~item();
                     } else {
@@ -72,7 +72,7 @@ bool item_resource_handler::_handle_resource([[maybe_unused]] eBehavior behavior
 
 void item_resource_handler::post_handle_resources(eBehavior) {
     if (this->my_slot->item_instances != nullptr) {
-        g_world_ptr()->ent_mgr.items.sub_572FB0(this->my_slot->item_instances);
+        g_world_ptr->ent_mgr.items.sub_572FB0(this->my_slot->item_instances);
         this->my_slot->item_instances = nullptr;
     }
 }

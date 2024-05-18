@@ -35,12 +35,12 @@ bool path_resource_handler::_handle_resource(worldly_resource_handler::eBehavior
         assert(resource != nullptr);
 
         if (a2 == UNLOAD) {
-            assert(g_world_ptr() != nullptr);
+            assert(g_world_ptr != nullptr);
 
-            auto *the_path = g_world_ptr()->field_14.get_path_graph(a3->field_0);
+            auto *the_path = g_world_ptr->field_14.get_path_graph(a3->field_0);
             assert(the_path != nullptr);
 
-            g_world_ptr()->field_14.add_path_graph(the_path);
+            g_world_ptr->field_14.add_path_graph(the_path);
             the_path->destruct_mashed_class();
         } else {
 
@@ -61,7 +61,7 @@ bool path_resource_handler::_handle_resource(worldly_resource_handler::eBehavior
 
             void (__fastcall *push_back)(void *, void *, const path_graph *) = CAST(push_back, 0x00542220);
 
-            push_back(&g_world_ptr()->field_14.path_graph_list, nullptr, pg);
+            push_back(&g_world_ptr->field_14.path_graph_list, nullptr, pg);
         }
 
         ++this->field_C;

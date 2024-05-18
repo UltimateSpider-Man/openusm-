@@ -47,7 +47,7 @@ void us_lighting_switch_time_of_day(int a1)
 
                 static Var<string_hash [4]> usl_skydome_names {0x00956388};
                 string_hash v18 = usl_skydome_names()[i];
-                usl_skydomes()[i] = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+                usl_skydomes()[i] = g_world_ptr->ent_mgr.create_and_add_entity_or_subclass(
                                 v18,
                                 v19,
                                 po_identity_matrix,
@@ -59,7 +59,7 @@ void us_lighting_switch_time_of_day(int a1)
                     usl_skydomes()[i]->set_ext_flag_recursive(static_cast<entity_ext_flag_t>(0x200000), true);
 
                     {
-                        auto *v9 = &g_world_ptr()->field_23C;
+                        auto *v9 = &g_world_ptr->field_23C;
                         auto *head = v9->m_head;
 
                         decltype(head) (__fastcall *_Buynode)(void *, void *,

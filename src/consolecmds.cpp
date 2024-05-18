@@ -17,12 +17,14 @@
 #include "nal_anim.h"
 #include "nal_system.h"
 #include "oldmath_po.h"
-#include "script_library_class.h"
-#include "script_manager.h"
 #include "mission_table_container.h"
 #include "region.h"
 #include "resource_directory.h"
 #include "resource_manager.h"
+#include "script.h"
+#include "script_object.h"
+#include "script_library_class.h"
+#include "script_manager.h"
 #include "variables.h"
 #include "wds.h"
 
@@ -135,7 +137,7 @@ ListEntsCommand::ListEntsCommand() {
 
 bool ListEntsCommand::process_cmd(const std::vector<std::string> &) {
     g_console->addToLog("visible entities:");
-    auto *v10 = g_world_ptr()->ent_mgr.get_entities();
+    auto *v10 = g_world_ptr->ent_mgr.get_entities();
     auto it = v10->begin();
     while (1) {
         auto end = v10->end();
@@ -1023,7 +1025,7 @@ ListNearbyEntsCommand::ListNearbyEntsCommand() {
 
 bool ListNearbyEntsCommand::process_cmd(const std::vector<std::string> &a2)
 {
-    auto *v3 = g_world_ptr()->get_hero_ptr(0);
+    auto *v3 = g_world_ptr->get_hero_ptr(0);
     auto &abs_position = v3->get_abs_position();
     auto a3 = abs_position;
     float v25 = 10.0;
@@ -1105,7 +1107,7 @@ entity_base * sub_65F164(std::string arg0, string_hash a1, po &a3)
     mString a7 {};
     string_hash v11 = a1;
     string_hash v10 {v25.m_name.c_str()};
-    auto *v26 = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+    auto *v26 = g_world_ptr->ent_mgr.create_and_add_entity_or_subclass(
             v10,
             v11,
             a3,
@@ -1128,7 +1130,7 @@ entity_base * sub_65F164(std::string arg0, string_hash a1, po &a3)
         v26->set_visible(true, false);
         //sub_6959DA(&v26);
         //sub_65A632(g_selection_mgr, v26, (selection_slot)0);
-        auto *the_terrain = g_world_ptr()->get_the_terrain();
+        auto *the_terrain = g_world_ptr->get_the_terrain();
         v26->compute_sector(the_terrain, 0, v26);
 
         if ( v26->has_damage_ifc() )
@@ -1165,7 +1167,7 @@ bool SpawnCommand::process_cmd(const std::vector<std::string> &a2)
             entity_id.to_upper();
 
             auto *v7 = entity_id.c_str();
-            auto *ent = g_world_ptr()->ent_mgr.get_entity(string_hash {v7});
+            auto *ent = g_world_ptr->ent_mgr.get_entity(string_hash {v7});
             if ( ent == nullptr )
             {
                 auto *v9 = entity_id.c_str();
@@ -1197,13 +1199,13 @@ bool SpawnCommand::process_cmd(const std::vector<std::string> &a2)
                 }
 
                 po v66 {identity_matrix};
-                auto *v19 = g_world_ptr()->get_hero_ptr(0);
+                auto *v19 = g_world_ptr->get_hero_ptr(0);
                 v66 = v19->get_abs_po();
 
-                auto *v22 = g_world_ptr()->get_hero_ptr(0);
+                auto *v22 = g_world_ptr->get_hero_ptr(0);
                 auto &v23 = v22->get_abs_po();
                 vector3d v43 = v23.non_affine_slow_xform(v67);
-                auto *v25 = g_world_ptr()->get_hero_ptr(0);
+                auto *v25 = g_world_ptr->get_hero_ptr(0);
                 auto abs_pos = v25->get_abs_position();
                 vector3d v27 = abs_pos + v43;
                 v66.set_position(v27);
@@ -1225,7 +1227,7 @@ bool SpawnCommand::process_cmd(const std::vector<std::string> &a2)
                 if ( v30 )
                 {
                     vector3d v43 {0.0, 0.1, 0.0};
-                    auto *v32 = g_world_ptr()->get_hero_ptr(0);
+                    auto *v32 = g_world_ptr->get_hero_ptr(0);
                     vector3d v33 = v32->get_abs_position();
                     vector3d v34 = v33 + v43;
                     v66.set_position(v34);
@@ -1300,7 +1302,7 @@ bool SpawnXCommand::process_cmd(const std::vector<std::string> &a2)
         }
 
         po v72 {identity_matrix};
-        auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
+        auto *hero_ptr = g_world_ptr->get_hero_ptr(0);
 
         v72 = hero_ptr->get_abs_po();
         auto &v19 = hero_ptr->get_abs_po();
@@ -1323,7 +1325,7 @@ bool SpawnXCommand::process_cmd(const std::vector<std::string> &a2)
                 nullptr) )
         {
             vector3d v46 {0.0, 0.1, 0.0};
-            auto *v26 = g_world_ptr()->get_hero_ptr(0);
+            auto *v26 = g_world_ptr->get_hero_ptr(0);
             vector3d v27 = v26->get_abs_position();
             auto v28 = v27 + v46;
             v72.set_position(v28);
@@ -1343,7 +1345,7 @@ bool SpawnXCommand::process_cmd(const std::vector<std::string> &a2)
         mString v63 {};
         auto v42 = make_unique_entity_id();
         string_hash v41 {v68.m_name.c_str()};
-        auto *new_ent = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(
+        auto *new_ent = g_world_ptr->ent_mgr.create_and_add_entity_or_subclass(
                 v41,
                 v42,
                 v72,
@@ -1480,3 +1482,29 @@ bool SetPBFloatCommand::process_cmd(const std::vector<std::string> &a2)
     }
 }
 
+static SCCommand g_SCCommand {};
+
+bool SCCommand::process_cmd(const std::vector<std::string> &a2)
+{
+    auto *gso = script::get_gso();
+    auto *gsoi = script::get_gsoi();
+    if ( a2.size() != 1 ) {
+        return false;
+    }
+
+    auto &v3 = a2.at(0);
+    auto *v4 = v3.c_str();
+    string_hash v7 {v4};
+    int func_idx = gso->find_func_short(v7);
+    if ( func_idx != -1 )
+    {
+        auto func = gso->get_func(func_idx);
+        auto *v11 = gsoi->add_thread(func);
+        if ( v11 == nullptr ) {
+            return false;
+        }
+
+        gsoi->run_single_thread(v11, true);
+    }
+    return true;
+}

@@ -57,7 +57,7 @@ double time_interface::sub_4ADE50()
             if ( v3 )
             {
                 auto v6 = ( v4 == 0 || v4 == 2 ) ? 1.0f : this->field_10;
-                return v6 * (g_world_ptr()->field_158.field_0 * this->field_C);
+                return v6 * (g_world_ptr->field_158.field_0 * this->field_C);
             }
             else if ( !v4 || v4 == 2 )
             {
@@ -82,9 +82,9 @@ double time_interface::sub_4ADE50()
     {
         auto v8 = this->field_30;
         if ( v8 == 0 || v8 == 2 ) {
-            return 1.0f * g_world_ptr()->field_158.field_0;
+            return 1.0f * g_world_ptr->field_158.field_0;
         } else {
-            return this->field_10 * g_world_ptr()->field_158.field_0;
+            return this->field_10 * g_world_ptr->field_158.field_0;
         }
     }
 }

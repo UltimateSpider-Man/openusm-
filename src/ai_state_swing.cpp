@@ -248,14 +248,14 @@ void swing_state::_activate(ai_state_machine *a2,
         auto *v8 = this->get_actor()->m_player_controller;
         v8->set_spidey_loco_mode(static_cast<eHeroLocoMode>(3));
 
-        auto &v10 = g_world_ptr()->field_1B0;
+        auto &v10 = g_world_ptr->field_1B0;
         if (!v10.field_8.is_set()) {
-            g_world_ptr()->activate_web_splats();
+            g_world_ptr->activate_web_splats();
         }
 
-        auto &v11 = g_world_ptr()->field_1F0;
+        auto &v11 = g_world_ptr->field_1F0;
         if (!v11.field_8.is_set()) {
-            g_world_ptr()->activate_corner_web_splats();
+            g_world_ptr->activate_corner_web_splats();
         }
 
         this->field_3C->field_2C->left_air();
@@ -945,7 +945,7 @@ void swing_inode::init_swingers()
             auto entity_id = make_unique_entity_id();
             auto *v5 = new (mem) web_polytube {&swingers[i], entity_id, 0};
 
-            g_world_ptr()->ent_mgr.add_dynamic_instanced_entity(v5);
+            g_world_ptr->ent_mgr.add_dynamic_instanced_entity(v5);
 
             auto *v7 = v5;
             v7->set_render_color(color32 {255, 255, 254, 255});
@@ -1019,7 +1019,7 @@ void swing_inode::init_swingers()
             auto v15 = make_unique_entity_id();
             swingers[i].field_94 = new (v13) polytube {v15, 0};
 
-            g_world_ptr()->ent_mgr.add_dynamic_instanced_entity(swingers[i].field_94);
+            g_world_ptr->ent_mgr.add_dynamic_instanced_entity(swingers[i].field_94);
 
             swingers[i].field_94->set_render_color(color32 {254, 255, 255, 255});
 
@@ -1107,7 +1107,7 @@ void swing_inode::init_swingers()
             swingers[i].field_0.sub_48AFB0(v37);
 
             auto *ent = bit_cast<entity *>(swingers[i].field_0.get_volatile_ptr());
-            g_world_ptr()->ent_mgr.add_dynamic_instanced_entity(ent);
+            g_world_ptr->ent_mgr.add_dynamic_instanced_entity(ent);
 
             auto *v45 = this->get_actor()->physical_ifc();
             v45->set_pendulum(i, &swingers[i].field_0);
@@ -1131,16 +1131,16 @@ void swing_inode::cleanup_swingers()
             for (auto i = 0u; i < 2; ++i)
             {
                 if (swingers[i].field_94 != nullptr) {
-                    g_world_ptr()->ent_mgr.destroy_entity(swingers[i].field_94);
+                    g_world_ptr->ent_mgr.destroy_entity(swingers[i].field_94);
                 }
 
                 if (swingers[i].field_90 != nullptr) {
-                    g_world_ptr()->ent_mgr.destroy_entity(swingers[i].field_90);
+                    g_world_ptr->ent_mgr.destroy_entity(swingers[i].field_90);
                 }
 
                 auto *v3 = (entity *) swingers[i].field_0.get_volatile_ptr();
                 if (v3 != nullptr) {
-                    g_world_ptr()->ent_mgr.destroy_entity(v3);
+                    g_world_ptr->ent_mgr.destroy_entity(v3);
                 }
             }
 
@@ -1907,7 +1907,7 @@ void sub_44C3B0(line_info *a1) {
     if constexpr (1) {
         auto v1 = a1->hit_norm * 0.1f;
 
-        auto &v3 = g_world_ptr()->field_1B0;
+        auto &v3 = g_world_ptr->field_1B0;
 
         vector3d arg4 = v1 + a1->hit_pos;
 
@@ -1926,7 +1926,7 @@ void sub_44C430(line_info *a1)
         vector3d v5 = a1->hit_norm * 0.1f + a1->hit_pos;
         auto *v4 = a1->hit_entity.get_volatile_ptr();
 
-        auto *v3 = &g_world_ptr()->field_1F0;
+        auto *v3 = &g_world_ptr->field_1F0;
         v3->spawn(false, v5, a1->hit_norm, nullptr, nullptr, v4, ZEROVEC, false, true);
 
     } else {
@@ -1984,7 +1984,7 @@ void swing_inode::do_web_splat(vector3d target_point,
 
                 vector3d local_vec3 = vector3d::cross(line.hit_norm, YVEC);
 
-                auto float_from_world = g_world_ptr()->field_1B0.field_2C * 0.5f;
+                auto float_from_world = g_world_ptr->field_1B0.field_2C * 0.5f;
 
                 auto hit_pos = line.hit_pos;
 
@@ -2202,7 +2202,7 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
     if constexpr (1)
     {
         auto *cntrl_inode_ptr = this->field_20->field_24;
-        auto *cam_ptr = g_world_ptr()->get_chase_cam_ptr(0);
+        auto *cam_ptr = g_world_ptr->get_chase_cam_ptr(0);
 
         vector3d a2;
         vector3d a3;

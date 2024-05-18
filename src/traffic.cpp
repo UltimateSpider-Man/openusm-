@@ -117,7 +117,7 @@ void traffic::get_closest_point_on_lane_with_facing(vector3d *a1, vector3d *a2, 
 {
     if constexpr (1)
     {
-        auto *v3 = g_world_ptr()->the_terrain->get_region_info_for_point(*a1);
+        auto *v3 = g_world_ptr->the_terrain->get_region_info_for_point(*a1);
         if (v3 != nullptr)
         {
             for ( auto &reg : (*v3) )

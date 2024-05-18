@@ -23,7 +23,7 @@ void send_shadow_projectors()
 
     if (1) //( j_debug_render_get_ival((debug_render_items_e)21) || SHOW_OBBS || SHOW_DISTRICTS )
     {
-        auto *the_terrain = g_world_ptr()->get_the_terrain();
+        auto *the_terrain = g_world_ptr->get_the_terrain();
         the_terrain->show_obbs();
     }
 }

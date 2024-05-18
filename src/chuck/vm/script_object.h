@@ -167,7 +167,9 @@ public:
     //0x0058EF80
     int find_func(string_hash a2) const;
 
-    int find_function_by_address(const uint16_t *a2);
+    int find_func_short(string_hash a2) const;
+
+    int find_function_by_address(const uint16_t *a2) const;
 
     static void read(chunk_file *file, script_object *so);
 

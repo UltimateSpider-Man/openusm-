@@ -230,7 +230,7 @@ game::game()
         }
 
         this->the_world = new world_dynamics_system();
-        g_world_ptr() = this->the_world;
+        g_world_ptr = this->the_world;
 
         this->mb = nullptr;
 
@@ -383,12 +383,12 @@ game::~game()
             v7->flush(nullptr);
 
             term_subdivision();
-            if ( g_world_ptr() != nullptr ) {
-                g_world_ptr()->~world_dynamics_system();
-                operator delete(g_world_ptr());
+            if ( g_world_ptr != nullptr ) {
+                g_world_ptr->~world_dynamics_system();
+                operator delete(g_world_ptr);
             }
 
-            g_world_ptr() = nullptr;
+            g_world_ptr = nullptr;
         }
 
         USOcean2Shader::Release();
@@ -1155,7 +1155,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
 
         if ( AXIS_MAX == a2->get_control_delta(119, INVALID_DEVICE_ID) )
         {
-            auto *v8 = g_world_ptr()->get_hero_ptr(0);
+            auto *v8 = g_world_ptr->get_hero_ptr(0);
 
             auto v11 = v8->get_abs_position();
 
@@ -1514,7 +1514,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                     }
                 }
 
-                if ( g_world_ptr()->get_num_players() == 0 )
+                if ( g_world_ptr->get_num_players() == 0 )
                 {
                     auto *v126 = this->the_world->get_chase_cam_ptr(0);
                     if ( v126 != nullptr ) {
@@ -1522,7 +1522,7 @@ void game::handle_cameras(input_mgr *a2, const Float &time_inc)
                     }
                 }
 
-                for (int i {0}; i < g_world_ptr()->get_num_players(); ++i)
+                for (int i {0}; i < g_world_ptr->get_num_players(); ++i)
                 {
                     auto *v129 = this->the_world->get_chase_cam_ptr(i);
                     if ( v129 != nullptr ) {
@@ -1649,7 +1649,7 @@ void game::set_camera(int a2)
                 this->mb->post(str, 2.0, v13);
             }
 
-            if (g_world_ptr()->get_hero_ptr(0) != nullptr) {
+            if (g_world_ptr->get_hero_ptr(0) != nullptr) {
                 auto *v7 = entity_handle_manager::find_entity(string_hash{"USER_CAM"},
                                                              entity_flavor_t::IGNORE_FLAVOR,
                                                              false);
@@ -1730,9 +1730,9 @@ void game::freeze_hero(bool a2)
     {
         if ( this->the_world != nullptr )
         {
-            for ( int v3 = 0; v3 < g_world_ptr()->num_players; ++v3 )
+            for ( int v3 = 0; v3 < g_world_ptr->num_players; ++v3 )
             {
-                auto *v5 = g_world_ptr()->get_hero_ptr(v3);
+                auto *v5 = g_world_ptr->get_hero_ptr(v3);
                 if ( v5 != nullptr )
                 {
                     v5->set_ext_flag_recursive(static_cast<entity_ext_flag_t>(0x4000u), a2);
@@ -1884,7 +1884,7 @@ void game::load_this_level()
         }
 
         gravity_generator *v30 = new gravity_generator{};
-        g_world_ptr()->add_generator(v30);
+        g_world_ptr->add_generator(v30);
 
         if (g_femanager.m_fe_menu_system != nullptr) {
             g_femanager.m_fe_menu_system->RenderLoadMeter(false);
@@ -1912,7 +1912,7 @@ void game::load_this_level()
 
         mission_manager::s_inst->add_global_table(v93);
 
-        g_world_ptr()->field_28.setup_cameras();
+        g_world_ptr->field_28.setup_cameras();
         script_manager::link();
         this->the_world->field_140.hook_up_global_script_object();
         mString hero_name {this->gamefile->field_340.m_hero_name.to_string()};
@@ -1930,7 +1930,7 @@ void game::load_this_level()
             auto v73 = os_developer_options::instance->get_string(os_developer_options::HERO_START_DISTRICT);
             if (v73)
 			{
-                auto *ter = g_world_ptr()->get_the_terrain();
+                auto *ter = g_world_ptr->get_the_terrain();
                 assert(ter != nullptr);
 
                 fixedstring<4> v77{v73->c_str()};
@@ -1939,7 +1939,7 @@ void game::load_this_level()
 				{
                     region *reg = ter->get_region(v39);
                     if ( reg->is_locked() ) {
-                        g_world_ptr()->the_terrain->unlock_district(reg->get_district_id());
+                        g_world_ptr->the_terrain->unlock_district(reg->get_district_id());
                     }
 
                     v86.set_position(reg->field_A4);
@@ -1958,11 +1958,11 @@ void game::load_this_level()
             v86.set_position(g_game_ptr->level.field_24);
         }
 
-        auto *the_terrain = g_world_ptr()->the_terrain;
+        auto *the_terrain = g_world_ptr->the_terrain;
         if ( auto *reg = the_terrain->find_region(v86.get_position(), nullptr);
                 reg != nullptr && (reg->flags & 0x4000) != 0)
         {
-            g_world_ptr()->the_terrain->unlock_district(reg->district_id);
+            g_world_ptr->the_terrain->unlock_district(reg->district_id);
         }
         else
         {
@@ -1971,7 +1971,7 @@ void game::load_this_level()
                 auto *reg = the_terrain->get_region(j);
                 if (reg != nullptr && (reg->flags & 0x4000) != 0)
                 {
-                    g_world_ptr()->the_terrain->unlock_district(reg->get_district_id());
+                    g_world_ptr->the_terrain->unlock_district(reg->get_district_id());
                     v86.set_position(reg->field_A4);
                     break;
                 }
@@ -1996,7 +1996,7 @@ void game::load_this_level()
             v86 = v77;
         }
 
-        auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
+        auto *hero_ptr = g_world_ptr->get_hero_ptr(0);
         if ( hero_ptr != nullptr )
 		{
             *hero_ptr->my_rel_po = v86;
@@ -2014,7 +2014,7 @@ void game::load_this_level()
         }
 		else
 		{
-            auto *cam_ptr = g_world_ptr()->field_28.field_44;
+            auto *cam_ptr = g_world_ptr->field_28.field_44;
 
             if ( cam_ptr != nullptr )
 			{
@@ -2030,7 +2030,7 @@ void game::load_this_level()
         }
 
         this->the_world->the_terrain->start_streaming(game::load_complete);
-        g_world_ptr()->the_terrain->force_streamer_refresh();
+        g_world_ptr->the_terrain->force_streamer_refresh();
         USOcean2Shader::Init();
 
         {
@@ -2436,7 +2436,7 @@ mString game::get_camera_info() const
 
 
     auto &v18 = v2->get_abs_position();
-    auto *v8 = g_world_ptr()->get_the_terrain();
+    auto *v8 = g_world_ptr->get_the_terrain();
     auto *v32 = v8->find_region(v18, nullptr);
     if ( v32 != nullptr )
     {
@@ -2468,7 +2468,7 @@ mString game::get_analyzer_info() const
     auto *v3 = entity_handle_manager::find_entity(v16, entity_flavor_t::CAMERA, false);
 
     auto &v14 = v3->get_abs_position();
-    auto *v4 = g_world_ptr()->get_the_terrain();
+    auto *v4 = g_world_ptr->get_the_terrain();
     auto *v26 = v4->find_region(v14, nullptr);
 
     mString v25 {""};
@@ -2497,7 +2497,7 @@ mString game::get_analyzer_info() const
 
 mString game::get_hero_info() const
 {
-    auto *v30 = g_world_ptr()->get_hero_ptr(0);
+    auto *v30 = g_world_ptr->get_hero_ptr(0);
     if ( v30 == nullptr )
     {
         mString result {"(hero does not exist!)"};
@@ -3062,7 +3062,7 @@ void game::unload_current_level()
         }
 
         this->the_world = nullptr;
-        g_world_ptr() = nullptr;
+        g_world_ptr = nullptr;
 
         script_manager::clear();
         script_manager::destroy_game_var();
@@ -3081,7 +3081,7 @@ void game::unload_current_level()
         auto *v16 = new (mem) world_dynamics_system{};
         this->the_world = v16;
 
-        g_world_ptr() = v16;
+        g_world_ptr = v16;
         debug_render_items()[34] = 1;
         sub_579290();
         this->field_170 = false;
@@ -3187,7 +3187,7 @@ void game::sub_524170()
 {
     static Var<int> achy_breaky_int{0x0095C734};
 
-    if ( g_world_ptr()->field_158.field_C == 13111 ) {
+    if ( g_world_ptr->field_158.field_C == 13111 ) {
         ++achy_breaky_int();
     }
 

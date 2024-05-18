@@ -377,7 +377,7 @@ static bool g_debug_menu_just_malored = false;
 void warp_handler(debug_menu_entry *arg0)
 {
     auto idx = arg0->get_id();
-    auto *v6 = g_world_ptr()->get_the_terrain();
+    auto *v6 = g_world_ptr->get_the_terrain();
     if ( v6 != nullptr )
     {
         auto *v5 = v6->get_region(idx);
@@ -388,7 +388,7 @@ void warp_handler(debug_menu_entry *arg0)
         }
 
         auto &v2 = v5->field_A4;
-        g_world_ptr()->malor_point(v2, 0, false);
+        g_world_ptr->malor_point(v2, 0, false);
         g_debug_menu_just_malored = 1;
     }
 
@@ -403,7 +403,7 @@ void warp_poi_handler([[maybe_unused]] debug_menu_entry *menu_entry)
         vector3d a1;
         if ( v2->get_the_arrow_target_pos(&a1) )
         {
-            g_world_ptr()->malor_point(a1, 0, false);
+            g_world_ptr->malor_point(a1, 0, false);
             g_debug_menu_just_malored = true;
             debug_menu::hide();
         }
@@ -494,7 +494,7 @@ void populate_warp_menu(debug_menu_entry *entry)
     v19->set_game_flags_handler(warp_poi_handler);
     v20->add_entry(v19);
 
-    auto *v18 = g_world_ptr()->get_the_terrain();
+    auto *v18 = g_world_ptr->get_the_terrain();
     if ( v18 != nullptr )
     {
         for ( auto idx = 0; idx < v18->total_regions; ++idx )
@@ -1253,17 +1253,17 @@ void game_flags_handler(debug_menu_entry *a1)
         }
         */
 
-        auto *v8 = g_world_ptr()->get_hero_ptr(0);
+        auto *v8 = g_world_ptr->get_hero_ptr(0);
         if ( v8 != nullptr && g_game_ptr->m_user_camera_enabled )
         {
             if ( a1->get_bval() )
             {
-                auto *v14 = g_world_ptr()->get_hero_ptr(0);
+                auto *v14 = g_world_ptr->get_hero_ptr(0);
                 v14->unsuspend(1);
             }
             else
             {
-                auto *v15 = g_world_ptr()->get_hero_ptr(0);
+                auto *v15 = g_world_ptr->get_hero_ptr(0);
                 v15->suspend(1);
             }
         }
@@ -1287,7 +1287,7 @@ void game_flags_handler(debug_menu_entry *a1)
         static auto load_districts = TRUE;
         if ( load_districts )
         {
-            auto *v11 = g_world_ptr()->get_the_terrain();
+            auto *v11 = g_world_ptr->get_the_terrain();
             v11->unload_all_districts_immediate();
             resource_manager::set_active_district(false);
         }

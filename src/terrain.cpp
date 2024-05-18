@@ -609,7 +609,7 @@ bool terrain::district_pre_destruct_callback(
 {
 	assert(reason == resource_pack_slot::CALLBACK_PRE_DESTRUCT);
 
-	auto *ter = g_world_ptr()->get_the_terrain();
+	auto *ter = g_world_ptr->get_the_terrain();
 	assert(ter != nullptr);
 
 	assert(which_pack_slot != nullptr);
@@ -639,7 +639,7 @@ bool terrain::district_load_started_callback(resource_pack_slot::callback_enum ,
 											 resource_pack_slot *a3)
 {
 	auto &v6 = a3->get_pack_token();
-	auto *the_terrain = g_world_ptr()->get_the_terrain();
+	auto *the_terrain = g_world_ptr->get_the_terrain();
 	auto *eligible_pack = the_terrain->field_24.find_eligible_pack_by_token(v6);
 	auto v7 = eligible_pack->get_token().field_4;
 	auto *reg = the_terrain->get_region(v7);
@@ -659,7 +659,7 @@ bool terrain::district_destruct_callback(resource_pack_slot::callback_enum reaso
                                          resource_pack_slot *which_pack_slot,
                                          limited_timer *a4) {
     if constexpr (0) {
-        auto *ter = g_world_ptr()->get_the_terrain();
+        auto *ter = g_world_ptr->get_the_terrain();
 
         assert(ter != nullptr);
 
@@ -734,7 +734,7 @@ void terrain::show_obbs()
 
                     reg->field_98->set_color(v15[v14]);
                 } else if (debug_render_get_ival(OBBS) == 1) {
-                    auto *v2 = g_world_ptr()->get_hero_ptr(0);
+                    auto *v2 = g_world_ptr->get_hero_ptr(0);
 
                     auto *v3 = v2->get_primary_region();
                     if (reg == v3) {
@@ -787,9 +787,9 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
     if constexpr (0)
     {
         static bool & byte_960C00 = var<bool>(0x00960C00);
-        if ( g_world_ptr() != nullptr )
+        if ( g_world_ptr != nullptr )
         {
-            auto *v3 = g_world_ptr()->get_hero_ptr(0);
+            auto *v3 = g_world_ptr->get_hero_ptr(0);
             if ( v3 != nullptr )
             {
                 if ( !g_game_ptr->field_170 )
@@ -838,8 +838,8 @@ void terrain::find_ideal_terrain_packs(_std::vector<ideal_pack_info> *ideal_pack
                     {
                         byte_960C00 = true;
 
-                        auto v11 = g_world_ptr()->get_hero_ptr(0)->get_my_handle();
-                        g_world_ptr()->entity_sinks({v11});
+                        auto v11 = g_world_ptr->get_hero_ptr(0)->get_my_handle();
+                        g_world_ptr->entity_sinks({v11});
                     }
                 }
             }
@@ -1522,7 +1522,7 @@ void terrain::frame_advance(Float a2)
         if (!os_developer_options::instance->get_flag(mString {"CAMERA_CENTRIC_STREAMER"})
                 || func(g_femanager.IGO->field_44) )
         {
-            auto *ent = g_world_ptr()->get_hero_ptr(0);
+            auto *ent = g_world_ptr->get_hero_ptr(0);
             pos = ent->get_abs_position();
         }
         else
@@ -1548,7 +1548,7 @@ void terrain::frame_advance(Float a2)
 
 void find_ideal_terrain_packs_callback(_std::vector<ideal_pack_info> *a1)
 {
-    auto *ter = g_world_ptr()->get_the_terrain();
+    auto *ter = g_world_ptr->get_the_terrain();
 
     ter->find_ideal_terrain_packs(a1);
 }

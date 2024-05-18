@@ -287,7 +287,7 @@ region *ai_path::find_region_for_point(const vector3d &a1, Float a2) {
 
         _std::vector<region *> regions{};
 
-        auto *the_terrain = g_world_ptr()->the_terrain;
+        auto *the_terrain = g_world_ptr->the_terrain;
         the_terrain->find_regions(a1, &regions);
 
         for (auto &current_region : regions) {

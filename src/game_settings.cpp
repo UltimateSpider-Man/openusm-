@@ -158,21 +158,21 @@ void game_settings::export_game_options()
         v2->disable_vibration();
     }
 
-    if (g_world_ptr()->get_hero_ptr(0) != nullptr)
+    if (g_world_ptr->get_hero_ptr(0) != nullptr)
     {
         mString a1{"gv_hero_spawn_point"};
 
         auto *v3 = (const vector3d *) script_manager::get_game_var_address(a1, nullptr, nullptr);
 
-        g_world_ptr()->sub_530460(*v3, 0, 0);
+        g_world_ptr->sub_530460(*v3, 0, 0);
     }
 }
 
 void game_settings::export_game_settings()
 {
-    if (g_world_ptr() != nullptr)
+    if (g_world_ptr != nullptr)
     {
-        auto *v1 = g_world_ptr()->get_hero_ptr(0);
+        auto *v1 = g_world_ptr->get_hero_ptr(0);
         if (v1 != nullptr)
         {
             if (v1->has_damage_ifc())
@@ -271,7 +271,7 @@ void game_settings::load_game(int slot_num)
                             sizeof(this->field_4A8));
 
                 this->field_4B8 = slot_num;
-                auto *v4 = g_world_ptr()->get_chase_cam_ptr(0);
+                auto *v4 = g_world_ptr->get_chase_cam_ptr(0);
                 g_game_ptr->set_current_camera(v4, true);
             }
         }
@@ -281,9 +281,9 @@ void game_settings::load_game(int slot_num)
             this->field_4C8 = 0;
             this->m_slot_num = slot_num;
             mission_manager::s_inst->unload_script_now();
-            auto v3 = g_world_ptr()->num_players;
+            auto v3 = g_world_ptr->num_players;
             if (v3 > 0) {
-                g_world_ptr()->remove_player(v3 - 1);
+                g_world_ptr->remove_player(v3 - 1);
             }
         }
 
@@ -304,9 +304,9 @@ void game_settings::collect_game_settings()
 {
     if constexpr (1)
     {
-        if (g_world_ptr() != nullptr)
+        if (g_world_ptr != nullptr)
         {
-            auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
+            auto *hero_ptr = g_world_ptr->get_hero_ptr(0);
             if (hero_ptr != nullptr)
             {
                 if (hero_ptr->has_damage_ifc())

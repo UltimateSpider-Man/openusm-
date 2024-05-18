@@ -63,7 +63,7 @@ actor *ped_spawner::create_ped_actor()
         static string_hash ped_fem_hash {int(to_hash("ped_fem"))};
 
         string_hash v7 {v10};
-        eb = g_world_ptr()->ent_mgr.acquire_entity(ped_fem_hash, v7, 129);
+        eb = g_world_ptr->ent_mgr.acquire_entity(ped_fem_hash, v7, 129);
         this->field_44 = 2;
     }
     else
@@ -71,7 +71,7 @@ actor *ped_spawner::create_ped_actor()
         static string_hash ped_male_hash {int(to_hash("ped_male"))};
 
         string_hash v7 {v10};
-        eb = g_world_ptr()->ent_mgr.acquire_entity(ped_male_hash, v7, 129);
+        eb = g_world_ptr->ent_mgr.acquire_entity(ped_male_hash, v7, 129);
         this->field_44 = 1;
     }
 

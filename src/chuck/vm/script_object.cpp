@@ -602,7 +602,8 @@ int script_object::get_size_instances() const
             );
 }
 
-int script_object::find_func(string_hash a2) const {
+int script_object::find_func(string_hash a2) const
+{
     TRACE("script_object::find_func", a2.to_string());
 
     if constexpr (1) {
@@ -661,7 +662,20 @@ int script_object::find_func(string_hash a2) const {
     }
 }
 
-int script_object::find_function_by_address(const uint16_t *a2)
+int script_object::find_func_short(string_hash a2) const
+{
+    for ( int i = 0; i < this->total_funcs; ++i )
+    {
+        auto v3 = this->funcs[i]->get_name();
+        if ( v3 == a2 ) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int script_object::find_function_by_address(const uint16_t *a2) const
 {
     //TRACE("script_object::find_function_by_address");
 

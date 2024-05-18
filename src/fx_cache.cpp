@@ -28,7 +28,7 @@ void fx_cache_ent::un_mash(
             po v11 {identity_matrix};
             auto v10 = make_unique_entity_id();
             auto v9 = a3->field_8.m_hash;
-            auto *v8 = g_world_ptr()->ent_mgr.create_and_add_entity_or_subclass(v9, v10, v11, v16, 129, nullptr);
+            auto *v8 = g_world_ptr->ent_mgr.create_and_add_entity_or_subclass(v9, v10, v11, v16, 129, nullptr);
             v6 = {v8->my_handle};
             v8->set_active(false);
             v8->set_visible(false, false);
@@ -57,7 +57,7 @@ fx_cache::~fx_cache()
             {
                 auto *ent = v4.get_volatile_ptr();
                 if ( ent != nullptr ) {
-                    g_world_ptr()->ent_mgr.destroy_entity(ent);
+                    g_world_ptr->ent_mgr.destroy_entity(ent);
                 }
 
                 v4 = {};

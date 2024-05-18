@@ -115,7 +115,7 @@ void wds_camera_manager::setup_cameras()
     {
         vector3d v46 {ZEROVEC};
 
-        auto *v2 = g_world_ptr()->get_hero_ptr(0);
+        auto *v2 = g_world_ptr->get_hero_ptr(0);
         if ( v2 != nullptr ) {
             v46 = v2->get_abs_position();
         }
@@ -123,7 +123,7 @@ void wds_camera_manager::setup_cameras()
         auto *user_cam = new camera {nullptr, string_hash {"USER_CAM"}};
 
         user_cam->set_abs_position(v46);
-        g_world_ptr()->ent_mgr.add_camera(nullptr, user_cam);
+        g_world_ptr->ent_mgr.add_camera(nullptr, user_cam);
 
         auto *v14 = new theta_and_psi_mcs {user_cam, 0.0, 0.0};
         g_theta_and_psi_mcs() = v14;
@@ -151,22 +151,22 @@ void wds_camera_manager::setup_cameras()
 
         system_idle();
 
-        auto *v25 = new mic {g_world_ptr()->get_hero_ptr(0), string_hash {"BOOM_MIC"}};
-        g_world_ptr()->ent_mgr.add_mic(nullptr, v25);
+        auto *v25 = new mic {g_world_ptr->get_hero_ptr(0), string_hash {"BOOM_MIC"}};
+        g_world_ptr->ent_mgr.add_mic(nullptr, v25);
 
-        this->field_20 = new sniper_camera {string_hash {"SNIPER_CAM"}, g_world_ptr()->get_hero_ptr(0)};
-        g_world_ptr()->ent_mgr.add_camera(nullptr, this->field_20);
+        this->field_20 = new sniper_camera {string_hash {"SNIPER_CAM"}, g_world_ptr->get_hero_ptr(0)};
+        g_world_ptr->ent_mgr.add_camera(nullptr, this->field_20);
 
         this->field_44 = new marky_camera {string_hash {"MARKY_CAM"}};
-        g_world_ptr()->ent_mgr.add_camera(nullptr, this->field_44);
-        g_world_ptr()->set_chase_cam_ptr(0, this->field_44);
+        g_world_ptr->ent_mgr.add_camera(nullptr, this->field_44);
+        g_world_ptr->set_chase_cam_ptr(0, this->field_44);
 
         g_femanager.RenderLoadMeter(false);
 
         auto *scene_analyzer_cam = new camera {nullptr, string_hash {"SCENE_ANALYZER_CAM"}};
         scene_analyzer_cam->set_abs_position(v46);
 
-        g_world_ptr()->ent_mgr.add_camera(nullptr, scene_analyzer_cam);
+        g_world_ptr->ent_mgr.add_camera(nullptr, scene_analyzer_cam);
 
         auto *a2 = new theta_and_psi_mcs {scene_analyzer_cam, 0.0, 0.0};
         this->add_mcs(a2);

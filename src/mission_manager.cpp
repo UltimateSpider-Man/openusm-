@@ -457,12 +457,12 @@ void mission_manager::add_district_table(void *a2, region *a3)
 }
 
 
-void mission_manager::update_hero_switch() {
-    world_dynamics_system *wds = g_world_ptr();
+void mission_manager::update_hero_switch()
+{
 
-    if (int v3 = g_world_ptr()->get_num_players(); v3 > 1) {
+    if (int v3 = g_world_ptr->get_num_players(); v3 > 1) {
         do {
-            wds->remove_player(--v3);
+            g_world_ptr->remove_player(--v3);
 
         } while (v3 != 1);
     }
@@ -470,13 +470,13 @@ void mission_manager::update_hero_switch() {
     if (auto v4 = this->hero_switch_frame; v4 != -1) {
         switch (v4) {
         case 0:
-            assert(wds->get_num_players() <= 1 && "update code for multiple players");
+            assert(g_world_ptr->get_num_players() <= 1 && "update code for multiple players");
 
-            if (wds->get_num_players() <= 0) {
+            if (g_world_ptr->get_num_players() <= 0) {
                 ++this->hero_switch_frame;
             } else {
                 sp_log("Removing player");
-                wds->remove_player(wds->num_players - 1);
+                g_world_ptr->remove_player(g_world_ptr->num_players - 1);
             }
 
             break;
@@ -487,12 +487,12 @@ void mission_manager::update_hero_switch() {
             ++this->hero_switch_frame;
             break;
         case 3: {
-            auto old_num_players = wds->get_num_players();
+            auto old_num_players = g_world_ptr->get_num_players();
 
             sp_log("Adding player");
 
             mString a2 = mString{this->field_D0.to_string()};
-            auto new_num_players = g_world_ptr()->add_player(a2);
+            auto new_num_players = g_world_ptr->add_player(a2);
 
             assert(new_num_players > old_num_players &&
                    "unable to add player (while switching hero costumes)");

@@ -165,7 +165,7 @@ void vehicle_model::sub_6B9F30(vhandle_type<entity> a2)
 {
     --this->refcount;
     auto *e = a2.get_volatile_ptr();
-    g_world_ptr()->ent_mgr.release_entity(e);
+    g_world_ptr->ent_mgr.release_entity(e);
 }
 
 

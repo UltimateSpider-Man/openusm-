@@ -55,7 +55,7 @@ void mouselook_controller::_frame_advance(Float time_inc)
     TRACE("mouselook_controller::frame_advance");
 
     {
-        g_debug_cam_target_actor() = bit_cast<actor *>(g_world_ptr()->get_hero_ptr(0));
+        g_debug_cam_target_actor() = bit_cast<actor *>(g_world_ptr->get_hero_ptr(0));
 
         vector3d cur_cam_target {0x0095CB00};
         //cur_cam_target() = ZEROVEC;

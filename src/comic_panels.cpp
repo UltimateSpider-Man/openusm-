@@ -281,7 +281,7 @@ camera * panel_component_camera::get_default_camera() const
 
 void panel_component_camera::register_camera(uint32_t a2, const char *a3) {
     if (a3 != nullptr && a3[0] != '\0') {
-        auto *v4 = g_world_ptr()->ent_mgr.get_entity(string_hash{a3});
+        auto *v4 = g_world_ptr->ent_mgr.get_entity(string_hash{a3});
         if (v4 != nullptr) {
             this->field_34[a2].field_0 = v4->get_my_handle();
         } else {

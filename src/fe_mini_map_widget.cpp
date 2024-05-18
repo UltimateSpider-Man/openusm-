@@ -93,10 +93,10 @@ void fe_mini_map_widget::PrepareRegions()
             mat.m_texture = nullptr;
         }
 
-        auto *hero_or_marky_cam_ptr = g_world_ptr()->get_hero_or_marky_cam_ptr();
+        auto *hero_or_marky_cam_ptr = g_world_ptr->get_hero_or_marky_cam_ptr();
 
         auto abs_pos = hero_or_marky_cam_ptr->get_abs_position();
-        auto *outermost_region = g_world_ptr()->the_terrain->find_outermost_region(abs_pos);
+        auto *outermost_region = g_world_ptr->the_terrain->find_outermost_region(abs_pos);
 
         region_array v18 {};
         build_region_list_radius(&v18, outermost_region, abs_pos, 500.0f, true);
@@ -162,7 +162,7 @@ void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
                     auto iter = v11->CreateIterator();
                     iter.BeginStrip(4u);
 
-                    auto *v14 = g_world_ptr()->get_hero_or_marky_cam_ptr();
+                    auto *v14 = g_world_ptr->get_hero_or_marky_cam_ptr();
 
                     vector3d v47[3] {};
                     v47[2] = v14->get_abs_position();
@@ -191,7 +191,7 @@ void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
             mesh = nglCloseMesh();
         }
 
-        auto *v39 = g_world_ptr()->get_chase_cam_ptr(0);
+        auto *v39 = g_world_ptr->get_chase_cam_ptr(0);
         auto &abs_po = v39->get_abs_po();
         auto y_facing = abs_po.get_y_facing();
         auto z_facing = abs_po.get_z_facing();
@@ -214,7 +214,7 @@ void fe_mini_map_widget::RenderMeshes(matrix4x4 *a2, float &a4)
 
         matrix4x4 v81 {};
         v81.make_rotate(YVEC, v69);
-        auto *v55 = g_world_ptr()->get_chase_cam_ptr(0);
+        auto *v55 = g_world_ptr->get_chase_cam_ptr(0);
 
         auto v56 = dot(YVEC, v55->get_abs_po().get_y_facing());
 
@@ -308,12 +308,12 @@ void fe_mini_map_widget::Draw()
     auto v3 = v2 && v2->field_2D;
     if (this->field_3A8 || v3)
     {
-        auto *hero_ptr = g_world_ptr()->get_hero_ptr(0);
+        auto *hero_ptr = g_world_ptr->get_hero_ptr(0);
 
         region *reg;
 
         if (hero_ptr == nullptr ||
-            (reg = g_world_ptr()->the_terrain->find_outermost_region(hero_ptr->get_abs_position()),
+            (reg = g_world_ptr->the_terrain->find_outermost_region(hero_ptr->get_abs_position()),
              reg == nullptr) ||
             !reg->is_interior())
         {

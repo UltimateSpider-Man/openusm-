@@ -279,7 +279,7 @@ void spiderman_camera::_frame_advance(Float a2)
 
             set_filter_time(a2);
             if ( this->get_target_entity() == nullptr ) {
-                this->set_target_entity(g_world_ptr()->get_hero_ptr(0));
+                this->set_target_entity(g_world_ptr->get_hero_ptr(0));
             }
 
             auto *target_entity = this->get_target_entity();
