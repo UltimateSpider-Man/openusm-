@@ -305,20 +305,20 @@ struct game {
     void render_motion_blur();
 
     //0x005244E0
-    float get_script_game_clock_timer();
+    float get_script_game_clock_timer() const;
 
     //0x00524290
     void render_interface();
 
     //0x005242D0
-    mString get_hero_info();
+    mString get_hero_info() const;
 
     //0x0052E0D0
-    mString get_camera_info();
+    mString get_camera_info() const;
 
-    mString get_analyzer_info();
+    mString get_analyzer_info() const;
 
-    void show_debug_info();
+    void show_debug_info() const;
 
     //0x00514D00
     void show_max_velocity();

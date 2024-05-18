@@ -459,8 +459,18 @@ void game::enable_marky_cam(bool a2, bool a3, Float a4, Float a5) {
     }
 }
 
-void game::soft_reset_process() {
-    THISCALL(0x00548C70, this);
+void game::soft_reset_process()
+{
+    if constexpr (0)
+    {
+        this->process_stack.clear();
+
+        this->push_process(main_process);
+    }
+    else
+    {
+        THISCALL(0x00548C70, this);
+    }
 }
 
 void game::load_complete() {
@@ -1714,9 +1724,35 @@ void glow_init() {
     ;
 }
 
-void game::freeze_hero(bool a2) {
-    if constexpr (0) {
-    } else {
+void game::freeze_hero(bool a2)
+{
+    if constexpr (0)
+    {
+        if ( this->the_world != nullptr )
+        {
+            for ( int v3 = 0; v3 < g_world_ptr()->num_players; ++v3 )
+            {
+                auto *v5 = g_world_ptr()->get_hero_ptr(v3);
+                if ( v5 != nullptr )
+                {
+                    v5->set_ext_flag_recursive(static_cast<entity_ext_flag_t>(0x4000u), a2);
+
+                    if ( v5->get_ai_core() != nullptr )
+                    {
+                        if ( a2 ) {
+                            v5->suspend(true);
+                        } else {
+                            v5->unsuspend(true);
+                        }
+                    }
+                }
+            }
+        }
+
+        this->field_160 = a2;
+    }
+    else
+    {
         THISCALL(0x00514F00, this, a2);
     }
 }
@@ -2373,13 +2409,13 @@ void game::render_interface()
     }
 }
 
-mString sub_55DD80(const vector3d &a2)
+mString to_string(const vector3d &a2)
 {
     mString a1 {0, "<%.3f,%.3f,%.3f>", a2[0], a2[1], a2[2]};
     return a1;
 }
 
-mString game::get_camera_info()
+mString game::get_camera_info() const
 {
     auto *v2 = this->field_5C;
 
@@ -2410,12 +2446,12 @@ mString game::get_camera_info()
     }
 
     auto &v12 = v2->get_abs_position();
-    auto v31 = sub_55DD80(v12);
+    auto v31 = to_string(v12);
 
     auto &v14 = v2->get_abs_po();
     auto &v15 = v14.get_z_facing();
 
-    auto v30 = sub_55DD80(v15);
+    auto v30 = to_string(v15);
     auto *v20 = v30.c_str();
     auto *v19 = v31.c_str();
     auto *v16 = v33.c_str();
@@ -2426,9 +2462,9 @@ mString game::get_camera_info()
     return v29;
 }
 
-mString game::get_analyzer_info()
+mString game::get_analyzer_info() const
 {
-    auto v16 = string_hash("SCENE_ANALYZER_CAM");
+    string_hash v16 {to_hash("SCENE_ANALYZER_CAM")};
     auto *v3 = entity_handle_manager::find_entity(v16, entity_flavor_t::CAMERA, false);
 
     auto &v14 = v3->get_abs_position();
@@ -2444,11 +2480,11 @@ mString game::get_analyzer_info()
     }
     
     auto &v8 = v3->get_abs_position();
-    auto v24 = sub_55DD80(v8);
+    auto v24 = to_string(v8);
 
     auto &v10 = v3->get_abs_po();
     auto &v11 = v10.get_z_facing();
-    auto v23 = sub_55DD80(v11);
+    auto v23 = to_string(v11);
 
     auto *v15 = v23.c_str();
     auto *v12 = v24.c_str();
@@ -2459,7 +2495,7 @@ mString game::get_analyzer_info()
     return a1;
 }
 
-mString game::get_hero_info()
+mString game::get_hero_info() const
 {
     auto *v30 = g_world_ptr()->get_hero_ptr(0);
     if ( v30 == nullptr )
@@ -2486,7 +2522,7 @@ mString game::get_hero_info()
     if ( v30 != nullptr )
     {
         auto &v6 = v30->get_abs_position();
-        v12 = sub_55DD80(v6);
+        v12 = to_string(v6);
     }
     else
     {
@@ -2515,13 +2551,13 @@ mString game::get_hero_info()
     v25.append(v9, -1);
     v25.append(", v = ", -1);
     
-    auto v14 = sub_55DD80(v26);
+    auto v14 = to_string(v26);
     auto *v10 = v14.c_str();
     v25.append(v10, -1);
     return v25;
 }
 
-void game::show_debug_info()
+void game::show_debug_info() const
 {
     TRACE("game::show_debug_info");
 
@@ -2554,7 +2590,7 @@ void game::show_max_velocity()
     }
 }
 
-float game::get_script_game_clock_timer()
+float game::get_script_game_clock_timer() const
 {
     if constexpr (1)
     {
@@ -2565,7 +2601,8 @@ float game::get_script_game_clock_timer()
     }
     else
     {
-        return (double) THISCALL(0x005244E0, this);
+        float (__fastcall *func)(const game *) = CAST(func, 0x005244E0);
+        return func(this);
     }
 }
 
