@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mash.h"
 #include "mstring.h"
 #include "string_hash.h"
 
@@ -13,7 +14,9 @@ struct string_hash_entry {
 
     string_hash_entry(const char *a2, const string_hash *a3);
 
-    mString sub_50DBC0(const char *a3);
+    void initialize(mash::allocation_scope, const char *a2, const string_hash *a3);
+
+    mString generate_text(const char *a3) const;
 
     void unmash(mash_info_struct *a1, void *a2);
 

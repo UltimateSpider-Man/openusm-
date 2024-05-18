@@ -29,6 +29,10 @@ bool IS_KEYBOARD_DEVICE(int id) {
     return id == 0x1E8480;
 }
 
+int DEVICE_ID_TO_KEYBOARD_INDEX(int id) {
+    return (id - 0x1E8480);
+}
+
 bool IS_MOUSE_DEVICE(device_id_t id) {
     return id == 0x2DC6C0;
 }
@@ -174,8 +178,14 @@ void input_mgr::scan_devices()
 
 }
 
-void input_mgr::frame_advance(Float a2) {
-    THISCALL(0x005DAB20, this, a2);
+void input_mgr::frame_advance(Float a2)
+{
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x005DAB20, this, a2);
+    }
 }
 
 float input_mgr::get_control_state(int control, device_id_t a3) const
@@ -267,30 +277,21 @@ void input_mgr::insert_device(input_device *a2)
     {
         auto *v2 = a2;
         auto id = a2->get_id();
-        auto found_device = (input_device **) THISCALL(0x005E8400, &this->field_8, &id);
+
+        input_device ** (__fastcall *insert)(void *, void *edx, const device_id_t *) = CAST(insert, 0x005E8400);
+        auto found_device = insert(&this->field_8, nullptr, &id);
         *found_device = v2;
         
-        if ( !IS_JOYSTICK_DEVICE(v2->get_id()) )
-        {
-            if ( !IS_KEYBOARD_DEVICE(v2->get_id()) )
-            {
-                if ( IS_MOUSE_DEVICE(v2->get_id()) ) {
-                    *((DWORD *)&this[0xFFFE027F] + v2->get_id() - 0x14) = (DWORD)v2;
-                }
-            }
-            else
-            {
-                *((DWORD *)&this[0xFFFEAC55] + v2->get_id() - 0xF) = (DWORD)v2;
-            }
-        }
-        else
-        {
+        if ( IS_JOYSTICK_DEVICE(v2->get_id()) ) {
             *((DWORD *)&this[0xFFFF562B] + v2->get_id() - 0x11) = (DWORD)v2;
+        } else if ( IS_KEYBOARD_DEVICE(v2->get_id()) ) {
+            this->keyboard_devices[DEVICE_ID_TO_KEYBOARD_INDEX(v2->get_id())] = v2;
+        } else if ( IS_MOUSE_DEVICE(v2->get_id()) ) {
+            *((DWORD *)&this[0xFFFE027F] + v2->get_id() - 0x14) = (DWORD)v2;
         }
     }
     else
     {
-
         THISCALL(0x005DC140, this, a2);
     }
 }
@@ -428,7 +429,8 @@ float input_mgr::get_control_delta(int control, device_id_t a3) const
     }
     else
     {
-        return (float) THISCALL(0x005D87C0, this, control, a3);
+        float (__fastcall *func)(const void *, void *edx, int control, device_id_t a3) = CAST(func, 0x005D87C0);
+        return func(this, nullptr, control, a3);
     }
 }
 

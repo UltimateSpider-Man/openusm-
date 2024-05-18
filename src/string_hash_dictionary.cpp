@@ -97,6 +97,8 @@ void string_hash_dictionary::create_inst()
 
 void string_hash_dictionary::clear()
 {
+    TRACE("string_hash_dictionary::clear");
+
     if constexpr (0)
     {
         if (mash_image_buffer != nullptr)
@@ -264,7 +266,7 @@ void string_hash_dictionary::write_text(const char *a1)
             if (v1 != nullptr) {
                 do {
                     {
-                        mString v5 = v1->m_key->sub_50DBC0("\r\n");
+                        mString v5 = v1->m_key->generate_text("\r\n");
 
                         file.write(v5.c_str(), v5.size());
                     }
@@ -367,13 +369,9 @@ const char *string_hash_dictionary::lookup_string(string_hash a1)
     return res;
 }
 
-void string_hash_dictionary::hard_log_string(const char *a1, const string_hash &a2) {
-    mString v2;
-
-    if (_hard_log.opened) {
-        goto LABEL_6;
-    }
-
+void string_hash_dictionary::hard_log_string(const char *a1, const string_hash &a2)
+{
+    if ( !_hard_log.is_open() )
     {
         mString v4 = figure_out_filename(nullptr,
                                 hard_log_filename,
@@ -382,11 +380,11 @@ void string_hash_dictionary::hard_log_string(const char *a1, const string_hash &
         _hard_log.open({v4.c_str()}, 2);
     }
 
-    if (_hard_log.opened) {
-    LABEL_6:
+    if ( _hard_log.is_open() )
+    {
         string_hash_entry v5{a1, &a2};
 
-        v2 = v5.sub_50DBC0("\r\n");
+        mString v2 = v5.generate_text("\r\n");
 
         _hard_log.write(v2.c_str(), v2.size());
     }

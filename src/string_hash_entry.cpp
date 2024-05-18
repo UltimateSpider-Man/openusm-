@@ -10,10 +10,11 @@ VALIDATE_SIZE(string_hash_entry, 20u);
 
 string_hash_entry::string_hash_entry(const char *a2, const string_hash *a3)
 {
-    this->field_0.source_hash_code = 0;
+    this->initialize(mash::ALLOCATED, a2, a3);
+}
 
-    this->field_4 = mString{};
-
+void string_hash_entry::initialize(mash::allocation_scope, const char *a2, const string_hash *a3)
+{
     if (a2 != nullptr) {
         this->field_4 = a2;
     }
@@ -23,7 +24,8 @@ string_hash_entry::string_hash_entry(const char *a2, const string_hash *a3)
     }
 }
 
-mString string_hash_entry::sub_50DBC0(const char *a3) {
+mString string_hash_entry::generate_text(const char *a3) const
+{
     if constexpr (1) {
         mString a1{0, "0x%08x\t%s%s", this->field_0.source_hash_code, this->field_4.c_str(), a3};
 

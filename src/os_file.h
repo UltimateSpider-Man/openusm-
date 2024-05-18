@@ -45,7 +45,7 @@ struct os_file {
     ~os_file();
 
     bool is_open() const {
-        return opened;
+        return this->opened;
     }
 
     void sub_58DEF0();
