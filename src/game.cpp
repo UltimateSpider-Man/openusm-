@@ -747,21 +747,7 @@ void game::one_time_init_stuff()
         terrain_types_manager::create_inst();
         this->message_board_init();
 
-        auto &a4 = game_packs_modified_callback;
-        if (resource_manager::resource_pack_modified_callbacks.size() <
-            resource_manager::resource_pack_modified_callbacks.capacity()) {
-            *resource_manager::resource_pack_modified_callbacks.m_last =
-                game_packs_modified_callback;
-            ++resource_manager::resource_pack_modified_callbacks.m_last;
-        } else {
-            void (__fastcall *_Insert_n)(void *, void *, void *, int, void (*)(_std::vector<resource_key> &) ) = CAST(_Insert_n, 0x0056A260);
-
-            _Insert_n(&resource_manager::resource_pack_modified_callbacks,
-					  nullptr,
-                      resource_manager::resource_pack_modified_callbacks.m_last,
-                      1,
-                      &a4);
-        }
+        resource_manager::add_resource_pack_modified_callback(game_packs_modified_callback);
 
         if (g_console == nullptr) {
             g_console = new Console {};
@@ -772,8 +758,9 @@ void game::one_time_init_stuff()
 
         a1 = tlFixedString {"vcl_car_shadow"};
         this->field_B8 = nglGetFirstMeshInFile(a1);
-
-    } else {
+    }
+    else
+    {
         THISCALL(0x00552E50, this);
     }
 }
@@ -1610,7 +1597,9 @@ void game::handle_game_states(const Float &a2)
             assert(0);
             return;
         }
-    } else {
+    }
+    else
+    {
         THISCALL(0x0055D510, this, &a2);
     }
 }
