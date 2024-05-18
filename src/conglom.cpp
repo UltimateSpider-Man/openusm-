@@ -867,8 +867,33 @@ bool render_drop_shadow(math::MatClass<4, 3> &a1, Float a2, Float a3, bool a4)
     return (bool) CDECL_CALL(0x0059F910, &a1, a2, a3, a4);
 }
 
-void conglomerate::render_simple_shadow(Float arg0, Float arg4) {
-    THISCALL(0x004E4D80, this, arg0, arg4);
+bool conglomerate::render_complex_shadow(Float camera_distance)
+{
+    assert(this->is_flagged(EFLAG_MISC_CAST_SHADOW) && this->is_flagged(EFLAG_MISC_HIRES_SHADOW));
+
+    assert(camera_distance <= 50.0f);
+
+    if constexpr (0)
+    {}
+    else
+    {
+        bool (__fastcall *func)(void *, void *edx, Float camera_distance) = CAST(func, 0x004E5300);
+        return func(this, nullptr, camera_distance);
+    }
+}
+
+void conglomerate::render_simple_shadow(Float arg0, Float arg4)
+{
+    assert(this->is_flagged(EFLAG_MISC_CAST_SHADOW)
+            && this->is_flagged(EFLAG_GRAPHICS_VISIBLE));
+
+    if constexpr (0)
+    {
+    }
+    else
+    {
+        THISCALL(0x004E4D80, this, arg0, arg4);
+    }
 }
 
 bool sub_4C19C0(const string_hash &a1, entity_base **a2, int size, int *index) {

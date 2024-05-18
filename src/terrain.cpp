@@ -13,11 +13,14 @@
 #include "eligible_pack_token.h"
 #include "femanager.h"
 #include "filespec.h"
+#include "fixed_pool.h"
 #include "func_wrapper.h"
 #include "game.h"
 #include "igofrontend.h"
 #include "igozoomoutmap.h"
+#include "line_segment.h"
 #include "loaded_regions_cache.h"
+#include "local_collision.h"
 #include "memory.h"
 #include "mstring.h"
 #include "oldmath_po.h"
@@ -87,7 +90,7 @@ terrain::terrain(const mString &a2)
         filespec v30{a2};
         v30.m_ext = {".dsg"};
 
-        mString v29 = v30.sub_55DBF0();
+        mString v29 = v30.name();
 
         resource_key a1 = create_resource_key_from_path(v29.c_str(), RESOURCE_KEY_TYPE_DISTRICT_GRAPH);
         auto *res = resource_manager::get_resource(a1, nullptr, nullptr);
@@ -242,6 +245,118 @@ void terrain::init_region_proximity_map()
         static_region_list_builder v8;
         this->region_map = create_static_proximity_map_on_the_stack(*this->region_proximity_map_allocator, v16, v8, a4, a5, 16);
     }
+}
+
+vector3d terrain::get_elevation_adv(
+        vector3d &a1,
+        vector3d &a4,
+        actor *exclude_self,
+        entity **a6,
+        subdivision_node_obb_base **hit_obb,
+        Float a8)
+{
+    assert(exclude_self != nullptr);
+
+    if constexpr (0)
+    {
+        if ( a8 <= 0.0f ) {
+            a8 = 6.0;
+        }
+
+        vector3d v8 = a4 * a8;
+        vector3d a2 = a1 - v8;
+
+        local_collision::query_args_t args {};
+        args.field_2C = exclude_self;
+        args.initialized_flags |= 0x10u;
+
+        static local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_NO_CAPSULES>,local_collision::entfilter_AND<local_collision::entfilter_ENTITY,walkable_entfilter_t>>> walkable_entfilter {};
+
+        static local_collision::obbfilter<local_collision::obbfilter_AND<walkable_obbfilter_t,local_collision::obbfilter_OBB_LINE_SEGMENT_TEST>> walkable_obbfilter {};
+
+        auto *v11 = local_collision::query_line_segment(a1, a2, walkable_entfilter, walkable_obbfilter, args);
+        auto *v13 = v11;
+
+        line_segment_t v29 {a1, a2};
+
+        local_collision::intersection_list_t intersection_record {};
+        auto closest_line_intersection = local_collision::get_closest_line_intersection(
+                    v13,
+                    &v29,
+                    false,
+                    nullptr,
+                    nullptr,
+                    &intersection_record);
+
+        local_collision::primitive_list_t *v16 = nullptr;
+        for ( auto *it = v13; it != nullptr; it = v16 )
+        {
+            v16 = it->field_0;
+            local_collision::primitive_list_t::pool.remove(it);
+        }
+
+        if ( closest_line_intersection )
+        {
+            if ( intersection_record.is_ent )
+            {
+                auto *ent = (entity *)intersection_record.intersection_node;
+                if ( ent != nullptr && a6 != nullptr ) {
+                    *a6 = ent;
+                }
+            }
+            else if ( hit_obb != nullptr )
+            {
+                *hit_obb = (subdivision_node_obb_base *)intersection_record.intersection_node;
+
+                assert((*hit_obb)->is_obb_node());
+            }
+
+            a4 = intersection_record.normal;
+
+            assert(intersection_record.point.is_valid());
+
+            return intersection_record.point;
+        }
+
+        return vector3d {-10000.0, -10000.0, -10000.0};
+    }
+    else
+    {
+        vector3d * (__fastcall *func)(
+            terrain *, void *,
+            vector3d *,
+            vector3d *,
+            vector3d *,
+            actor *,
+            entity **,
+            subdivision_node_obb_base **,
+            Float) = CAST(func, 0x0053FD90);
+
+        vector3d result;
+        func(this, nullptr, &result, &a1, &a4, exclude_self, a6, hit_obb, a8);
+
+        return result;
+    }
+}
+
+float terrain::get_elevation(
+        vector3d &a2,
+        vector3d &a4,
+        actor *exclude_self,
+        entity **a6,
+        subdivision_node_obb_base **a7,
+        Float a8)
+{
+    assert(exclude_self != nullptr);
+
+    a4 = YVEC;
+
+    auto v1 = a2 + YVEC * 0.1;
+    vector3d ground_pos = this->get_elevation_adv(v1, a4, exclude_self, a6, a7, a8);
+
+    assert(ground_pos.is_valid());
+
+    return ( a4.y >= 0.69999999f ? ground_pos.y : -10000.0f);
 }
 
 void terrain::update_region_pack_info()

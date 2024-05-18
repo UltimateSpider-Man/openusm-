@@ -11,12 +11,15 @@
 #include <list.hpp>
 #include <vector.hpp>
 
+struct actor;
+struct entity;
 struct limited_timer;
 struct mString;
 struct region;
 struct vector3d;
 struct proximity_map;
 struct stack_allocator;
+struct subdivision_node_obb_base;
 struct traffic_path_graph;
 struct traffic_path_brew;
 
@@ -52,6 +55,24 @@ struct terrain {
     ~terrain();
 
     void init_region_proximity_map();
+
+    //0x0053FD90
+    vector3d get_elevation_adv(
+        vector3d &a1,
+        vector3d &a4,
+        actor *a5,
+        entity **a6,
+        subdivision_node_obb_base **a7,
+        Float a8);
+
+    //0x00544430
+    float get_elevation(
+        vector3d &a2,
+        vector3d &a4,
+        actor *exclude_self,
+        entity **a6,
+        subdivision_node_obb_base **a7,
+        Float a8);
 
     //0x0054F380
     void update_region_pack_info();

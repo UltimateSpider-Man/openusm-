@@ -15,6 +15,12 @@ struct fixed_pool;
 struct line_segment_t;
 struct intraframe_trajectory_t;
 
+struct walkable_entfilter_t {};
+
+struct walkable_obbfilter_t {};
+
+struct crawlable_obbfilter_t {};
+
 namespace local_collision {
 
 struct closest_points_pair_t {
@@ -60,10 +66,15 @@ struct obbfilter_base {
     std::intptr_t m_vtbl;
 };
 
+struct obbfilter_OBB_LINE_SEGMENT_TEST {};
+
 struct obbfilter_OBB_SPHERE_TEST {};
 
 template<typename T>
 struct obbfilter : obbfilter_base {
+
+    obbfilter();
+
     //virtual
     bool accept(subdivision_node_obb_base *a1, const query_args_t &a2);
 };
@@ -86,6 +97,9 @@ struct entfilter_AND {};
 
 template<typename T>
 struct entfilter : entfilter_base {
+
+    entfilter();
+
     //virtual
     bool accept(actor *a1, dynamic_conglomerate_clone *a2, const query_args_t &a3);
 };

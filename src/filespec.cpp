@@ -5,12 +5,12 @@
 #include "utility.h"
 #include "variables.h"
 
-mString filespec::fullname() {
+mString filespec::fullname() const {
     mString a2 = this->m_dir + this->m_name + this->m_ext;
     return a2;
 }
 
-mString filespec::sub_55DBF0() {
+mString filespec::name() const {
     mString res = this->m_name + this->m_ext;
     return res;
 }

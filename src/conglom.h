@@ -43,6 +43,9 @@ struct conglomerate : actor {
 
     conglomerate(const string_hash &a2, unsigned int a3);
 
+    //0x004E5300
+    bool render_complex_shadow(Float camera_distance);
+
     //0x004E4D80
     void render_simple_shadow(Float arg0, Float arg4);
 

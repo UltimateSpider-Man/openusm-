@@ -19,9 +19,9 @@ struct filespec {
     ~filespec() = default;
 
     //0x0055DB60
-    [[nodiscard]] mString fullname();
+    [[nodiscard]] mString fullname() const;
 
-    [[nodiscard]] mString sub_55DBF0();
+    [[nodiscard]] mString name() const;
 
     //0x005BBF90
     void extract(const mString &a2);

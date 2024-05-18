@@ -8,6 +8,11 @@
 
 VALIDATE_SIZE(string_hash_entry, 20u);
 
+string_hash_entry::string_hash_entry()
+{
+    this->initialize(mash::ALLOCATED, nullptr, nullptr);
+}
+
 string_hash_entry::string_hash_entry(const char *a2, const string_hash *a3)
 {
     this->initialize(mash::ALLOCATED, a2, a3);

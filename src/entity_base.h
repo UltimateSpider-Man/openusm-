@@ -32,6 +32,9 @@ struct ai_core;
 }
 
 enum entity_flag_t {
+    EFLAG_GRAPHICS_VISIBLE  = 0x200,
+    EFLAG_MISC_CAST_SHADOW  = 0x40000,
+    EFLAG_MISC_HIRES_SHADOW = 0x8000000,
 };
 
 enum entity_ext_flag_t {

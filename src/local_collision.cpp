@@ -418,6 +418,31 @@ bool local_collision::collision_pair_matches_query_constraints(
           && a1->are_collisions_active();
 }
 
+template<>
+local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_NO_CAPSULES>,local_collision::entfilter_AND<local_collision::entfilter_ENTITY,walkable_entfilter_t>>>::entfilter()
+{
+    this->m_vtbl = 0x008895A8;
+}
+
+template<>
+local_collision::obbfilter<local_collision::obbfilter_AND<walkable_obbfilter_t,local_collision::obbfilter_OBB_LINE_SEGMENT_TEST>>::obbfilter()
+{
+    this->m_vtbl = 0x008895AC;
+}
+
+template<>
+local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_VALID_COLLISION_PAIR>>::entfilter()
+{
+    this->m_vtbl = 0x00892C3C;
+}
+
+template<>
+local_collision::entfilter<local_collision::entfilter_AND<local_collision::entfilter_EXCLUDE_ENTITY,local_collision::entfilter_AND<local_collision::entfilter_VALID_COLLISION_PAIR,local_collision::entfilter_SPHERE_TEST>>>::entfilter()
+{
+    this->m_vtbl = 0x00892C38;
+}
+
+
 void local_collision_patch()
 {
     REDIRECT(0x0052F009, find_intersection);
