@@ -459,7 +459,7 @@ void populate_entity_animation_menu(debug_menu_entry *entry)
     auto *v26 = create_menu(entry->get_name(), (debug_menu::sort_mode_t)1);
     entry->set_submenu(v26);
     entity::find_entities(1);
-    auto &found_entities = (*entity::found_entities());
+    auto &found_entities = (*entity::found_entities);
     for (auto *ent : found_entities)
     {
         if ( ent->is_an_actor() )

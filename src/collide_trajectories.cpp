@@ -152,7 +152,7 @@ local_collision::primitive_list_t *query_potential_collision_primitives(const ca
 
     sphere v18 {};
     compute_bounding_sphere_for_two_capsules(a1, a2, &v18);
-    ++entity::visit_key3();
+    ++entity::visit_key3;
 
     local_collision::query_args_t v20 {};
 
@@ -194,11 +194,11 @@ local_collision::primitive_list_t *query_potential_collision_primitives(const ca
                 }
             }
 
-            i->ent->field_64 = entity::visit_key3();
+            i->ent->field_64 = entity::visit_key3;
         }
     }
 
-    --entity::visit_key3();
+    --entity::visit_key3;
     local_collision::query_args_t v17 {};
     auto *result = local_collision::query_sphere(
         v18.center,

@@ -35,6 +35,10 @@ struct multi_vector {
             return !(*this == it);
         }
 
+        auto & operator*() {
+            return (*this->field_8);
+        }
+
         iterator &operator++() {
             auto v1 = this->field_0->field_0.end();
             if (this->field_4 != v1) {

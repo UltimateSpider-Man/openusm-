@@ -33,11 +33,11 @@ int anchor_query_visitor::visit(subdivision_node *a2)
         return 0;
     }
 
-    if (v2->field_64 == entity::visit_key3()) {
+    if (v2->field_64 == entity::visit_key3) {
         return 0;
     }
 
-    v2->field_64 = entity::visit_key3();
+    v2->field_64 = entity::visit_key3;
     if (v2->is_flagged(0x800)) {
         return 0;
     }

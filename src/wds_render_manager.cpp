@@ -269,7 +269,7 @@ void update_camera_teleport(camera &cam)
             last_camera_position() = abs_pos;
         }
 
-        ++entity::visit_key();
+        ++entity::visit_key;
 
         auto len2 = (last_camera_position() - abs_pos).length2();
         if ( len2 > v17 )
@@ -401,7 +401,7 @@ void wds_render_manager::render(camera &a2, int a3)
             {
                 motion_effect_struct::render_all_motion_fx(a2, geometry_manager::world_space_frustum());
                 update_spidey_interface();
-                ++entity::visit_key();
+                ++entity::visit_key;
             }
         }
 

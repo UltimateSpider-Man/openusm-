@@ -277,13 +277,13 @@ bool swing_anchor_finder::find_best_offset_anchor(entity *self,
         v76->init(_v71, a2a);
 
         ++subdivision_node_obb_base::visit_key();
-        ++entity::visit_key3();
+        ++entity::visit_key3;
 
         bool v66 = false;
         swing_anchor_obbfilter_t v92 {sweet_cone.sweet_spot, arg4};
         for ( int i = 0; i < 1; ++i )
         {
-            --entity::visit_key3();
+            --entity::visit_key3;
             --subdivision_node_obb_base::visit_key();
 
             vector3d min_query_extent = sweet_cone.sweet_spot - vector3d {arg4};
@@ -345,7 +345,7 @@ bool swing_anchor_finder::find_best_offset_anchor(entity *self,
 
             fixed_vector<region *, 15> v96 {};
 
-            ++entity::visit_key3();
+            ++entity::visit_key3;
 
             anchor_query_visitor v90 {v28, sweet_cone.sweet_spot, sweet_cone.m_position, true, v76};
 

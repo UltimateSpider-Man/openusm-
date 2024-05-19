@@ -19,10 +19,8 @@
 
 VALIDATE_SIZE(entity, 0x68u);
 
-Var<int> entity::visit_key3{0x0095A6EC};
-
 namespace entity_extended_regions_array_t {
-    static Var<fixed_pool> pool {0x0091FF9C};
+    static fixed_pool & pool = var<fixed_pool>(0x0091FF9C);
 }
 
 entity::entity(const string_hash &a2, uint32_t a3) : signaller(a2, a3, false) {
@@ -520,7 +518,7 @@ void entity::add_me_to_region(region *r)
 
                 if (i == 2) {
                     if ( this->extended_regions == nullptr ) {
-                        auto *mem = entity_extended_regions_array_t::pool().allocate_new_block();
+                        auto *mem = entity_extended_regions_array_t::pool.allocate_new_block();
                         auto *v5 = new (mem) fixed_vector<region *, 7> {};
                         this->extended_regions = v5;
                     }
@@ -622,7 +620,7 @@ void entity::remove_from_regions()
                     }
                 }
 
-                entity_extended_regions_array_t::pool().remove(this->extended_regions);
+                entity_extended_regions_array_t::pool.remove(this->extended_regions);
                 this->extended_regions = nullptr;
             }
         }
@@ -649,9 +647,67 @@ region *entity::get_primary_region()
     return v2->get_primary_region();
 }
 
+bool entity::match_search_flags(int a2)
+{
+    if constexpr (0)
+    {
+        if ( (a2 & 1) == 0
+            && ((a2 & 0x20) == 0 || !this->is_flagged(0x1000))
+            && ((a2 & 0x40) == 0 || !this->is_a_switch_obj())
+            && ((a2 & 0x80u) == 0 || !(this->is_a_grenade()) )
+            && ((a2 & 0x200) == 0 || !(this->is_a_water_exit_marker()))
+            && (!this->is_an_actor()
+            || ((a2 & 4) == 0 || !this->has_damage_ifc())
+            && ((a2 & 8) == 0 || !this->has_physical_ifc())
+            && ((a2 & 2) == 0 || this->get_ai_core() == nullptr))
+            && (!this->is_a_conglomerate()
+            || ((a2 & 0x10) == 0 || !(this->has_script_data_ifc()))
+            && ((a2 & 0x100) == 0 || !bit_cast<conglomerate *>(this)->has_variant_ifc() )) )
+        {
+            return false;
+        }
+
+        return ((a2 & 0x800) == 0 || (this->is_visible())
+            && ((a2 & 0x1000) == 0 || !this->is_visible())
+            && ((a2 & 0x2000) == 0 || this->is_alive())
+            && ((a2 & 0x4000) == 0 || !this->is_alive()) );
+    }
+    else
+    {
+        bool (__fastcall *func)(void *, void *edx, int) = CAST(func, 0x004C0970);
+        return func(this, nullptr, a2);
+    }
+}
+
 int entity::find_entities(int a1)
 {
-    return CDECL_CALL(0x004D67D0, a1);
+    if constexpr (0)
+    {
+        if ( found_entities == nullptr ) {
+            found_entities = new _std::list<entity *>;
+        }
+
+        found_entities->clear();
+
+        auto *entities = g_world_ptr->ent_mgr.get_entities();
+        auto it = entities->begin();
+        auto end = entities->end();
+
+        for ( ; it != end; ++it )
+        {
+            auto *ent = (*it);
+            assert(ent != nullptr);
+
+            if ( ent->match_search_flags(a1) ) {
+                found_entities->push_back(ent);
+            }
+        }
+        return found_entities->size();
+    }
+    else
+    {
+        return CDECL_CALL(0x004D67D0, a1);
+    }
 }
 
 void entity_patch()

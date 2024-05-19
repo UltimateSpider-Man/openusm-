@@ -183,16 +183,19 @@ struct entity : signaller {
     //0x004C0760
     region *get_primary_region();
 
+    //0x004C0970
+    bool match_search_flags(int a2);
+
     //0x004D67D0
     static int find_entities(int a1);
 
-    static inline Var<int> visit_key {0x0095A6E4};
+    static inline int & visit_key = var<int>(0x0095A6E4);
 
-    static inline Var<int> visit_key2 {0x0095A6E8};
+    static inline int & visit_key2 = var<int>(0x0095A6E8);
 
-    static Var<int> visit_key3;
+    static inline int & visit_key3 = var<int>(0x0095A6EC);
 
-    static inline Var<_std::list<entity *> *> found_entities {0x0095A6E0};
+    static inline _std::list<entity *> *& found_entities = var<_std::list<entity *> *>(0x0095A6E0);
 };
 
 extern void entity_patch();
