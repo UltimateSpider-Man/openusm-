@@ -428,7 +428,7 @@ void Console::exec(const mString &a2) {
 }
 
 void Console::frame_advance(Float a2) {
-    this->field_224 = this->field_224 + a2;
+    this->field_224 += a2;
     if (this->field_24E && this->field_224 >= 0.5) {
         this->field_220 = !this->field_220;
         this->field_224 = 0.0;
@@ -695,7 +695,7 @@ void Console::render()
     {
         this->field_248->Draw();
 
-        auto *font = g_femanager.GetFont(font_index{0});
+        auto *font = g_femanager.GetFont(static_cast<font_index>(0));
 
         uint32_t v26, v25;
         nglGetStringDimensions(font, &v26, &v25, "M");
@@ -753,7 +753,7 @@ void Console::render()
 
 void render_console_text(const mString &a1, vector2di a2, const color32 &a4)
 {
-    FEText v7 {font_index{0},
+    FEText v7 {static_cast<font_index>(0),
               static_cast<global_text_enum>(0),
               (float) a2.x,
               (float) a2.y,

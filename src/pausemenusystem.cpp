@@ -38,7 +38,7 @@
 
 VALIDATE_SIZE(PauseMenuSystem, 0x3Cu);
 
-PauseMenuSystem::PauseMenuSystem(font_index a2) : FEMenuSystem(17, a2.value) {
+PauseMenuSystem::PauseMenuSystem(font_index a2) : FEMenuSystem(17, a2) {
     if constexpr (1) {
         this->m_vtbl = 0x00893E00;
         this->field_2C = nullptr;

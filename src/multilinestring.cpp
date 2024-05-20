@@ -248,7 +248,7 @@ void MultiLineString::Draw(Float a2, int a3, int a4, Float a5, Float a6, Float a
                     auto a4a = v18;
                     auto a3a = (double) v31 + this->field_4[0];
 
-                    auto *font = g_femanager.GetFont(font_index{3});
+                    auto *font = g_femanager.GetFont(static_cast<font_index>(3));
 
                     nglListAddString(font, v19, a3a, a4a, a2, a4, a7, a7);
 

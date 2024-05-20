@@ -89,7 +89,7 @@ void FEMultiLineText::Draw(int a2, int a3) {
             int a3a = a3 - a2;
             do {
                 auto *v11 = &this->lines[i];
-                if (v11->m_font_index.value != 6) {
+                if (v11->m_font_index != 6) {
                     if (v11->field_10 != "") {
                         auto v16 = this->field_78;
                         auto v15 = this->field_6C;

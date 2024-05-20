@@ -65,7 +65,7 @@ void FEMenu::AddEntry(int a2, FEText *a3, bool a4) {
 void FEMenu::AddEntry(int a2, global_text_enum a3) {
     auto *mem = mem_alloc(sizeof(FEMenuEntry));
 
-    this->field_4[a2] = new (mem) FEMenuEntry{a3, this, false, font_index{6}, 1};
+    this->field_4[a2] = new (mem) FEMenuEntry{a3, this, false, static_cast<font_index>(6), 1};
 }
 
 void FEMenu::Init()

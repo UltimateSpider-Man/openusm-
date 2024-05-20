@@ -22,7 +22,7 @@ struct FEMenuSystem {
     short field_2A;
 
     //0x00618760
-    FEMenuSystem(int a2, int a3);
+    FEMenuSystem(int a2, font_index a3);
 
     //0x00629960
     //virtual

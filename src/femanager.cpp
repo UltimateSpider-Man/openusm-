@@ -41,7 +41,7 @@ void FEManager::InitIGO()
     if constexpr (0)
     {
         auto *mem = mem_alloc(sizeof(PauseMenuSystem));
-        this->m_pause_menu_system = new (mem) PauseMenuSystem{font_index{1}};
+        this->m_pause_menu_system = new (mem) PauseMenuSystem{static_cast<font_index>(1)};
 
         this->IGO = new IGOFrontEnd{};
         this->IGO->Init();
@@ -66,7 +66,7 @@ void FEManager::LoadFonts() {
         if (!this->field_2A)
         {
             for (auto i = 0u; i < 5u; ++i) {
-                this->LoadFont((font_index) i);
+                this->LoadFont(static_cast<font_index>(i));
             }
 
             this->field_2A = true;
@@ -200,9 +200,10 @@ void FEManager::ReleaseIGO()
     THISCALL(0x00642E40, this);
 }
 
-void FEManager::ReleaseFonts() {
+void FEManager::ReleaseFonts()
+{
     for (int i = 0; i < 5; ++i) {
-        this->ReleaseFont(font_index{i});
+        this->ReleaseFont(static_cast<font_index>(i));
     }
 }
 

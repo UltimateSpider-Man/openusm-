@@ -569,7 +569,7 @@ void render_billboard(const vector3d &arg0, color32 a2, float a5, const char *a4
 {
     if ( os_developer_options::instance->get_flag(mString {"SHOW_DEBUG_TEXT"}) )
     {
-        auto *Font = g_femanager.GetFont(0);
+        auto *Font = g_femanager.GetFont(static_cast<font_index>(0));
 
         uint32_t v39, v38;
         nglGetStringDimensions(Font, &v39, &v38, "M");

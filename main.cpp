@@ -2420,6 +2420,13 @@ BOOL install_redirects()
 
     REDIRECT(0x005AC52F, parse_cmd);
 
+    {
+        DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
+        REDIRECT(0x008218B0, hookDirectInputAddress);
+        set_nop(0x008218B5, 1);
+        sp_log("Patching the DirectInput8Create call\n");
+    }
+
     Timer_patch();
 
     //REDIRECT(0, sub_5952D0);
@@ -2475,13 +2482,6 @@ BOOL install_redirects()
         resource_directory_patch();
 
         tlresource_directory_patch();
-    }
-
-    {
-        DWORD hookDirectInputAddress = (DWORD) HookDirectInput8Create;
-        REDIRECT(0x008218B0, hookDirectInputAddress);
-        set_nop(0x008218B5, 1);
-        sp_log("Patching the DirectInput8Create call\n");
     }
 
     //standalone patches

@@ -24,7 +24,7 @@
 
 VALIDATE_SIZE(FrontEndMenuSystem, 0x80);
 
-FrontEndMenuSystem::FrontEndMenuSystem() : FEMenuSystem(7, 1) {
+FrontEndMenuSystem::FrontEndMenuSystem() : FEMenuSystem(7, static_cast<font_index>(1)) {
     if constexpr (1) {
         this->field_50 = 0;
         this->field_51 = 0;

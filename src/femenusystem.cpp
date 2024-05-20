@@ -14,7 +14,7 @@ VALIDATE_SIZE(FEMenuSystem, 0x2C);
 
 bool getButtonState(int a2, int a3);
 
-FEMenuSystem::FEMenuSystem(int a2, int a3)
+FEMenuSystem::FEMenuSystem(int a2, font_index a3)
 {
     if constexpr (1) {
         this->field_10 = a2;
