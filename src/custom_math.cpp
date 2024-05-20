@@ -2,6 +2,7 @@
 
 #include "func_wrapper.h"
 #include "log.h"
+#include "matrix4x4.h"
 #include "oldmath_po.h"
 #include "trace.h"
 #include "vector3d.h"
@@ -197,6 +198,18 @@ bool approx_equals(const vector4d &a1, const vector4d &a2, Float epsilon) {
     auto v3 = a1 - a2;
     return epsilon * epsilon >= v3.length2();
 }
+
+bool approx_equals(const matrix4x4 &a1, const matrix4x4 &a2, Float epsilon) {
+
+    for (int i = 0; i < 4; ++i) {
+        if ( !approx_equals(a1[i], a2[i], epsilon) ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 bool approx_equals(const vector3d &a1, const vector3d &a2, Float epsilon) {
     auto v3 = a1 - a2;

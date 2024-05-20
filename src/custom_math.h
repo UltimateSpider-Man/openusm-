@@ -9,6 +9,7 @@ inline constexpr auto half_PI = PI * 0.5f;
 struct po;
 struct vector3d;
 struct vector4d;
+struct matrix4x4;
 
 inline constexpr float DEG_TO_RAD(float deg) {
     return (PI / 180.0 * deg);
@@ -25,6 +26,8 @@ extern void fast_sin_cos_approx(Float a1, float *s, float *c);
 extern float bounded_acos(float a1);
 
 extern int triangular_number(int a1);
+
+extern bool approx_equals(const matrix4x4 &a1, const matrix4x4 &a2, Float epsilon);
 
 extern bool approx_equals(const vector4d &a1, const vector4d &a2, Float epsilon);
 
