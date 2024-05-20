@@ -464,10 +464,11 @@ vector3d po::inverse_xform(const vector3d &a3) const
     return result;
 }
 
-bool po::has_nonuniform_scaling() {
-    Var<bool> g_ignore_nonuniform_scaling{0x0096852D};
+bool po::has_nonuniform_scaling() const
+{
+    bool & g_ignore_nonuniform_scaling = var<bool>(0x0096852D);
 
-    if (g_ignore_nonuniform_scaling()) { 
+    if (g_ignore_nonuniform_scaling) { 
         return false;
     }
 
@@ -538,33 +539,33 @@ vector3d po::sub_5BD2B0(const vector3d &a3) {
     return result;
 }
 
-static Var<po> po_result{0x00969F28};
+static po & po_result = var<po>(0x00969F28);
 
 po *po::inverse() const {
-    po_result().m[0][0] = this->m[0][0];
-    po_result().m[0][1] = this->m[1][0];
-    po_result().m[0][2] = this->m[2][0];
-    po_result().m[1][0] = this->m[0][1];
-    po_result().m[1][1] = this->m[1][1];
-    po_result().m[1][2] = this->m[2][1];
-    po_result().m[2][0] = this->m[0][2];
-    po_result().m[2][1] = this->m[1][2];
-    po_result().m[2][2] = this->m[2][2];
+    po_result.m[0][0] = this->m[0][0];
+    po_result.m[0][1] = this->m[1][0];
+    po_result.m[0][2] = this->m[2][0];
+    po_result.m[1][0] = this->m[0][1];
+    po_result.m[1][1] = this->m[1][1];
+    po_result.m[1][2] = this->m[2][1];
+    po_result.m[2][0] = this->m[0][2];
+    po_result.m[2][1] = this->m[1][2];
+    po_result.m[2][2] = this->m[2][2];
 
-    po_result().m[3][0] = 0.0;
-    po_result().m[3][1] = 0.0;
-    po_result().m[3][2] = 0.0;
-    po_result().m[3][3] = 1.0;
+    po_result.m[3][0] = 0.0;
+    po_result.m[3][1] = 0.0;
+    po_result.m[3][2] = 0.0;
+    po_result.m[3][3] = 1.0;
 
-    po_result().m[0][3] = 0.0;
-    po_result().m[1][3] = 0.0;
-    po_result().m[2][3] = 0.0;
+    po_result.m[0][3] = 0.0;
+    po_result.m[1][3] = 0.0;
+    po_result.m[2][3] = 0.0;
 
-    vector3d a2 = po_result().sub_5BD2B0(this->m[3]);
+    vector3d a2 = po_result.sub_5BD2B0(this->m[3]);
 
-    po_result().m[3] = -a2;
+    po_result.m[3] = -a2;
 
-    return (&po_result());
+    return (&po_result);
 }
 
 void po::set_facing(const vector3d &a2) {

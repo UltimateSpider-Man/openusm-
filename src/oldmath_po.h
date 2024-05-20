@@ -43,7 +43,7 @@ struct po {
     bool is_valid(bool a2 = true, bool a3 = false) const;
 
     //0x005BE200
-    bool has_nonuniform_scaling();
+    bool has_nonuniform_scaling() const;
 
     //0x0048AAC0
     vector3d inverse_xform(const vector3d &a3) const;

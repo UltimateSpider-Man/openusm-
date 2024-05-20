@@ -3,22 +3,21 @@
 #include "float.hpp"
 
 struct vector2d {
-    float arr[2];
+    float x, y;
+
+    vector2d() = default;
 
     const float &operator[](int idx) const {
-        return arr[idx];
+        return (&x)[idx];
     }
 
     float &operator[](int idx) {
-        return arr[idx];
+        return (&x)[idx];
     }
 
     vector2d operator+(const vector2d &a1) const;
 
-    vector2d operator-(const vector2d &a3) const
-    {
-        return {this->arr[0] - a3[0], this->arr[1] - a3[1]};
-    }
+    vector2d operator-(const vector2d &a3) const;
 
     vector2d operator*(float a1) const;
 
