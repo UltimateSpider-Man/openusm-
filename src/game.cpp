@@ -2245,8 +2245,9 @@ camera *game::get_current_view_camera(int a2)
     }
 }
 
-void game::load_new_level_internal(const mString &a2) {
-    if (a2.m_size) {
+void game::_load_new_level(const mString &a2)
+{
+    if (!a2.empty()) {
         strcpy(g_scene_name(), a2.c_str());
     }
 
@@ -2255,9 +2256,11 @@ void game::load_new_level_internal(const mString &a2) {
     this->field_167 = true;
 }
 
-void game::load_new_level(const mString &a2, const vector3d &a3) {
-    if constexpr (1) {
-        this->load_new_level_internal(a2);
+void game::load_new_level(const mString &a2, const vector3d &a3)
+{
+    if constexpr (1)
+    {
+        this->_load_new_level(a2);
         this->level.field_24 = a3;
         this->m_hero_start_enabled = false;
 
@@ -2266,12 +2269,16 @@ void game::load_new_level(const mString &a2, const vector3d &a3) {
     }
 }
 
-void game::load_new_level(const mString &a1, int a2) {
-    if constexpr (1) {
-        this->load_new_level_internal(a1);
+void game::load_new_level(const mString &a1, int a2)
+{
+    if constexpr (1)
+    {
+        this->_load_new_level(a1);
         this->m_hero_start_enabled = true;
 
-    } else {
+    }
+    else
+    {
         THISCALL(0x00514C70, this, &a1, a2);
     }
 }

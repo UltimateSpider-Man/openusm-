@@ -93,7 +93,7 @@ extern int & amalgapak_prerequisite_count;
 
 extern resource_key *& amalgapak_prerequisite_table;
 
-extern size_t & resource_buffer_size;
+extern int & resource_buffer_size;
 extern int & memory_maps_count;
 
 using modified_callback_t = void (*)(_std::vector<resource_key> &a1);

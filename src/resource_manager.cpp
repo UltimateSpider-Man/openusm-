@@ -48,7 +48,7 @@ int & resource_buffer_used = var<int>(0x0095C180);
 
 int & memory_maps_count = var<int>(0x0095C7F4);
 
-size_t & resource_buffer_size = var<size_t>(0x0095C1C8);
+int & resource_buffer_size = var<int>(0x0095C1C8);
 
 int & in_use_memory_map = var<int>(0x00921CB0);
 
@@ -82,7 +82,7 @@ make_var(int, resource_buffer_used);
 
 make_var(int, memory_maps_count);
 
-make_var(size_t, resource_buffer_size);
+make_var(int, resource_buffer_size);
 
 make_var(int, in_use_memory_map);
 
@@ -797,7 +797,7 @@ void delete_inst() {
         {
             for (auto &part : (*partitions)) {
                 if (part != nullptr) {
-                    operator delete(part);
+                    delete part;
                 }
             }
 
@@ -918,8 +918,7 @@ void configure_packs_by_memory_map(int idx)
 
         for (uint32_t i = pop_start_idx; i < RESOURCE_PARTITION_END; ++i)
         {
-            auto *mem = mem_alloc(sizeof(resource_partition));
-            auto *new_partition = new (mem) resource_partition{(resource_partition_enum) i};
+            auto *new_partition = new resource_partition {static_cast<resource_partition_enum>(i)};
 
             auto &memory_map = memory_maps[idx];
             auto &tmp = memory_map.field_10[i];
@@ -942,8 +941,7 @@ void configure_packs_by_memory_map(int idx)
                 }
             }
 
-            //push_back
-#ifndef TEST_CASE
+            if constexpr (0)
             {
                 if (partitions->size() < partitions->capacity())
                 {
@@ -957,9 +955,10 @@ void configure_packs_by_memory_map(int idx)
                     _Insert_n(partitions, nullptr, partitions->m_last, 1, &new_partition);
                 }
             }
-#else
-            partitions->push_back(new_partition);
-#endif
+            else
+            {
+                partitions->push_back(new_partition);
+            }
         }
 
         assert(partitions->size() == RESOURCE_PARTITION_END &&
@@ -1096,11 +1095,7 @@ uint8_t *get_resource(const resource_key &resource_id, int *mash_data_size, reso
         assert(get_resource_context() != nullptr && "Can't get a resource without a context!");
         assert(get_resource_context()->is_data_ready() && "Invalid resource context");
 
-        auto &res_dir = get_resource_context()->get_resource_directory();
-
-        //assert(res_dir != nullptr);
-
-        auto *result = res_dir.get_resource(resource_id, mash_data_size, a3);
+        auto *result = get_resource_context()->get_resource(resource_id, mash_data_size, a3);
 
         //sp_log("resource_manager::get_resource:");
 
@@ -1114,11 +1109,6 @@ uint8_t *get_resource(const resource_key &resource_id, int *mash_data_size, reso
 }
 
 } // namespace resource_manager
-
-void __fastcall resource_partititon_constructor(resource_partition *self, void *, resource_partition_enum a2)
-{
-    self = new (self) resource_partition{a2};
-}
 
 void resource_manager_patch()
 {
@@ -1153,7 +1143,5 @@ void resource_manager_patch()
 
     {
         REDIRECT(0x0055A371, resource_manager::configure_packs_by_memory_map);
-
-        REDIRECT(0x00558B95, resource_partititon_constructor);
     }
 }

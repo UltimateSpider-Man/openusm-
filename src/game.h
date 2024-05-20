@@ -260,8 +260,10 @@ struct game {
     //0x00514A50
     camera *get_current_view_camera(int a2);
 
-    void load_new_level_internal(const mString &a2);
+private:
+    void _load_new_level(const mString &a2);
 
+public:
     //0x00514C40
     void load_new_level(const mString &a2, const vector3d &a3);
 

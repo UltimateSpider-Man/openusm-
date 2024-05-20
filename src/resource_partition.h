@@ -35,6 +35,10 @@ struct resource_partition {
     //0x0053DFD0
     ~resource_partition();
 
+    void * operator new(size_t size);
+
+    void operator delete(void *ptr, size_t size);
+
     auto get_type() const {
         return field_4;
     }

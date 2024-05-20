@@ -42,6 +42,15 @@ resource_partition::~resource_partition()
 
 }
 
+void * resource_partition::operator new(size_t size) {
+    return mem_alloc(size);
+}
+
+void resource_partition::operator delete(void *ptr, size_t size) {
+    mem_dealloc(ptr, size);
+}
+
+
 void resource_partition::frame_advance(Float a1, limited_timer *a2) {
     this->streamer.frame_advance({a1}, a2);
 }
