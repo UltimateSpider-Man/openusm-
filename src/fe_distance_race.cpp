@@ -35,7 +35,7 @@ fe_distance_race::fe_distance_race() {
 }
 
 void fe_distance_race::Init() {
-    this->field_0 = PanelFile::UnmashPanelFile("race_meter", panel_layer{7});
+    this->field_0 = PanelFile::UnmashPanelFile("race_meter", static_cast<panel_layer>(7));
 
     this->field_38 = this->field_0->GetPQ("rm_spidey_player_icon");
 

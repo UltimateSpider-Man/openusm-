@@ -9,7 +9,7 @@ fe_score_widget::fe_score_widget()
 
 void fe_score_widget::Init() {
     if (this->field_14 == nullptr) {
-        this->field_14 = PanelFile::UnmashPanelFile("highscoretracking", panel_layer{7});
+        this->field_14 = PanelFile::UnmashPanelFile("highscoretracking", static_cast<panel_layer>(7));
 
         this->field_0 = this->field_14->GetTextPointer("highscore_01");
         this->field_0->SetShown(true);

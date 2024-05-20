@@ -57,7 +57,7 @@ FrontEndMenuSystem::FrontEndMenuSystem() : FEMenuSystem(7, static_cast<font_inde
         this->field_34 = 0;
         this->field_51 = 0;
         this->field_52 = 0;
-        this->field_7C = PanelFile::UnmashPanelFile("main_menu", panel_layer{7});
+        this->field_7C = PanelFile::UnmashPanelFile("main_menu", static_cast<panel_layer>(7));
         for (int i = 0; i < 7; ++i) {
             this->field_4[i]->Init();
         }

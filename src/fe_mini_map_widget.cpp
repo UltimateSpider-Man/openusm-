@@ -57,7 +57,7 @@ void fe_mini_map_widget::Init()
     {
         assert(mini_map_icons == nullptr);
 
-        this->mini_map_icons = PanelFile::UnmashPanelFile("mini_map_items", panel_layer{7});
+        this->mini_map_icons = PanelFile::UnmashPanelFile("mini_map_items", static_cast<panel_layer>(7));
         if (this->mini_map_icons != nullptr) {
             this->map_icon_spidey = this->mini_map_icons->GetPQ("map_icon_spidey");
             this->map_icon_others = this->mini_map_icons->GetPQ("map_icon_others");
@@ -66,7 +66,7 @@ void fe_mini_map_widget::Init()
 
         assert(mini_map_frame == nullptr);
 
-        this->mini_map_frame = PanelFile::UnmashPanelFile("mini_map_frame", panel_layer{7});
+        this->mini_map_frame = PanelFile::UnmashPanelFile("mini_map_frame", static_cast<panel_layer>(7));
 
         if (this->mini_map_frame != nullptr) {
             this->map_frame_black = this->mini_map_frame->GetPQ("map_frame_black");

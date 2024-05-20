@@ -6,7 +6,7 @@ combo_words::combo_words() {}
 
 void combo_words::Init() {
     if (this->field_0 == nullptr) {
-        this->field_0 = PanelFile::UnmashPanelFile("combo_words", panel_layer{6});
+        this->field_0 = PanelFile::UnmashPanelFile("combo_words", static_cast<panel_layer>(6));
         this->field_4 = *this->field_0->field_28.m_data;
         FEText **v3 = this->field_8;
 

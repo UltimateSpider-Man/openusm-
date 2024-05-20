@@ -6,7 +6,7 @@ race_announcer::race_announcer() {}
 
 void race_announcer::Init() {
     if (this->field_0 == nullptr) {
-        this->field_0 = PanelFile::UnmashPanelFile("race_announcer", panel_layer{7});
+        this->field_0 = PanelFile::UnmashPanelFile("race_announcer", static_cast<panel_layer>(7));
 
         this->field_8 = this->field_0->GetPQ("ra_burst");
 

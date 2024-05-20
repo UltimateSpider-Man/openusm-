@@ -110,7 +110,7 @@ Console::Console()
 
     Var<char[3]> Source{0x00871BD1};
 
-    this->field_248->Init(v8, v4, panel_layer{0}, 10.0f, Source());
+    this->field_248->Init(v8, v4, static_cast<panel_layer>(0), 10.0f, Source());
 
     this->field_24C = false;
     this->field_24D = false;
@@ -758,7 +758,7 @@ void render_console_text(const mString &a1, vector2di a2, const color32 &a4)
               (float) a2.x,
               (float) a2.y,
               1,
-              panel_layer{0},
+              static_cast<panel_layer>(0),
               1.0,
               16,
               0,

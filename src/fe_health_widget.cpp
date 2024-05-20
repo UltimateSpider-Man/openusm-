@@ -37,7 +37,7 @@ char fe_health_widget::clear_bars() {
 }
 
 void fe_health_widget::Init(int a2, const char *a3, bool a4) {
-    this->field_0[a2] = PanelFile::UnmashPanelFile(a3, panel_layer{7});
+    this->field_0[a2] = PanelFile::UnmashPanelFile(a3, static_cast<panel_layer>(7));
     this->field_3C = a4;
     this->field_55 = false;
     this->clear_bars();

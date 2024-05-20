@@ -34,7 +34,7 @@ void fe_controller_disconnect::draw()
             mem = mem_alloc(sizeof(FEMultiLineText));
 
             text_box() = new (mem)
-                FEMultiLineText{static_cast<font_index>(1), a3, a4, 0, panel_layer{2}, 1.0, 0, 0, {0}};
+                FEMultiLineText{static_cast<font_index>(1), a3, a4, 0, static_cast<panel_layer>(2), 1.0, 0, 0, {0}};
 
             text_box()->SetNumLines(10);
         }

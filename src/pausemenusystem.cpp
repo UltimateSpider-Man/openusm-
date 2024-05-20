@@ -93,7 +93,7 @@ void PauseMenuSystem::LoadAll() {
 
     if constexpr (1)
     {
-        this->field_2C = PanelFile::UnmashPanelFile("pause_menu_interface", panel_layer {2});
+        this->field_2C = PanelFile::UnmashPanelFile("pause_menu_interface", static_cast<panel_layer>(2));
         this->field_4[0]->Load();
         this->field_4[1]->Load();
         this->field_4[2]->Load();

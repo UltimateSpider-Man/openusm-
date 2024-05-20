@@ -20,7 +20,7 @@ void tutorial_controller_gauge::Init() {
         this->field_74 = 1.0;
         this->field_78 = 1.0;
 
-        this->field_0 = PanelFile::UnmashPanelFile("controller_tut_ps", panel_layer{7});
+        this->field_0 = PanelFile::UnmashPanelFile("controller_tut_ps", static_cast<panel_layer>(7));
 
         this->field_C[0] = this->field_0->GetPQ("CT_PS_box_back_01");
 

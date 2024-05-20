@@ -32,7 +32,8 @@ void fe_dialog_text::_Load() {
     if constexpr (0)
     {
         assert(panel == nullptr && "Dialog text widget already loaded.");
-        auto *v2 = PanelFile::UnmashPanelFile("text_box_big", panel_layer {1});
+
+        auto *v2 = PanelFile::UnmashPanelFile("text_box_big", static_cast<panel_layer>(1));
         this->panel = v2;
         this->field_90 = this->panel->GetAnimationPointer(0);
         this->field_94 = this->panel->GetAnimationPointer(1);

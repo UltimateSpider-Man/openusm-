@@ -6,7 +6,7 @@ fe_hotpursuit_indicator::fe_hotpursuit_indicator() {}
 
 void fe_hotpursuit_indicator::Init() {
     if (this->field_8 == nullptr) {
-        this->field_8 = PanelFile::UnmashPanelFile("mg_hotpursuit_indicator", panel_layer{7});
+        this->field_8 = PanelFile::UnmashPanelFile("mg_hotpursuit_indicator", static_cast<panel_layer>(7));
         auto **v3 = &this->field_10;
 
         this->field_10 = this->field_8->GetPQ("mg_hp_indicator_frame");

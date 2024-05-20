@@ -1,5 +1,4 @@
 #pragma once
 
-struct panel_layer {
-    int field_0;
+enum panel_layer {
 };

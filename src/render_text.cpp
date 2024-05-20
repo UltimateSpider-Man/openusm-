@@ -12,7 +12,7 @@ void render_text(const mString &a1, const vector2di &a2, color32 a3, Float a4, F
                        (float) a2.x,
                        (float) a2.y,
                        (int) a4,
-                       panel_layer{0},
+                       static_cast<panel_layer>(0),
                        a5,
                        16,
                        0,
