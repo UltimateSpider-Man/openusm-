@@ -15,7 +15,7 @@ struct PanelFile {
     mVector<PanelAnimFile> field_28;
 
     //0x00616A60
-    int Draw();
+    void Draw();
 
     //0x00628960
     void PostUnmashFixup(panel_layer a3);
@@ -36,7 +36,7 @@ struct PanelFile {
     //0x00643000
     static PanelFile *UnmashPanelFile(const char *a1, panel_layer a2);
 
-    static inline Var<nglMeshFile *> g_curmeshfile{0x0096B444};
+    static inline nglMeshFile *& g_curmeshfile = var<nglMeshFile *>(0x0096B444);
 };
 
 extern void PanelFile_patch();

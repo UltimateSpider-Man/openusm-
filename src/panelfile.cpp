@@ -18,8 +18,8 @@
 VALIDATE_SIZE(PanelFile, 0x3C);
 VALIDATE_OFFSET(PanelFile, field_28, 0x28);
 
-int PanelFile::Draw() {
-    return THISCALL(0x00616A60, this);
+void PanelFile::Draw() {
+    THISCALL(0x00616A60, this);
 }
 
 void PanelFile::unmash(mash_info_struct *a1, void *)
@@ -37,10 +37,10 @@ PanelFile *PanelFile::UnmashPanelFile(const char *a1, panel_layer a2)
 
     if constexpr (UnmashPanelFile_hook)
     {
-        assert(g_curmeshfile() == nullptr);
+        assert(g_curmeshfile == nullptr);
 
         tlFixedString v11 {a1};
-        g_curmeshfile() = nglLoadMeshFile(v11);
+        g_curmeshfile = nglLoadMeshFile(v11);
 
         resource_key resource_id {string_hash {a1}, RESOURCE_KEY_TYPE_PANEL};
 
@@ -64,7 +64,7 @@ PanelFile *PanelFile::UnmashPanelFile(const char *a1, panel_layer a2)
         v6->PostUnmashFixup(a2);
         mash_info_struct::construct_class(v6);
 
-        g_curmeshfile() = nullptr;
+        g_curmeshfile = nullptr;
 
         return v6;
     }

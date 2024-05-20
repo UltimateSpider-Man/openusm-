@@ -161,7 +161,7 @@ float PanelQuad::GetCenterX()
 {
     TRACE("PanelQuad::GetCenterX");
 
-    auto result = this->field_14;
+    auto result = this->field_14[0];
     sp_log("%f", result);
     return result;
 }
@@ -170,7 +170,7 @@ float PanelQuad::GetCenterY()
 {
     TRACE("PanelQuad::GetCenterY");
 
-    auto result = this->field_18;
+    auto result = this->field_14[1];
     sp_log("%f", result);
     return result;
 }

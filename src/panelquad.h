@@ -17,11 +17,10 @@ struct PanelQuadSection;
 struct PanelMeshSection;
 
 struct PanelQuad : PanelAnimObject {
-    float field_14;
-    float field_18;
+    vector2d field_14;
     mVector<PanelQuadSection> pqs;
     PanelMeshSection *pmesh;
-    int field_34;
+    float field_34;
     float field_38;
     mString field_3C;
 
