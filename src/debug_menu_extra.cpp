@@ -434,7 +434,7 @@ void sub_6918AD(debug_menu_entry *entry)
     auto *e = (entity *) entry->m_data;
     if (e->is_an_actor())
     {
-        auto *a1 = create_menu(entry->get_name(), (debug_menu::sort_mode_t)1);
+        auto *a1 = create_menu(entry->get_name(), debug_menu::sort_mode_t::ascending);
         entry->set_submenu(a1);
         auto *v18 = (actor *) e;
 
@@ -456,7 +456,7 @@ void sub_6918AD(debug_menu_entry *entry)
 
 void populate_entity_animation_menu(debug_menu_entry *entry)
 {
-    auto *v26 = create_menu(entry->get_name(), (debug_menu::sort_mode_t)1);
+    auto *v26 = create_menu(entry->get_name(), debug_menu::sort_mode_t::ascending);
     entry->set_submenu(v26);
     entity::find_entities(1);
     auto &found_entities = (*entity::found_entities);
@@ -603,7 +603,7 @@ void create_devopt_menu(debug_menu *parent)
 void populate_gamefile_menu([[maybe_unused]] debug_menu_entry *entry)
 {
     auto &v1 = entry->get_name();
-    auto *v2 = create_menu(v1, (debug_menu::sort_mode_t)1);
+    auto *v2 = create_menu(v1, debug_menu::sort_mode_t::ascending);
 
     auto *v494 = v2;
     entry->set_submenu(v2);

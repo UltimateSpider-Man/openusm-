@@ -321,12 +321,12 @@ struct entity_base : entity_base_vtable {
 
     bool are_collisions_active() const;
 
-    uint32_t is_conglom_member() const {
-        return this->field_4 & 0x8000;
+    bool is_conglom_member() const {
+        return ((this->field_4 & 0x8000) != 0);
     }
 
-    uint32_t is_a_conglomerate() const {
-        return this->field_4 & 4;
+    bool is_a_conglomerate() const {
+        return ((this->field_4 & 4) != 0);
     }
 
     //0x0048AC20
@@ -406,13 +406,13 @@ struct entity_base : entity_base_vtable {
     void look_at(const vector3d &a1);
 
     //0x00502B50
-    entity_base *get_conglom_owner();
+    entity_base *get_conglom_owner() const;
 
     void set_abs_position(const vector3d &pos);
 
     void set_timer(int new_timer);
 
-    inline auto get_fade_group() {
+    auto get_fade_group() const {
         return this->field_3E;
     }
 };

@@ -631,7 +631,7 @@ void entity::remove_from_regions()
     }
 }
 
-region *entity::get_primary_region()
+region *entity::get_primary_region() const
 {
     TRACE("entity::get_primary_region");
 

@@ -923,33 +923,26 @@ void entity_base::clear_parent(bool a1)
     }
 }
 
-entity_base *entity_base::get_conglom_owner() {
-    entity_base *result = this;
-    while (1) {
-        if (!result->is_conglom_member() && !result->is_a_conglomerate()) {
-            return nullptr;
-        }
+entity_base * entity_base::get_conglom_owner() const
+{
+    //TRACE("entity_base::get_conglom_owner");
 
-        if (result->my_conglom_root != nullptr) {
-            break;
-        }
-
-        if (result->is_a_conglomerate()) {
-            return result;
-        }
-
-        if (result->is_conglom_member()) {
-            result = result->m_parent;
-
-            if (result != nullptr) {
-                continue;
-            }
-        }
-
+    if (!this->is_conglom_member() && !this->is_a_conglomerate()) {
         return nullptr;
     }
 
-    return result->my_conglom_root;
+    if (this->my_conglom_root != nullptr) {
+        return this->my_conglom_root;
+    } else if (this->is_a_conglomerate()) {
+        return bit_cast<entity_base *>(this);
+    } else if (this->is_conglom_member() && this->m_parent) {
+        return this->m_parent->get_conglom_owner();
+    } else {
+        return nullptr;
+    }
+
+    return nullptr;
+
 }
 
 void entity_base::un_mash_start(generic_mash_header *a2,
@@ -1649,6 +1642,11 @@ void entity_base_patch() {
     }
 
     {
+        FUNC_ADDRESS(address, &entity_base::get_conglom_owner);
+        SET_JUMP(0x00502B50, address);
+    }
+
+    {
         FUNC_ADDRESS(address, &entity_base::_un_mash);
         set_vfunc(0x00882CC4, address);
 
@@ -1667,10 +1665,6 @@ void entity_base_patch() {
     SET_JUMP(0x004E1290, entity_set_abs_parent);
 
 #if 0
-    {
-        FUNC_ADDRESS(address, &entity_base::get_conglom_owner);
-        REDIRECT(0x004CB929, address);
-    }
 
     {
         FUNC_ADDRESS(address, &entity_base::is_a_line_anchor);

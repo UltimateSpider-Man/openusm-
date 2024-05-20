@@ -5,6 +5,7 @@
 #include "func_wrapper.h"
 #include "ngl.h"
 #include "quaternion.h"
+#include "trace.h"
 #include "utility.h"
 #include "variable.h"
 #include "vector3d.h"
@@ -466,7 +467,7 @@ vector3d po::inverse_xform(const vector3d &a3) const
 bool po::has_nonuniform_scaling() {
     Var<bool> g_ignore_nonuniform_scaling{0x0096852D};
 
-    if (g_ignore_nonuniform_scaling()) {
+    if (g_ignore_nonuniform_scaling()) { 
         return false;
     }
 
@@ -640,8 +641,12 @@ void ptr_to_po::sub_48E900(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a
 
         a4 = xform_inv(v14, *bit_cast<matrix4x3 *>(this->m_abs_po));
 
+        //sp_log("w_axis: %s", v15.to_string().c_str());
+
         auto v5 = sub_414360(*bit_cast<math::VecClass<3, 1> *>(&v15), *bit_cast<const math::MatClass<4, 3> *>(this->m_abs_po));
         a5 = *bit_cast<vector4d *>(&v5);
+
+        //sp_log("res: %s", a5.to_string().c_str());
 
     } else {
         THISCALL(0x0048E900, this, &a2, &a3, &a4, &a5);
@@ -683,6 +688,10 @@ void po::sub_48D840()
 
 po sub_48F770(const po &arg4, const po &a3)
 {
+    //TRACE("po::operator*");
+
+    //sp_log("args: %s %s", arg4.to_string(), a3.to_string());
+
     const void * a2[2] {
         &a3,
         &arg4
@@ -690,6 +699,8 @@ po sub_48F770(const po &arg4, const po &a3)
 
     po res;
     res.m.sub_415A30(a2);
+
+    //sp_log("res: %s", res.to_string());
     return res;
 }
 
@@ -718,6 +729,14 @@ matrix4x4 sub_507130(const ptr_to_po &arg4)
 
 void po_patch()
 {
+    {
+        auto address = int(&sub_48F770);
+        REDIRECT(0x0047B949, address);
+        REDIRECT(0x0047C9AA, address);
+        REDIRECT(0x004F1943, address);
+        REDIRECT(0x004F1D3C, address);
+    }
+
     if constexpr (0) {
         {
             FUNC_ADDRESS(address, &po::slow_xform);

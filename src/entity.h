@@ -181,7 +181,7 @@ struct entity : signaller {
     bool is_indoors();
 
     //0x004C0760
-    region *get_primary_region();
+    region *get_primary_region() const;
 
     //0x004C0970
     bool match_search_flags(int a2);

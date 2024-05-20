@@ -54,7 +54,7 @@ struct vector4d {
     static float dot(const vector4d &a1, const vector4d &a2);
 
     mString to_string() const {
-        mString str{0, "vec4{%.2f %.2f %.2f %.2f}", x, y, z, w};
+        mString str{0, "vec4{%.2f, %.2f, %.2f, %.2f}", x, y, z, w};
 
         return str;
     }

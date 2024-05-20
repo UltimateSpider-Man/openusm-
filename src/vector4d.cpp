@@ -39,12 +39,6 @@ float vector4d::length() const {
                      (z * z) + (w * w));
 }
 
-void vector4d::sub_411A50(const vector4d &y_axis, const vector4d &a3)
-{
-    auto &self = *this;
-    self += y_axis * a3.y;
-}
-
 vector4d vector4d::sub_41CF30() const {
     vector4d out;
     out[0] = this->x;
@@ -91,8 +85,14 @@ void vector4d::sub_413530(const vector4d &x_axis, const vector4d &a3)
     self += x_axis * a3.x;
 }
 
+void vector4d::sub_411A50(const vector4d &y_axis, const vector4d &a3)
+{
+    auto &self = *this;
+    self += y_axis * a3.y;
+}
+
 vector4d vector4d::sub_413E90(const vector4d &x_axis,
-                              const vector4d &arg8,
+                              const vector4d &a2,
                               const vector4d &y_axis,
                               const vector4d &a3,
                               const vector4d &z_axis,
@@ -100,7 +100,7 @@ vector4d vector4d::sub_413E90(const vector4d &x_axis,
                               const vector4d &a8) {
     vector4d v14 = a8;
 
-    v14.sub_413530(x_axis, arg8);
+    v14.sub_413530(x_axis, a2);
     v14.sub_411A50(y_axis, a3);
 
     vector4d result = v14 + z_axis * a7.z;

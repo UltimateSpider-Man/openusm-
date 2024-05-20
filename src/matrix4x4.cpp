@@ -116,6 +116,8 @@ void matrix4x4::decompose(vector4d &a2, vector4d &a3, vector4d &a4, vector4d &a5
 
 void matrix4x4::sub_415A30(const void *a2)
 {
+    //TRACE("matrix4x4::sub_415A30");
+
     if constexpr (1)
     {
         vector4d a2a;
@@ -124,6 +126,14 @@ void matrix4x4::sub_415A30(const void *a2)
         vector4d a5;
 
         ptr_to_po tmp = *bit_cast<const ptr_to_po *>(a2);
+
+        if constexpr (0)
+        {
+            mString str0 {tmp.m_rel_po->m.to_string()};
+            mString str1 {tmp.m_abs_po->m.to_string()};
+            sp_log("args: %s %s", str0.c_str(), str1.c_str());
+        }
+
         tmp.sub_48E900(a2a, a3, a4, a5);
 
         this->arr[0] = a2a;
@@ -137,6 +147,8 @@ void matrix4x4::sub_415A30(const void *a2)
     } else {
         THISCALL(0x00415A30, this, &a2);
     }
+
+    sp_log("res: %s", this->to_string());
 }
 
 void matrix4x4::sub_76CF20(void *a2)
@@ -559,11 +571,11 @@ const char *matrix4x4::to_string() const
 {
     static mString str {};
 
-    str = {0, "\n{\n %f, %f, %f, %f,\n %f, %f, %f, %f,\n %f, %f, %f, %f,\n %f, %f, %f, %f\n}",
-                arr[0][0], arr[0][1], arr[0][2], arr[0][3],
-                arr[1][0], arr[1][1], arr[1][2], arr[1][3],
-                arr[2][0], arr[2][1], arr[2][2], arr[2][3],
-                arr[3][0], arr[3][1], arr[3][2], arr[3][3],
+    str = {0, "\n mat4x4 {\n %s, \n %s, \n %s, \n %s\n}",
+                arr[0].to_string().c_str(),
+                arr[1].to_string().c_str(),
+                arr[2].to_string().c_str(),
+                arr[3].to_string().c_str()
                 };
 
     return str.c_str();
@@ -572,6 +584,14 @@ const char *matrix4x4::to_string() const
 
 void matrix4x4_patch()
 {
-    FUNC_ADDRESS(address, &matrix4x4::make_rotate);
-    SET_JUMP(0x00597D50, address);
+    return;
+    {
+        FUNC_ADDRESS(address, &matrix4x4::sub_415A30);
+        SET_JUMP(0x00415A30, address);
+    }
+
+    {
+        FUNC_ADDRESS(address, &matrix4x4::make_rotate);
+        SET_JUMP(0x00597D50, address);
+    }
 }
