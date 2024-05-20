@@ -2199,6 +2199,8 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
                                                     float *result_ground_level,
                                                     vector3d *result_direction)
 {
+    assert(result_angle != nullptr && result_length != nullptr && result_ground_level != nullptr);
+
     if constexpr (1)
     {
         auto *cntrl_inode_ptr = this->field_20->field_24;
@@ -2231,7 +2233,7 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
         auto vel = v22->get_velocity();
         assert(vel.is_valid());
 
-        auto xz_velocity = sqrt(vel[0] * vel[0] + vel[2] * vel[2]);
+        auto xz_velocity = vel.xz_norm();
         assert(vector3d(0.0f, 0.0f, xz_velocity).is_valid());
 
         float cos_alpha = dot(a1, a2);
@@ -2285,7 +2287,7 @@ void swing_inode::compute_dynamic_sweet_spot_params(float *result_angle,
 
             assert(vector3d(0.0f, 0.0f, current_length).is_valid());
 
-            static const float sweet_spot_incline_angle_sin = std::sin(0.6983062238602997f);
+            static const float sweet_spot_incline_angle_sin = std::sin((3.1415927 / 180.0) * 40.009998);
 
             assert(sweet_spot_incline_angle_sin >= 0.0f && sweet_spot_incline_angle_sin <= 1.0f);
 
@@ -2668,10 +2670,10 @@ void swing_inode::find_best_anchor_point(const vector3d &a1,
                                          Float length,
                                          float *sweet_spot_ground_level)
 {
+    //TRACE("swing_inode::find_best_anchor_point:");
+
     if constexpr (1)
     {
-        //sp_log("find_best_anchor_point:");
-
         static constexpr float safety_34730 = 3.0;
 
         entity *v8 = this->get_actor();
@@ -2853,6 +2855,11 @@ void swing_inode_patch()
         set_vfunc(0x0087DB58, address);
     }
 
+    {
+        FUNC_ADDRESS(address, &ai::swing_inode::find_best_anchor_point);
+        REDIRECT(0x00488627, address);
+    }
+
     return;
 
     {
@@ -2871,11 +2878,6 @@ void swing_inode_patch()
     {
         FUNC_ADDRESS(address, &ai::swing_inode::is_eligible);
         REDIRECT(0x00488BE6, address);
-    }
-
-    {
-        FUNC_ADDRESS(address, &ai::swing_inode::find_best_anchor_point);
-        REDIRECT(0x00488627, address);
     }
 
     {

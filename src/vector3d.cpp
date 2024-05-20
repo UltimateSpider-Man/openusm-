@@ -214,6 +214,14 @@ float vector3d::xz_length2() const {
     return x * x + y * y;
 }
 
+float vector3d::xz_norm() const {
+    return std::sqrt(this->x * this->x + this->z * this->z);
+}
+
+float vector3d::xy_norm() const {
+    return std::sqrt(this->x * this->x + this->y * this->y);
+}
+
 Float vector3d::length2() const {
 #ifndef USE_GLM
     return (this->x * this->x + this->y * this->y + this->z * this->z);

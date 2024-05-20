@@ -154,6 +154,10 @@ struct vector3d
 
     float xz_length2() const;
 
+    float xz_norm() const;
+
+    float xy_norm() const;
+
     Float length2() const;
 
     vector4d sub_48D010() const;
