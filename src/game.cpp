@@ -125,9 +125,10 @@ static game_process pause_process{"pause", pause_flow, 2};
 
 game *& g_game_ptr = var<game *>(0x009682E0);
 
-static Var<int> g_debug_mem_dump_frame{0x00921DCC};
+static int & g_debug_mem_dump_frame = var<int>(0x00921DCC);
 
-Var<int (*)(game *)> game::setup_input_registrations_p {0x0095C8F8};
+static auto & off_921DAC = var<char *[1]>(0x00921DAC);
+
 
 void sub_538D10() {
     scratchpad_stack::stk().alignment = 16;
@@ -177,8 +178,8 @@ game::game()
 
     if constexpr (1)
     {
-        static Var<void (*)(game *)> setup_inputs_p {0x0095C8FC};
-        setup_inputs_p() = game__setup_inputs;;
+        static auto & setup_inputs_p = var<void (*)(game *)>(0x0095C8FC);
+        setup_inputs_p = game__setup_inputs;;
     }
 
     if constexpr (1)
@@ -313,7 +314,7 @@ game::game()
         occlusion::init();
         init_subdivision();
 
-        g_debug_mem_dump_frame() = os_developer_options::instance->get_int(mString {"MEM_DUMP_FRAME"});
+        g_debug_mem_dump_frame = os_developer_options::instance->get_int(mString {"MEM_DUMP_FRAME"});
 
     }
     else
@@ -1690,7 +1691,7 @@ void game::set_camera(int a2)
 }
 
 void game::setup_input_registrations() {
-    setup_input_registrations_p()(this);
+    setup_input_registrations_p(this);
 }
 
 void game::setup_inputs()
@@ -1706,7 +1707,7 @@ void game::reset_control_mappings()
     this->setup_inputs();
 }
 
-static Var<int> g_mem_checkpoint_level{0x00921DC4};
+static int & g_mem_checkpoint_level = var<int>(0x00921DC4);
 
 void game::init_motion_blur()
 {
@@ -1774,7 +1775,7 @@ void game::load_this_level()
         app::instance->field_38 += 10;
         mem_print_stats("at beginning of load_this_level()");
 
-        g_mem_checkpoint_level() = 0; // mem_set_checkpoint()
+        g_mem_checkpoint_level = 0; // mem_set_checkpoint()
         this->init_motion_blur();
         glow_init();
         if (g_femanager.m_fe_menu_system != nullptr)
@@ -1815,10 +1816,8 @@ void game::load_this_level()
 
         slc_manager::init();
 
-        static Var<const char *[1]> off_921DAC{0x00921DAC};
-
-        for (int i = 0; off_921DAC()[i][0] != 0; ++i) {
-            tlFixedString v55(off_921DAC()[i]);
+        for (int i = 0; off_921DAC[i][0] != 0; ++i) {
+            tlFixedString v55(off_921DAC[i]);
             nglLoadTexture(v55);
         }
 
@@ -2283,14 +2282,14 @@ void game::advance_state_load_level(Float a2)
 
     if constexpr (0)
     {
-        static Var<bool> loading_a_level{0x00960CB5};
+        static bool & loading_a_level = var<bool>(0x00960CB5);
 
         this->level.name_mission_table = g_scene_name();
         input_mgr::instance->field_26 = false;
-        if (!loading_a_level())
+        if (!loading_a_level)
         {
             this->level.reset_level_load_data();
-            loading_a_level() = true;
+            loading_a_level = true;
             this->level.look_up_level_descriptor();
             if (!g_is_the_packer()) {
                 sound_manager::load_common_sound_bank(true);
@@ -2318,7 +2317,7 @@ void game::advance_state_load_level(Float a2)
             app::instance->field_38 += 2;
             this->flag.level_is_loaded = true;
             this->field_167 = false;
-            loading_a_level() = false;
+            loading_a_level = false;
             this->go_next_state();
         }
 
@@ -2617,13 +2616,13 @@ void game::render_ui()
 
         nglListBeginScene(static_cast<nglSceneParamType>(1));
 
-        static Var<bool> g_preserve_z_buffer{0x0095C878};
-        nglSetClearFlags(g_preserve_z_buffer() ? 0 : 6);
+        static bool & g_preserve_z_buffer = var<bool>(0x0095C878);
+        nglSetClearFlags(g_preserve_z_buffer ? 0 : 6);
         nglListEndScene();
 
-        static Var<bool> g_disable_interface {0x0095C879};
+        static bool & g_disable_interface = var<bool>(0x0095C879);
 
-        if ( g_disable_interface() || !this->flag.level_is_loaded ||
+        if ( g_disable_interface || !this->flag.level_is_loaded ||
             os_developer_options::instance->get_flag(mString {"INTERFACE_DISABLE"}) )
         {
             if ( this->flag.level_is_loaded )
@@ -2666,7 +2665,7 @@ void game::render_ui()
         }
 
         nglListBeginScene(static_cast<nglSceneParamType>(1));
-        nglSetClearFlags(g_preserve_z_buffer() ? 0 : 6);
+        nglSetClearFlags(g_preserve_z_buffer ? 0 : 6);
         sub_769DE0(7);
         if (!EnableShader())
         {
@@ -2693,7 +2692,7 @@ void game::render_ui()
             nglCalculateMatrices(0);
         }
 
-        if (!g_disable_interface()) {
+        if (!g_disable_interface) {
             render_interface();
         }
 
@@ -2743,9 +2742,9 @@ void game::render_ui()
             if ( ALLOW_SCREENSHOT == 2
                     && this->field_80.is_triggered() )
             {
-                static Var<bool> capturing{0x00960B47};
+                static bool & capturing = var<bool>(0x00960B47);
 
-                if (capturing()) {
+                if (capturing) {
                     app::instance->field_4.end_screen_recording();
                 } else {
                     mString v7 {"L3ScreenShot"};
@@ -2753,7 +2752,7 @@ void game::render_ui()
                     app::instance->field_4.begin_screen_recording(v7, 30);
                 }
 
-                capturing() = !capturing();
+                capturing = !capturing;
             }
         }
     }
@@ -2916,11 +2915,11 @@ void game::frame_advance_level(Float time_inc)
 
     if constexpr (0)
     {
-        static Var<bool> gimme_the_lowdown{0x0095C8EE};
+        static bool & gimme_the_lowdown = var<bool>(0x0095C8EE);
 
         auto *v2 = input_mgr::instance;
-        if (gimme_the_lowdown()) {
-            gimme_the_lowdown() = false;
+        if (gimme_the_lowdown) {
+            gimme_the_lowdown = false;
         }
 
         this->sub_524170();
@@ -2969,13 +2968,11 @@ void sub_65F200()
     }
 }
 
-static Var<char *[1]> off_921DAC { 0x00921DAC };
-
 void sub_579290() {
     ;
 }
 
-static Var<instance_bank<cg_mesh>> cg_mesh_bank{0x00960494};
+static instance_bank<cg_mesh> & cg_mesh_bank = var<instance_bank<cg_mesh>>(0x00960494);
 
 void game::unload_current_level()
 {
@@ -2999,9 +2996,9 @@ void game::unload_current_level()
         daynight::lights() = nullptr;
         daynight::gradients() = nullptr;
         daynight::initialized() = false;
-        if (*off_921DAC()[0]) {
-            char **v3 = off_921DAC();
-            char **v4 = off_921DAC();
+        if (*off_921DAC[0]) {
+            char **v3 = off_921DAC;
+            char **v4 = off_921DAC;
 
             char v6;
             do {
@@ -3070,7 +3067,7 @@ void game::unload_current_level()
         swing_anchor_finder::remove_all_anchors();
         this->field_58 = 0;
         slc_manager::kill();
-        cg_mesh_bank().purge();
+        cg_mesh_bank.purge();
         this->flag.level_is_loaded = 0;
         input_mgr::instance->field_24 = false;
 

@@ -344,7 +344,7 @@ struct game {
     static void render_empty_list();
 
     //0x0095C8F8
-    static Var<int (*)(game *)> setup_input_registrations_p;
+    static inline auto & setup_input_registrations_p = var<int (*)(game *)>(0x0095C8F8);
 
     //0x0095C8FC
     static inline void (* setup_inputs_p)(game *) = game__setup_inputs;
