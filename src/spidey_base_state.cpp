@@ -34,7 +34,7 @@ spidey_base_state::spidey_base_state()
     THISCALL(0x00438E80, this);
 }
 
-string_hash spidey_base_state::get_desired_state_id(Float a3)
+string_hash spidey_base_state::get_desired_state_id(Float a3) const
 {
     TRACE("spidey_base_state::get_desired_state_id");
 

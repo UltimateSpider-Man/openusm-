@@ -37,12 +37,12 @@ struct base_state : mash_virtual_base {
     //0x006BD900
     base_state(int a2);
 
-    actor *get_actor();
+    actor *get_actor() const;
 
-    ai_core *get_core();
+    ai_core *get_core() const;
 
     //0x006BD4D0
-    string_hash get_name();
+    string_hash get_name() const;
 
     bool is_flag_set(int a2) const;
 

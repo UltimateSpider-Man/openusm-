@@ -16,19 +16,19 @@ struct generic_mash_header {
     uint16_t class_id;
     uint16_t field_E;
 
-    inline auto get_class_id() {
+    auto get_class_id() const {
         return this->class_id;
     }
 
-    inline bool is_flagged(uint32_t f) const {
+    bool is_flagged(uint32_t f) const {
         return (f & this->field_4) != 0;
     }
 
-    inline auto *get_mash_data() {
+    auto * get_mash_data() {
         return (bit_cast<uint8_t *>(this) + this->field_8);
     }
 
-    inline auto generate_safety_key() const {
+    auto generate_safety_key() const {
         return ((this->field_8 + 0x7BADBA5D - (this->field_4 & 0xFFFFFFF) +
                 this->class_id + this->field_E) & 0xFFFFFFF) | 0x70000000;
     }

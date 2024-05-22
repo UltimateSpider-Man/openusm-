@@ -2537,8 +2537,10 @@ void swing_inode::propose_something_to_swing_to(vector3d a1,
 
 static string_hash web_swing_timer_id{static_cast<int>(to_hash("web_swing_timer"))};
 
-bool swing_inode::can_go_to(string_hash a2) {
-    if constexpr (0) {
+bool swing_inode::can_go_to(string_hash a2) const
+{
+    if constexpr (0)
+    {
         auto v2 = a2.source_hash_code;
         auto *v4 = this->field_20;
         auto *v5 = v4->field_20;
@@ -2588,8 +2590,11 @@ bool swing_inode::can_go_to(string_hash a2) {
         auto *v16 = v5->get_als_layer(static_cast<als::layer_types>(0));
         return v16->is_interruptable();
 
-    } else {
-        return (bool) THISCALL(0x0045C850, this, a2);
+    }
+    else
+    {
+        bool (__fastcall *func)(const void *, void *edx, string_hash a2) = CAST(func, 0x0045C850);
+        return func(this, nullptr, a2);
     }
 }
 

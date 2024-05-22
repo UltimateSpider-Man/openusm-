@@ -181,7 +181,7 @@ struct swing_inode : info_node {
     void update_mode_swinging(Float a2);
 
     //0x0045C850
-    bool can_go_to(string_hash a2);
+    bool can_go_to(string_hash a2) const;
 
     //0x0045AD80
     void update_something_to_swing_to(Float a2);

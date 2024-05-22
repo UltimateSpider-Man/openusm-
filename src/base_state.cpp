@@ -29,11 +29,11 @@ base_state::base_state(int ) {
     this->field_14 = nullptr;
 }
 
-actor *base_state::get_actor() {
+actor *base_state::get_actor() const {
     return this->field_18;
 }
 
-ai_core *base_state::get_core() {
+ai_core *base_state::get_core() const {
     return this->field_14;
 }
 
@@ -76,7 +76,7 @@ void base_state::get_info_node_list(info_node_desc_list &) {}
 
 void base_state::get_state_graph_list(state_graph_list &) {}
 
-string_hash base_state::get_name() {
+string_hash base_state::get_name() const {
     auto result = this->my_mashed_state->get_name();
     return result;
 }
