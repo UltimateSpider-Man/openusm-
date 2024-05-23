@@ -15,7 +15,7 @@ Requiments:
 
 How to build and install:
 ------------------------
-
+* Copy `shaders` directory from project to the game's folder.
 * Rename `binkw32.dll` in the game's folder to `binkw32_.dll`
 * Download the repository to a directory convenient for you using the command:
 `git clone https://gitlab.com/MrMartinIden/openusm.git` 

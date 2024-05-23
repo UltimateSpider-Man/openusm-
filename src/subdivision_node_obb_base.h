@@ -8,7 +8,7 @@ struct vector3d;
 
 struct subdivision_node_obb_base {
     int field_0;
-    float field_4[3];
+    vector3d field_4;
     int field_10;
     uint16_t field_14;
     uint16_t field_16;
@@ -33,7 +33,7 @@ struct subdivision_node_obb_base {
     void get_extents(vector3d *min_extent, vector3d *max_extent);
 
     //0x00513100
-    void get_vertices(vector3d *out);
+    void get_vertices(vector3d *) const;
 
     float *sub_564D50(float *a2);
 
@@ -66,6 +66,9 @@ struct subdivision_node_obb_base {
     bool find_closest_point_on_visible_faces(const vector3d &sweet_spot,
                                              const vector3d &ent_pos,
                                              fixed_vector<obb_closest_point_entry_t, 3> *results);
+
+    //0x00512980
+    void unpack_axii(vector3d *axii) const;
 
     static inline Var<int> visit_key{0x0095C894};
 };

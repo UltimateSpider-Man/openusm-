@@ -67,7 +67,7 @@ void subdivision_node_obb_base::get_extents(vector3d *min_extent, vector3d *max_
     THISCALL(0x0052C580, this, min_extent, max_extent);
 }
 
-void subdivision_node_obb_base::get_vertices(vector3d *out)
+void subdivision_node_obb_base::get_vertices(vector3d *out) const
 {
     THISCALL(0x00513100, this, out);
 }
@@ -672,4 +672,9 @@ bool subdivision_node_obb_base::find_closest_point_on_visible_faces(
 bool subdivision_node_obb_base::is_obb_node() const {
     return this->get_type() == 4 || this->get_type() == 5 || this->get_type() == 6 ||
         this->get_type() == 7 || this->get_type() == 8;
+}
+
+void subdivision_node_obb_base::unpack_axii(vector3d *axii) const
+{
+    THISCALL(0x00512980, this, axii);
 }
