@@ -8,6 +8,8 @@
 
 VALIDATE_SIZE(subdivision_node_large_aabb, 0x24);
 
+VALIDATE_SIZE(subdivision_node_large_obb, 0x48);
+
 void check_for_degeneracies(subdivision_node_obb_base *obb)
 {
     vector3d a1[3] {};
@@ -52,6 +54,47 @@ bool subdivision_node_large_aabb::init(
     assert(!( terrain_type_info_arg & 0xFF000000 ));
 
     std::memcpy(&this->field_0[1], &terrain_type_info_arg, 3);
+
+    check_for_degeneracies(bit_cast<subdivision_node_obb_base *>(this));
+
+    return true;
+}
+
+bool subdivision_node_large_obb::init(
+        uint16_t a2,
+        uint32_t terrain_type_info_arg,
+        const vector3d &a4,
+        const vector3d &a5,
+        const vector3d &a6,
+        const vector3d &a7)
+{
+    this->field_14 = a2;
+    this->field_0[1] = 0;
+    this->field_0[3] = 0;
+    this->field_4 = ZEROVEC;
+    this->field_0[0] = 7;
+    this->field_4 = a4;
+    this->field_18 = a5;
+    this->field_24 = a6;
+    this->field_30 = a7;
+
+    this->x_length = this->field_18.length();
+    this->y_length = this->field_24.length();
+    this->z_length = this->field_30.length();
+
+    assert(x_length > EPSILON && y_length > EPSILON && z_length > EPSILON);
+
+    this->field_18 /= this->x_length;
+
+    this->field_24 /= this->y_length;
+
+    this->field_30 /= this->z_length;
+
+    assert(!( terrain_type_info_arg & 0xFF000000 ));
+
+    std::memcpy(&this->field_0[1], &terrain_type_info_arg, 3);
+
+    check_for_degeneracies(bit_cast<subdivision_node_obb_base *>(this));
 
     return true;
 }
