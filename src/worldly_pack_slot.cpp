@@ -27,6 +27,7 @@
 #include "skeleton_resource_handler.h"
 #include "sound_alias_database_resource_handler.h"
 #include "texture_resource_handler.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
 #include "vtbl.h"

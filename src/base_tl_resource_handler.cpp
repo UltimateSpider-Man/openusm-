@@ -8,6 +8,7 @@
 #include "resource_directory.h"
 #include "resource_pack_slot.h"
 #include "tlresource_location.h"
+#include "trace.h"
 #include "utility.h"
 #include "worldly_pack_slot.h"
 #include "vtbl.h"

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "func_wrapper.h"
 #include "fx_cache.h"
+#include "parse_generic_mash.h"
 #include "trace.h"
 #include "utility.h"
 

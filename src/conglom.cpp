@@ -27,6 +27,7 @@
 #include "ngl_mesh.h"
 #include "oldmath_po.h"
 #include "os_developer_options.h"
+#include "parse_generic_mash.h"
 #include "potential_shadow.h"
 #include "script_data_interface.h"
 #include "region.h"

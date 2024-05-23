@@ -11,6 +11,7 @@
 #include "osassert.h"
 #include "pole_swing_inode.h"
 #include "spiderman_camera.h"
+#include "trace.h"
 
 #include <vtbl.h>
 

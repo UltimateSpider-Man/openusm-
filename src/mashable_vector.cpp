@@ -15,6 +15,8 @@
 #include "resource_allocation_pool.h"
 #include "resource_location.h"
 #include "resource_pack_group.h"
+#include "sin_district_container.h"
+#include "sin_strip_container.h"
 #include "tlresource_location.h"
 #include "utility.h"
 
@@ -75,6 +77,7 @@ void mashable_vector<dsg_region_container>::custom_un_mash(generic_mash_header *
     for (auto i = 0u; i < this->m_size; ++i)
     {
         assert(((int)header) % 4 == 0);
+
         this->m_data[i].un_mash(header, &this->m_data[i], a4);
     }
 
@@ -669,8 +672,71 @@ void mashable_vector<fx_cache_ent>::custom_un_mash(
     }
 }
 
+template<>
+void mashable_vector<sin_district_container>::custom_un_mash(
+        generic_mash_header *header,
+        void *,
+        generic_mash_data_ptrs *a4,
+        void *)
+{
+    if ( this->is_shared() ) {
+        error("sin_district_container's cannot be shared!");
+    }
 
-void mashable_vector_patch() {
+    {
+        rebase(a4->field_0, 4u);
+
+        rebase(a4->field_0, 4u);
+
+        this->m_data = a4->get<sin_district_container>(this->m_size);
+
+        for ( int i = 0; i < this->m_size; ++i )
+        {
+            assert(((int)header) % 4 == 0);
+
+            this->m_data[i].un_mash(
+                header,
+                &this->m_data[i],
+                a4);
+        }
+
+        rebase(a4->field_0, 4u);
+    }
+}
+
+template<>
+void mashable_vector<sin_strip_container>::custom_un_mash(
+        generic_mash_header *header,
+        void *,
+        generic_mash_data_ptrs *a4,
+        void *)
+{
+
+    if ( this->is_shared() ) {
+        error("sin_strip_container's cannot be shared!");
+    }
+
+    {
+        rebase(a4->field_0, 4u);
+
+        rebase(a4->field_0, 4u);
+
+        this->m_data = a4->get<sin_strip_container>(this->m_size);
+
+        for ( int i = 0; i < this->m_size; ++i )
+        {
+            assert(((int)header) % 4 == 0);
+
+            this->m_data[i].un_mash(header, &this->m_data[i], a4);
+        }
+
+        rebase(a4->field_0, 4u);
+    }
+}
+
+
+void mashable_vector_patch()
+{
     {
         FUNC_ADDRESS(address, &mashable_vector<resource_directory *>::custom_un_mash);
         REDIRECT(0x0051F70B, address);

@@ -20,6 +20,7 @@
 #include "motion_effect_struct.h"
 #include "oldmath_po.h"
 #include "os_developer_options.h"
+#include "parse_generic_mash.h"
 #include "scratchpad_stack.h"
 #include "slab_allocator.h"
 #include "sound_and_pfx_interface.h"

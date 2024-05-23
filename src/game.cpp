@@ -62,6 +62,7 @@
 #include "oldmath_po.h"
 #include "osassert.h"
 #include "os_developer_options.h"
+#include "parse_generic_mash.h"
 #include "pausemenusystem.h"
 #include "proximity_map_stack.h"
 #include "physical_interface.h"

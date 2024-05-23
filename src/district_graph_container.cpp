@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "parse_generic_mash.h"
 #include "terrain.h"
 #include "trace.h"
 
@@ -15,23 +16,20 @@ void district_graph_container::setup_terrain(terrain *the_terrain) {
     THISCALL(0x00556640, this, the_terrain);
 }
 
-void dsg_region_container::un_mash(generic_mash_header *a2,
+void dsg_region_container::un_mash(generic_mash_header *header,
                                    [[maybe_unused]] void *a3,
                                    generic_mash_data_ptrs *a4)
 {
     if constexpr (1)
     {
-        uint32_t v4 = 4 - ((uint32_t) a4->field_0 & 3);
-        if (v4 < 4) {
-            a4->field_0 += v4;
-        }
+        rebase(a4->field_0, 4u);
 
-        auto v5 = *(uint32_t *) a4->field_0;
-        auto *v6 = (uint8_t *) ((uint32_t) a4->field_0 + 4);
-        a4->field_0 = v6;
-        this->field_0 = (char *) v6;
-        a4->field_0 += v5;
-        this->field_48.custom_un_mash(a2, &this->field_48, a4, nullptr);
+        auto v5 = *a4->get<int>();
+        this->field_0 = a4->get<char>(v5);
+
+        assert(((int)header) % 4 == 0);
+
+        this->field_48.custom_un_mash(header, &this->field_48, a4, nullptr);
     }
     else
     {

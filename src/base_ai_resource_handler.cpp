@@ -4,9 +4,10 @@
 #include "core_ai_resource.h"
 #include "mash_info_struct.h"
 #include "resource_directory.h"
-#include "worldly_pack_slot.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
+#include "worldly_pack_slot.h"
 
 VALIDATE_SIZE(base_ai_resource_handler, 0x14);
 

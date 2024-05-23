@@ -2,6 +2,8 @@
 
 #include "common.h"
 #include "func_wrapper.h"
+#include "parse_generic_mash.h"
+#include "trace.h"
 #include "utility.h"
 
 VALIDATE_SIZE(sin_container, 0x30);

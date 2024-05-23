@@ -1,10 +1,12 @@
 #pragma once
 
 #include "log.h"
-#include "parse_generic_mash.h"
 
 #include <cassert>
 #include <cstdint>
+
+struct generic_mash_header;
+struct generic_mash_data_ptrs;
 
 template<typename T>
 struct mashable_vector {
