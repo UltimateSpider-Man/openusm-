@@ -13,7 +13,12 @@ void sin_container::setup_world()
     sp_log("%s", this->master_script_name);
     sp_log("%s", this->field_4);
 
-    THISCALL(0x0055BB00, this);
+    if constexpr (0)
+    {}
+    else
+    {
+        THISCALL(0x0055BB00, this);
+    }
 }
 
 void sin_container::un_mash_start(generic_mash_header *a2,
@@ -23,8 +28,24 @@ void sin_container::un_mash_start(generic_mash_header *a2,
     this->un_mash(a2, a3, a4);
 }
 
-void sin_container::un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4) {
-    THISCALL(0x00520B00, this, a2, a3, a4);
+void sin_container::un_mash(generic_mash_header *a2, void *a3, generic_mash_data_ptrs *a4)
+{
+    if constexpr (0)
+    {
+        rebase(a4->field_0, 4u);
+
+        auto v5 = *a4->get<int>();
+        this->master_script_name = a4->get<char>(v5);
+
+        auto v9 = *a4->get<int>();
+        this->field_4 = a4->get<char>(v9);
+
+        this->field_24.un_mash(a2, &this->field_24, a4, nullptr);
+    }
+    else
+    {
+        THISCALL(0x00520B00, this, a2, a3, a4);
+    }
 }
 
 mString sin_container::sub_55F530() {
@@ -37,7 +58,8 @@ mString *sin_container::get_master_script_name(mString *out) {
     return out;
 }
 
-void sin_container_patch() {
+void sin_container_patch()
+{
     {
         FUNC_ADDRESS(address, &sin_container::setup_world);
         REDIRECT(0x0055CA45, address);
