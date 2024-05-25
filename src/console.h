@@ -30,7 +30,7 @@ struct Console {
     uint32_t field_230;
     int field_234;
     int cmdLogNumber;
-    mString field_23C;
+    std::string field_23C;
     PanelQuad *field_248;
     bool field_24C;
     bool field_24D;

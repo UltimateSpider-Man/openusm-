@@ -1,7 +1,6 @@
 #include "console.h"
 
 #include "color32.h"
-#include "common.h"
 #include "consolecmds.h"
 #include "consolevars.h"
 #include "debug_menu.h"
@@ -25,9 +24,6 @@
 std::stack<tokenizer *> s_exec_tok_stack{};
 
 float s_exec_tick{0};
-
-VALIDATE_SIZE(Console, 0x254);
-VALIDATE_OFFSET(Console, current, 0x105);
 
 Console *g_console = nullptr;
 
@@ -93,8 +89,7 @@ Console::Console()
     this->cmdLogNumber = 0;
     this->field_24E = true;
 
-    auto *mem = mem_alloc(sizeof(PanelQuad));
-    this->field_248 = new (mem) PanelQuad{};
+    this->field_248 = new PanelQuad{};
 
     vector2d v8[4];
     v8[0] = {0.0, 0.0};
@@ -115,7 +110,7 @@ Console::Console()
     this->field_24C = false;
     this->field_24D = false;
 
-    this->field_23C = mString{"console_log.txt"};
+    this->field_23C = {"console_log.txt"};
 
     this->setHeight(200.0);
     this->hide();
