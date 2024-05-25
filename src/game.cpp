@@ -2770,7 +2770,7 @@ void game::render_ui()
     }
 }
 
-void hook_nglListEndScene()
+void nglListEndScene_hook()
 {
     {
         if (os_developer_options::instance->get_flag(mString{"SHOW_DEBUG_INFO"}))
@@ -3414,7 +3414,7 @@ void game_patch()
     REDIRECT(0x0052B4BA, sub_5BC870);
 
     {
-        REDIRECT(0x0052B5D7, hook_nglListEndScene);
+        REDIRECT(0x0052B5D7, nglListEndScene_hook);
     }
 
     {

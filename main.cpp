@@ -2178,7 +2178,7 @@ HRESULT __stdcall GetDeviceStateHook(IDirectInputDevice8* self, DWORD cbData, LP
 
 	HRESULT res = GetDeviceStateOriginal(self, cbData, lpvData);
 
-	//printf("cbData %d %d %d\n", cbData, sizeof(DIJOYSTATE), sizeof(DIJOYSTATE2));
+	printf("cbData %d %d %d\n", cbData, sizeof(DIJOYSTATE), sizeof(DIJOYSTATE2));
 
 	//keyboard time babyyy
     if (cbData == 256)
@@ -2254,6 +2254,10 @@ HRESULT __stdcall GetDeviceStateHook(IDirectInputDevice8* self, DWORD cbData, LP
 
     if (key_is_pressed(DIK_GRAVE)) {
         _kbevcb(KeyEvent::Press, KB_TILDE);
+    }
+
+    if (g_console == nullptr) {
+        return res;
     }
 
     if (g_console->isVisible())
@@ -2435,8 +2439,6 @@ BOOL install_redirects()
     {
         moved_entities_patch();
 
-        input_settings_patch();
-
         pc_joypad_device_patch();
 
         player_controller_inode_patch();
@@ -2444,10 +2446,6 @@ BOOL install_redirects()
         camera_mode_patch();
 
         game_button_patch();
-
-        game_patch();
-
-        game_settings_patch();
 
         mouselook_controller_patch();
 
@@ -2457,8 +2455,6 @@ BOOL install_redirects()
 
         controller_patch();
 
-        wds_camera_manager_patch();
-
         scene_anim_patch();
 
         camera_patch();
@@ -2467,22 +2463,37 @@ BOOL install_redirects()
 
         us_person_patch();
 
-        ngl_patch();
-
         script_controller_patch();
 
         nal_anim_controller_patch();
 
         geometry_manager_patch();
 
-        wds_render_manager_patch();
-
         input_mgr_patch();
-
-        resource_directory_patch();
-
-        tlresource_directory_patch();
     }
+
+    if constexpr (1) {
+        console_patch();
+    } else {
+        game_patch();
+    }
+
+    return true;
+
+    wds_render_manager_patch();
+
+    wds_camera_manager_patch();
+
+    resource_directory_patch();
+
+    tlresource_directory_patch();
+
+
+    input_settings_patch();
+
+    game_settings_patch();
+
+    ngl_patch();
 
     //standalone patches
     if constexpr (1)

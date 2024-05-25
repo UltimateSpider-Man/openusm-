@@ -99,3 +99,5 @@ extern Console *g_console;
 extern std::stack<tokenizer *> s_exec_tok_stack;
 
 extern float s_exec_tick;
+
+extern void console_patch();

@@ -772,3 +772,49 @@ void render_console_text(const mString &a1, vector2di a2, const color32 &a4)
 
     v7.Draw();
 }
+
+void terrain_types_manager_create_inst()
+{
+    CDECL_CALL(0x005C54B0);
+
+    g_console = new Console {};
+}
+
+void terrain_types_manager_delete_inst()
+{
+    CDECL_CALL(0x005BA680);
+
+    delete g_console;
+}
+
+void __fastcall FEManager_Update(void *self, void *edx, Float a2)
+{
+    void (__fastcall *func)(void *, void *edx, Float) = CAST(func, 0x00642B30);
+    func(self, edx, a2);
+
+    {
+        g_console->frame_advance(a2);
+    }
+}
+
+void hook_nglListEndScene()
+{
+    g_console->render();
+
+    CDECL_CALL(0x0076A030);
+}
+
+void console_patch()
+{
+    REDIRECT(0x0052B5D7, hook_nglListEndScene);
+
+    REDIRECT(0x00552E75, terrain_types_manager_create_inst);
+
+    REDIRECT(0x00524155, terrain_types_manager_delete_inst);
+
+    {
+        REDIRECT(0x00558289, FEManager_Update);
+        REDIRECT(0x0055A102, FEManager_Update);
+    }
+}
+
