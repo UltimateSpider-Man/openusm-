@@ -19,10 +19,9 @@ void fe_controller_disconnect::draw()
 {
     if constexpr (1)
     {
-        if (back_ground_quad() == nullptr) {
-            auto *mem = mem_alloc(sizeof(PanelQuad));
-
-            back_ground_quad() = new (mem) PanelQuad{};
+        if (back_ground_quad() == nullptr)
+        {
+            back_ground_quad() = new PanelQuad {};
 
             auto *v2 = g_femanager.m_pause_menu_system->field_2C;
 
@@ -31,7 +30,7 @@ void fe_controller_disconnect::draw()
             auto a3 = fe_controller_disconnect::back_ground_quad()->GetCenterX();
             auto a4 = fe_controller_disconnect::back_ground_quad()->GetCenterY();
 
-            mem = mem_alloc(sizeof(FEMultiLineText));
+            auto *mem = mem_alloc(sizeof(FEMultiLineText));
 
             text_box() = new (mem)
                 FEMultiLineText{static_cast<font_index>(1), a3, a4, 0, static_cast<panel_layer>(2), 1.0, 0, 0, {0}};

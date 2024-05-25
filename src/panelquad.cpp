@@ -4,6 +4,7 @@
 #include "from_mash_in_place_constructor.h"
 #include "func_wrapper.h"
 #include "mash_info_struct.h"
+#include "memory.h"
 #include "ngl.h"
 #include "ngl_mesh.h"
 #include "panelquadsection.h"
@@ -29,6 +30,17 @@ PanelQuad * __fastcall PanelQuad_constructor(PanelQuad *self, int, from_mash_in_
 
 PanelQuad::~PanelQuad() {
     THISCALL(0x0043F7F0, this);
+}
+
+void * PanelQuad::operator new(size_t size)
+{
+    auto *mem = mem_alloc(size);
+    return mem;
+}
+
+void PanelQuad::operator delete(void *ptr, size_t size)
+{
+    mem_dealloc(ptr, size);
 }
 
 void PanelQuad::_destruct_mashed_class()

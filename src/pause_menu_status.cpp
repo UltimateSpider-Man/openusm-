@@ -78,8 +78,7 @@ void pause_menu_status::_Load() {
         this->field_A4[12] = v3->GetTextPointer("pm_status_text_right_05_BLANK");
         this->field_A4[13] = v3->GetTextPointer("pm_status_text_right_06_BLANK");
 
-        auto *v4 = mem_alloc(sizeof(PanelQuad));
-        auto *v5 = new (v4) PanelQuad {};
+        auto *v5 = new PanelQuad {};
         auto *v6 = this->field_2C[21];
         this->field_DC = v5;
         v5->CopyFrom(v6);
@@ -95,8 +94,7 @@ void pause_menu_status::_Load() {
 
         this->field_DC->SetPos(v34, v30);
 
-        auto *v9 = mem_alloc(sizeof(PanelQuad));
-        auto *v10 = new (v9) PanelQuad {};
+        auto *v10 = new PanelQuad {};
         auto *v11 = this->field_2C[22];
         this->field_E0 = v10;
         v10->CopyFrom(v11);

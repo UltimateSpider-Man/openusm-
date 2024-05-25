@@ -33,6 +33,10 @@ struct PanelQuad : PanelAnimObject {
     //0x0043F7F0
     ~PanelQuad();
 
+    void * operator new(size_t size);
+
+    void operator delete(void *, size_t size);
+
     //0x00616990
     vector2d GetMax();
 
