@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "log.h"
-#include "trace.h"
 
 struct resource_directory;
 struct mission_table_container;
@@ -51,6 +50,22 @@ struct generic_mash_data_ptrs {
         this->field_4 += sizeof(T) * num;
         return res;
     }
+
+    void rebase(uint32_t i)
+    {
+        uint32_t v9 = i - ((uint32_t) this->field_0 % i);
+        if (v9 < i) {
+            this->field_0 += v9;
+        }
+    }
+
+    void rebase_shared(uint32_t i)
+    {
+        uint32_t v9 = i - ((uint32_t) this->field_4 % i);
+        if (v9 < i) {
+            this->field_4 += v9;
+        }
+    }
 };
 
 inline void rebase(uint8_t *&ptr, uint32_t i)
@@ -78,8 +93,6 @@ template<typename T>
 bool parse_generic_object_mash(
     T *&arg0, void *a1, void *a5, uint32_t *a6, uint32_t *a7, uint32_t a8, uint32_t a9, void *a10)
 {
-    TRACE("parse_generic_object_mash");
-
     bool allocated_mem = false;
 
     generic_mash_data_ptrs a4;
