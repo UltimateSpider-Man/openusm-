@@ -18,6 +18,7 @@
 #include "sin_district_container.h"
 #include "sin_strip_container.h"
 #include "tlresource_location.h"
+#include "trace.h"
 #include "utility.h"
 
 VALIDATE_SIZE(mashable_vector<int>, 8u);

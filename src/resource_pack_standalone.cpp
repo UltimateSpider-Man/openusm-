@@ -12,6 +12,7 @@
 #include "resource_directory.h"
 #include "resource_manager.h"
 #include "resource_key.h"
+#include "trace.h"
 #include "utility.h"
 #include "variables.h"
 

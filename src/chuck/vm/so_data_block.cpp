@@ -3,6 +3,7 @@
 #include "common.h"
 #include "memory.h"
 #include "parse_generic_mash.h"
+#include "trace.h"
 
 VALIDATE_SIZE(so_data_block, 0xC);
 

@@ -40,6 +40,7 @@
 #include "tl_instance_bank.h"
 #include "tl_system.h"
 #include "tlresource_directory.h"
+#include "trace.h"
 #include "usbuildingsimpleshader.h"
 #include "utility.h"
 #include "variable.h"

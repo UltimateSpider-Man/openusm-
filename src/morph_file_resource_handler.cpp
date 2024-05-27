@@ -5,6 +5,7 @@
 #include "ngl.h"
 #include "parse_generic_mash.h"
 #include "resource_directory.h"
+#include "trace.h"
 #include "utility.h"
 #include "worldly_pack_slot.h"
 

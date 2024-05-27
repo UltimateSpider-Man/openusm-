@@ -15,6 +15,7 @@
 #include "resource_pack_slot.h"
 #include "resource_partition.h"
 #include "return_address.h"
+#include "trace.h"
 #include "utility.h"
 
 #ifdef TARGET_XBOX

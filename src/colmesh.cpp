@@ -7,6 +7,7 @@
 #include "parse_generic_mash.h"
 #include "resource_key.h"
 #include "resource_manager.h"
+#include "trace.h"
 #include "utility.h"
 
 #include <cassert>
