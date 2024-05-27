@@ -85,7 +85,7 @@ void so_data_block::un_mash(
 {
     TRACE("so_data_block::un_mash");
 
-    rebase(a4->field_0, 4u);
+    a4->rebase(4u);
 
     this->buffer = a4->get<char>(this->m_size);
 

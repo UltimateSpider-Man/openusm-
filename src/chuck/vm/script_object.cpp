@@ -507,12 +507,12 @@ void script_object::un_mash(generic_mash_header *header, void *a3, void *a4, gen
 
         this->static_data.un_mash(header, &this->static_data, a5);
 
-        rebase(a5->field_0, 4u);
+        a5->rebase(4u);
 
         this->funcs = a5->get<vm_executable *>(this->total_funcs);
         for ( auto i = 0; i < this->total_funcs; ++i )
         {
-            rebase(a5->field_0, 4u);
+            a5->rebase(4u);
 
             this->funcs[i] = a5->get<vm_executable>();
 
