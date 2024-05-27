@@ -55,6 +55,7 @@
 #include "character_viewer.h"
 #include "charcomponentbase.h"
 #include "chuck_callbacks.h"
+#include "city_lights.h"
 #include "city_lod.h"
 #include "console.h"
 #include "collide_aux.h"
@@ -2477,6 +2478,8 @@ BOOL install_redirects()
     } else {
         game_patch();
     }
+
+    city_lights_patch();
 
     return true;
 
