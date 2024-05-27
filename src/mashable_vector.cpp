@@ -36,25 +36,22 @@ void mashable_vector<resource_directory *>::custom_un_mash([[maybe_unused]] gene
     assert(from_mash());
 
     if (this->m_shared) {
-        auto &buffer = a4->field_4;
 
-        rebase(buffer, 4u);
+        a4->rebase_shared(4u);
 
-        rebase(buffer, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<resource_directory *>(this->m_size);
 
-        rebase(buffer, 4u);
+        a4->rebase_shared(4u);
     } else {
-        auto &buffer = a4->field_0;
+        a4->rebase(4u);
 
-        rebase(buffer, 4u);
-
-        rebase(buffer, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<resource_directory *>(this->m_size);
 
-        rebase(buffer, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -69,9 +66,9 @@ void mashable_vector<dsg_region_container>::custom_un_mash(generic_mash_header *
         error("dsg_region_container's cannot be shared!");
     }
 
-    rebase(a4->field_0, 4);
+    a4->rebase(4);
 
-    rebase(a4->field_0, 4);
+    a4->rebase(4);
 
     this->m_data = a4->get<dsg_region_container>(this->m_size);
     
@@ -82,7 +79,7 @@ void mashable_vector<dsg_region_container>::custom_un_mash(generic_mash_header *
         this->m_data[i].un_mash(header, &this->m_data[i], a4);
     }
 
-    rebase(a4->field_0, 4);
+    a4->rebase(4);
 }
 
 //0x004C7380
@@ -96,9 +93,9 @@ void mashable_vector<dsg_box_container>::custom_un_mash(generic_mash_header *a2,
         error("dsg_box_container's cannot be shared!");
     }
 
-    rebase(a4->field_0, 4);
+    a4->rebase(4);
 
-    rebase(a4->field_0, 4);
+    a4->rebase(4);
 
     this->m_data = a4->get<dsg_box_container>(this->m_size);
 
@@ -106,7 +103,7 @@ void mashable_vector<dsg_box_container>::custom_un_mash(generic_mash_header *a2,
         this->m_data[i].un_mash(a2, &this->m_data[i], a4);
     }
 
-    rebase(a4->field_0, 4);
+    a4->rebase(4);
 }
 
 //0x004C7DC0
@@ -120,7 +117,7 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
 
     if (this->m_shared)
     {
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
         auto v24 = *a4->get_from_shared<uint32_t>();
 
@@ -129,9 +126,9 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
 
         auto *v9 = a4->get_from_shared<uint32_t>();
 
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
@@ -150,13 +147,13 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
 
         ++(v9[0]);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
     } else {
 
-        rebase(a4->field_0, 8u);
+        a4->rebase(8u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<value_t>(this->m_size);
 
@@ -165,7 +162,7 @@ void mashable_vector<resource_location>::custom_un_mash(generic_mash_header *hea
             this->m_data[i].un_mash(header, &this->m_data[i], a4);
         }
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -180,7 +177,7 @@ void mashable_vector<tlresource_location>::custom_un_mash(generic_mash_header *h
 
     if (this->is_shared())
     {
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
         auto offset = *a4->get_from_shared<uint32_t>();
         auto offset1 = *a4->get_from_shared<uint32_t>();
@@ -189,9 +186,9 @@ void mashable_vector<tlresource_location>::custom_un_mash(generic_mash_header *h
 
         auto *v9 = a4->get_from_shared<int>();
 
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
@@ -210,13 +207,13 @@ void mashable_vector<tlresource_location>::custom_un_mash(generic_mash_header *h
 
         ++v9[0];
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
     } else {
 
-        rebase(a4->field_0, 8u);
+        a4->rebase(8u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<value_t>(this->m_size);
 
@@ -226,7 +223,7 @@ void mashable_vector<tlresource_location>::custom_un_mash(generic_mash_header *h
             this->m_data[i].un_mash(header, &this->m_data[i], a4);
         }
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -240,7 +237,7 @@ void mashable_vector<resource_pack_group>::custom_un_mash(generic_mash_header *h
 
     if (this->is_shared()) {
 
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
 #if 0
         auto offset = *bit_cast<uint32_t *>(a4->field_4);
@@ -268,9 +265,9 @@ void mashable_vector<resource_pack_group>::custom_un_mash(generic_mash_header *h
         a4->field_4 += sizeof(*ptr);
 #endif
 
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
@@ -286,13 +283,13 @@ void mashable_vector<resource_pack_group>::custom_un_mash(generic_mash_header *h
 
         ++v9[0];
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
     } else {
 
-        rebase(a4->field_0, 8u);
+        a4->rebase(8u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<value_t>(this->m_size);
 
@@ -304,7 +301,7 @@ void mashable_vector<resource_pack_group>::custom_un_mash(generic_mash_header *h
         }
 
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -316,7 +313,7 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
                                                                [[maybe_unused]] void *a5) {
     if (this->is_shared())
     {
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         auto offset = *a4->get_from_shared<uint32_t>();
 
@@ -324,9 +321,9 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
 
         auto *v9 = a4->get_from_shared<int>();
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
@@ -343,13 +340,13 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
 
         ++v9[0];
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
     } else {
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<value_t>(this->m_size);
 
@@ -357,7 +354,7 @@ void mashable_vector<resource_allocation_pool>::custom_un_mash(generic_mash_head
             this->m_data[i].un_mash(header, &this->m_data[i], a4);
         }
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -371,23 +368,23 @@ void mashable_vector<fixedstring<4>>::custom_un_mash([[maybe_unused]] generic_ma
 
     if (this->is_shared()) {
 
-        rebase(a4->field_4, 8u);
+        a4->rebase_shared(8u);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
     } else {
 
-        rebase(a4->field_0, 8u);
+        a4->rebase(8u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<value_t>(this->m_size);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -399,23 +396,23 @@ void mashable_vector<int>::custom_un_mash([[maybe_unused]] generic_mash_header *
                                           [[maybe_unused]] void *a5) {
     if (this->m_shared) {
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
         this->m_data = a4->get_from_shared<value_t>(this->m_size);
 
-        rebase(a4->field_4, 4u);
+        a4->rebase_shared(4u);
 
     } else {
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<value_t>(this->m_size);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -426,23 +423,23 @@ void mashable_vector<po>::custom_un_mash(generic_mash_header *, void *, generic_
 
     if ( this->m_shared )
     {
-        rebase(a4->field_4, 16);
+        a4->rebase_shared(16);
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
         this->m_data = a4->get_from_shared<po>(this->m_size);
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
     }
     else
     {
-        rebase(a4->field_0, 16);
+        a4->rebase(16);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
         
         this->m_data = a4->get<po>(this->m_size);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
     }
 }
 
@@ -453,23 +450,23 @@ void mashable_vector<entity_base *>::custom_un_mash(generic_mash_header *, void 
 
     if ( this->m_shared)
     {
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
         this->m_data = a4->get_from_shared<entity_base *>(this->m_size);
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
     }
     else
     {
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
         
         this->m_data = a4->get<entity_base *>(this->m_size);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
     }
 }
 
@@ -478,23 +475,23 @@ void mashable_vector<int8_t>::custom_un_mash(generic_mash_header *, void *, gene
 {
     if ( this->m_shared )
     {
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
         this->m_data = a4->get_from_shared<int8_t>(this->m_size);
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
     }
     else
     {
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
         
         this->m_data = a4->get<int8_t>(this->m_size);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
     }
 }
 
@@ -503,7 +500,7 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
 {
     if ( this->m_shared )
     {
-        rebase(a4->field_4, 8);
+        a4->rebase_shared(8);
 
         auto v8 = (int)a4->field_4;
         auto v9 = (int *)(v8 + 4);
@@ -518,7 +515,7 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
             a4->field_4 = &v10[v12];
         }
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
         this->m_data = a4->get_from_shared<anim_info>(this->m_size);
 
@@ -537,13 +534,13 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
 
         ++v9[2];
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
     }
     else
     {
-        rebase(a4->field_0, 8);
+        a4->rebase(8);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
 
         this->m_data = a4->get<anim_info>(this->m_size);
 
@@ -551,7 +548,7 @@ void mashable_vector<anim_info>::custom_un_mash(generic_mash_header *a2, void *,
             this->m_data[i].un_mash(a2, &this->m_data[i], a4);
         }
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
     }
 }
 
@@ -560,7 +557,7 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *he
 {
     if ( this->is_shared() )
     {
-        rebase(a4->field_4, 8);
+        a4->rebase_shared(8);
 
         auto v8 = (int)a4->field_4;
         auto offset = *(DWORD *)v8;
@@ -575,7 +572,7 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *he
             a4->field_4 = &v10[v12];
         }
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
 
         this->m_data = a4->get_from_shared<anim_map_ptr_entry>(this->m_size);
 
@@ -595,13 +592,13 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *he
 
         ++v9[2];
 
-        rebase(a4->field_4, 4);
+        a4->rebase_shared(4);
     }
     else
     {
-        rebase(a4->field_0, 8);
+        a4->rebase(8);
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
 
         this->m_data = a4->get<anim_map_ptr_entry>(this->m_size);
 
@@ -611,7 +608,7 @@ void mashable_vector<anim_map_ptr_entry>::custom_un_mash(generic_mash_header *he
             this->m_data[i].field_8.custom_un_mash(header, &this->m_data[i].field_8, a4, nullptr);
         }
 
-        rebase(a4->field_0, 4);
+        a4->rebase(4);
     }
 }
 
@@ -629,7 +626,7 @@ void mashable_vector<fx_cache_ent>::custom_un_mash(
     {
         if ( this->is_shared() )
         {
-            rebase(a4->field_4, 8u);
+            a4->rebase_shared(8u);
 
             auto offset = *a4->get_from_shared<int>();
             auto offset1 = *a4->get_from_shared<int>();
@@ -638,9 +635,9 @@ void mashable_vector<fx_cache_ent>::custom_un_mash(
 
             auto *v9 = a4->get_from_shared<int>();
 
-            rebase(a4->field_4, 8u);
+            a4->rebase_shared(8u);
 
-            rebase(a4->field_4, 4u);
+            a4->rebase_shared(4u);
 
             this->m_data = a4->get_from_shared<fx_cache_ent>(this->m_size);
 
@@ -661,7 +658,7 @@ void mashable_vector<fx_cache_ent>::custom_un_mash(
 
             ++v9[0];
 
-            rebase(a4->field_4, 4u);
+            a4->rebase_shared(4u);
         }
     }
     else
@@ -685,9 +682,9 @@ void mashable_vector<sin_district_container>::custom_un_mash(
     }
 
     {
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<sin_district_container>(this->m_size);
 
@@ -701,7 +698,7 @@ void mashable_vector<sin_district_container>::custom_un_mash(
                 a4);
         }
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 
@@ -718,9 +715,9 @@ void mashable_vector<sin_strip_container>::custom_un_mash(
     }
 
     {
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
 
         this->m_data = a4->get<sin_strip_container>(this->m_size);
 
@@ -731,7 +728,7 @@ void mashable_vector<sin_strip_container>::custom_un_mash(
             this->m_data[i].un_mash(header, &this->m_data[i], a4);
         }
 
-        rebase(a4->field_0, 4u);
+        a4->rebase(4u);
     }
 }
 

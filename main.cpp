@@ -2481,6 +2481,8 @@ BOOL install_redirects()
 
     city_lights_patch();
 
+    mashable_vector_patch();
+
     return true;
 
     wds_render_manager_patch();
@@ -2545,8 +2547,6 @@ BOOL install_redirects()
         cached_special_effect_patch();
 
         damage_interface_patch();
-
-        mashable_vector_patch();
 
         core_ai_resource_patch();
 
