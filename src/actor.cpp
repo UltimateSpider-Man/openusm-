@@ -580,7 +580,7 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x2000000u), false);
         this->set_ext_flag_recursive_internal(static_cast<entity_ext_flag_t>(0x800000u), false);
 
-        rebase(v4->field_4, 8u);
+        v4->rebase_shared(8u);
 
         auto *skel_name_id_ptr = (resource_key *)v4->field_4;
         resource_key skel_name_id {};
@@ -603,7 +603,7 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         }
 
         if ( v5->is_flagged(2u) ) {
-            rebase(v4->field_0, 4u);
+            v4->rebase(4u);
 
             auto *v15 = v4->get<collision_capsule>();
 
@@ -613,7 +613,7 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
             v15->un_mash(a3, v15, v4);
             this->set_colgeom(v15);
         } else if ( v5->is_flagged(4u) ) {
-            rebase(v4->field_0, 4u);
+            v4->rebase(4u);
 
             auto *v19 = v4->get<cg_mesh>();
             v19->m_vtbl = collision_mesh_v_table();
@@ -633,7 +633,7 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         if ( v5->is_flagged(8u) ) {
             tlFixedString a1 {};
 
-            rebase(v4->field_4, 8u);
+            v4->rebase_shared(8u);
 
             a1 = *v4->get_from_shared<tlFixedString>();
             auto &v28 = this->field_90;
@@ -672,14 +672,14 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         assert(sync_check == MASH_SYNC_TEST_VAL5);
 
         auto v34 = *v4->get<bool>();
-        rebase(v4->field_0, 4u);
+        v4->rebase(4u);
 
         if ( v34 ) {
             auto v38 = *v4->get<int>();
 
-            rebase(v4->field_0, 16u);
+            v4->rebase(16u);
 
-            rebase(v4->field_0, 4u);
+            v4->rebase(4u);
 
             auto *v42 = v4->field_0;
             v4->field_0 += v38;
@@ -696,14 +696,14 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         }
 
         auto v61 = *v4->get<bool>();
-        rebase(v4->field_0, 4u);
+        v4->rebase(4u);
 
         if ( v61 ) {
             auto v44 = *v4->get<int>();
 
-            rebase(v4->field_0, 16u);
+            v4->rebase(16u);
 
-            rebase(v4->field_0, 4u);
+            v4->rebase(4u);
 
             auto *v48 = v4->field_0;
             v4->field_0 += v44;
@@ -722,13 +722,13 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
         }
 
         auto a4a = *v4->get<bool>();
-        rebase(v4->field_4, 4u);
+        v4->rebase_shared(4u);
 
         if ( a4a ) {
-            rebase(v4->field_4, 4u);
+            v4->rebase_shared(4u);
 
             if ( (a3->field_E & 0x8000) != 0 ) {
-                rebase(v4->field_4, 4u);
+                v4->rebase_shared(4u);
 
                 this->m_facial_expression_interface = v4->get<facial_expression_interface>();
                 this->m_facial_expression_interface->m_vtbl = ifc_v_table_lookup()[4];
@@ -834,11 +834,11 @@ void actor::_un_mash(generic_mash_header *a3, void *a4, generic_mash_data_ptrs *
                 this->m_physical_interface = nullptr;
             }
 
-            rebase(v4->field_0, 8u);
+            a4->rebase(8u);
 
             if ( (a3->field_E & 8) != 0 ) {
 
-                rebase(v4->field_0, 4u);
+                a4->rebase(4u);
 
                 this->m_damage_interface = (damage_interface *)v4->field_0;
                 v4->field_0 += sizeof(damage_interface);

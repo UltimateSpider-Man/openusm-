@@ -2479,6 +2479,8 @@ BOOL install_redirects()
         game_patch();
     }
 
+    actor_patch();
+
     city_lights_patch();
 
     mashable_vector_patch();
@@ -2593,8 +2595,6 @@ BOOL install_redirects()
         motion_effect_struct_patch();
 
         ngl_vertexdef_patch();
-
-        actor_patch();
 
         app_patch();
 
