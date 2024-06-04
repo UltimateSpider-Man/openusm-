@@ -144,7 +144,9 @@ bool script_executable::compare(const script_executable &a, const script_executa
     return true;
 }
 #else
-bool script_executable::compare(const script_executable &, const script_executable &) {
+bool script_executable::compare(const script_executable &, const script_executable &)
+{
+    assert(0);
     return false;
 }
 #endif
@@ -159,13 +161,13 @@ void script_executable::un_mash_start(generic_mash_header *a2, void *a3, generic
     }
     else
     {
-        void (__fastcall *func)(void *,void *edx, generic_mash_header *, void *, generic_mash_data_ptrs *, void *) = CAST(func, 0x005B04D0);
+        void (__fastcall *func)(void *, void *edx, generic_mash_header *, void *, generic_mash_data_ptrs *, void *) = CAST(func, 0x005B04D0);
         func(this, nullptr, a2, a3, a4, a5);
     }
 
     printf("field_58 = %d\n", this->field_58);
 
-    if constexpr (0)
+    if constexpr (1)
     {
         sp_log("%d", this->system_string_table_size);
         if (this->field_0 == fixedstring<8>{"CITY_ARENA"}) {
@@ -216,7 +218,7 @@ void script_executable::info_t::un_mash(
 
     if ( this->field_10 == -1 )
     {
-        rebase(a5->field_0, 4u);
+        a5->rebase(4u);
 
         this->field_8 = bit_cast<vm_executable *>(a5->field_0);
         a5->field_0 += sizeof(vm_executable);
@@ -241,12 +243,13 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
         {
             assert(script_object_dummy_list == nullptr);
             
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
+            sp_log("start 0x%08X", a4->field_0);
 
             static auto *start_debug = a4->field_0;
 
             [this, &a4]() {
-                if constexpr (1)
+                if constexpr (0)
                 {
                     filespec v98 {mString {this->field_0.to_string()}};
                     v98.m_dir = mString {"scripts\\"};
@@ -270,8 +273,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             }();
 
             a4->field_0 += this->sx_exe_image_size;
+            sp_log("offset = 0x%08X", a4->field_0);
 
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
 
             sp_log("0x%08X", sx_exe_image_size);
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
@@ -281,9 +285,9 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             sp_log("offset = 0x%08X", a4->field_0 - start_debug);
             for ( auto i = 0; i < this->total_script_objects; ++i )
             {
-                rebase(a4->field_0, 8u);
+                a4->rebase(8u);
 
-                rebase(a4->field_0, 4u);
+                a4->rebase(4u);
                 
                 this->script_objects[i] = a4->get<script_object>();
 
@@ -295,20 +299,20 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
             this->global_script_object = this->script_objects[0];
 
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
 
             this->script_objects_by_name = a4->get<script_object *>(this->total_script_objects);
             for ( auto i = 0; i < this->total_script_objects; ++i ) {
                 this->script_objects_by_name[i] = this->script_objects[(int)this->script_objects_by_name[i]];
             }
 
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
 
             this->permanent_string_table = a4->get<char *>(this->permanent_string_table_size);
 
             for ( auto i = 0; i < this->permanent_string_table_size; ++i )
             {
-                rebase(a4->field_0, 4u);
+                a4->rebase(4u);
 
                 auto v21 = *a4->get<uint32_t>();
 
@@ -319,13 +323,13 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             this->system_string_table = nullptr;
             this->system_string_table_size = 0;
 
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
 
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
 
             this->field_54 = a4->get<info_t>(this->field_58);
 
-            rebase(a4->field_0, 4u);
+            a4->rebase(4u);
 
             for (int i = 0; i < this->field_58; ++i)
             {
@@ -343,7 +347,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
                     if ( info->field_10 == -1 )
                     {
-                        rebase(a4->field_0, 4u);
+                        a4->rebase(4u);
 
                         info->field_8 = a4->get<vm_executable>();
 
