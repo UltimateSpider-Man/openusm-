@@ -167,6 +167,14 @@ target_link_libraries(test_nal PUBLIC nfl nalpanel utility)
 
 target_link_libraries(nalcomp PUBLIC nal)
 
+add_library(debugutil "./src/debugutil.cpp" "./src/debugutil.h")
+target_compile_options(debugutil
+    PRIVATE
+      ${flags}
+  )
+target_include_directories(debugutil PUBLIC "./include/")
+target_link_libraries(debugutil PUBLIC utility)
+
 
 file(GLOB_RECURSE SRC_CHUCK "./src/chuck/vm/*.cpp")
 add_library(chuck ${SRC_CHUCK})
@@ -176,7 +184,7 @@ target_compile_options(chuck
   )
 
 target_include_directories(chuck INTERFACE "./src/chuck/vm/")
-target_link_libraries(chuck PUBLIC slab_allocator variables)
+target_link_libraries(chuck PUBLIC slab_allocator variables debugutil)
 
 
 file(GLOB_RECURSE SRC_TX "./src/tx/src/*.cpp" "./src/tx/src/*.h")
@@ -297,7 +305,7 @@ if(USE_GLM)
     target_link_libraries(binkw32 PUBLIC glm::glm)
 endif()
 
-option(ENABLE_TESTS ON "")
+option(ENABLE_TESTS "" ON)
 
 if(ENABLE_TESTS)
     set(GOOGLETEST_VERSION 1.1)
@@ -307,6 +315,7 @@ if(ENABLE_TESTS)
     include(CTest)
     enable_testing()
     add_subdirectory(test)
+
 endif()
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../Ultimate Spider-Man/")
