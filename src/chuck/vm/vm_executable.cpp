@@ -77,7 +77,7 @@ void vm_executable::un_mash(
     auto offset = bit_cast<uint32_t>(this->buffer);
     auto *se = this->owner->get_parent();
 
-    this->buffer = se->get_exec_code(offset);
+    this->buffer = se->lookup_sx_code_segment(offset);
     this->flags |= VM_EXECUTABLE_FLAG_UN_MASHED;
 
     assert(this->debug_info == nullptr);
@@ -85,29 +85,29 @@ void vm_executable::un_mash(
     sp_log("buffer_len = %d", this->buffer_len);
 }
 
-void vm_executable::link(const script_executable *a2)
+void vm_executable::link(const script_executable &a2)
 {
     TRACE("vm_executable::link");
 
     this->link_un_mash(a2);
 }
 
-void vm_executable::link_un_mash(const script_executable *a2)
+void vm_executable::link_un_mash(const script_executable &a2)
 {
     TRACE("vm_executable::link_un_mash", this->fullname.to_string());
 
     if constexpr (0)
     {
-        printf("permanent_string_table: %d\n", a2->permanent_string_table_size);
-        for (auto i = 0; i < a2->permanent_string_table_size; ++i) {
-            auto *str = a2->get_permanent_string(i);
+        printf("permanent_string_table: %d\n", a2.permanent_string_table_size);
+        for (auto i = 0; i < a2.permanent_string_table_size; ++i) {
+            auto *str = a2.lookup_permanent_string(i);
             printf("%s\n", str);
         }
 
         printf("\n");
-        printf("system_string_table: %d\n", a2->system_string_table_size);
-        for (auto i = 0; i < a2->system_string_table_size; ++i) {
-            auto *str = a2->get_system_string(i);
+        printf("system_string_table: %d\n", a2.system_string_table_size);
+        for (auto i = 0; i < a2.system_string_table_size; ++i) {
+            auto *str = a2.get_system_string(i);
             printf("%s\n", str);
         }
         printf("\n");
@@ -120,7 +120,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
 		{
             uint16_t *buffer = this->buffer;
             this->flags |= VM_EXECUTABLE_FLAG_LINKED;
-            auto *v5 = a2;
+            auto &v5 = a2;
             while ( buffer < &this->buffer[this->buffer_len] )
             {
                 auto opword = *buffer++;
@@ -151,7 +151,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                     break;
                 case OP_ARG_STR: {
                     uint32_t idx = *buffer;
-                    auto *str = this->owner->get_parent()->get_permanent_string(idx);
+                    auto *str = this->owner->get_parent()->lookup_permanent_string(idx);
                     printf("str = %s\n", str);
                     auto addr = uint32_t(str);
                     buffer += 2;
@@ -167,7 +167,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                     break;
                 case OP_ARG_SDR: {
                     auto idx = *buffer++;
-                    auto *so = v5->find_object(idx);
+                    auto *so = v5.find_object(idx);
                     assert(so != nullptr);
 
                     auto offset = *buffer++;
@@ -182,7 +182,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                 case OP_ARG_SFR: {
                     auto idx = *buffer++;
                     auto func_idx = *buffer++;
-                    auto *so = v5->find_object(idx);
+                    auto *so = v5.find_object(idx);
                     assert(so != nullptr);
 
                     auto *v8 = so->get_func(func_idx);
@@ -220,7 +220,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                     assert(slc->get_size() == 4);
 
                     auto v10 = *buffer++;
-                    auto *ps = this->owner->get_parent()->get_permanent_string(v10);
+                    auto *ps = this->owner->get_parent()->lookup_permanent_string(v10);
                     mString v17 {ps};
 
                     auto addr = slc->find_instance(v17);
@@ -232,7 +232,7 @@ void vm_executable::link_un_mash(const script_executable *a2)
                 case OP_ARG_SIG:
                 case OP_ARG_PSIG: {
                     auto idx = *buffer;
-                    auto *v16 = this->owner->get_parent()->get_permanent_string(idx);
+                    auto *v16 = this->owner->get_parent()->lookup_permanent_string(idx);
 
                     buffer += 2;
                     mString v18 {v16};
@@ -417,7 +417,7 @@ void vm_executable::write(chunk_file *file, const vm_executable *x, const std::s
     file->write(CHUNK_CODE);
 
     auto *v15 = x->owner->get_parent();
-    uint32_t offset = ((int)x->buffer - (int) v15->get_exec_code(0));
+    uint32_t offset = ((int)x->buffer - (int) v15->lookup_sx_code_segment(0));
     file->write(offset);
 }
 
@@ -544,7 +544,7 @@ void vm_executable::read(chunk_file *file, vm_executable *x) {
 
     auto offset = file->read<unsigned>();
     auto *v15 = x->owner->get_parent();
-    x->buffer = v15->get_exec_code(offset);
+    x->buffer = v15->lookup_sx_code_segment(offset);
 }
 
 void vm_executable_patch() {

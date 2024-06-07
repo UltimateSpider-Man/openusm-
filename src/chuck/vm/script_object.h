@@ -152,7 +152,7 @@ public:
 	vm_thread *add_thread(script_instance *a2, int fidx);
 
     //0x00599530
-    void link(const script_executable *a2);
+    void link(const script_executable &a2);
 
     //0x005AB350
     void un_mash(generic_mash_header *a2, void *a3, void *a4, generic_mash_data_ptrs *a5);

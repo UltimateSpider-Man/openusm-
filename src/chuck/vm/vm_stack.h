@@ -9,11 +9,7 @@ inline constexpr auto UNINITIALIZED_SCRIPT_PARM = 0x7BAD05CF;
 
 class vm_stack {
     int field_0[96];
-
-public:
     char *buffer;
-
-private:
     char *SP;
     vm_thread *my_thread;
 
@@ -26,6 +22,10 @@ public:
 
     vm_thread * get_thread() {
         return my_thread;
+    }
+
+    auto get_buffer() {
+        return this->buffer;
     }
 
     int size() const {

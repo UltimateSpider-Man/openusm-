@@ -19,9 +19,9 @@ VALIDATE_SIZE(vm_thread, 0x1E8);
 VALIDATE_OFFSET(vm_thread, dstack, 0x20);
 VALIDATE_OFFSET(vm_thread, entry, 0x1D8);
 
-Var<char[64][256]> vm_thread::string_registers{0x00961940};
+auto & dword_965F1C = var<int (*)(uint32_t, uint32_t)>(0x00965F1C);
 
-Var<void (*)(vm_thread *, string_hash)> dword_965F20 {0x00965F20};
+auto & dword_965F20 = var<void (*)(vm_thread *, string_hash)>(0x00965F20);
 
 Var<fixed_pool> vm_thread::pool {0x00922D58};
 
@@ -89,15 +89,9 @@ vm_thread::~vm_thread()
 
     while ( this->field_1C8.size() != 0 )
     {
-        auto size = this->field_1C8.size();
-        struct {
-            string_hash field_0;
-            int field_4;
-        } *data = CAST(data, this->field_1C8.m_first);
-        auto *back = data + (size - 1);
+        auto &v3 = this->field_1C8.back();
 
-        dword_965F20()(this, back->field_0);
-
+        dword_965F20(this, v3.field_0);
         this->field_1C8.pop_back();
     }
 }
@@ -912,40 +906,32 @@ bool vm_thread::run()
                 assert(argtype == OP_ARG_WORD);
 
                 this->dstack.move_SP(arg.word);
-                while ( this->field_1C8.size() )
+                while ( this->field_1C8.size() != 0 )
                 {
-                    auto size = this->field_1C8.size();
-                    struct {
-                        int field_0;
-                        int field_4;
-                    } *data = CAST(data, this->field_1C8.m_first);
-                    auto *v80 = (char *)data[size - 1].field_4;
-                    auto *v81 = &data[size - 1];
-                    if ( v80 < this->dstack.get_SP() ) {
+                    auto &v81 = this->field_1C8.back();
+                    if ( v81.field_4 < this->dstack.get_SP() ) {
                         break;
                     }
 
-                    dword_965F20()(this, v81->field_0);
-                    if ( this->field_1C8.size() ) {
-                        this->field_1C8.m_last -= 8;
-                    }
+                    dword_965F20(this, v81.field_0);
+                    this->field_1C8.pop_back();
                 }
 
                 break;
             }
             case OP_SUB: {
-                assert(dsize == 4);
+                assert(dsize == 4u);
 
                 binary_func(argtype, arg, std::minus<vm_num_t>{});
                 break;
             }
             case OP_XOR:
-                assert(dsize == 4);
+                assert(dsize == 4u);
 
                 commutative_binary_func(argtype, arg, std::bit_xor<int>{});
                 break;
             case OP_STR_EQ: {
-                assert(dsize == 4);
+                assert(dsize == 4u);
 
                 compare_string(argtype, arg, std::equal_to<int>{});
                 break;
@@ -1191,15 +1177,16 @@ void vm_thread::raise_all_event(const vm_thread::argument_t &a2, opcode_arg_t ar
     THISCALL(0x0058F960, this, &a2, arg_type);
 }
 
-char *vm_thread::install_temp_string(const char *a1) {
-    static Var<int> index_18926{0x00967E0C};
+char *vm_thread::install_temp_string(const char *a1)
+{
+    static int & index = var<int>(0x00967E0C);
 
-    auto v2 = index_18926()++;
-    if (index_18926() >= 64) {
-        index_18926() = 0;
+    auto v2 = index++;
+    if (index >= 64) {
+        index = 0;
     }
 
-    auto *v3 = vm_thread::string_registers()[v2];
+    auto *v3 = vm_thread::string_registers[v2];
     chuck_strcpy(v3, a1, 256u);
     return v3;
 }
@@ -1247,6 +1234,20 @@ bool vm_thread::call_script_library_function(const vm_thread::argument_t &arg, c
         bool (__fastcall *func)(void *, void *edx, const vm_thread::argument_t *arg, const uint16_t *oldPC) = CAST(func, 0x0058F7E0);
         return func(this, nullptr, &arg, oldPC);
     }
+}
+
+void vm_thread::register_callbacks(
+        void (*a1)(vm_thread *, string_hash, vhandle_type<signaller>, vm_executable *, char *, bool),
+        void (*a2)(vm_thread *, string_hash, vhandle_type<signaller>),
+        void (*a3)(vm_thread *, string_hash),
+        int (*a4)(uint32_t, uint32_t),
+        void (*a5)(vm_thread *, string_hash))
+{
+    vm_thread::add_signal_callback_callback = a1;
+    vm_thread::raise_signal_callback = a2;
+    vm_thread::raise_all_signal_callback = a3;
+    dword_965F1C = a4;
+    dword_965F20 = a5;
 }
 
 void vm_thread_patch()

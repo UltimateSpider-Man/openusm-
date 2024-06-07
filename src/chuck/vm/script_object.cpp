@@ -275,12 +275,11 @@ void script_instance::build_parameters()
             this->parent->remove_instance(v6);
             t.inst = nullptr;
             t.ex = nullptr;
-            auto *v12 = t.get_data_stack().buffer;
+            auto *v4 = t.get_data_stack().get_buffer();
             assert(threads.size() == 1);
 
             auto *v11 = this->threads._first_element;
             auto constructor_parmsize = this->parent->get_constructor_parmsize();
-            auto v4 = v12;
             auto &stack = v11->get_data_stack();
             stack.push(v4, constructor_parmsize);
             if ( !this->field_28->is_from_mash() )
@@ -413,7 +412,7 @@ script_instance * script_object::add_instance(string_hash a2, vm_executable *par
         assert(parent != nullptr);
 
         if ( inst->field_28 != nullptr ) {
-            inst->field_28->link(this->parent);
+            inst->field_28->link(*this->parent);
         }
 
         return inst;
@@ -485,7 +484,7 @@ void script_object::add(script_instance *a2)
     }
 }
 
-void script_object::link(const script_executable *a2)
+void script_object::link(const script_executable &a2)
 {
     TRACE("script_object::link");
 
@@ -811,7 +810,7 @@ void script_object::read(chunk_file *file, script_object *so)
         else
         {
             auto v33 = file->read<int>();
-            auto *permanent_string = so->parent->get_permanent_string(v33);
+            auto *permanent_string = so->parent->lookup_permanent_string(v33);
             *(DWORD *)v34 = (int)permanent_string;
         }
 

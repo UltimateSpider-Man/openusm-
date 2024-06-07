@@ -104,13 +104,13 @@ struct script_executable {
 
     script_library_class * find_library_class(const mString &a2) const;
 
-    const char *get_permanent_string(unsigned int index) const;
+    const char * lookup_permanent_string(unsigned int index) const;
 
     static uint32_t get_system_string_index(const std::set<string_hash> &set, const string_hash &p);
 
     const char *get_system_string(unsigned int index) const;
 
-    uint16_t * get_exec_code(unsigned int offset);
+    uint16_t * lookup_sx_code_segment(unsigned int offset);
 
     //0x005A3500
     void link();

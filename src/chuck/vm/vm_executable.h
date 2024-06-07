@@ -104,9 +104,9 @@ struct vm_executable
             void *a4,
             generic_mash_data_ptrs *a5);
 
-    void link(const script_executable *a2);
+    void link(const script_executable &a2);
 
-    void link_un_mash(const script_executable *a2);
+    void link_un_mash(const script_executable &a2);
 
     static void write(chunk_file *file, const vm_executable *x, const std::set<string_hash> &);
 

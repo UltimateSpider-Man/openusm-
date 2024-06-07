@@ -1,9 +1,11 @@
 #pragma once
 
-#include "script_library_class.h"
+#include "entity_base_vhandle.h"
 #include "fixed_pool.h"
 #include "msimpletemplates_guts.h"
 #include "opcodes.h"
+#include "script_library_class.h"
+#include "signaller.h"
 #include "vm_stack.h"
 
 #include <variable.h>
@@ -23,6 +25,11 @@ struct vm_thread {
         script_library_class::function *lfr;
         vm_executable *sfr;
         unsigned binary;
+    };
+
+    struct internal_t {
+        string_hash field_0;
+        char *field_4;
     };
 
     enum flags_t
@@ -46,7 +53,7 @@ public:
     const uint16_t *field_1B0;
     float field_1B4;
     _std::vector<unsigned short const *> PC_stack;
-    _std::vector<void *> field_1C8;
+    _std::vector<internal_t> field_1C8;
     script_library_class::function::entry_t entry;
     void *field_1DC;
     int field_1E0;
@@ -126,9 +133,22 @@ public:
     //0x0058F7E0
     bool call_script_library_function(const vm_thread::argument_t &a2, const uint16_t *a3);
 
-    static Var<char[64][256]> string_registers;
+    static void register_callbacks(
+            void (*a1)(vm_thread *, string_hash, vhandle_type<signaller>, vm_executable *, char *, bool),
+            void (*a2)(vm_thread *, string_hash, vhandle_type<signaller>),
+            void (*a3)(vm_thread *, string_hash),
+            int  (*a4)(uint32_t, uint32_t),
+            void (*a5)(vm_thread *, string_hash));
+
+    static inline auto & string_registers = var<char[64][256]>(0x00961940);
 
     static Var<fixed_pool> pool;
+
+    static inline auto & add_signal_callback_callback = var<void (*)(vm_thread *, string_hash, vhandle_type<signaller>, vm_executable *, char *, bool)>(0x00965F10);
+
+    static inline auto & raise_signal_callback = var<void (*)(vm_thread *, string_hash, vhandle_type<signaller>)>(0x00965F14);
+
+    static inline auto & raise_all_signal_callback = var<void (*)(vm_thread *, string_hash)>(0x00965F18);
 
     static inline Var<int> id_counter {0x00965F0C};
 };

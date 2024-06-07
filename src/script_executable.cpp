@@ -165,11 +165,16 @@ void script_executable::un_mash_start(generic_mash_header *a2, void *a3, generic
         func(this, nullptr, a2, a3, a4, a5);
     }
 
-    printf("field_58 = %d\n", this->field_58);
-
-    if constexpr (1)
+    if constexpr (0)
     {
         sp_log("%d", this->system_string_table_size);
+
+        auto begin = this->permanent_string_table;
+        auto end = begin + this->permanent_string_table_size;
+        std::for_each(begin, end, [](auto &str) {
+                sp_log("%s", str);
+        });
+
         if (this->field_0 == fixedstring<8>{"CITY_ARENA"}) {
             assert(0);
         }
@@ -220,8 +225,7 @@ void script_executable::info_t::un_mash(
     {
         a5->rebase(4u);
 
-        this->field_8 = bit_cast<vm_executable *>(a5->field_0);
-        a5->field_0 += sizeof(vm_executable);
+        this->field_8 = a5->get<vm_executable>();
 
         assert(((int)header) % 4 == 0);
 
@@ -244,9 +248,6 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
             assert(script_object_dummy_list == nullptr);
             
             a4->rebase(4u);
-            sp_log("start 0x%08X", a4->field_0);
-
-            static auto *start_debug = a4->field_0;
 
             [this, &a4]() {
                 if constexpr (0)
@@ -269,20 +270,13 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                     }
                 }
 
-                this->sx_exe_image = CAST(this->sx_exe_image, a4->field_0);
+                this->sx_exe_image = a4->get<uint16_t>(this->sx_exe_image_size / 2);
             }();
-
-            a4->field_0 += this->sx_exe_image_size;
-            sp_log("offset = 0x%08X", a4->field_0);
 
             a4->rebase(4u);
 
-            sp_log("0x%08X", sx_exe_image_size);
-            sp_log("offset = 0x%08X", a4->field_0 - start_debug);
-
             this->script_objects = a4->get<script_object *>(this->total_script_objects);
 
-            sp_log("offset = 0x%08X", a4->field_0 - start_debug);
             for ( auto i = 0; i < this->total_script_objects; ++i )
             {
                 a4->rebase(8u);
@@ -295,7 +289,6 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
                 auto &so = this->script_objects[i];
                 so->un_mash(header, this, so, a4);
             }
-
 
             this->global_script_object = this->script_objects[0];
 
@@ -316,8 +309,7 @@ void script_executable::un_mash(generic_mash_header *header, void *a3, generic_m
 
                 auto v21 = *a4->get<uint32_t>();
 
-                this->permanent_string_table[i] = (char *) a4->field_0;
-                a4->field_0 += v21;
+                this->permanent_string_table[i] = a4->get<char>(v21);
             }
 
             this->system_string_table = nullptr;
@@ -794,7 +786,7 @@ script_library_class * script_executable::find_library_class(const mString &a2) 
     return nullptr;
 }
 
-const char *script_executable::get_permanent_string(unsigned int index) const
+const char * script_executable::lookup_permanent_string(unsigned int index) const
 {
     assert(permanent_string_table != nullptr && "We should still have the string table around any time we're doing a lookup");
 
@@ -884,9 +876,9 @@ const char *script_executable::get_system_string(unsigned int index) const {
     return this->system_string_table[index];
 }
 
-uint16_t * script_executable::get_exec_code(unsigned int offset) {
+uint16_t * script_executable::lookup_sx_code_segment(unsigned int offset) {
 
-    TRACE("script_executable::get_exec_code", std::to_string(offset).c_str());
+    TRACE("script_executable::lookup_sx_code_segment", std::to_string(offset).c_str());
 
     assert(sx_exe_image != nullptr && "We should have loaded the executable code from the sxl or sxb file");
 
@@ -901,10 +893,10 @@ void script_executable::link()
 
     assert(( ( flags & SCRIPT_EXECUTABLE_FLAG_LINKED ) == 0 ) && "trying to link the same exec more than once!!!");
 
-    script_manager::run_callbacks((script_manager_callback_reason)6, this, nullptr);
+    script_manager::run_callbacks(static_cast<script_manager_callback_reason>(6), this, nullptr);
     for ( auto i = 0; i < this->total_script_objects; ++i ) {
         auto &so = this->script_objects[i];
-        so->link(this);
+        so->link(*this);
     }
 
     if ( this->is_from_mash() ) {
@@ -994,7 +986,7 @@ void script_executable::first_run(Float a2, bool a3)
                 buffer = info.field_14;
                 break;
             default:
-                buffer = (int)this->get_permanent_string(v14);
+                buffer = (int)this->lookup_permanent_string(v14);
                 break;
             }
         }
